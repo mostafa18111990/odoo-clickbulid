@@ -1,0 +1,9 @@
+# Empty placeholder.
+#
+# Used as ENTERPRISE_SRC during image smoke-tests when we want to verify the
+# image build flow itself without yet having the real enterprise tree on disk.
+#
+# To build the REAL enterprise image:
+#   1. Clone github.com/odoo/enterprise into /opt/odoo-saas/enterprise on the server
+#   2. docker build -f docker/enterprise/Dockerfile -t clickbuild/odoo-enterprise:19 \
+#                   --build-arg ENTERPRISE_SRC=./enterprise .

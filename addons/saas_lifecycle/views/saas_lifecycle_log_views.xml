@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_lifecycle_log_list" model="ir.ui.view">
+        <field name="name">saas.lifecycle.log.list</field>
+        <field name="model">saas.lifecycle.log</field>
+        <field name="arch" type="xml">
+            <list string="Lifecycle Log" create="0" delete="0" edit="0"
+                  decoration-success="result == 'success'"
+                  decoration-danger="result == 'failed'"
+                  decoration-muted="result == 'skipped'">
+                <field name="create_date" string="Time"/>
+                <field name="tenant_id"/>
+                <field name="log_type" widget="badge"/>
+                <field name="result" widget="badge"/>
+                <field name="state_before"/>
+                <field name="state_after"/>
+                <field name="lifecycle_rule_id" optional="show"/>
+                <field name="description"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_saas_lifecycle_log" model="ir.actions.act_window">
+        <field name="name">Lifecycle Log</field>
+        <field name="res_model">saas.lifecycle.log</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

@@ -1,0 +1,23 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-arabic: "Cairo", sans-serif;
+    --font-latin:  "Inter", sans-serif;
+  }
+
+  html[dir="rtl"] {
+    font-family: var(--font-arabic);
+  }
+
+  html[dir="ltr"] {
+    font-family: var(--font-latin);
+  }
+}
+
+@layer utilities {
+  .font-arabic { font-family: var(--font-arabic); }
+  .font-latin  { font-family: var(--font-latin); }
+}

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Extend the base tenant search view with filters for the saas_core
+         state machine (lead, trial, pending_payment, grace_period, etc.) -->
+    <record id="view_saas_tenant_search_inherit" model="ir.ui.view">
+        <field name="name">saas.tenant.search.inherit</field>
+        <field name="model">saas.tenant</field>
+        <field name="inherit_id" ref="saas_tenant_manager.view_saas_tenant_search"/>
+        <field name="arch" type="xml">
+            <xpath expr="//filter[@name='filter_active']" position="before">
+                <filter name="filter_all_live"
+                        string="All Live"
+                        domain="[('state', 'not in', ['cancelled', 'archived', 'deleted'])]"/>
+                <filter name="filter_lead"
+                        string="Leads"
+                        domain="[('state', '=', 'lead')]"/>
+                <filter name="filter_trial"
+                        string="On Trial"
+                        domain="[('state', '=', 'trial')]"/>
+                <filter name="filter_pending_payment"
+                        string="Pending Payment"
+                        domain="[('state', '=', 'pending_payment')]"/>
+                <filter name="filter_grace"
+                        string="Grace Period"
+                        domain="[('state', '=', 'grace_period')]"/>
+                <filter name="filter_cancelled"
+                        string="Cancelled"
+                        domain="[('state', '=', 'cancelled')]"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Drop the auto-applied "Active only" filter on the action so new
+         leads / trial tenants are visible by default. -->
+    <record id="saas_tenant_manager.action_saas_tenant" model="ir.actions.act_window">
+        <field name="context">{'search_default_filter_all_live': 1}</field>
+    </record>
+</odoo>

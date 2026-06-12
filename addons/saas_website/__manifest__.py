@@ -1,0 +1,33 @@
+{
+    'name': 'SaaS Website',
+    'version': '19.0.1.0.0',
+    'category': 'SaaS',
+    'summary': 'Public marketing website for ClickBuild SaaS platform',
+    'author': 'ClickBuild',
+    'website': 'https://clickbuild.com',
+    'depends': ['saas_core', 'website'],
+    'data': [
+        'security/ir.model.access.csv',
+        'data/faq_data.xml',
+        'data/website_menu_data.xml',
+        'data/welcome_email_template.xml',
+        'views/website_layout_inherit.xml',
+        'views/lang_macros.xml',
+        'views/page_home.xml',
+        'views/page_pricing.xml',
+        'views/page_features.xml',
+        'views/page_contact.xml',
+        'views/page_faq.xml',
+        'views/page_signup.xml',
+    ],
+    'assets': {
+        'web.assets_frontend': [
+            'saas_website/static/src/css/clickbuild.css',
+            'saas_website/static/src/js/clickbuild.js',
+        ],
+    },
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+    'license': 'LGPL-3',
+}

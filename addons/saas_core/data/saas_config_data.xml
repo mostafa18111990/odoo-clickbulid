@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="saas_config_default" model="saas.config">
+            <field name="name">ClickBuild Platform Config</field>
+            <field name="platform_name">ClickBuild</field>
+            <field name="platform_domain">clickbuild.com</field>
+            <field name="api_base_url">http://127.0.0.1:8000</field>
+            <field name="api_internal_token">CHANGE_ME_IN_SETTINGS</field>
+            <field name="webhook_secret">CHANGE_ME_IN_SETTINGS</field>
+            <field name="use_api_bridge" eval="True"/>
+            <field name="trial_days">14</field>
+            <field name="grace_period_days">3</field>
+            <field name="archived_retention_days">90</field>
+            <field name="trial_reminder_days">7,3,1</field>
+            <field name="notify_on_payment_fail" eval="True"/>
+            <field name="notify_admin_on_provision" eval="True"/>
+            <field name="admin_notification_email">admin@clickbuild.com</field>
+            <field name="support_email">support@clickbuild.com</field>
+        </record>
+    </data>
+</odoo>

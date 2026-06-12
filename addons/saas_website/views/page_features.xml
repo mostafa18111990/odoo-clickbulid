@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="page_features" name="Features">
+        <t t-call="website.layout">
+            <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>
+            <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+
+            <!-- HEADER -->
+            <section class="cb-hero py-5">
+                <div class="container text-center py-4" data-cb-reveal="1">
+                    <span class="badge-pill mb-3 d-inline-block">
+                        <i class="fa fa-th-large me-1" style="color:#fbbf24;"/>
+                        <t t-if="lang_is_ar">المميزات</t><t t-else="">Features</t>
+                    </span>
+                    <h1 class="display-3 mb-3">
+                        <t t-if="lang_is_ar">كل الأدوات في منصة واحدة</t>
+                        <t t-else="">Every tool, one platform</t></h1>
+                    <p class="lead" style="opacity:0.92; max-width:640px; margin:0 auto;">
+                        <t t-if="lang_is_ar">من المحاسبة وحتى نقاط البيع — كل ما تحتاجه لإدارة أعمالك بفعالية،
+                        متكامل ومُعرَّب بالكامل.</t>
+                        <t t-else="">From accounting to point of sale — everything you need to run your
+                        business, fully integrated and bilingual (Arabic + English).</t>
+                    </p>
+                </div>
+            </section>
+
+            <!-- ALTERNATING FEATURE BLOCKS -->
+            <section class="py-5"><div class="container">
+                <t t-set="features_ar" t-value="[
+                    {'icon':'fa-calculator','t':'المحاسبة والفوترة','d':'فواتير إلكترونية معتمدة من ZATCA، قيود يومية تلقائية، تقارير الميزانية والأرباح والخسائر، تسوية بنكية، إقرارات ضريبية. واجهة عربية كاملة مع تواريخ هجرية اختيارية.','rev':False,'bullets':['فواتير ZATCA Phase 2','قوائم مالية فورية','تعدد العملات']},
+                    {'icon':'fa-shopping-cart','t':'المبيعات و CRM','d':'إدارة العملاء المحتملين والفرص، عروض الأسعار بشعار شركتك، أوامر البيع وتحويلها لفواتير بضغطة، خط أنابيب مبيعات مرئي، تحليلات أداء المندوبين.','rev':True,'bullets':['CRM متكامل','حملات تسويقية','أتمتة المتابعات']},
+                    {'icon':'fa-cubes','t':'إدارة المخزون','d':'تتبع لحظي للكميات، مستودعات متعددة، نقل مخزون، جرد دوري وشامل، باركود، تنبيهات إعادة الطلب التلقائية، تتبع تواريخ الصلاحية والدفعات.','rev':False,'bullets':['ربط مع POS','تتبع الدفعات والصلاحية','تنبيهات إعادة الطلب']},
+                    {'icon':'fa-users','t':'الموارد البشرية','d':'ملفات الموظفين الكاملة، رواتب بصيغة GOSI/SAUDI، تتبع الحضور والانصراف، إجازات بحسب نظام العمل السعودي، تقييمات الأداء، مكافآت.','rev':True,'bullets':['متوافق مع GOSI','بصمة حضور','تقييم أداء']},
+                    {'icon':'fa-shopping-bag','t':'نقاط البيع','d':'كاشير سريع يعمل بدون إنترنت ويتزامن تلقائياً، دعم لشاشات اللمس وطابعات الفواتير، مزامنة مباشرة مع المخزون والمحاسبة، أكثر من فرع.','rev':False,'bullets':['وضع الـ Offline','شاشة لمس','تكامل مع طابعات']},
+                    {'icon':'fa-industry','t':'التصنيع والإنتاج','d':'أوامر تصنيع، قوائم المواد (BOM)، مراكز عمل، تخطيط الطاقة الإنتاجية، جودة وفحص، حساب التكاليف الفعلية للإنتاج.','rev':True,'bullets':['BOM متعدد المستويات','جودة وفحص','تكاليف فعلية']},
+                    {'icon':'fa-truck','t':'سلسلة التوريد','d':'إدارة الموردين، طلبات الشراء، استلام البضائع، فواتير المشتريات، تتبع الشحنات، تخطيط احتياجات المواد (MRP).','rev':False,'bullets':['MRP تلقائي','تتبع الشحنات','تقييم الموردين']},
+                    {'icon':'fa-mobile','t':'تطبيقات الجوال','d':'تطبيقات أصلية لـ iOS و Android تتيح لك إدارة المبيعات، التحقق من المخزون، إصدار الفواتير، وتتبع أعمالك من أي مكان في العالم.','rev':True,'bullets':['iOS + Android','مزامنة لحظية','إشعارات فورية']}]"/>
+                <t t-set="features_en" t-value="[
+                    {'icon':'fa-calculator','t':'Accounting &amp; Invoicing','d':'ZATCA-compliant e-invoices, automatic journal entries, balance sheets and P&amp;L reports, bank reconciliation, tax returns. Fully bilingual with optional Hijri dates.','rev':False,'bullets':['ZATCA Phase 2 invoices','Real-time financials','Multi-currency']},
+                    {'icon':'fa-shopping-cart','t':'Sales &amp; CRM','d':'Lead and opportunity management, branded quotations, one-click order-to-invoice, visual sales pipeline, rep performance analytics.','rev':True,'bullets':['Integrated CRM','Marketing campaigns','Follow-up automation']},
+                    {'icon':'fa-cubes','t':'Inventory Management','d':'Real-time stock, multi-warehouse, internal transfers, cycle and full counts, barcode, automatic reorder alerts, batch and expiry tracking.','rev':False,'bullets':['POS integration','Batches &amp; expiry','Reorder alerts']},
+                    {'icon':'fa-users','t':'Human Resources','d':'Full employee records, KSA-compliant payroll (GOSI), attendance, leaves per Saudi labour law, performance reviews, bonuses.','rev':True,'bullets':['GOSI compliant','Biometric attendance','Performance reviews']},
+                    {'icon':'fa-shopping-bag','t':'Point of Sale','d':'Fast cashier that works offline and syncs automatically, touch-screen and receipt-printer support, live sync with inventory and accounting, multi-branch.','rev':False,'bullets':['Offline mode','Touch screen','Printer integration']},
+                    {'icon':'fa-industry','t':'Manufacturing','d':'Manufacturing orders, BOMs, work centers, capacity planning, quality control, actual production costing.','rev':True,'bullets':['Multi-level BOM','Quality control','Actual costing']},
+                    {'icon':'fa-truck','t':'Supply Chain','d':'Supplier management, purchase orders, goods receipt, purchase invoices, shipment tracking, MRP-based material requirements planning.','rev':False,'bullets':['Automatic MRP','Shipment tracking','Supplier scoring']},
+                    {'icon':'fa-mobile','t':'Mobile Apps','d':'Native iOS and Android apps that let you manage sales, check inventory, issue invoices, and track your business from anywhere in the world.','rev':True,'bullets':['iOS + Android','Real-time sync','Push notifications']}]"/>
+                <t t-foreach="features_ar if lang_is_ar else features_en" t-as="f">
+                    <div t-attf-class="row align-items-center py-5 #{'flex-row-reverse' if f['rev'] else ''}"
+                         data-cb-reveal="1">
+                        <div class="col-md-6 text-center mb-4 mb-md-0">
+                            <div class="p-5 rounded-4 d-inline-block"
+                                 style="background:linear-gradient(135deg,#f5f3ff 0%,#ede9fe 100%); width:100%; max-width:380px;">
+                                <i t-attf-class="fa #{f['icon']}" style="font-size:6rem; color:#6d28d9;"/>
+                            </div>
+                        </div>
+                        <div class="col-md-6 p-md-4">
+                            <h3 class="fw-bold mb-3" t-esc="f['t']"/>
+                            <p class="text-muted lead mb-4" t-esc="f['d']"/>
+                            <div class="d-flex flex-wrap gap-2">
+                                <t t-foreach="f['bullets']" t-as="b">
+                                    <span class="badge rounded-pill px-3 py-2"
+                                          style="background:#f5f3ff; color:#6d28d9; font-weight:500;">
+                                        <i class="fa fa-check me-1"/><t t-esc="b"/>
+                                    </span>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <hr class="my-0 opacity-25"/>
+                </t>
+            </div></section>
+
+            <!-- FINAL CTA -->
+            <section class="py-5 cb-hero">
+                <div class="container text-center py-4" data-cb-reveal="1">
+                    <h2 class="display-4 mb-3">
+                        <t t-if="lang_is_ar">جرّبها بنفسك مجاناً</t>
+                        <t t-else="">Try it free</t></h2>
+                    <p class="lead mb-4" style="opacity:0.92;">
+                        <t t-if="lang_is_ar">14 يوماً بكامل المميزات — بدون التزام</t>
+                        <t t-else="">14 days, full features, no commitment</t></p>
+                    <a href="/get-started" class="btn btn-light btn-lg">
+                        <i class="fa fa-rocket me-2"/>
+                        <t t-if="lang_is_ar">ابدأ الآن</t><t t-else="">Start now</t>
+                    </a>
+                </div>
+            </section>
+        </t>
+    </template>
+</odoo>

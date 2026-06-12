@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_gateway_list" model="ir.ui.view">
+        <field name="name">saas.payment.gateway.list</field>
+        <field name="model">saas.payment.gateway</field>
+        <field name="arch" type="xml">
+            <list string="Payment Gateways">
+                <field name="priority" widget="handle"/>
+                <field name="name"/>
+                <field name="code" widget="badge"/>
+                <field name="primary_country"/>
+                <field name="supported_currencies"/>
+                <field name="is_sandbox" widget="boolean_toggle"/>
+                <field name="active" widget="boolean_toggle"/>
+                <field name="transaction_count" string="Txs"/>
+                <field name="success_count" string="OK"/>
+                <field name="failed_count" string="Fail"/>
+                <button name="action_test_connection" type="object" string="Test" icon="fa-bolt"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_saas_gateway_form" model="ir.ui.view">
+        <field name="name">saas.payment.gateway.form</field>
+        <field name="model">saas.payment.gateway</field>
+        <field name="arch" type="xml">
+            <form string="Payment Gateway">
+                <header>
+                    <button name="action_test_connection" type="object" string="Test Connection" class="btn-secondary"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" invisible="not is_sandbox">
+                        <strong>Sandbox/Test Mode</strong> - No real payments will be processed.
+                    </div>
+                    <div class="float-end d-flex gap-2">
+                        <field name="is_sandbox" widget="boolean_toggle"/>
+                        <field name="active" widget="boolean_toggle"/>
+                    </div>
+                    <div class="oe_title"><h1><field name="name"/></h1><field name="code" widget="badge"/></div>
+                    <group>
+                        <group string="Configuration">
+                            <field name="priority"/>
+                            <field name="primary_country"/>
+                            <field name="supported_currencies"/>
+                        </group>
+                        <group string="Credentials" groups="saas_core.group_saas_super_admin">
+                            <field name="api_key" password="True"/>
+                            <field name="api_key_2" password="True"/>
+                            <field name="profile_id"/>
+                            <field name="webhook_secret" password="True"/>
+                        </group>
+                    </group>
+                    <group string="Extra Configuration" groups="saas_core.group_saas_super_admin">
+                        <field name="extra_config" nolabel="1" colspan="2" placeholder='{"key": "value"}'/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_saas_payment_gateway" model="ir.actions.act_window">
+        <field name="name">Payment Gateways</field>
+        <field name="res_model">saas.payment.gateway</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

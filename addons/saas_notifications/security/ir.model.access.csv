@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ntype_admin,saas.notification.type admin,model_saas_notification_type,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_ntype_all,saas.notification.type all,model_saas_notification_type,base.group_user,1,0,0,0
+access_ntemplate_admin,saas.notification.template admin,model_saas_notification_template,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_notification_admin,saas.notification admin,model_saas_notification,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_notification_system,saas.notification system,model_saas_notification,base.group_system,1,1,1,0
+access_notification_portal,saas.notification portal,model_saas_notification,base.group_portal,1,1,0,0
+access_pref_admin,saas.notification.preference admin,model_saas_notification_preference,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_pref_system,saas.notification.preference system,model_saas_notification_preference,base.group_system,1,1,1,0
+access_pref_portal,saas.notification.preference portal,model_saas_notification_preference,base.group_portal,1,1,1,0
+access_sms_gateway_super,saas.sms.gateway super,model_saas_sms_gateway,saas_core.group_saas_super_admin,1,1,1,1
+access_sms_gateway_admin,saas.sms.gateway admin,model_saas_sms_gateway,saas_tenant_manager.group_saas_admin,1,0,0,0

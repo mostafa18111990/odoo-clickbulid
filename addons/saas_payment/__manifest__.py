@@ -1,0 +1,21 @@
+{
+    'name': 'SaaS Payment',
+    'version': '19.0.1.0.0',
+    'category': 'SaaS',
+    'summary': 'Multi-gateway payment processing: PayTabs, PayMob, Stripe, HyperPay, MyFatoorah',
+    'author': 'ClickBuild',
+    'website': 'https://clickbuild.com',
+    'depends': ['saas_billing'],
+    'data': [
+        'security/ir.model.access.csv',
+        'data/saas_payment_gateway_data.xml',
+        'views/saas_payment_gateway_views.xml',
+        'views/saas_payment_transaction_views.xml',
+        'views/saas_payment_method_views.xml',
+        'views/saas_payment_menu.xml',
+    ],
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+    'license': 'LGPL-3',
+}

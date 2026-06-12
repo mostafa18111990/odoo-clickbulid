@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_saas_gateway_super,saas.payment.gateway super,model_saas_payment_gateway,saas_core.group_saas_super_admin,1,1,1,1
+access_saas_gateway_admin,saas.payment.gateway admin,model_saas_payment_gateway,saas_tenant_manager.group_saas_admin,1,0,0,0
+access_saas_tx_admin,saas.payment.transaction admin,model_saas_payment_transaction,saas_tenant_manager.group_saas_admin,1,1,1,0
+access_saas_tx_system,saas.payment.transaction system,model_saas_payment_transaction,base.group_system,1,1,1,0
+access_saas_tx_analyst,saas.payment.transaction analyst,model_saas_payment_transaction,saas_core.group_saas_analyst,1,0,0,0
+access_saas_pm_admin,saas.payment.method admin,model_saas_payment_method,saas_tenant_manager.group_saas_admin,1,1,1,0
+access_saas_pm_system,saas.payment.method system,model_saas_payment_method,base.group_system,1,1,1,0

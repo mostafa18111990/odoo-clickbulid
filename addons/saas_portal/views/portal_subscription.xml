@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_subscription" name="SaaS Subscription">
+        <t t-call="saas_portal.saas_portal_layout">
+            <h3 class="mb-4">My Subscription / اشتراكي</h3>
+            <t t-if="sub.get('has_subscription')">
+                <t t-if="sub.get('cancel_at_period_end')">
+                    <div class="alert alert-danger"><i class="fa fa-exclamation-triangle me-2"/>
+                        Your subscription will be cancelled on <strong t-esc="sub['current_period_end']"/>.</div>
+                </t>
+                <div class="card border-0 shadow-sm mb-4"><div class="card-body"><div class="row">
+                    <div class="col-md-6"><dl class="row mb-0">
+                        <dt class="col-5 text-muted">Plan</dt><dd class="col-7" t-esc="sub['plan_name']"/>
+                        <dt class="col-5 text-muted">Status</dt><dd class="col-7 text-capitalize" t-esc="sub['status']"/>
+                        <dt class="col-5 text-muted">Billing</dt><dd class="col-7 text-capitalize" t-esc="sub['billing_cycle']"/>
+                    </dl></div>
+                    <div class="col-md-6"><dl class="row mb-0">
+                        <dt class="col-5 text-muted">Amount</dt><dd class="col-7"><t t-esc="'%.2f' % sub['total_amount']"/> <t t-esc="sub['currency']"/></dd>
+                        <dt class="col-5 text-muted">Next Renewal</dt><dd class="col-7" t-esc="sub['next_renewal_date']"/>
+                        <dt class="col-5 text-muted">Credit</dt><dd class="col-7"><t t-esc="'%.2f' % sub['credit_balance']"/> <t t-esc="sub['currency']"/></dd>
+                    </dl></div>
+                </div></div></div>
+                <div class="d-flex gap-2 flex-wrap mb-4">
+                    <a href="/my/saas/subscription/plans" class="btn btn-primary"><i class="fa fa-exchange me-1"/> Change Plan</a>
+                    <form method="post" action="/my/saas/subscription/cycle" class="d-inline">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="cycle" t-att-value="'yearly' if sub['billing_cycle'] == 'monthly' else 'monthly'"/>
+                        <button type="submit" class="btn btn-outline-success"><i class="fa fa-calendar me-1"/>
+                            Switch to <t t-esc="'Yearly (Save!)' if sub['billing_cycle'] == 'monthly' else 'Monthly'"/></button>
+                    </form>
+                    <t t-if="not sub.get('cancel_at_period_end')">
+                        <a href="/my/saas/subscription/cancel" class="btn btn-outline-danger ms-auto"><i class="fa fa-times me-1"/> Cancel</a>
+                    </t>
+                </div>
+            </t>
+            <t t-else=""><div class="alert alert-info">No active subscription.</div></t>
+        </t>
+    </template>
+
+    <template id="portal_plans" name="SaaS Plans">
+        <t t-call="saas_portal.saas_portal_layout">
+            <h3 class="mb-4">Choose a Plan / اختر خطة</h3>
+            <div class="row g-3">
+                <t t-foreach="plans" t-as="plan">
+                    <div class="col-md-4"><div t-attf-class="card h-100 #{'border-primary' if plan['is_recommended'] else 'border-0'} shadow-sm">
+                        <div class="card-body text-center">
+                            <h4 t-esc="plan['name']"/>
+                            <div class="my-3"><span class="display-6 fw-bold" t-esc="'%.0f' % plan['monthly_price']"/><span class="text-muted">SAR/mo</span></div>
+                            <ul class="list-unstyled text-start small mb-4">
+                                <li><i class="fa fa-check text-success me-2"/><t t-esc="plan['max_users']"/> users</li>
+                                <li><i class="fa fa-check text-success me-2"/><t t-esc="plan['max_storage_gb']"/> GB storage</li>
+                                <li><i class="fa fa-check text-success me-2"/><t t-esc="plan['max_companies']"/> companies</li>
+                            </ul>
+                            <t t-if="plan['is_current']"><button class="btn btn-secondary w-100" disabled="disabled">Current Plan</button></t>
+                            <t t-elif="plan['is_upgrade']">
+                                <form method="post" action="/my/saas/subscription/upgrade">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="plan_id" t-att-value="plan['id']"/>
+                                    <button type="submit" class="btn btn-primary w-100"><i class="fa fa-arrow-up me-1"/> Upgrade</button>
+                                </form>
+                            </t>
+                            <t t-else="">
+                                <form method="post" action="/my/saas/subscription/downgrade">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="plan_id" t-att-value="plan['id']"/>
+                                    <button type="submit" class="btn btn-outline-secondary w-100"><i class="fa fa-arrow-down me-1"/> Downgrade</button>
+                                </form>
+                            </t>
+                        </div>
+                    </div></div>
+                </t>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_cancel" name="SaaS Cancel">
+        <t t-call="saas_portal.saas_portal_layout">
+            <h3 class="mb-4">Cancel Subscription / إلغاء الاشتراك</h3>
+            <div class="card border-0 shadow-sm"><div class="card-body">
+                <div class="alert alert-warning"><i class="fa fa-info-circle me-2"/>
+                    Your subscription stays active until the end of the current period.</div>
+                <form method="post" action="/my/saas/subscription/cancel/confirm">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <div class="mb-3"><label class="form-label">Reason for cancelling</label>
+                        <select name="reason_code" class="form-select" required="required">
+                            <option value="">-- Select a reason --</option>
+                            <t t-foreach="reasons" t-as="reason"><option t-att-value="reason.code" t-esc="reason.name"/></t>
+                        </select></div>
+                    <div class="mb-3"><label class="form-label">Additional feedback (optional)</label>
+                        <textarea name="note" class="form-control" rows="3"/></div>
+                    <button type="submit" class="btn btn-danger">Confirm Cancellation</button>
+                    <a href="/my/saas/subscription" class="btn btn-secondary">Keep My Subscription</a>
+                </form>
+            </div></div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Event log action + view -->
+    <record id="view_saas_event_list" model="ir.ui.view">
+        <field name="name">saas.event.list</field>
+        <field name="model">saas.event</field>
+        <field name="arch" type="xml">
+            <list string="Events" create="0" delete="0">
+                <field name="create_date"/>
+                <field name="event_type"/>
+                <field name="tenant_id"/>
+                <field name="model"/>
+                <field name="user_id"/>
+                <field name="processed"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_saas_event" model="ir.actions.act_window">
+        <field name="name">Event Log</field>
+        <field name="res_model">saas.event</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- Audit log action + view -->
+    <record id="view_saas_audit_log_list" model="ir.ui.view">
+        <field name="name">saas.audit.log.list</field>
+        <field name="model">saas.audit.log</field>
+        <field name="arch" type="xml">
+            <list string="Audit Log" create="0" delete="0" edit="0">
+                <field name="create_date"/>
+                <field name="user_id"/>
+                <field name="action"/>
+                <field name="model"/>
+                <field name="tenant_id"/>
+                <field name="description"/>
+                <field name="severity"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_saas_audit_log" model="ir.actions.act_window">
+        <field name="name">Audit Log</field>
+        <field name="res_model">saas.audit.log</field>
+        <field name="view_mode">list</field>
+    </record>
+
+    <!-- Config form -->
+    <record id="view_saas_config_form" model="ir.ui.view">
+        <field name="name">saas.config.form</field>
+        <field name="model">saas.config</field>
+        <field name="arch" type="xml">
+            <form string="Platform Configuration">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group string="Platform Identity">
+                            <field name="platform_name"/>
+                            <field name="platform_domain"/>
+                            <field name="support_email"/>
+                            <field name="company_vat"/>
+                        </group>
+                        <group string="FastAPI Bridge">
+                            <field name="use_api_bridge"/>
+                            <field name="api_base_url"/>
+                            <field name="api_internal_token" password="True"
+                                groups="saas_core.group_saas_super_admin"/>
+                            <field name="webhook_secret" password="True"
+                                groups="saas_core.group_saas_super_admin"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Lifecycle Defaults">
+                            <field name="trial_days"/>
+                            <field name="grace_period_days"/>
+                            <field name="archived_retention_days"/>
+                            <field name="trial_reminder_days"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_saas_config" model="ir.actions.act_window">
+        <field name="name">Platform Configuration</field>
+        <field name="res_model">saas.config</field>
+        <field name="view_mode">form</field>
+    </record>
+
+    <!-- Menus -->
+    <menuitem id="menu_saas_root" name="ClickBuild SaaS" sequence="1"
+              groups="saas_tenant_manager.group_saas_manager"/>
+
+    <menuitem id="menu_saas_operations" name="Operations"
+              parent="menu_saas_root" sequence="30"/>
+
+    <menuitem id="menu_saas_events" name="Event Log"
+              parent="menu_saas_operations" action="action_saas_event" sequence="10"
+              groups="saas_tenant_manager.group_saas_admin"/>
+
+    <menuitem id="menu_saas_audit" name="Audit Log"
+              parent="menu_saas_operations" action="action_saas_audit_log" sequence="20"
+              groups="saas_tenant_manager.group_saas_admin"/>
+
+    <menuitem id="menu_saas_config_root" name="Configuration"
+              parent="menu_saas_root" sequence="100"
+              groups="saas_core.group_saas_super_admin"/>
+
+    <menuitem id="menu_saas_config" name="Platform Settings"
+              parent="menu_saas_config_root" action="action_saas_config" sequence="10"/>
+
+</odoo>

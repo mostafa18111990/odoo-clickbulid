@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_saas_campaign" model="ir.sequence">
+            <field name="name">SaaS Campaign</field>
+            <field name="code">saas.campaign</field>
+            <field name="prefix">CAM-%(year)s-</field>
+            <field name="padding">5</field>
+        </record>
+    </data>
+</odoo>

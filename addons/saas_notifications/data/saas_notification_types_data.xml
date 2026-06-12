@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="ntype_welcome_lead" model="saas.notification.type">
+            <field name="name">Welcome Lead</field><field name="code">welcome_lead</field>
+            <field name="category">account</field><field name="priority">high</field>
+            <field name="channel_email" eval="True"/><field name="channel_inapp" eval="True"/>
+        </record>
+        <record id="ntype_provisioning_completed" model="saas.notification.type">
+            <field name="name">Workspace Ready</field><field name="code">provisioning_completed</field>
+            <field name="category">account</field><field name="priority">high</field>
+            <field name="channel_email" eval="True"/><field name="channel_sms" eval="True"/>
+            <field name="channel_inapp" eval="True"/><field name="is_critical" eval="True"/>
+        </record>
+        <record id="ntype_trial_started" model="saas.notification.type">
+            <field name="name">Trial Started</field><field name="code">trial_started</field>
+            <field name="category">lifecycle</field><field name="priority">normal</field>
+            <field name="channel_email" eval="True"/><field name="channel_inapp" eval="True"/>
+        </record>
+        <record id="ntype_trial_reminder" model="saas.notification.type">
+            <field name="name">Trial Ending Reminder</field><field name="code">trial_reminder</field>
+            <field name="category">lifecycle</field><field name="priority">high</field>
+            <field name="channel_email" eval="True"/><field name="channel_sms" eval="True"/>
+            <field name="channel_inapp" eval="True"/>
+        </record>
+        <record id="ntype_trial_expired" model="saas.notification.type">
+            <field name="name">Trial Expired</field><field name="code">trial_expired</field>
+            <field name="category">lifecycle</field><field name="priority">high</field>
+            <field name="channel_email" eval="True"/><field name="channel_sms" eval="True"/>
+        </record>
+        <record id="ntype_tenant_activated" model="saas.notification.type">
+            <field name="name">Account Activated</field><field name="code">tenant_activated</field>
+            <field name="category">lifecycle</field><field name="priority">normal</field>
+            <field name="channel_email" eval="True"/><field name="channel_inapp" eval="True"/>
+        </record>
+        <record id="ntype_tenant_suspended" model="saas.notification.type">
+            <field name="name">Account Suspended</field><field name="code">tenant_suspended</field>
+            <field name="category">lifecycle</field><field name="priority">critical</field>
+            <field name="channel_email" eval="True"/><field name="channel_sms" eval="True"/>
+            <field name="is_critical" eval="True"/>
+        </record>
+        <record id="ntype_grace_period_started" model="saas.notification.type">
+            <field name="name">Payment Overdue - Grace Period</field><field name="code">grace_period_started</field>
+            <field name="category">billing</field><field name="priority">critical</field>
+            <field name="channel_email" eval="True"/><field name="channel_sms" eval="True"/>
+            <field name="is_critical" eval="True"/>
+        </record>
+        <record id="ntype_payment_received" model="saas.notification.type">
+            <field name="name">Payment Received</field><field name="code">payment_received</field>
+            <field name="category">billing</field><field name="priority">normal</field>
+            <field name="channel_email" eval="True"/><field name="channel_inapp" eval="True"/>
+        </record>
+        <record id="ntype_payment_failed" model="saas.notification.type">
+            <field name="name">Payment Failed</field><field name="code">payment_failed</field>
+            <field name="category">billing</field><field name="priority">critical</field>
+            <field name="channel_email" eval="True"/><field name="channel_sms" eval="True"/>
+            <field name="is_critical" eval="True"/>
+        </record>
+        <record id="ntype_invoice_generated" model="saas.notification.type">
+            <field name="name">Invoice Generated</field><field name="code">invoice_generated</field>
+            <field name="category">billing</field><field name="priority">normal</field>
+            <field name="channel_email" eval="True"/><field name="channel_inapp" eval="True"/>
+        </record>
+        <record id="ntype_invoice_overdue" model="saas.notification.type">
+            <field name="name">Invoice Overdue</field><field name="code">invoice_overdue</field>
+            <field name="category">billing</field><field name="priority">high</field>
+            <field name="channel_email" eval="True"/><field name="channel_sms" eval="True"/>
+            <field name="is_critical" eval="True"/>
+        </record>
+        <record id="ntype_subscription_renewed" model="saas.notification.type">
+            <field name="name">Subscription Renewed</field><field name="code">subscription_renewed</field>
+            <field name="category">subscription</field><field name="priority">normal</field>
+            <field name="channel_email" eval="True"/><field name="channel_inapp" eval="True"/>
+        </record>
+        <record id="ntype_subscription_upgraded" model="saas.notification.type">
+            <field name="name">Plan Upgraded</field><field name="code">subscription_upgraded</field>
+            <field name="category">subscription</field><field name="priority">normal</field>
+            <field name="channel_email" eval="True"/><field name="channel_inapp" eval="True"/>
+        </record>
+        <record id="ntype_subscription_cancelled" model="saas.notification.type">
+            <field name="name">Subscription Cancelled</field><field name="code">subscription_cancelled</field>
+            <field name="category">subscription</field><field name="priority">high</field>
+            <field name="channel_email" eval="True"/>
+        </record>
+        <record id="ntype_domain_ssl_issued" model="saas.notification.type">
+            <field name="name">Domain SSL Issued</field><field name="code">domain_ssl_issued</field>
+            <field name="category">technical</field><field name="priority">normal</field>
+            <field name="channel_email" eval="True"/><field name="channel_inapp" eval="True"/>
+        </record>
+        <record id="ntype_domain_verified" model="saas.notification.type">
+            <field name="name">Domain Verified</field><field name="code">domain_verified</field>
+            <field name="category">technical</field><field name="priority">normal</field>
+            <field name="channel_inapp" eval="True"/>
+        </record>
+        <record id="ntype_backup_completed" model="saas.notification.type">
+            <field name="name">Backup Completed</field><field name="code">backup_completed</field>
+            <field name="category">technical</field><field name="priority">low</field>
+            <field name="channel_inapp" eval="True"/>
+        </record>
+        <record id="ntype_provisioning_failed" model="saas.notification.type">
+            <field name="name">Provisioning Failed</field><field name="code">provisioning_failed</field>
+            <field name="category">technical</field><field name="priority">critical</field>
+            <field name="channel_email" eval="True"/><field name="is_critical" eval="True"/>
+        </record>
+        <record id="ntype_subscription_created" model="saas.notification.type">
+            <field name="name">Subscription Created</field><field name="code">subscription_created</field>
+            <field name="category">subscription</field><field name="priority">normal</field>
+            <field name="channel_inapp" eval="True"/>
+        </record>
+        <record id="ntype_tenant_cancelled" model="saas.notification.type">
+            <field name="name">Account Cancelled</field><field name="code">tenant_cancelled</field>
+            <field name="category">lifecycle</field><field name="priority">high</field>
+            <field name="channel_email" eval="True"/>
+        </record>
+        <record id="ntype_payment_refunded" model="saas.notification.type">
+            <field name="name">Payment Refunded</field><field name="code">payment_refunded</field>
+            <field name="category">billing</field><field name="priority">normal</field>
+            <field name="channel_email" eval="True"/>
+        </record>
+        <record id="ntype_invoice_paid" model="saas.notification.type">
+            <field name="name">Invoice Paid</field><field name="code">invoice_paid</field>
+            <field name="category">billing</field><field name="priority">low</field>
+            <field name="channel_inapp" eval="True"/>
+        </record>
+    </data>
+</odoo>

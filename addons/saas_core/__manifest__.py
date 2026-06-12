@@ -1,0 +1,28 @@
+{
+    'name': 'SaaS Core',
+    'version': '19.0.1.0.0',
+    'category': 'SaaS',
+    'summary': 'Core foundation for ClickBuild SaaS Platform',
+    'description': 'Core foundation: event bus, audit trail, lifecycle FSM, provisioning bridge.',
+    'author': 'ClickBuild',
+    'website': 'https://clickbuild.com',
+    'depends': [
+        'saas_tenant_manager',
+        'mail',
+        'base_setup',
+    ],
+    'data': [
+        'security/saas_core_security.xml',
+        'security/ir.model.access.csv',
+        'data/saas_config_data.xml',
+        'data/saas_plan_data.xml',
+        'data/saas_cron.xml',
+        'views/saas_core_menu.xml',
+        'views/saas_tenant_views_extend.xml',
+    ],
+    'post_init_hook': 'post_init_hook',
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+    'license': 'LGPL-3',
+}

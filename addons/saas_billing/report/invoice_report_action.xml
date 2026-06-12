@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_saas_invoice" model="ir.actions.report">
+        <field name="name">Invoice</field>
+        <field name="model">saas.invoice</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">saas_billing.invoice_template</field>
+        <field name="report_file">saas_billing.invoice_template</field>
+        <field name="print_report_name">'Invoice-%s' % (object.number or 'Draft')</field>
+        <field name="binding_model_id" ref="model_saas_invoice"/>
+        <field name="binding_type">report</field>
+    </record>
+</odoo>

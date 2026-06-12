@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="app_crm" model="saas.marketplace.app">
+            <field name="name">CRM</field>
+            <field name="name_ar">إدارة علاقات العملاء</field>
+            <field name="code">crm</field>
+            <field name="technical_module">crm</field>
+            <field name="category_id" ref="cat_sales"/>
+            <field name="short_description">Manage leads, opportunities, and pipelines</field>
+            <field name="icon">fa-bullseye</field>
+            <field name="pricing_model">free</field>
+            <field name="is_featured" eval="True"/>
+            <field name="sequence">10</field>
+        </record>
+
+        <record id="app_sales" model="saas.marketplace.app">
+            <field name="name">Sales Management</field>
+            <field name="name_ar">إدارة المبيعات</field>
+            <field name="code">sales</field>
+            <field name="technical_module">sale_management</field>
+            <field name="category_id" ref="cat_sales"/>
+            <field name="short_description">Quotations, sales orders, and invoicing</field>
+            <field name="icon">fa-shopping-cart</field>
+            <field name="pricing_model">free</field>
+            <field name="is_popular" eval="True"/>
+            <field name="sequence">20</field>
+        </record>
+
+        <record id="app_inventory" model="saas.marketplace.app">
+            <field name="name">Inventory</field>
+            <field name="name_ar">المخزون</field>
+            <field name="code">inventory</field>
+            <field name="technical_module">stock</field>
+            <field name="category_id" ref="cat_inventory"/>
+            <field name="short_description">Track stock, warehouses, and movements</field>
+            <field name="icon">fa-cubes</field>
+            <field name="pricing_model">free</field>
+            <field name="is_popular" eval="True"/>
+            <field name="sequence">30</field>
+        </record>
+
+        <record id="app_purchase" model="saas.marketplace.app">
+            <field name="name">Purchase</field>
+            <field name="name_ar">المشتريات</field>
+            <field name="code">purchase</field>
+            <field name="technical_module">purchase</field>
+            <field name="category_id" ref="cat_inventory"/>
+            <field name="short_description">Purchase orders and vendor management</field>
+            <field name="icon">fa-shopping-bag</field>
+            <field name="pricing_model">free</field>
+            <field name="sequence">40</field>
+        </record>
+
+        <record id="app_project" model="saas.marketplace.app">
+            <field name="name">Project Management</field>
+            <field name="name_ar">إدارة المشاريع</field>
+            <field name="code">project</field>
+            <field name="technical_module">project</field>
+            <field name="category_id" ref="cat_sales"/>
+            <field name="short_description">Tasks, milestones, and project tracking</field>
+            <field name="icon">fa-tasks</field>
+            <field name="pricing_model">free</field>
+            <field name="sequence">50</field>
+        </record>
+
+        <record id="app_hr" model="saas.marketplace.app">
+            <field name="name">Employees</field>
+            <field name="name_ar">الموظفون</field>
+            <field name="code">hr</field>
+            <field name="technical_module">hr</field>
+            <field name="category_id" ref="cat_hr"/>
+            <field name="short_description">Employee directory and HR management</field>
+            <field name="icon">fa-id-badge</field>
+            <field name="pricing_model">free</field>
+            <field name="sequence">60</field>
+        </record>
+
+        <record id="app_pos" model="saas.marketplace.app">
+            <field name="name">Point of Sale</field>
+            <field name="name_ar">نقاط البيع</field>
+            <field name="code">pos</field>
+            <field name="technical_module">point_of_sale</field>
+            <field name="category_id" ref="cat_sales"/>
+            <field name="short_description">Fast cashier interface, works offline</field>
+            <field name="icon">fa-cash-register</field>
+            <field name="pricing_model">free</field>
+            <field name="is_featured" eval="True"/>
+            <field name="sequence">70</field>
+        </record>
+
+        <record id="app_whatsapp" model="saas.marketplace.app">
+            <field name="name">WhatsApp Integration</field>
+            <field name="name_ar">تكامل واتساب</field>
+            <field name="code">whatsapp</field>
+            <field name="technical_module">saas_addon_whatsapp</field>
+            <field name="category_id" ref="cat_integrations"/>
+            <field name="short_description">Send invoices and notifications via WhatsApp</field>
+            <field name="icon">fa-whatsapp</field>
+            <field name="pricing_model">monthly</field>
+            <field name="price">99.00</field>
+            <field name="is_featured" eval="True"/>
+            <field name="min_plan_id" ref="saas_core.plan_business"/>
+            <field name="sequence">100</field>
+        </record>
+
+        <record id="app_manufacturing" model="saas.marketplace.app">
+            <field name="name">Manufacturing</field>
+            <field name="name_ar">التصنيع</field>
+            <field name="code">manufacturing</field>
+            <field name="technical_module">mrp</field>
+            <field name="category_id" ref="cat_inventory"/>
+            <field name="short_description">Production orders, BoM, and work centers</field>
+            <field name="icon">fa-industry</field>
+            <field name="pricing_model">monthly</field>
+            <field name="price">149.00</field>
+            <field name="min_plan_id" ref="saas_core.plan_business"/>
+            <field name="dependency_app_ids" eval="[(4, ref('app_inventory'))]"/>
+            <field name="sequence">110</field>
+        </record>
+
+        <record id="app_ecommerce" model="saas.marketplace.app">
+            <field name="name">E-Commerce Website</field>
+            <field name="name_ar">متجر إلكتروني</field>
+            <field name="code">ecommerce</field>
+            <field name="technical_module">website_sale</field>
+            <field name="category_id" ref="cat_ecommerce"/>
+            <field name="short_description">Full online store with payment integration</field>
+            <field name="icon">fa-globe</field>
+            <field name="pricing_model">monthly</field>
+            <field name="price">199.00</field>
+            <field name="min_plan_id" ref="saas_core.plan_business"/>
+            <field name="dependency_app_ids" eval="[(4, ref('app_sales'))]"/>
+            <field name="is_popular" eval="True"/>
+            <field name="sequence">120</field>
+        </record>
+
+        <record id="app_accounting_advanced" model="saas.marketplace.app">
+            <field name="name">Advanced Accounting</field>
+            <field name="name_ar">المحاسبة المتقدمة</field>
+            <field name="code">accounting_advanced</field>
+            <field name="technical_module">account_accountant</field>
+            <field name="category_id" ref="cat_accounting"/>
+            <field name="short_description">Full accounting with reconciliation and budgets</field>
+            <field name="icon">fa-calculator</field>
+            <field name="pricing_model">monthly</field>
+            <field name="price">129.00</field>
+            <field name="min_plan_id" ref="saas_core.plan_business"/>
+            <field name="sequence">130</field>
+        </record>
+
+    </data>
+</odoo>

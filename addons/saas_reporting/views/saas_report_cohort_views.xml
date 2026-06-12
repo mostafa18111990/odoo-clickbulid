@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_cohort_list" model="ir.ui.view">
+        <field name="name">saas.report.cohort.list</field>
+        <field name="model">saas.report.cohort</field>
+        <field name="arch" type="xml">
+            <list string="Cohort Retention">
+                <field name="cohort_month"/>
+                <field name="month_offset"/>
+                <field name="cohort_size"/>
+                <field name="retained"/>
+                <field name="retention_pct"/>
+                <field name="revenue_retained"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_cohort_pivot" model="ir.ui.view">
+        <field name="name">saas.report.cohort.pivot</field>
+        <field name="model">saas.report.cohort</field>
+        <field name="arch" type="xml">
+            <pivot string="Retention Pivot">
+                <field name="cohort_month" type="row"/>
+                <field name="month_offset" type="col"/>
+                <field name="retention_pct" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_saas_cohort" model="ir.actions.act_window">
+        <field name="name">Cohort Retention</field>
+        <field name="res_model">saas.report.cohort</field>
+        <field name="view_mode">list,pivot</field>
+    </record>
+</odoo>

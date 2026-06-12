@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_campaign_list" model="ir.ui.view">
+        <field name="name">saas.campaign.list</field>
+        <field name="model">saas.campaign</field>
+        <field name="arch" type="xml">
+            <list string="Campaigns" decoration-success="state == 'sent'">
+                <field name="name"/>
+                <field name="channel"/>
+                <field name="scope"/>
+                <field name="scheduled_at"/>
+                <field name="sent_at"/>
+                <field name="sent_count"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_saas_campaign_form" model="ir.ui.view">
+        <field name="name">saas.campaign.form</field>
+        <field name="model">saas.campaign</field>
+        <field name="arch" type="xml">
+            <form string="Campaign">
+                <header>
+                    <button name="action_schedule" type="object" string="Schedule"
+                            invisible="state != 'draft'"/>
+                    <button name="action_send_now" type="object" string="Send Now"
+                            class="btn-primary" invisible="state not in ('draft','scheduled')"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('sent','cancelled')"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="channel"/>
+                            <field name="scope"/>
+                            <field name="plan_id" invisible="scope != 'plan'"/>
+                            <field name="coupon_id"/>
+                        </group>
+                        <group>
+                            <field name="scheduled_at"/>
+                            <field name="sent_at" readonly="1"/>
+                            <field name="sent_count" readonly="1"/>
+                            <field name="open_count" readonly="1"/>
+                            <field name="click_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Content">
+                            <field name="subject"/>
+                            <field name="body"/>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_saas_campaign" model="ir.actions.act_window">
+        <field name="name">Campaigns</field>
+        <field name="res_model">saas.campaign</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

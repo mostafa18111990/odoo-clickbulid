@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_login_attempt_admin,saas.login.attempt admin,model_saas_login_attempt,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_login_attempt_system,saas.login.attempt system,model_saas_login_attempt,base.group_system,1,1,1,1
+access_login_attempt_analyst,saas.login.attempt analyst,model_saas_login_attempt,saas_core.group_saas_analyst,1,0,0,0
+access_sec_event_admin,saas.security.event admin,model_saas_security_event,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_sec_event_system,saas.security.event system,model_saas_security_event,base.group_system,1,1,1,0
+access_sec_event_analyst,saas.security.event analyst,model_saas_security_event,saas_core.group_saas_analyst,1,0,0,0
+access_pwd_policy_admin,saas.password.policy admin,model_saas_password_policy,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_pwd_policy_all,saas.password.policy all,model_saas_password_policy,base.group_user,1,0,0,0
+access_2fa_admin,saas.user.2fa admin,model_saas_user_2fa,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_2fa_user,saas.user.2fa user,model_saas_user_2fa,base.group_user,1,1,1,1
+access_2fa_portal,saas.user.2fa portal,model_saas_user_2fa,base.group_portal,1,1,1,1

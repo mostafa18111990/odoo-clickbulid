@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_notifications" name="Notifications">
+        <t t-call="saas_portal.saas_portal_layout">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0">Notifications / الإشعارات</h3>
+                <a href="/my/saas/preferences" class="btn btn-sm btn-outline-secondary">
+                    <i class="fa fa-cog me-1"/> Preferences</a>
+            </div>
+            <div class="card border-0 shadow-sm"><div class="card-body">
+                <t t-if="notifications">
+                    <t t-foreach="notifications" t-as="notif">
+                        <div t-attf-class="d-flex align-items-start py-3 border-bottom #{'bg-light' if not notif.read_inapp else ''}">
+                            <div class="me-3">
+                                <i t-attf-class="fa fa-#{'bell' if not notif.read_inapp else 'bell-o'} fa-lg" style="color:#6d28d9;"/>
+                            </div>
+                            <div class="flex-grow-1">
+                                <strong t-esc="notif.subject"/>
+                                <p class="mb-1 text-muted small" t-esc="notif.body"/>
+                                <small class="text-muted" t-esc="notif.create_date"/>
+                                <t t-if="notif.cta_url">
+                                    <a t-att-href="notif.cta_url" class="d-block small">View</a>
+                                </t>
+                            </div>
+                            <t t-if="not notif.read_inapp">
+                                <form method="post" t-attf-action="/my/saas/notifications/#{notif.id}/read">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <button type="submit" class="btn btn-sm btn-link">Mark read</button>
+                                </form>
+                            </t>
+                        </div>
+                    </t>
+                </t>
+                <t t-else=""><p class="text-muted text-center py-4">No notifications.</p></t>
+            </div></div>
+        </t>
+    </template>
+
+    <template id="portal_preferences" name="Notification Preferences">
+        <t t-call="saas_portal.saas_portal_layout">
+            <h3 class="mb-4">Notification Preferences / تفضيلات الإشعارات</h3>
+            <t t-if="saved"><div class="alert alert-success">Preferences saved!</div></t>
+            <div class="card border-0 shadow-sm"><div class="card-body p-4">
+                <form method="post" action="/my/saas/preferences/save">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <p class="text-muted small">
+                        <i class="fa fa-info-circle me-1"/>
+                        Critical notifications (payment, suspension) are always sent.</p>
+                    <table class="table">
+                        <thead><tr><th>Category</th><th class="text-center">Email</th>
+                            <th class="text-center">SMS</th></tr></thead>
+                        <tbody>
+                            <tr><td>Billing &amp; Payments</td>
+                                <td class="text-center"><input type="checkbox" name="billing_email" t-att-checked="pref.billing_email"/></td>
+                                <td class="text-center"><input type="checkbox" name="billing_sms" t-att-checked="pref.billing_sms"/></td></tr>
+                            <tr><td>Subscription</td>
+                                <td class="text-center"><input type="checkbox" name="subscription_email" t-att-checked="pref.subscription_email"/></td>
+                                <td class="text-center"><input type="checkbox" name="subscription_sms" t-att-checked="pref.subscription_sms"/></td></tr>
+                            <tr><td>Account Lifecycle</td>
+                                <td class="text-center"><input type="checkbox" name="lifecycle_email" t-att-checked="pref.lifecycle_email"/></td>
+                                <td class="text-center"><input type="checkbox" name="lifecycle_sms" t-att-checked="pref.lifecycle_sms"/></td></tr>
+                            <tr><td>Marketing</td>
+                                <td class="text-center"><input type="checkbox" name="marketing_email" t-att-checked="pref.marketing_email"/></td>
+                                <td class="text-center"><input type="checkbox" name="marketing_sms" t-att-checked="pref.marketing_sms"/></td></tr>
+                        </tbody>
+                    </table>
+                    <div class="form-check mb-3">
+                        <input type="checkbox" name="digest_mode" class="form-check-input" t-att-checked="pref.digest_mode"/>
+                        <label class="form-check-label">Daily digest (batch low-priority notifications)</label>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Save Preferences</button>
+                </form>
+            </div></div>
+        </t>
+    </template>
+
+    <template id="portal_sidebar_notifications" inherit_id="saas_portal.saas_portal_layout" priority="20">
+        <xpath expr="//a[@href='/my/saas/account']" position="before">
+            <a href="/my/saas/notifications" class="list-group-item list-group-item-action">
+                <i class="fa fa-bell me-2"/> Notifications / الإشعارات</a>
+        </xpath>
+    </template>
+</odoo>

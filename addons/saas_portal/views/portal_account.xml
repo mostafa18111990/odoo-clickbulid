@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_account" name="SaaS Account">
+        <t t-call="saas_portal.saas_portal_layout">
+            <h3 class="mb-4">Account Settings / إعدادات الحساب</h3>
+            <div class="card border-0 shadow-sm"><div class="card-body">
+                <form method="post" action="/my/saas/account/update">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <div class="mb-3"><label class="form-label">Contact Name</label>
+                        <input type="text" name="customer_name" class="form-control" t-att-value="tenant.customer_name"/></div>
+                    <div class="mb-3"><label class="form-label">Company Name</label>
+                        <input type="text" name="company_name" class="form-control" t-att-value="tenant.company_name"/></div>
+                    <div class="mb-3"><label class="form-label">Phone</label>
+                        <input type="text" name="phone" class="form-control" t-att-value="tenant.phone"/></div>
+                    <div class="mb-3"><label class="form-label">Email (login)</label>
+                        <input type="email" class="form-control" t-att-value="tenant.customer_email" readonly="readonly"/>
+                        <small class="text-muted">Contact support to change your email.</small></div>
+                    <button type="submit" class="btn btn-primary">Save Changes</button>
+                </form>
+            </div></div>
+        </t>
+    </template>
+</odoo>

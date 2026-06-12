@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_tax_rate_list" model="ir.ui.view">
+        <field name="name">saas.tax.rate.list</field>
+        <field name="model">saas.tax.rate</field>
+        <field name="arch" type="xml">
+            <list string="Tax Rates" editable="bottom">
+                <field name="country_code" widget="badge"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="tax_type"/>
+                <field name="rate" string="Rate %"/>
+                <field name="invoice_label"/>
+                <field name="invoice_label_ar"/>
+                <field name="registration_number" optional="show"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_saas_tax_rate" model="ir.actions.act_window">
+        <field name="name">Tax Rates</field>
+        <field name="res_model">saas.tax.rate</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

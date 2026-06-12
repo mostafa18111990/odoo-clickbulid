@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ticket_category_admin,saas.ticket.category admin,model_saas_ticket_category,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_ticket_category_all,saas.ticket.category all,model_saas_ticket_category,base.group_user,1,0,0,0
+access_ticket_category_portal,saas.ticket.category portal,model_saas_ticket_category,base.group_portal,1,0,0,0
+access_ticket_priority_admin,saas.ticket.priority admin,model_saas_ticket_priority,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_ticket_priority_all,saas.ticket.priority all,model_saas_ticket_priority,base.group_user,1,0,0,0
+access_ticket_priority_portal,saas.ticket.priority portal,model_saas_ticket_priority,base.group_portal,1,0,0,0
+access_ticket_sla_admin,saas.ticket.sla admin,model_saas_ticket_sla,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_ticket_admin,saas.ticket admin,model_saas_ticket,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_ticket_manager,saas.ticket manager,model_saas_ticket,saas_tenant_manager.group_saas_manager,1,1,1,0
+access_ticket_system,saas.ticket system,model_saas_ticket,base.group_system,1,1,1,0
+access_ticket_portal,saas.ticket portal,model_saas_ticket,base.group_portal,1,0,0,0
+access_ticket_message_admin,saas.ticket.message admin,model_saas_ticket_message,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_ticket_message_manager,saas.ticket.message manager,model_saas_ticket_message,saas_tenant_manager.group_saas_manager,1,1,1,0
+access_ticket_message_system,saas.ticket.message system,model_saas_ticket_message,base.group_system,1,1,1,0
+access_ticket_message_portal,saas.ticket.message portal,model_saas_ticket_message,base.group_portal,1,0,1,0

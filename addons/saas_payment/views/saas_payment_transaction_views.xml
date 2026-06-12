@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_payment_tx_list" model="ir.ui.view">
+        <field name="name">saas.payment.transaction.list</field>
+        <field name="model">saas.payment.transaction</field>
+        <field name="arch" type="xml">
+            <list string="Transactions" create="0"
+                  decoration-success="status == 'success'"
+                  decoration-danger="status == 'failed'"
+                  decoration-warning="status == 'processing'"
+                  decoration-muted="status in ('cancelled','expired')">
+                <field name="reference"/>
+                <field name="create_date" string="Date"/>
+                <field name="tenant_id"/>
+                <field name="tx_type" widget="badge"/>
+                <field name="gateway_id"/>
+                <field name="amount"/>
+                <field name="currency"/>
+                <field name="status" widget="badge"/>
+                <field name="gateway_tx_ref" optional="show"/>
+                <field name="confirmed_at" optional="show"/>
+                <field name="failure_reason" optional="show"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_saas_payment_tx_search" model="ir.ui.view">
+        <field name="name">saas.payment.transaction.search</field>
+        <field name="model">saas.payment.transaction</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="reference"/>
+                <field name="tenant_id"/>
+                <field name="gateway_tx_ref"/>
+                <filter name="filter_success" string="Success" domain="[('status','=','success')]"/>
+                <filter name="filter_failed" string="Failed" domain="[('status','=','failed')]"/>
+                <filter name="filter_pending" string="Pending" domain="[('status','=','pending')]"/>
+                <group name="group_by">
+                    <filter name="group_gateway" string="Gateway" context="{'group_by':'gateway_id'}"/>
+                    <filter name="group_status" string="Status" context="{'group_by':'status'}"/>
+                    <filter name="group_type" string="Type" context="{'group_by':'tx_type'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_saas_payment_tx" model="ir.actions.act_window">
+        <field name="name">Transactions</field>
+        <field name="res_model">saas.payment.transaction</field>
+        <field name="view_mode">list</field>
+        <field name="search_view_id" ref="view_saas_payment_tx_search"/>
+    </record>
+</odoo>

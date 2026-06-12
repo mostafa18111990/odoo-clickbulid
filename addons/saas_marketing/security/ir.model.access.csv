@@ -1,0 +1,16 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_coupon_admin,saas.coupon admin,model_saas_coupon,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_coupon_manager,saas.coupon manager,model_saas_coupon,saas_tenant_manager.group_saas_manager,1,1,1,0
+access_coupon_user,saas.coupon user,model_saas_coupon,base.group_user,1,0,0,0
+access_coupon_red_admin,saas.coupon.redemption admin,model_saas_coupon_redemption,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_coupon_red_user,saas.coupon.redemption user,model_saas_coupon_redemption,base.group_user,1,0,1,0
+access_coupon_red_portal,saas.coupon.redemption portal,model_saas_coupon_redemption,base.group_portal,1,0,0,0
+access_ref_program_admin,saas.referral.program admin,model_saas_referral_program,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_ref_program_all,saas.referral.program all,model_saas_referral_program,base.group_user,1,0,0,0
+access_referral_admin,saas.referral admin,model_saas_referral,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_referral_manager,saas.referral manager,model_saas_referral,saas_tenant_manager.group_saas_manager,1,1,1,0
+access_referral_user,saas.referral user,model_saas_referral,base.group_user,1,0,1,0
+access_referral_portal,saas.referral portal,model_saas_referral,base.group_portal,1,0,1,0
+access_campaign_admin,saas.campaign admin,model_saas_campaign,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_campaign_manager,saas.campaign manager,model_saas_campaign,saas_tenant_manager.group_saas_manager,1,1,1,0
+access_campaign_user,saas.campaign user,model_saas_campaign,base.group_user,1,0,0,0

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="seq_saas_payment_tx" model="ir.sequence">
+            <field name="name">SaaS Payment Transaction</field>
+            <field name="code">saas.payment.tx</field>
+            <field name="prefix">TX-%(year)s-</field>
+            <field name="padding">8</field>
+            <field name="number_next">1</field>
+            <field name="use_date_range" eval="True"/>
+        </record>
+
+        <record id="gateway_paytabs" model="saas.payment.gateway">
+            <field name="name">PayTabs</field>
+            <field name="code">paytabs</field>
+            <field name="active" eval="False"/>
+            <field name="priority">10</field>
+            <field name="is_sandbox" eval="True"/>
+            <field name="primary_country">SA</field>
+            <field name="supported_currencies">SAR,AED,EGP,KWD,OMR,JOD,BHD,QAR,USD</field>
+        </record>
+        <record id="gateway_paymob" model="saas.payment.gateway">
+            <field name="name">PayMob</field>
+            <field name="code">paymob</field>
+            <field name="active" eval="False"/>
+            <field name="priority">20</field>
+            <field name="is_sandbox" eval="True"/>
+            <field name="primary_country">EG</field>
+            <field name="supported_currencies">EGP</field>
+            <field name="extra_config">{"card_integration_id": "", "iframe_id": ""}</field>
+        </record>
+        <record id="gateway_stripe" model="saas.payment.gateway">
+            <field name="name">Stripe</field>
+            <field name="code">stripe</field>
+            <field name="active" eval="False"/>
+            <field name="priority">30</field>
+            <field name="is_sandbox" eval="True"/>
+            <field name="primary_country">ALL</field>
+            <field name="supported_currencies">USD,EUR,GBP,SAR,AED</field>
+        </record>
+        <record id="gateway_hyperpay" model="saas.payment.gateway">
+            <field name="name">HyperPay</field>
+            <field name="code">hyperpay</field>
+            <field name="active" eval="False"/>
+            <field name="priority">15</field>
+            <field name="is_sandbox" eval="True"/>
+            <field name="primary_country">SA</field>
+            <field name="supported_currencies">SAR,AED,USD</field>
+            <field name="extra_config">{"entity_id_visa_mc": "", "entity_id_mada": "", "entity_id_applepay": ""}</field>
+        </record>
+        <record id="gateway_myfatoorah" model="saas.payment.gateway">
+            <field name="name">MyFatoorah</field>
+            <field name="code">myfatoorah</field>
+            <field name="active" eval="False"/>
+            <field name="priority">25</field>
+            <field name="is_sandbox" eval="True"/>
+            <field name="primary_country">KW</field>
+            <field name="supported_currencies">KWD,SAR,AED,BHD,QAR,OMR</field>
+        </record>
+    </data>
+</odoo>

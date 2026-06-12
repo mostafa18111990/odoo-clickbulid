@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_saas_invoice_admin,saas.invoice admin,model_saas_invoice,saas_tenant_manager.group_saas_admin,1,1,1,0
+access_saas_invoice_manager,saas.invoice manager,model_saas_invoice,saas_tenant_manager.group_saas_manager,1,0,0,0
+access_saas_invoice_system,saas.invoice system,model_saas_invoice,base.group_system,1,1,1,1
+access_saas_invoice_analyst,saas.invoice analyst,model_saas_invoice,saas_core.group_saas_analyst,1,0,0,0
+access_saas_invoice_line_admin,saas.invoice.line admin,model_saas_invoice_line,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_saas_invoice_line_system,saas.invoice.line system,model_saas_invoice_line,base.group_system,1,1,1,1
+access_saas_credit_note_admin,saas.credit.note admin,model_saas_credit_note,saas_tenant_manager.group_saas_admin,1,1,1,0
+access_saas_credit_note_system,saas.credit.note system,model_saas_credit_note,base.group_system,1,1,1,0
+access_saas_credit_note_manager,saas.credit.note manager,model_saas_credit_note,saas_tenant_manager.group_saas_manager,1,0,0,0
+access_saas_tax_rate_admin,saas.tax.rate admin,model_saas_tax_rate,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_saas_tax_rate_all,saas.tax.rate all,model_saas_tax_rate,base.group_user,1,0,0,0

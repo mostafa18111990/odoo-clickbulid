@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_kb_category_list" model="ir.ui.view">
+        <field name="name">saas.kb.category.list</field>
+        <field name="model">saas.kb.category</field>
+        <field name="arch" type="xml">
+            <list string="KB Categories">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="slug"/>
+                <field name="parent_id"/>
+                <field name="article_count"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_saas_kb_category_form" model="ir.ui.view">
+        <field name="name">saas.kb.category.form</field>
+        <field name="model">saas.kb.category</field>
+        <field name="arch" type="xml">
+            <form string="KB Category">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="name_ar"/>
+                            <field name="slug"/>
+                            <field name="parent_id"/>
+                        </group>
+                        <group>
+                            <field name="icon"/>
+                            <field name="color"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <field name="description"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_saas_kb_category" model="ir.actions.act_window">
+        <field name="name">KB Categories</field>
+        <field name="res_model">saas.kb.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

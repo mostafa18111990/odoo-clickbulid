@@ -1,0 +1,107 @@
+{
+  "nav": {
+    "home": "Home",
+    "pricing": "Pricing",
+    "features": "Features",
+    "login": "Sign In",
+    "register": "Start Free",
+    "dashboard": "Dashboard",
+    "logout": "Logout"
+  },
+  "hero": {
+    "badge": "Odoo 19",
+    "title": "Launch your business with Odoo",
+    "titleHighlight": "in minutes",
+    "subtitle": "A complete platform to manage your business — accounting, sales, inventory, HR. Start your free trial with no credit card.",
+    "cta": "Start Free Trial",
+    "ctaSub": "14 days free • No credit card required",
+    "watchDemo": "Watch Demo",
+    "stats": {
+      "clients": "Active Clients",
+      "uptime": "Uptime",
+      "support": "Support"
+    }
+  },
+  "features": {
+    "title": "Everything you need in one place",
+    "subtitle": "Odoo 19 comes with 50+ integrated apps",
+    "accounting": { "title": "Accounting", "desc": "Invoices, payments, and financial reports" },
+    "sales":      { "title": "Sales",       "desc": "Manage quotes, orders, and customers" },
+    "inventory":  { "title": "Inventory",   "desc": "Real-time product and warehouse tracking" },
+    "hr":         { "title": "HR",           "desc": "Payroll, leaves, and performance tracking" },
+    "crm":        { "title": "CRM",          "desc": "Track opportunities and boost sales" },
+    "pos":        { "title": "Point of Sale","desc": "Fast POS that works online and offline" }
+  },
+  "pricing": {
+    "title": "Choose your plan",
+    "subtitle": "Transparent pricing with no hidden fees",
+    "monthly": "Monthly",
+    "currency_egp": "EGP/mo",
+    "currency_sar": "SAR/mo",
+    "free_trial": "Start Free",
+    "subscribe": "Subscribe Now",
+    "users": "users",
+    "storage": "storage",
+    "popular": "Most Popular"
+  },
+  "auth": {
+    "login_title": "Sign In",
+    "register_title": "Create Account",
+    "email": "Email",
+    "password": "Password",
+    "name": "Full Name",
+    "phone": "Phone",
+    "company": "Company Name",
+    "country": "Country",
+    "submit_login": "Sign In",
+    "submit_register": "Create Account",
+    "forgot_password": "Forgot password?",
+    "have_account": "Have an account?",
+    "no_account": "No account?",
+    "verify_title": "Verify Email",
+    "verify_desc": "We sent a 6-digit code to",
+    "verify_code": "Enter code",
+    "verify_submit": "Verify"
+  },
+  "dashboard": {
+    "welcome": "Welcome",
+    "my_instance": "My Environment",
+    "status": "Status",
+    "expires": "Expires",
+    "open_odoo": "Open Odoo",
+    "upgrade": "Upgrade Plan",
+    "create_demo": "Create Trial",
+    "no_instance": "No active environment",
+    "create_first": "Create your first environment now"
+  },
+  "create_instance": {
+    "title": "Create Odoo Environment",
+    "company_name": "Your Company Name",
+    "company_placeholder": "e.g. my-company",
+    "checking": "Checking...",
+    "available": "Available ✓",
+    "taken": "Taken ✗",
+    "select_modules": "Select the modules you need",
+    "submit": "Create Environment",
+    "creating": "Creating... may take 2-3 minutes",
+    "success": "Created! Login details will be sent to your email"
+  },
+  "status": {
+    "running": "Running",
+    "stopped": "Stopped",
+    "provisioning": "Creating",
+    "expired": "Expired",
+    "error": "Error",
+    "upgrading": "Upgrading"
+  },
+  "common": {
+    "loading": "Loading...",
+    "error": "An error occurred",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "back": "Back",
+    "days": "days",
+    "free": "Free"
+  }
+}

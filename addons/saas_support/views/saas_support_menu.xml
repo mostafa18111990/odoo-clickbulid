@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_saas_support_root"
+              name="Support"
+              parent="saas_core.menu_saas_root"
+              sequence="60"/>
+
+    <menuitem id="menu_saas_support_tickets"
+              name="Tickets"
+              parent="menu_saas_support_root"
+              action="action_saas_ticket"
+              sequence="10"/>
+
+    <menuitem id="menu_saas_support_config"
+              name="Configuration"
+              parent="menu_saas_support_root"
+              sequence="90"/>
+
+    <menuitem id="menu_saas_support_categories"
+              name="Categories"
+              parent="menu_saas_support_config"
+              action="action_saas_ticket_category"
+              sequence="10"/>
+
+    <menuitem id="menu_saas_support_priorities"
+              name="Priorities"
+              parent="menu_saas_support_config"
+              action="action_saas_ticket_priority"
+              sequence="20"/>
+
+    <menuitem id="menu_saas_support_sla"
+              name="SLA Rules"
+              parent="menu_saas_support_config"
+              action="action_saas_ticket_sla"
+              sequence="30"/>
+</odoo>

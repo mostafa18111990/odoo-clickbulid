@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_saas_ai_root" name="AI"
+              parent="saas_core.menu_saas_root" sequence="120"/>
+    <menuitem id="menu_ai_usage" name="Usage"
+              parent="menu_saas_ai_root" action="action_ai_usage" sequence="10"/>
+    <menuitem id="menu_ai_prompts" name="Prompt Templates"
+              parent="menu_saas_ai_root" action="action_ai_prompt" sequence="20"/>
+    <menuitem id="menu_ai_config" name="Configuration"
+              parent="menu_saas_ai_root" sequence="90"/>
+    <menuitem id="menu_ai_providers" name="Providers"
+              parent="menu_ai_config" action="action_ai_provider" sequence="10"/>
+</odoo>

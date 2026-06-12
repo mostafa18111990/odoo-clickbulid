@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="faq_1" model="saas.website.faq">
+            <field name="question">هل أحتاج بطاقة ائتمان للتجربة؟</field>
+            <field name="answer">لا، التجربة المجانية 14 يوم لا تتطلب أي بطاقة ائتمان.</field>
+            <field name="faq_category">pricing</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="faq_2" model="saas.website.faq">
+            <field name="question">هل النظام متوافق مع هيئة الزكاة والضريبة (ZATCA)؟</field>
+            <field name="answer">نعم، يدعم الفوترة الإلكترونية المتوافقة مع ZATCA المرحلة الأولى مع رمز QR.</field>
+            <field name="faq_category">technical</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="faq_3" model="saas.website.faq">
+            <field name="question">هل يمكنني ترقية أو تخفيض خطتي؟</field>
+            <field name="answer">نعم في أي وقت من لوحة التحكم. الترقية فورية والتخفيض في نهاية الدورة.</field>
+            <field name="faq_category">billing</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="faq_4" model="saas.website.faq">
+            <field name="question">هل بياناتي آمنة؟</field>
+            <field name="answer">نعم، كل عميل لديه قاعدة بيانات منفصلة مع نسخ احتياطي يومي وتشفير كامل.</field>
+            <field name="faq_category">security</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="faq_5" model="saas.website.faq">
+            <field name="question">ما هي طرق الدفع المتاحة؟</field>
+            <field name="answer">نقبل مدى، فيزا، ماستركارد، Apple Pay، KNET، والمحافظ الإلكترونية حسب دولتك.</field>
+            <field name="faq_category">billing</field>
+            <field name="sequence">50</field>
+        </record>
+        <record id="faq_6" model="saas.website.faq">
+            <field name="question">هل يوجد دعم باللغة العربية؟</field>
+            <field name="answer">نعم، فريق الدعم متاح 24/7 بالعربية والإنجليزية.</field>
+            <field name="faq_category">general</field>
+            <field name="sequence">60</field>
+        </record>
+    </data>
+</odoo>

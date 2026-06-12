@@ -1,0 +1,152 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <template id="portal_marketplace" name="Marketplace">
+        <t t-call="saas_portal.saas_portal_layout">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0">App Marketplace / متجر التطبيقات</h3>
+                <a href="/my/saas/marketplace/installed" class="btn btn-sm btn-outline-primary">
+                    <i class="fa fa-th me-1"/> Installed Apps</a>
+            </div>
+            <div class="row mb-4"><div class="col-md-8">
+                <form method="get" action="/my/saas/marketplace">
+                    <div class="input-group">
+                        <input type="text" name="search" class="form-control" placeholder="Search apps..." t-att-value="search"/>
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-search"/></button>
+                    </div>
+                </form>
+            </div></div>
+            <div class="row">
+                <div class="col-md-3">
+                    <div class="list-group mb-4">
+                        <a href="/my/saas/marketplace" t-attf-class="list-group-item list-group-item-action #{'active' if not current_category else ''}">
+                            <i class="fa fa-th-large me-2"/> All Apps</a>
+                        <t t-foreach="categories" t-as="cat">
+                            <a t-attf-href="/my/saas/marketplace/category/#{cat.code}"
+                               t-attf-class="list-group-item list-group-item-action #{'active' if current_category == cat.code else ''}">
+                                <i t-attf-class="fa #{cat.icon} me-2"/><t t-esc="cat.name"/>
+                                <span class="badge bg-secondary float-end" t-esc="cat.app_count"/></a>
+                        </t>
+                    </div>
+                </div>
+                <div class="col-md-9">
+                    <div class="row g-3">
+                        <t t-foreach="apps" t-as="app">
+                            <div class="col-md-6"><div class="card h-100 border-0 shadow-sm">
+                                <div class="card-body"><div class="d-flex align-items-start">
+                                    <div class="me-3" style="font-size:2rem; color:#6d28d9;">
+                                        <i t-attf-class="fa #{app['icon']}"/></div>
+                                    <div class="flex-grow-1">
+                                        <div class="d-flex justify-content-between">
+                                            <h6 class="fw-bold mb-1" t-esc="app['name']"/>
+                                            <t t-if="app['is_popular']"><span class="badge bg-warning text-dark">Popular</span></t>
+                                        </div>
+                                        <p class="text-muted small mb-2" t-esc="app['short_desc']"/>
+                                        <div class="d-flex justify-content-between align-items-center">
+                                            <span t-attf-class="badge #{'bg-success' if app['pricing_model'] == 'free' else 'bg-primary'}"
+                                                  t-esc="app['price_label']"/>
+                                            <t t-if="app['installed']">
+                                                <span class="text-success small"><i class="fa fa-check"/> Installed</span>
+                                            </t>
+                                            <t t-elif="not app['eligible']">
+                                                <a t-attf-href="/my/saas/marketplace/app/#{app['id']}" class="btn btn-sm btn-outline-secondary" t-att-title="app['reason']">
+                                                    <i class="fa fa-lock"/></a>
+                                            </t>
+                                            <t t-else="">
+                                                <a t-attf-href="/my/saas/marketplace/app/#{app['id']}" class="btn btn-sm btn-primary">View</a>
+                                            </t>
+                                        </div>
+                                    </div>
+                                </div></div>
+                            </div></div>
+                        </t>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_app_detail" name="App Detail">
+        <t t-call="saas_portal.saas_portal_layout">
+            <a href="/my/saas/marketplace" class="btn btn-link mb-3">
+                <i class="fa fa-arrow-left me-1"/> Back to Marketplace</a>
+            <div class="card border-0 shadow-sm"><div class="card-body p-4">
+                <div class="d-flex align-items-start mb-4">
+                    <div class="me-4" style="font-size:4rem; color:#6d28d9;">
+                        <i t-attf-class="fa #{app.icon}"/></div>
+                    <div class="flex-grow-1">
+                        <h2 class="fw-bold" t-esc="app.name"/>
+                        <p class="text-muted" t-esc="app.short_description"/>
+                        <span t-attf-class="badge #{'bg-success' if app.pricing_model == 'free' else 'bg-primary'} fs-6"
+                              t-esc="app.price_label"/>
+                    </div>
+                </div>
+                <t t-if="app.description"><div class="mb-4" t-out="app.description"/></t>
+                <t t-if="installed">
+                    <div class="alert alert-success"><i class="fa fa-check-circle me-2"/> This app is installed.</div>
+                </t>
+                <t t-elif="not eligible">
+                    <div class="alert alert-warning"><i class="fa fa-lock me-2"/> <t t-esc="reason"/>
+                        <a href="/my/saas/subscription/plans" class="alert-link ms-2">Upgrade</a></div>
+                </t>
+                <t t-else="">
+                    <form method="post" action="/my/saas/marketplace/install">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <input type="hidden" name="app_id" t-att-value="app.id"/>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <t t-if="app.pricing_model == 'free'"><i class="fa fa-download me-1"/> Install</t>
+                            <t t-else=""><i class="fa fa-credit-card me-1"/>
+                                Subscribe - <t t-esc="app.price_label"/></t>
+                        </button>
+                    </form>
+                    <t t-if="app.pricing_model != 'free'">
+                        <p class="text-muted small mt-2">This add-on will be billed with your next invoice.</p>
+                    </t>
+                </t>
+            </div></div>
+        </t>
+    </template>
+
+    <template id="portal_installed_apps" name="Installed Apps">
+        <t t-call="saas_portal.saas_portal_layout">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0">Installed Apps / التطبيقات المثبتة</h3>
+                <a href="/my/saas/marketplace" class="btn btn-sm btn-primary">
+                    <i class="fa fa-plus me-1"/> Browse More</a>
+            </div>
+            <t t-if="status == 'success'">
+                <div class="alert alert-success">App installed successfully!</div>
+            </t>
+            <div class="card border-0 shadow-sm"><div class="card-body">
+                <t t-if="apps">
+                    <table class="table">
+                        <thead><tr><th>App</th><th>Status</th><th>Billing</th><th></th></tr></thead>
+                        <tbody><t t-foreach="apps" t-as="ta"><tr>
+                            <td><i t-attf-class="fa #{ta.app_id.icon} me-2" style="color:#6d28d9;"/>
+                                <strong t-esc="ta.app_id.name"/></td>
+                            <td><span t-attf-class="badge #{'bg-success' if ta.state == 'installed' else 'bg-warning' if ta.state == 'installing' else 'bg-danger'}" t-esc="ta.state"/></td>
+                            <td><t t-if="ta.addon_id">
+                                    <t t-esc="'%.0f' % ta.addon_id.price"/> <t t-esc="ta.addon_id.currency"/>/mo
+                                </t><t t-else="">Free</t></td>
+                            <td><t t-if="ta.state == 'installed'">
+                                <form method="post" action="/my/saas/marketplace/uninstall" onsubmit="return confirm('Uninstall this app?');">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <input type="hidden" name="tenant_app_id" t-att-value="ta.id"/>
+                                    <button type="submit" class="btn btn-sm btn-outline-danger">Uninstall</button>
+                                </form>
+                            </t></td>
+                        </tr></t></tbody>
+                    </table>
+                </t>
+                <t t-else=""><p class="text-muted text-center py-4">No apps installed yet.</p></t>
+            </div></div>
+        </t>
+    </template>
+
+    <template id="portal_sidebar_marketplace" inherit_id="saas_portal.saas_portal_layout" priority="22">
+        <xpath expr="//a[@href='/my/saas/account']" position="before">
+            <a href="/my/saas/marketplace" class="list-group-item list-group-item-action">
+                <i class="fa fa-shopping-bag me-2"/> Marketplace / المتجر</a>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_cancellation_reason_list" model="ir.ui.view">
+        <field name="name">saas.cancellation.reason.list</field>
+        <field name="model">saas.cancellation.reason</field>
+        <field name="arch" type="xml">
+            <list string="Cancellation Reasons" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="churn_category" widget="badge"/>
+                <field name="eligible_for_winback"/>
+                <field name="winback_delay_days"/>
+                <field name="cancellation_count" string="Count" readonly="1"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_saas_cancellation_reason" model="ir.actions.act_window">
+        <field name="name">Cancellation Reasons</field>
+        <field name="res_model">saas.cancellation.reason</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

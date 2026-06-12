@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_saas_domain_admin,saas.domain admin,model_saas_domain,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_saas_domain_manager,saas.domain manager,model_saas_domain,saas_tenant_manager.group_saas_manager,1,1,1,0
+access_saas_domain_portal,saas.domain portal,model_saas_domain,base.group_portal,1,0,0,0
+access_saas_domain_verification_admin,saas.domain.verification admin,model_saas_domain_verification,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_saas_domain_verification_portal,saas.domain.verification portal,model_saas_domain_verification,base.group_portal,1,0,0,0
+access_saas_domain_verification_system,saas.domain.verification system,model_saas_domain_verification,base.group_system,1,1,1,0

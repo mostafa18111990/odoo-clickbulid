@@ -1,0 +1,21 @@
+{
+    'name': 'SaaS Domain Manager',
+    'version': '19.0.1.0.0',
+    'category': 'SaaS',
+    'summary': 'Custom domain mapping with DNS verification and automated SSL',
+    'author': 'ClickBuild',
+    'website': 'https://clickbuild.com',
+    'depends': ['saas_portal'],
+    'data': [
+        'security/saas_domain_security.xml',
+        'security/ir.model.access.csv',
+        'data/saas_domain_cron.xml',
+        'views/saas_domain_views.xml',
+        'views/saas_domain_menu.xml',
+        'views/portal_domain_templates.xml',
+    ],
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+    'license': 'LGPL-3',
+}

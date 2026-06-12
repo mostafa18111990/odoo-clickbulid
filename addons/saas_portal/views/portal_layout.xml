@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="saas_portal_layout" name="SaaS Portal Layout">
+        <t t-call="portal.portal_layout">
+            <div class="row">
+                <div class="col-md-3 mb-4">
+                    <div class="saas-portal-sidebar">
+                        <div class="p-3 mb-3" style="background:linear-gradient(135deg,#6d28d9,#9333ea); color:white; border-radius:8px;">
+                            <h5 class="mb-1"><t t-esc="tenant.name"/></h5>
+                            <small style="opacity:0.85;"><t t-esc="tenant.subdomain"/>.clickbuild.com</small>
+                        </div>
+                        <div class="list-group">
+                            <a href="/my/saas" t-attf-class="list-group-item list-group-item-action #{'active' if page_name == 'saas_dashboard' else ''}">
+                                <i class="fa fa-dashboard me-2"/> Dashboard / لوحة التحكم</a>
+                            <a href="/my/saas/subscription" t-attf-class="list-group-item list-group-item-action #{'active' if page_name in ('saas_subscription','saas_plans') else ''}">
+                                <i class="fa fa-credit-card me-2"/> Subscription / الاشتراك</a>
+                            <a href="/my/saas/invoices" t-attf-class="list-group-item list-group-item-action #{'active' if page_name == 'saas_invoices' else ''}">
+                                <i class="fa fa-file-text me-2"/> Invoices / الفواتير</a>
+                            <a href="/my/saas/usage" t-attf-class="list-group-item list-group-item-action #{'active' if page_name == 'saas_usage' else ''}">
+                                <i class="fa fa-bar-chart me-2"/> Usage / الاستخدام</a>
+                            <a href="/my/saas/payment-methods" t-attf-class="list-group-item list-group-item-action #{'active' if page_name == 'saas_payment_methods' else ''}">
+                                <i class="fa fa-money me-2"/> Payment / طرق الدفع</a>
+                            <a href="/my/saas/account" t-attf-class="list-group-item list-group-item-action #{'active' if page_name == 'saas_account' else ''}">
+                                <i class="fa fa-user me-2"/> Account / الحساب</a>
+                            <a href="/my/saas/access" target="_blank" class="list-group-item list-group-item-action" style="background:#f5f3ff;">
+                                <i class="fa fa-external-link me-2"/> Open ERP / فتح النظام</a>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-9"><t t-out="0"/></div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_no_tenant" name="No Tenant">
+        <t t-call="portal.portal_layout">
+            <div class="alert alert-info text-center p-5">
+                <i class="fa fa-info-circle fa-3x mb-3" style="color:#6d28d9;"/>
+                <h3>No Active Subscription / لا يوجد اشتراك نشط</h3>
+                <a href="/pricing" class="btn btn-primary mt-2">View Plans / عرض الخطط</a>
+            </div>
+        </t>
+    </template>
+</odoo>

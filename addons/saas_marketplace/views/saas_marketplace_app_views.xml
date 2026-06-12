@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_marketplace_app_list" model="ir.ui.view">
+        <field name="name">saas.marketplace.app.list</field>
+        <field name="model">saas.marketplace.app</field>
+        <field name="arch" type="xml">
+            <list string="Marketplace Apps">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="technical_module"/>
+                <field name="category_id"/>
+                <field name="pricing_model" widget="badge"/>
+                <field name="price"/>
+                <field name="min_plan_id"/>
+                <field name="install_count" string="Installs"/>
+                <field name="is_featured"/>
+                <field name="is_popular"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_marketplace_app_form" model="ir.ui.view">
+        <field name="name">saas.marketplace.app.form</field>
+        <field name="model">saas.marketplace.app</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="float-end"><field name="active" widget="boolean_toggle"/></div>
+                    <div class="oe_title"><h1><field name="name"/></h1><field name="code"/></div>
+                    <group>
+                        <group string="Module">
+                            <field name="technical_module"/>
+                            <field name="category_id"/>
+                            <field name="icon"/>
+                        </group>
+                        <group string="Pricing">
+                            <field name="pricing_model"/>
+                            <field name="price"/>
+                            <field name="setup_fee"/>
+                            <field name="price_label" readonly="1"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Eligibility">
+                            <field name="min_plan_id"/>
+                            <field name="dependency_app_ids" widget="many2many_tags"/>
+                        </group>
+                        <group string="Display">
+                            <field name="is_featured"/>
+                            <field name="is_popular"/>
+                            <field name="install_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <field name="short_description"/>
+                    <field name="description" widget="html"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_marketplace_app" model="ir.actions.act_window">
+        <field name="name">Marketplace Apps</field>
+        <field name="res_model">saas.marketplace.app</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="action_marketplace_category" model="ir.actions.act_window">
+        <field name="name">Categories</field>
+        <field name="res_model">saas.marketplace.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

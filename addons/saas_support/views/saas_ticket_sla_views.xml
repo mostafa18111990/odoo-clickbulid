@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_ticket_sla_list" model="ir.ui.view">
+        <field name="name">saas.ticket.sla.list</field>
+        <field name="model">saas.ticket.sla</field>
+        <field name="arch" type="xml">
+            <list string="SLA Rules">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="plan_id"/>
+                <field name="priority_id"/>
+                <field name="response_hours"/>
+                <field name="resolution_hours"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_saas_ticket_sla_form" model="ir.ui.view">
+        <field name="name">saas.ticket.sla.form</field>
+        <field name="model">saas.ticket.sla</field>
+        <field name="arch" type="xml">
+            <form string="SLA Rule">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="plan_id"/>
+                            <field name="priority_id"/>
+                        </group>
+                        <group>
+                            <field name="response_hours"/>
+                            <field name="resolution_hours"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_saas_ticket_sla" model="ir.actions.act_window">
+        <field name="name">SLA Rules</field>
+        <field name="res_model">saas.ticket.sla</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_ntemplate_form" model="ir.ui.view">
+        <field name="name">saas.notification.template.form</field>
+        <field name="model">saas.notification.template</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <group>
+                        <field name="notification_type_id"/>
+                        <field name="channel"/>
+                        <field name="active"/>
+                    </group>
+                    <notebook>
+                        <page string="Email" invisible="channel != 'email'">
+                            <group>
+                                <field name="subject_en"/>
+                                <field name="subject_ar"/>
+                            </group>
+                            <field name="body_en" widget="html"/>
+                            <field name="body_ar" widget="html"/>
+                            <group string="CTA">
+                                <field name="cta_url"/>
+                                <field name="cta_label_en"/>
+                                <field name="cta_label_ar"/>
+                            </group>
+                        </page>
+                        <page string="SMS / In-App" invisible="channel == 'email'">
+                            <group>
+                                <field name="title_en" invisible="channel != 'inapp'"/>
+                                <field name="title_ar" invisible="channel != 'inapp'"/>
+                                <field name="text_en"/>
+                                <field name="text_ar"/>
+                                <field name="cta_url" invisible="channel != 'inapp'"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_saas_ntemplate_list" model="ir.ui.view">
+        <field name="name">saas.notification.template.list</field>
+        <field name="model">saas.notification.template</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="notification_type_id"/>
+                <field name="channel" widget="badge"/>
+                <field name="subject_en"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_saas_ntemplate" model="ir.actions.act_window">
+        <field name="name">Templates</field>
+        <field name="res_model">saas.notification.template</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

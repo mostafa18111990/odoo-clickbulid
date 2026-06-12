@@ -1,0 +1,31 @@
+/* Paste-password reminder banner shown on /web/login when the email came
+   pre-filled from the SaaS signup flow. */
+.cb-login-paste-banner {
+    background: #ecfdf5;
+    border: 1px solid #34d399;
+    color: #065f46;
+    padding: 0.6rem 0.9rem;
+    border-radius: 8px;
+    margin-top: 0.6rem;
+    font-size: 0.9rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    box-shadow: 0 2px 4px rgba(16, 185, 129, 0.08);
+    transition: opacity 0.8s ease-out;
+}
+.cb-login-paste-banner i {
+    color: #10b981;
+    font-size: 1.05rem;
+}
+.cb-login-paste-banner kbd {
+    background: #ffffff;
+    border: 1px solid #d1fae5;
+    border-radius: 4px;
+    padding: 0.05rem 0.35rem;
+    font-size: 0.85rem;
+    color: #065f46;
+}
+.cb-login-paste-banner.cb-fading {
+    opacity: 0;
+}

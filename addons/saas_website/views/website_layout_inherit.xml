@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Branded ClickBuild footer — bilingual EN/AR. -->
+    <template id="layout_footer_inherit" name="ClickBuild Footer"
+              inherit_id="website.layout">
+        <xpath expr="//footer" position="replace">
+            <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/><t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+            <footer class="cb-footer" data-cb-reveal="1">
+                <div class="container">
+                    <div class="row g-4">
+                        <div class="col-lg-4 col-md-12">
+                            <div class="brand-logo">
+                                Click<span class="accent">Build</span>
+                            </div>
+                            <p class="mb-3" style="opacity:0.85;">
+                                <t t-if="lang_is_ar">منصة ERP سحابية متكاملة تساعد الشركات على إدارة محاسبتها،
+                                مبيعاتها، مخزونها ومواردها البشرية من مكان واحد.</t>
+                                <t t-else="">All-in-one cloud ERP that lets companies run accounting, sales,
+                                inventory and HR from a single place.</t>
+                            </p>
+                            <div class="socials">
+                                <a href="#" aria-label="Twitter"><i class="fa fa-twitter"/></a>
+                                <a href="#" aria-label="LinkedIn"><i class="fa fa-linkedin"/></a>
+                                <a href="#" aria-label="Facebook"><i class="fa fa-facebook"/></a>
+                                <a href="#" aria-label="YouTube"><i class="fa fa-youtube-play"/></a>
+                            </div>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-6">
+                            <h5><t t-if="lang_is_ar">المنتج</t><t t-else="">Product</t></h5>
+                            <ul>
+                                <li><a href="/features"><t t-if="lang_is_ar">المميزات</t><t t-else="">Features</t></a></li>
+                                <li><a href="/pricing"><t t-if="lang_is_ar">الأسعار</t><t t-else="">Pricing</t></a></li>
+                                <li><a href="/get-started"><t t-if="lang_is_ar">جرّب مجاناً</t><t t-else="">Free trial</t></a></li>
+                                <li><a href="/help"><t t-if="lang_is_ar">مركز المساعدة</t><t t-else="">Help center</t></a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-6">
+                            <h5><t t-if="lang_is_ar">الشركة</t><t t-else="">Company</t></h5>
+                            <ul>
+                                <li><a href="/about"><t t-if="lang_is_ar">عن ClickBuild</t><t t-else="">About</t></a></li>
+                                <li><a href="/contact"><t t-if="lang_is_ar">تواصل معنا</t><t t-else="">Contact</t></a></li>
+                                <li><a href="/blog"><t t-if="lang_is_ar">المدونة</t><t t-else="">Blog</t></a></li>
+                                <li><a href="/careers"><t t-if="lang_is_ar">وظائف</t><t t-else="">Careers</t></a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-2 col-md-4 col-6">
+                            <h5><t t-if="lang_is_ar">الموارد</t><t t-else="">Resources</t></h5>
+                            <ul>
+                                <li><a href="/faq"><t t-if="lang_is_ar">الأسئلة الشائعة</t><t t-else="">FAQ</t></a></li>
+                                <li><a href="/help"><t t-if="lang_is_ar">الدليل</t><t t-else="">Documentation</t></a></li>
+                                <li><a href="/api/docs">API</a></li>
+                                <li><a href="https://odoo.clickbulid.com/web/login"><t t-if="lang_is_ar">تسجيل الدخول</t><t t-else="">Log in</t></a></li>
+                            </ul>
+                        </div>
+                        <div class="col-lg-2 col-md-12 col-6">
+                            <h5><t t-if="lang_is_ar">قانوني</t><t t-else="">Legal</t></h5>
+                            <ul>
+                                <li><a href="/terms"><t t-if="lang_is_ar">الشروط</t><t t-else="">Terms</t></a></li>
+                                <li><a href="/privacy"><t t-if="lang_is_ar">الخصوصية</t><t t-else="">Privacy</t></a></li>
+                                <li><a href="/dpa"><t t-if="lang_is_ar">حماية البيانات</t><t t-else="">DPA</t></a></li>
+                                <li><a href="/sla">SLA</a></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="bottom-bar d-flex flex-wrap justify-content-between align-items-center">
+                        <div>© <span id="cb-year"/>
+                            <script>document.getElementById('cb-year').textContent = new Date().getFullYear();</script>
+                            ClickBuild.
+                            <t t-if="lang_is_ar"> جميع الحقوق محفوظة.</t>
+                            <t t-else=""> All rights reserved.</t>
+                        </div>
+                        <div class="d-flex gap-3 align-items-center small">
+                            <span><i class="fa fa-shield me-1"/>
+                                <t t-if="lang_is_ar">SSL مشفّر</t><t t-else="">SSL secured</t></span>
+                            <span><i class="fa fa-check-circle me-1"/>
+                                <t t-if="lang_is_ar">متوافق مع ZATCA</t><t t-else="">ZATCA compliant</t></span>
+                            <span><i class="fa fa-cloud me-1"/> 99.9% uptime</span>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </xpath>
+    </template>
+</odoo>

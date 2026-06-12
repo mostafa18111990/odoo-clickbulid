@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="menu_features" model="website.menu">
+            <field name="name">المميزات</field>
+            <field name="url">/features</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">10</field>
+        </record>
+        <record id="menu_pricing" model="website.menu">
+            <field name="name">الأسعار</field>
+            <field name="url">/pricing</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">20</field>
+        </record>
+        <record id="menu_faq" model="website.menu">
+            <field name="name">الأسئلة الشائعة</field>
+            <field name="url">/faq</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">30</field>
+        </record>
+        <record id="menu_contact" model="website.menu">
+            <field name="name">تواصل معنا</field>
+            <field name="url">/contact</field>
+            <field name="parent_id" ref="website.main_menu"/>
+            <field name="sequence">40</field>
+        </record>
+    </data>
+</odoo>

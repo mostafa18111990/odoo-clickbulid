@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="prompt_ticket_summary_en" model="saas.ai.prompt.template">
+            <field name="name">Ticket Summary (EN)</field>
+            <field name="code">ticket_summary</field>
+            <field name="language">en</field>
+            <field name="request_type">summary</field>
+            <field name="system_message">You are a helpful SaaS support assistant.</field>
+            <field name="body">Summarize this support ticket in 2-3 sentences:
+
+Subject: {subject}
+Description: {description}
+
+Highlight the customer's main pain point and any urgency signals.</field>
+            <field name="variables">subject
+description</field>
+        </record>
+        <record id="prompt_ticket_summary_ar" model="saas.ai.prompt.template">
+            <field name="name">ملخص التذكرة</field>
+            <field name="code">ticket_summary</field>
+            <field name="language">ar</field>
+            <field name="request_type">summary</field>
+            <field name="system_message">أنت مساعد دعم SaaS.</field>
+            <field name="body">لخّص تذكرة الدعم التالية في 2-3 جمل:
+
+العنوان: {subject}
+الوصف: {description}
+
+اذكر المشكلة الرئيسية للعميل وأي إشارات للعجلة.</field>
+            <field name="variables">subject
+description</field>
+        </record>
+        <record id="prompt_kb_generator_en" model="saas.ai.prompt.template">
+            <field name="name">KB Article Draft (EN)</field>
+            <field name="code">kb_article_draft</field>
+            <field name="language">en</field>
+            <field name="request_type">completion</field>
+            <field name="system_message">You are a technical writer.</field>
+            <field name="body">Draft a knowledge base article answering this question: {question}
+
+Include sections: Problem, Solution, Steps, Related Topics.</field>
+            <field name="variables">question</field>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_tickets" name="My Support Tickets">
+        <t t-call="portal.portal_layout">
+            <div class="container my-4">
+                <h2>My Support Tickets</h2>
+                <a href="/my/saas/tickets/new" class="btn btn-primary mb-3">New Ticket</a>
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Number</th><th>Subject</th><th>Priority</th><th>State</th><th>Created</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="tickets" t-as="t">
+                            <td><a t-attf-href="/my/saas/tickets/#{t.id}"><t t-out="t.name"/></a></td>
+                            <td><t t-out="t.subject"/></td>
+                            <td><t t-out="t.priority_id.name"/></td>
+                            <td><t t-out="t.state"/></td>
+                            <td><t t-out="t.create_date"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_new_ticket" name="New Support Ticket">
+        <t t-call="portal.portal_layout">
+            <div class="container my-4">
+                <h2>Open a New Ticket</h2>
+                <form action="/my/saas/tickets/new/submit" method="post">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <div class="mb-3">
+                        <label>Subject</label>
+                        <input type="text" name="subject" class="form-control" required="1"/>
+                    </div>
+                    <div class="mb-3">
+                        <label>Category</label>
+                        <select name="category_code" class="form-control">
+                            <option t-foreach="categories" t-as="c" t-att-value="c.code"><t t-out="c.name"/></option>
+                        </select>
+                    </div>
+                    <div class="mb-3">
+                        <label>Description</label>
+                        <textarea name="description" class="form-control" rows="6" required="1"/>
+                    </div>
+                    <button type="submit" class="btn btn-primary">Submit</button>
+                </form>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_ticket_detail" name="Ticket Detail">
+        <t t-call="portal.portal_layout">
+            <div class="container my-4">
+                <h2><t t-out="ticket.name"/> — <t t-out="ticket.subject"/></h2>
+                <p><strong>State:</strong> <t t-out="ticket.state"/> · <strong>Priority:</strong> <t t-out="ticket.priority_id.name"/></p>
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <pre t-out="ticket.description"/>
+                    </div>
+                </div>
+                <h4>Messages</h4>
+                <div t-foreach="messages" t-as="m" class="card mb-2">
+                    <div class="card-body">
+                        <small><t t-out="m.create_date"/> · <t t-out="m.author_id.name"/></small>
+                        <div t-out="m.body"/>
+                    </div>
+                </div>
+                <form t-attf-action="/my/saas/tickets/#{ticket.id}/reply" method="post" class="mt-3">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <textarea name="body" class="form-control" rows="4" required="1"/>
+                    <button type="submit" class="btn btn-primary mt-2">Reply</button>
+                </form>
+            </div>
+        </t>
+    </template>
+</odoo>

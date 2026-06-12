@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_saas_payment_gateways" name="Payment Gateways"
+              parent="saas_billing.menu_saas_billing_root" action="action_saas_payment_gateway"
+              sequence="30" groups="saas_core.group_saas_super_admin"/>
+    <menuitem id="menu_saas_payment_transactions" name="Transactions"
+              parent="saas_billing.menu_saas_billing_root" action="action_saas_payment_tx"
+              sequence="40" groups="saas_tenant_manager.group_saas_admin"/>
+    <menuitem id="menu_saas_payment_methods" name="Saved Payment Methods"
+              parent="saas_billing.menu_saas_billing_root" action="action_saas_payment_method"
+              sequence="50" groups="saas_tenant_manager.group_saas_admin"/>
+</odoo>

@@ -1,0 +1,7 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_snapshot_admin,saas.report.snapshot admin,model_saas_report_snapshot,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_snapshot_analyst,saas.report.snapshot analyst,model_saas_report_snapshot,saas_core.group_saas_analyst,1,0,1,0
+access_snapshot_user,saas.report.snapshot user,model_saas_report_snapshot,base.group_user,1,0,0,0
+access_cohort_admin,saas.report.cohort admin,model_saas_report_cohort,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_cohort_analyst,saas.report.cohort analyst,model_saas_report_cohort,saas_core.group_saas_analyst,1,0,1,0
+access_cohort_user,saas.report.cohort user,model_saas_report_cohort,base.group_user,1,0,0,0

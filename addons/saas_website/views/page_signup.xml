@@ -1,0 +1,364 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="page_signup" name="Get Started">
+        <t t-call="website.layout">
+            <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/><t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+            <section class="py-5" style="background:#f5f3ff; min-height:80vh;">
+                <div class="container py-4"><div class="row justify-content-center"><div class="col-lg-7">
+                    <div class="card border-0 shadow"><div class="card-body p-4 p-md-5">
+                        <div class="text-center mb-4">
+                            <h2 class="fw-bold"><t t-if="lang_is_ar">أنشئ حسابك المجاني</t><t t-else="">Create your free account</t></h2>
+                            <p class="text-muted">
+                                <t t-if="lang_is_ar">14 يوم تجريبي · بدون بطاقة ائتمان</t>
+                                <t t-else="">14-day trial · no credit card</t></p>
+                        </div>
+                        <t t-if="errors">
+                            <div class="alert alert-danger"><ul class="mb-0">
+                                <t t-foreach="errors" t-as="err"><li t-esc="err"/></t></ul></div>
+                        </t>
+                        <form method="post" action="/get-started/register" id="signupForm">
+                            <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+
+                            <!-- Edition switch (visual) — pre-selects based on chosen plan -->
+                            <t t-set="default_ed" t-value="(selected_plan.edition if selected_plan else 'community') or 'community'"/>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    <t t-if="lang_is_ar">اختر الإصدار</t><t t-else="">Choose edition</t></label>
+                                <div class="cb-edition-switch d-flex gap-2" data-default-edition="">
+                                    <label t-attf-class="flex-fill p-3 border rounded-3 text-center signup-edition-card #{'active' if default_ed == 'community' else ''}"
+                                           style="cursor:pointer;" data-edition="community">
+                                        <input type="radio" name="_edition" value="community"
+                                               t-att-checked="'checked' if default_ed == 'community' else None"
+                                               style="display:none;"/>
+                                        <i class="fa fa-cube d-block mb-2" style="font-size:1.4rem; color:#475569;"/>
+                                        <strong class="d-block">Community</strong>
+                                        <small class="text-muted">
+                                            <t t-if="lang_is_ar">مفتوح المصدر · من 149 ريال</t>
+                                            <t t-else="">Open source · from 149 SAR</t>
+                                        </small>
+                                    </label>
+                                    <label t-attf-class="flex-fill p-3 border rounded-3 text-center signup-edition-card #{'active' if default_ed == 'enterprise' else ''}"
+                                           style="cursor:pointer;" data-edition="enterprise">
+                                        <input type="radio" name="_edition" value="enterprise"
+                                               t-att-checked="'checked' if default_ed == 'enterprise' else None"
+                                               style="display:none;"/>
+                                        <i class="fa fa-rocket d-block mb-2" style="font-size:1.4rem; color:#6d28d9;"/>
+                                        <strong class="d-block">Enterprise</strong>
+                                        <small class="text-muted">
+                                            <t t-if="lang_is_ar">Studio + Helpdesk · من 599 ريال</t>
+                                            <t t-else="">Studio + Helpdesk · from 599 SAR</t>
+                                        </small>
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div class="mb-3"><label class="form-label fw-bold">
+                                <t t-if="lang_is_ar">اختر خطتك</t><t t-else="">Choose your plan</t></label>
+                                <select name="plan_id" id="plan_id_select" class="form-select">
+                                    <t t-set="grouped" t-value="{'community': [p for p in plans if (p.edition or 'community') == 'community'], 'enterprise': [p for p in plans if p.edition == 'enterprise']}"/>
+                                    <optgroup label="Community" class="signup-plan-group" data-edition="community">
+                                        <t t-foreach="grouped['community']" t-as="plan">
+                                            <option t-att-value="plan.id"
+                                                    t-att-data-edition="plan.edition or 'community'"
+                                                    t-att-selected="'selected' if (selected_plan and plan.id == selected_plan.id) else None">
+                                                <t t-esc="plan.name"/> - <t t-esc="'%.0f' % plan.monthly_price"/>
+                                                <t t-if="lang_is_ar"> ريال/شهر</t><t t-else=""> SAR/month</t></option>
+                                        </t>
+                                    </optgroup>
+                                    <optgroup label="Enterprise" class="signup-plan-group" data-edition="enterprise">
+                                        <t t-foreach="grouped['enterprise']" t-as="plan">
+                                            <option t-att-value="plan.id"
+                                                    t-att-data-edition="enterprise"
+                                                    t-att-selected="'selected' if (selected_plan and plan.id == selected_plan.id) else None">
+                                                <t t-esc="plan.name"/> - <t t-esc="'%.0f' % plan.monthly_price"/>
+                                                <t t-if="lang_is_ar"> ريال/شهر</t><t t-else=""> SAR/month</t></option>
+                                        </t>
+                                    </optgroup>
+                                </select>
+                            </div>
+                            <div class="mb-3"><label class="form-label fw-bold">
+                                <t t-if="lang_is_ar">اسم مساحة العمل</t><t t-else="">Workspace name</t></label>
+                                <div class="input-group">
+                                    <input type="text" name="subdomain" id="subdomainInput" class="form-control"
+                                           placeholder="my-company" required="required"/>
+                                    <span class="input-group-text">.<t t-esc="platform_domain or 'odoo.clickbulid.com'"/></span>
+                                </div>
+                                <div id="subdomainFeedback" class="form-text"></div></div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3"><label class="form-label fw-bold">
+                                    <t t-if="lang_is_ar">الاسم</t><t t-else="">Full name</t></label>
+                                    <input type="text" name="name" class="form-control" required="required"
+                                           t-att-value="form_data.get('name') if form_data else ''"/></div>
+                                <div class="col-md-6 mb-3"><label class="form-label fw-bold">
+                                    <t t-if="lang_is_ar">البريد الإلكتروني</t><t t-else="">Email</t></label>
+                                    <input type="email" name="email" class="form-control" required="required"
+                                           t-att-value="form_data.get('email') if form_data else ''"/></div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6 mb-3"><label class="form-label fw-bold">
+                                    <t t-if="lang_is_ar">اسم الشركة</t><t t-else="">Company name</t></label>
+                                    <input type="text" name="company" class="form-control"/></div>
+                                <div class="col-md-6 mb-3"><label class="form-label fw-bold">
+                                    <t t-if="lang_is_ar">الجوال</t><t t-else="">Phone</t></label>
+                                    <input type="tel" name="phone" class="form-control"/></div>
+                            </div>
+                            <div class="mb-3"><label class="form-label fw-bold">
+                                <t t-if="lang_is_ar">الدولة</t><t t-else="">Country</t></label>
+                                <select name="country" class="form-select">
+                                    <t t-if="lang_is_ar">
+                                        <option value="SA">السعودية</option><option value="AE">الإمارات</option>
+                                        <option value="EG">مصر</option><option value="KW">الكويت</option>
+                                        <option value="QA">قطر</option><option value="BH">البحرين</option>
+                                        <option value="OM">عُمان</option><option value="JO">الأردن</option>
+                                    </t>
+                                    <t t-else="">
+                                        <option value="SA">Saudi Arabia</option><option value="AE">UAE</option>
+                                        <option value="EG">Egypt</option><option value="KW">Kuwait</option>
+                                        <option value="QA">Qatar</option><option value="BH">Bahrain</option>
+                                        <option value="OM">Oman</option><option value="JO">Jordan</option>
+                                    </t>
+                                </select></div>
+                            <input type="hidden" name="coupon_code" t-att-value="coupon"/>
+                            <button type="submit" class="btn btn-primary btn-lg w-100">
+                                <t t-if="lang_is_ar">🚀 إنشاء مساحة العمل</t><t t-else="">🚀 Create workspace</t></button>
+                            <script type="text/javascript">
+                                (function() {
+                                    var cards = document.querySelectorAll('.signup-edition-card');
+                                    var sel   = document.getElementById('plan_id_select');
+                                    if (!cards.length || !sel) return;
+                                    function applyEdition(ed) {
+                                        cards.forEach(function(c) {
+                                            var on = c.dataset.edition === ed;
+                                            c.classList.toggle('active', on);
+                                            c.style.borderColor = on ? '#6d28d9' : '';
+                                            c.style.background  = on ? '#f5f3ff' : '';
+                                            c.querySelector('input[type=radio]').checked = on;
+                                        });
+                                        // Hide optgroup options not matching, and auto-pick the first one.
+                                        var firstMatch = null;
+                                        Array.from(sel.options).forEach(function(opt) {
+                                            var match = (opt.dataset.edition || 'community') === ed;
+                                            opt.hidden = !match;
+                                            if (match &amp;&amp; !firstMatch) firstMatch = opt;
+                                        });
+                                        if (firstMatch &amp;&amp; (!sel.selectedOptions[0] || sel.selectedOptions[0].hidden)) {
+                                            firstMatch.selected = true;
+                                        }
+                                    }
+                                    cards.forEach(function(c) {
+                                        c.addEventListener('click', function() {
+                                            applyEdition(c.dataset.edition);
+                                        });
+                                    });
+                                    // Keep both kept in sync: changing the plan dropdown may also change edition.
+                                    sel.addEventListener('change', function() {
+                                        var ed = sel.selectedOptions[0].dataset.edition || 'community';
+                                        applyEdition(ed);
+                                    });
+                                    // Initial state: from server-rendered checked radio.
+                                    var initial = (document.querySelector('input[name="_edition"]:checked') || {}).value || 'community';
+                                    applyEdition(initial);
+                                })();
+                            </script>
+                            <p class="text-center text-muted small mt-3">
+                                <t t-if="lang_is_ar">بالضغط على إنشاء، أنت توافق على
+                                    <a href="/terms">الشروط والأحكام</a></t>
+                                <t t-else="">By clicking create, you agree to our
+                                    <a href="/terms">Terms &amp; Conditions</a></t></p>
+                        </form>
+                    </div></div>
+                </div></div></div>
+            </section>
+        </t>
+    </template>
+
+    <template id="page_signup_success" name="Signup Success">
+        <t t-call="website.layout">
+            <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/><t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+            <section class="py-5" style="min-height:70vh; background:#f5f3ff;">
+                <div class="container py-5"><div class="row justify-content-center"><div class="col-lg-6 text-center">
+                    <div class="card border-0 shadow p-4"><div class="card-body text-start" t-att-dir="'rtl' if lang_is_ar else 'ltr'">
+                        <div class="mb-4 text-center" style="font-size:4rem; color:#16a34a;"><i class="fa fa-check-circle"/></div>
+                        <h2 class="fw-bold mb-3 text-center">
+                            <t t-if="lang_is_ar">تم إنشاء حسابك! 🎉</t>
+                            <t t-else="">Your account is ready! 🎉</t></h2>
+                        <p class="lead text-muted mb-4 text-center">
+                            <t t-if="lang_is_ar">مساحة العمل جاهزة خلال دقيقتين على الأكثر.</t>
+                            <t t-else="">Your workspace will be ready within 2 minutes.</t></p>
+
+                        <t t-if="admin_password">
+                            <div class="alert alert-warning border-warning">
+                                <h5 class="mb-3"><i class="fa fa-key"/>
+                                    <t t-if="lang_is_ar"> بيانات الدخول — احفظها الآن!</t>
+                                    <t t-else=""> Login credentials — save them now!</t></h5>
+                                <p class="small mb-2 text-muted">
+                                    <t t-if="lang_is_ar">هذه المرة الوحيدة التي ستظهر فيها كلمة المرور. احفظها قبل مغادرة الصفحة. <strong>اضغط على القيمة لنسخها.</strong></t>
+                                    <t t-else="">This is the only time the password is shown. Save it before leaving this page. <strong>Click a value to copy it.</strong></t></p>
+                                <table class="table table-sm mb-0">
+                                    <tr><td class="fw-bold" style="width:140px">
+                                        <t t-if="lang_is_ar">الرابط:</t><t t-else="">URL:</t></td>
+                                        <td><a t-att-href="tenant_url or ('https://' + subdomain + '.' + (platform_domain or 'odoo.clickbulid.com'))"
+                                               target="_blank"><t t-esc="tenant_url or (subdomain + '.' + (platform_domain or 'odoo.clickbulid.com'))"/></a></td></tr>
+                                    <tr><td class="fw-bold">
+                                        <t t-if="lang_is_ar">البريد:</t><t t-else="">Email:</t></td>
+                                        <td><code class="cb-copy" style="cursor:pointer;" t-att-data-copy="admin_email" t-esc="admin_email"/>
+                                            <span class="cb-copied small text-success ms-2" style="display:none;">
+                                                <i class="fa fa-check"/> <t t-if="lang_is_ar">نُسخ</t><t t-else="">copied</t></span></td></tr>
+                                    <tr><td class="fw-bold">
+                                        <t t-if="lang_is_ar">كلمة المرور:</t><t t-else="">Password:</t></td>
+                                        <td><code class="cb-copy user-select-all" style="cursor:pointer;" t-att-data-copy="admin_password" t-esc="admin_password"/>
+                                            <span class="cb-copied small text-success ms-2" style="display:none;">
+                                                <i class="fa fa-check"/> <t t-if="lang_is_ar">نُسخ</t><t t-else="">copied</t></span></td></tr>
+                                </table>
+                            </div>
+                        </t>
+
+                        <div class="text-center mt-4">
+                            <div id="saas_status_box" class="alert alert-info mb-3">
+                                <i class="fa fa-spinner fa-spin me-2"/>
+                                <span id="saas_status_text">
+                                    <t t-if="lang_is_ar">جاري تجهيز مساحة العمل... (قد يستغرق دقيقتين)</t>
+                                    <t t-else="">Preparing your workspace... (up to 2 minutes)</t></span>
+                                <div class="small mt-2" style="opacity:0.85;">
+                                    <t t-if="lang_is_ar">1) إنشاء قاعدة البيانات &#8226; 2) تثبيت Odoo والمحاسبة &#8226; 3) إصدار شهادة SSL</t>
+                                    <t t-else="">1) Database created &#8226; 2) Odoo + accounting installed &#8226; 3) SSL certificate issued</t>
+                                </div>
+                            </div>
+                            <!-- Pre-fill login: the button opens the tenant /web/login with the
+                                 email already filled in via URL hash. Password gets copied to clipboard
+                                 automatically right before the new tab opens, so the user just pastes. -->
+                            <a id="saas_login_btn"
+                               t-att-href="(tenant_url or '') + '/web/login#login=' + (admin_email or '')"
+                               t-att-data-password="admin_password"
+                               target="_blank"
+                               class="btn btn-primary btn-lg disabled"
+                               style="pointer-events:none; opacity:0.5;">
+                                <i class="fa fa-sign-in-alt me-2"/>
+                                <t t-if="lang_is_ar">تسجيل الدخول إلى مساحة العمل</t>
+                                <t t-else="">Log in to your workspace</t>
+                            </a>
+                            <p id="saas_pwd_copied_hint" class="small text-success mt-2" style="display:none;">
+                                <i class="fa fa-clipboard me-1"/>
+                                <t t-if="lang_is_ar">كلمة المرور نُسخت تلقائياً — الصقها في صفحة الدخول.</t>
+                                <t t-else="">Password copied to clipboard — paste it on the login page.</t>
+                            </p>
+
+                            <div id="saas_login_tip" class="alert alert-warning mt-4" style="display:none; text-align:start;">
+                                <strong><i class="fa fa-info-circle me-1"/>
+                                    <t t-if="lang_is_ar"> هل ظهرت رسالة "Your connection is not private"؟</t>
+                                    <t t-else=""> Did you see "Your connection is not private"?</t></strong>
+                                <p class="mb-2 mt-2 small">
+                                    <t t-if="lang_is_ar">هذا يحدث أحياناً عندما يحتفظ المتصفح بنسخة قديمة من الشهادة قبل اكتمال التجهيز. لحلّ ذلك:</t>
+                                    <t t-else="">This sometimes happens when the browser cached an old cert before provisioning finished. To fix it:</t>
+                                </p>
+                                <ol class="small mb-0">
+                                    <t t-if="lang_is_ar">
+                                        <li>افتح <strong>نافذة Incognito / متصفح خاص</strong> (Ctrl+Shift+N في Chrome)</li>
+                                        <li>أو امسح cache المتصفح وأعد المحاولة</li>
+                                        <li>أو انتظر دقيقتين وحدّث الصفحة (Ctrl+Shift+R)</li>
+                                    </t>
+                                    <t t-else="">
+                                        <li>Open an <strong>Incognito / Private window</strong> (Ctrl+Shift+N in Chrome)</li>
+                                        <li>Or clear browser cache and try again</li>
+                                        <li>Or wait two minutes and hard-refresh (Ctrl+Shift+R)</li>
+                                    </t>
+                                </ol>
+                            </div>
+                        </div>
+
+                        <script type="text/javascript">
+                            (function() {
+                                var subdomain = "<t t-esc="subdomain or ''"/>";
+                                var lang_is_ar = <t t-esc="'true' if lang_is_ar else 'false'"/>;
+                                if (!subdomain) return;
+                                var btn = document.getElementById('saas_login_btn');
+                                var box = document.getElementById('saas_status_box');
+                                var txt = document.getElementById('saas_status_text');
+                                var tip = document.getElementById('saas_login_tip');
+                                var tries = 0;
+                                var maxTries = 60;
+                                var msg = lang_is_ar ? {
+                                    ready: 'مساحة العمل جاهزة! يمكنك تسجيل الدخول الآن.',
+                                    cert_error: 'تعذّر إصدار الشهادة، نُعيد المحاولة...',
+                                    after_cert: 'الشهادة تم إصدارها، جاري تفعيل HTTPS...',
+                                    after_db: 'قاعدة البيانات جاهزة، جاري إصدار شهادة SSL...',
+                                    timeout: 'استغرق التجهيز وقتاً غير معتاد. حدّث الصفحة وحاول الدخول.'
+                                } : {
+                                    ready: 'Your workspace is ready! You can log in now.',
+                                    cert_error: 'Certificate issuance failed — retrying...',
+                                    after_cert: 'Certificate issued, activating HTTPS...',
+                                    after_db: 'Database ready, issuing SSL certificate...',
+                                    timeout: 'Setup took longer than expected. Refresh the page and try logging in.'
+                                };
+                                var enableBtn = function(){
+                                    btn.className = 'btn btn-primary btn-lg';
+                                    btn.style.pointerEvents = '';
+                                    btn.style.opacity = '';
+                                };
+                                // Copy-to-clipboard on credentials. One-click on email/password copies it.
+                                document.querySelectorAll('.cb-copy').forEach(function(el) {
+                                    el.addEventListener('click', function() {
+                                        var value = el.getAttribute('data-copy') || el.textContent.trim();
+                                        navigator.clipboard.writeText(value).then(function() {
+                                            var hint = el.parentNode.querySelector('.cb-copied');
+                                            if (!hint) return;
+                                            hint.style.display = 'inline';
+                                            setTimeout(function(){ hint.style.display = 'none'; }, 1800);
+                                        }).catch(function(){});
+                                    });
+                                });
+                                // When the user clicks "Log in", copy the password to clipboard
+                                // automatically so they only need to paste once they reach /web/login.
+                                btn.addEventListener('click', function(){
+                                    var pwd = btn.getAttribute('data-password');
+                                    if (pwd &amp;&amp; navigator.clipboard) {
+                                        navigator.clipboard.writeText(pwd).then(function(){
+                                            var hint = document.getElementById('saas_pwd_copied_hint');
+                                            if (hint) hint.style.display = 'block';
+                                        }).catch(function(){});
+                                    }
+                                    if (tip) tip.style.display = 'block';
+                                });
+                                function poll() {
+                                    tries++;
+                                    fetch('/get-started/status', {
+                                        method: 'POST',
+                                        headers: {'Content-Type': 'application/json'},
+                                        body: JSON.stringify({jsonrpc:'2.0', params:{tenant: subdomain}})
+                                    }).then(function(r){ return r.json(); }).then(function(d){
+                                        var s = (d.result || {});
+                                        if (s.ready) {
+                                            box.className = 'alert alert-success mb-3';
+                                            box.innerHTML = '<i class="fa fa-check-circle me-2"></i><strong>' +
+                                                            msg.ready + '</strong>';
+                                            enableBtn();
+                                            return;
+                                        }
+                                        if (s.cert_error) {
+                                            box.className = 'alert alert-warning mb-3';
+                                            txt.textContent = msg.cert_error;
+                                        } else if (s.provision_done &amp;&amp; s.cert_done &amp;&amp; !s.https_ok) {
+                                            txt.textContent = msg.after_cert;
+                                        } else if (s.provision_done) {
+                                            txt.textContent = msg.after_db;
+                                        }
+                                        if (tries &lt; maxTries) {
+                                            setTimeout(poll, 3000);
+                                        } else {
+                                            box.className = 'alert alert-warning mb-3';
+                                            box.innerHTML = msg.timeout;
+                                            enableBtn();
+                                        }
+                                    }).catch(function(){
+                                        if (tries &lt; maxTries) setTimeout(poll, 3000);
+                                    });
+                                }
+                                poll();
+                            })();
+                        </script>
+                    </div></div>
+                </div></div></div>
+            </section>
+        </t>
+    </template>
+</odoo>

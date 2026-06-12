@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_ticket_category_list" model="ir.ui.view">
+        <field name="name">saas.ticket.category.list</field>
+        <field name="model">saas.ticket.category</field>
+        <field name="arch" type="xml">
+            <list string="Ticket Categories">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="default_priority_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_saas_ticket_category_form" model="ir.ui.view">
+        <field name="name">saas.ticket.category.form</field>
+        <field name="model">saas.ticket.category</field>
+        <field name="arch" type="xml">
+            <form string="Ticket Category">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="name_ar"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="default_priority_id"/>
+                            <field name="icon"/>
+                            <field name="sequence"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_saas_ticket_category" model="ir.actions.act_window">
+        <field name="name">Ticket Categories</field>
+        <field name="res_model">saas.ticket.category</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_saas_ticket_priority_list" model="ir.ui.view">
+        <field name="name">saas.ticket.priority.list</field>
+        <field name="model">saas.ticket.priority</field>
+        <field name="arch" type="xml">
+            <list string="Ticket Priorities">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="response_hours"/>
+                <field name="resolution_hours"/>
+                <field name="color"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_saas_ticket_priority_form" model="ir.ui.view">
+        <field name="name">saas.ticket.priority.form</field>
+        <field name="model">saas.ticket.priority</field>
+        <field name="arch" type="xml">
+            <form string="Ticket Priority">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="code"/>
+                        </group>
+                        <group>
+                            <field name="response_hours"/>
+                            <field name="resolution_hours"/>
+                            <field name="color"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_saas_ticket_priority" model="ir.actions.act_window">
+        <field name="name">Ticket Priorities</field>
+        <field name="res_model">saas.ticket.priority</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

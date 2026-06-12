@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="dunning_rule_grace_1" model="saas.dunning.rule">
+            <field name="name">Grace Period: Attempt 1 - Notification (Day 0)</field>
+            <field name="sequence">10</field>
+            <field name="attempt_number">1</field>
+            <field name="applies_to_state">grace_period</field>
+            <field name="delay_days">0</field>
+            <field name="action">send_email</field>
+            <field name="send_email" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="dunning_rule_grace_2" model="saas.dunning.rule">
+            <field name="name">Grace Period: Attempt 2 - Retry Payment (Day 3)</field>
+            <field name="sequence">20</field>
+            <field name="attempt_number">2</field>
+            <field name="applies_to_state">grace_period</field>
+            <field name="delay_days">3</field>
+            <field name="action">retry_payment</field>
+            <field name="send_email" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="dunning_rule_grace_3" model="saas.dunning.rule">
+            <field name="name">Grace Period: Attempt 3 - Retry Payment (Day 6)</field>
+            <field name="sequence">30</field>
+            <field name="attempt_number">3</field>
+            <field name="applies_to_state">grace_period</field>
+            <field name="delay_days">6</field>
+            <field name="action">retry_payment</field>
+            <field name="send_email" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="dunning_rule_grace_4" model="saas.dunning.rule">
+            <field name="name">Grace Period: Attempt 4 - Suspend (Day 9, Final)</field>
+            <field name="sequence">40</field>
+            <field name="attempt_number">4</field>
+            <field name="applies_to_state">grace_period</field>
+            <field name="delay_days">9</field>
+            <field name="action">suspend</field>
+            <field name="send_email" eval="True"/>
+            <field name="is_final" eval="True"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="cancel_reason_price" model="saas.cancellation.reason">
+            <field name="name">Price Too High</field>
+            <field name="name_ar">السعر مرتفع</field>
+            <field name="code">price</field>
+            <field name="churn_category">price</field>
+            <field name="sequence">10</field>
+            <field name="winback_delay_days">30</field>
+        </record>
+        <record id="cancel_reason_competitor" model="saas.cancellation.reason">
+            <field name="name">Moved to Competitor</field>
+            <field name="name_ar">انتقلت لمنافس</field>
+            <field name="code">competitor</field>
+            <field name="churn_category">competitor</field>
+            <field name="sequence">20</field>
+            <field name="winback_delay_days">60</field>
+        </record>
+        <record id="cancel_reason_features" model="saas.cancellation.reason">
+            <field name="name">Missing Features</field>
+            <field name="name_ar">ميزات ناقصة</field>
+            <field name="code">features</field>
+            <field name="churn_category">features</field>
+            <field name="sequence">30</field>
+            <field name="winback_delay_days">45</field>
+        </record>
+        <record id="cancel_reason_complexity" model="saas.cancellation.reason">
+            <field name="name">Too Complex / Hard to Use</field>
+            <field name="name_ar">صعب الاستخدام</field>
+            <field name="code">complexity</field>
+            <field name="churn_category">complexity</field>
+            <field name="sequence">40</field>
+            <field name="winback_delay_days">30</field>
+        </record>
+        <record id="cancel_reason_business" model="saas.cancellation.reason">
+            <field name="name">Business Closed or Paused</field>
+            <field name="name_ar">أغلقت الشركة أو توقفت</field>
+            <field name="code">business</field>
+            <field name="churn_category">business</field>
+            <field name="sequence">50</field>
+            <field name="winback_delay_days">90</field>
+        </record>
+        <record id="cancel_reason_support" model="saas.cancellation.reason">
+            <field name="name">Poor Support Experience</field>
+            <field name="name_ar">خدمة عملاء سيئة</field>
+            <field name="code">support</field>
+            <field name="churn_category">support</field>
+            <field name="sequence">60</field>
+            <field name="winback_delay_days">14</field>
+        </record>
+        <record id="cancel_reason_trial_only" model="saas.cancellation.reason">
+            <field name="name">Was Just Testing</field>
+            <field name="name_ar">كانت تجربة فقط</field>
+            <field name="code">trial_only</field>
+            <field name="churn_category">trial_only</field>
+            <field name="sequence">70</field>
+            <field name="eligible_for_winback" eval="False"/>
+            <field name="winback_delay_days">0</field>
+        </record>
+        <record id="cancel_reason_other" model="saas.cancellation.reason">
+            <field name="name">Other</field>
+            <field name="name_ar">سبب آخر</field>
+            <field name="code">other</field>
+            <field name="churn_category">other</field>
+            <field name="sequence">99</field>
+            <field name="winback_delay_days">30</field>
+        </record>
+
+    </data>
+</odoo>

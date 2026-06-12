@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="health_check_db" model="saas.health.check">
+            <field name="name">PostgreSQL Database</field>
+            <field name="code">db_primary</field>
+            <field name="check_type">db</field>
+            <field name="interval_minutes">2</field>
+            <field name="alert_threshold">2</field>
+        </record>
+        <record id="health_check_self" model="saas.health.check">
+            <field name="name">Odoo HTTP Self-check</field>
+            <field name="code">odoo_self</field>
+            <field name="check_type">http</field>
+            <field name="target_url">http://127.0.0.1:8069/healthz</field>
+            <field name="interval_minutes">5</field>
+            <field name="alert_threshold">3</field>
+        </record>
+        <record id="health_check_bridge" model="saas.health.check">
+            <field name="name">FastAPI Provisioning Bridge</field>
+            <field name="code">bridge_api</field>
+            <field name="check_type">http</field>
+            <field name="target_url">http://127.0.0.1:8000/health</field>
+            <field name="interval_minutes">5</field>
+            <field name="alert_threshold">3</field>
+        </record>
+    </data>
+</odoo>

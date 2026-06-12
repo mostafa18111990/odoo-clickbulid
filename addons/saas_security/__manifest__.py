@@ -1,0 +1,23 @@
+{
+    'name': 'SaaS Security',
+    'version': '19.0.1.0.0',
+    'category': 'SaaS',
+    'summary': '2FA, brute-force protection, password policies, security audit',
+    'author': 'ClickBuild',
+    'website': 'https://clickbuild.com',
+    'depends': ['saas_api'],
+    'data': [
+        'security/ir.model.access.csv',
+        'data/saas_password_policy_data.xml',
+        'data/saas_security_cron.xml',
+        'views/saas_login_attempt_views.xml',
+        'views/saas_security_event_views.xml',
+        'views/saas_password_policy_views.xml',
+        'views/saas_user_2fa_views.xml',
+        'views/saas_security_menu.xml',
+    ],
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+    'license': 'LGPL-3',
+}

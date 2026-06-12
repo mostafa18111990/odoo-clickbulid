@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_saas_subscriptions_root" name="Subscriptions"
+              parent="saas_core.menu_saas_root" sequence="15"
+              groups="saas_tenant_manager.group_saas_manager"/>
+
+    <menuitem id="menu_saas_subscriptions" name="All Subscriptions"
+              parent="menu_saas_subscriptions_root" action="action_saas_subscription" sequence="10"/>
+
+    <menuitem id="menu_saas_plan_changes" name="Plan Changes"
+              parent="menu_saas_subscriptions_root" action="action_saas_plan_change" sequence="20"
+              groups="saas_tenant_manager.group_saas_admin"/>
+
+    <menuitem id="menu_saas_sub_history" name="Subscription History"
+              parent="menu_saas_subscriptions_root" action="action_saas_sub_history" sequence="30"
+              groups="saas_tenant_manager.group_saas_admin"/>
+</odoo>

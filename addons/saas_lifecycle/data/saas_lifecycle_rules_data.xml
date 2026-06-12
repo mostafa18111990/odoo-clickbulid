@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="rule_trial_to_pending" model="saas.lifecycle.rule">
+            <field name="name">Trial Expired -> Pending Payment</field>
+            <field name="sequence">10</field>
+            <field name="from_state">trial</field>
+            <field name="delay_hours">0</field>
+            <field name="delay_type">since_trial_end</field>
+            <field name="action">transition</field>
+            <field name="to_state">pending_payment</field>
+            <field name="send_email" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="rule_pending_to_suspend" model="saas.lifecycle.rule">
+            <field name="name">Pending Payment 7 Days -> Suspend</field>
+            <field name="sequence">20</field>
+            <field name="from_state">pending_payment</field>
+            <field name="delay_hours">168</field>
+            <field name="delay_type">since_state_entry</field>
+            <field name="action">transition</field>
+            <field name="to_state">suspended</field>
+            <field name="send_email" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="rule_cancelled_to_archived" model="saas.lifecycle.rule">
+            <field name="name">Cancelled 30 Days -> Archive</field>
+            <field name="sequence">30</field>
+            <field name="from_state">cancelled</field>
+            <field name="delay_hours">720</field>
+            <field name="delay_type">since_state_entry</field>
+            <field name="action">transition</field>
+            <field name="to_state">archived</field>
+            <field name="send_email" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="rule_archived_to_deleted" model="saas.lifecycle.rule">
+            <field name="name">Archived 90 Days -> Delete</field>
+            <field name="sequence">40</field>
+            <field name="from_state">archived</field>
+            <field name="delay_hours">2160</field>
+            <field name="delay_type">since_state_entry</field>
+            <field name="action">transition</field>
+            <field name="to_state">deleted</field>
+            <field name="send_email" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="rule_trial_7day_reminder" model="saas.lifecycle.rule">
+            <field name="name">Trial: 7-Day Reminder Event</field>
+            <field name="sequence">50</field>
+            <field name="from_state">trial</field>
+            <field name="delay_hours">168</field>
+            <field name="delay_type">since_state_entry</field>
+            <field name="action">publish_event</field>
+            <field name="event_to_publish">tenant.trial.reminder</field>
+            <field name="send_email" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="rule_cancelled_winback" model="saas.lifecycle.rule">
+            <field name="name">Cancelled -> Win-Back Campaign (30 days)</field>
+            <field name="sequence">70</field>
+            <field name="from_state">cancelled</field>
+            <field name="delay_hours">720</field>
+            <field name="delay_type">since_state_entry</field>
+            <field name="action">winback</field>
+            <field name="send_email" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

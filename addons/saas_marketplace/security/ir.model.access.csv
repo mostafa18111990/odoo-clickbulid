@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_mp_category_admin,saas.marketplace.category admin,model_saas_marketplace_category,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_mp_category_all,saas.marketplace.category all,model_saas_marketplace_category,base.group_user,1,0,0,0
+access_mp_category_portal,saas.marketplace.category portal,model_saas_marketplace_category,base.group_portal,1,0,0,0
+access_mp_app_admin,saas.marketplace.app admin,model_saas_marketplace_app,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_mp_app_all,saas.marketplace.app all,model_saas_marketplace_app,base.group_user,1,0,0,0
+access_mp_app_portal,saas.marketplace.app portal,model_saas_marketplace_app,base.group_portal,1,0,0,0
+access_tenant_app_admin,saas.tenant.app admin,model_saas_tenant_app,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_tenant_app_system,saas.tenant.app system,model_saas_tenant_app,base.group_system,1,1,1,0
+access_tenant_app_portal,saas.tenant.app portal,model_saas_tenant_app,base.group_portal,1,0,0,0
+access_addon_admin,saas.subscription.addon admin,model_saas_subscription_addon,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_addon_system,saas.subscription.addon system,model_saas_subscription_addon,base.group_system,1,1,1,0
+access_addon_portal,saas.subscription.addon portal,model_saas_subscription_addon,base.group_portal,1,0,0,0

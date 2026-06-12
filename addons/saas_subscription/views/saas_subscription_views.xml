@@ -1,0 +1,132 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_subscription_list" model="ir.ui.view">
+        <field name="name">saas.subscription.list</field>
+        <field name="model">saas.subscription</field>
+        <field name="arch" type="xml">
+            <list string="Subscriptions"
+                  decoration-success="status == 'active'"
+                  decoration-warning="status in ('trial','past_due')"
+                  decoration-danger="status in ('cancelled','expired')"
+                  decoration-muted="status == 'paused'">
+                <field name="tenant_id"/>
+                <field name="plan_id"/>
+                <field name="billing_cycle" widget="badge"/>
+                <field name="status" widget="badge"/>
+                <field name="total_amount" string="Amount"/>
+                <field name="currency"/>
+                <field name="current_period_end" string="Period End"/>
+                <field name="next_renewal_date" string="Renewal"/>
+                <field name="days_to_renewal" string="Days"/>
+                <field name="credit_balance"/>
+                <field name="is_current" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_saas_subscription_form" model="ir.ui.view">
+        <field name="name">saas.subscription.form</field>
+        <field name="model">saas.subscription</field>
+        <field name="arch" type="xml">
+            <form string="Subscription">
+                <header>
+                    <button name="action_view_history" type="object" string="View History" class="btn-secondary"/>
+                    <field name="status" widget="statusbar"
+                        statusbar_visible="trial,active,past_due,paused,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="alert alert-warning" invisible="not cancel_at_period_end">
+                        Scheduled to cancel at period end (<field name="current_period_end" class="d-inline"/>).
+                    </div>
+                    <div class="oe_title"><h1><field name="display_name" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Subscription">
+                            <field name="tenant_id"/>
+                            <field name="plan_id"/>
+                            <field name="billing_cycle"/>
+                            <field name="currency"/>
+                            <field name="is_current"/>
+                        </group>
+                        <group string="Pricing">
+                            <field name="base_amount"/>
+                            <field name="discount_amount"/>
+                            <field name="coupon_code"/>
+                            <field name="total_amount" readonly="1"/>
+                            <field name="unbilled_overage" readonly="1"/>
+                            <field name="credit_balance"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Current Period">
+                            <field name="current_period_start"/>
+                            <field name="current_period_end"/>
+                            <field name="next_renewal_date"/>
+                            <field name="days_to_renewal" readonly="1"/>
+                        </group>
+                        <group string="Payment">
+                            <field name="payment_gateway"/>
+                            <field name="last_payment_date" readonly="1"/>
+                            <field name="last_payment_amount" readonly="1"/>
+                            <field name="failed_payment_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Usage Lines">
+                            <field name="line_ids" mode="list">
+                                <list>
+                                    <field name="period_start"/>
+                                    <field name="line_type" widget="badge"/>
+                                    <field name="name"/>
+                                    <field name="quantity"/>
+                                    <field name="unit_price"/>
+                                    <field name="amount"/>
+                                    <field name="billed" widget="boolean_toggle"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Pending Changes">
+                            <field name="pending_change_ids" mode="list">
+                                <list>
+                                    <field name="change_type" widget="badge"/>
+                                    <field name="from_plan_id"/>
+                                    <field name="to_plan_id"/>
+                                    <field name="effective_date"/>
+                                    <field name="proration_amount"/>
+                                    <field name="status" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_saas_subscription_search" model="ir.ui.view">
+        <field name="name">saas.subscription.search</field>
+        <field name="model">saas.subscription</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="tenant_id"/>
+                <field name="plan_id"/>
+                <filter name="filter_active" string="Active" domain="[('status','=','active')]"/>
+                <filter name="filter_trial" string="Trial" domain="[('status','=','trial')]"/>
+                <filter name="filter_past_due" string="Past Due" domain="[('status','=','past_due')]"/>
+                <filter name="filter_current" string="Current" domain="[('is_current','=',True)]"/>
+                <group name="group_by">
+                    <filter name="group_plan" string="Plan" context="{'group_by': 'plan_id'}"/>
+                    <filter name="group_cycle" string="Cycle" context="{'group_by': 'billing_cycle'}"/>
+                    <filter name="group_status" string="Status" context="{'group_by': 'status'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_saas_subscription" model="ir.actions.act_window">
+        <field name="name">Subscriptions</field>
+        <field name="res_model">saas.subscription</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_saas_subscription_search"/>
+        <field name="context">{'search_default_filter_current': 1}</field>
+    </record>
+</odoo>

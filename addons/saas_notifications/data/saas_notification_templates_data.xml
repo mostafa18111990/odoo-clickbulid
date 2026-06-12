@@ -1,0 +1,165 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="tmpl_welcome_lead_email" model="saas.notification.template">
+            <field name="notification_type_id" ref="ntype_welcome_lead"/>
+            <field name="channel">email</field>
+            <field name="subject_ar">مرحباً بك في ClickBuild!</field>
+            <field name="subject_en">Welcome to ClickBuild!</field>
+            <field name="body_ar"><![CDATA[<p>مرحباً {{ customer_name }}،</p><p>شكراً لاهتمامك بـ ClickBuild! مساحة العمل <strong>{{ subdomain }}.clickbuild.com</strong> قيد الإعداد.</p>]]></field>
+            <field name="body_en"><![CDATA[<p>Hi {{ customer_name }},</p><p>Thank you for choosing ClickBuild! Your workspace <strong>{{ subdomain }}.clickbuild.com</strong> is being set up.</p>]]></field>
+            <field name="cta_url">{{ portal_url }}</field>
+            <field name="cta_label_ar">لوحة التحكم</field>
+            <field name="cta_label_en">Go to Dashboard</field>
+        </record>
+
+        <record id="tmpl_provisioning_email" model="saas.notification.template">
+            <field name="notification_type_id" ref="ntype_provisioning_completed"/>
+            <field name="channel">email</field>
+            <field name="subject_ar">مساحة عملك جاهزة!</field>
+            <field name="subject_en">Your workspace is ready!</field>
+            <field name="body_ar"><![CDATA[<p>مرحباً {{ customer_name }}،</p><p>مساحة عملك جاهزة. ادخل عبر:</p><p><strong>{{ tenant_url }}</strong></p>]]></field>
+            <field name="body_en"><![CDATA[<p>Hi {{ customer_name }},</p><p>Your workspace is ready. Access it at:</p><p><strong>{{ tenant_url }}</strong></p>]]></field>
+            <field name="cta_url">{{ tenant_url }}</field>
+            <field name="cta_label_ar">الدخول للنظام</field>
+            <field name="cta_label_en">Access Your ERP</field>
+        </record>
+
+        <record id="tmpl_provisioning_sms" model="saas.notification.template">
+            <field name="notification_type_id" ref="ntype_provisioning_completed"/>
+            <field name="channel">sms</field>
+            <field name="text_ar">ClickBuild: مساحة عملك {{ subdomain }} جاهزة! {{ tenant_url }}</field>
+            <field name="text_en">ClickBuild: Your workspace {{ subdomain }} is ready! {{ tenant_url }}</field>
+        </record>
+
+        <record id="tmpl_trial_reminder_email" model="saas.notification.template">
+            <field name="notification_type_id" ref="ntype_trial_reminder"/>
+            <field name="channel">email</field>
+            <field name="subject_ar">تجربتك تنتهي قريباً</field>
+            <field name="subject_en">Your free trial ends soon</field>
+            <field name="body_ar"><![CDATA[<p>مرحباً {{ customer_name }}،</p><p>تبقى <strong>{{ days_left }} أيام</strong> على انتهاء تجربتك المجانية.</p>]]></field>
+            <field name="body_en"><![CDATA[<p>Hi {{ customer_name }},</p><p>You have <strong>{{ days_left }} days</strong> left in your free trial.</p>]]></field>
+            <field name="cta_url">{{ portal_url }}/subscription/plans</field>
+            <field name="cta_label_ar">ترقية الآن</field>
+            <field name="cta_label_en">Upgrade Now</field>
+        </record>
+
+        <record id="tmpl_trial_reminder_sms" model="saas.notification.template">
+            <field name="notification_type_id" ref="ntype_trial_reminder"/>
+            <field name="channel">sms</field>
+            <field name="text_ar">ClickBuild: تبقى {{ days_left }} أيام على تجربتك. {{ portal_url }}</field>
+            <field name="text_en">ClickBuild: {{ days_left }} days left in your trial. {{ portal_url }}</field>
+        </record>
+
+        <record id="tmpl_payment_failed_email" model="saas.notification.template">
+            <field name="notification_type_id" ref="ntype_payment_failed"/>
+            <field name="channel">email</field>
+            <field name="subject_ar">فشلت عملية الدفع</field>
+            <field name="subject_en">Payment Failed</field>
+            <field name="body_ar"><![CDATA[<p>مرحباً {{ customer_name }}،</p><p>لم نتمكن من معالجة دفعتك. يُرجى تحديث طريقة الدفع.</p>]]></field>
+            <field name="body_en"><![CDATA[<p>Hi {{ customer_name }},</p><p>We couldn't process your payment. Please update your payment method.</p>]]></field>
+            <field name="cta_url">{{ portal_url }}/payment-methods</field>
+            <field name="cta_label_ar">تحديث الدفع</field>
+            <field name="cta_label_en">Update Payment</field>
+        </record>
+
+        <record id="tmpl_payment_failed_sms" model="saas.notification.template">
+            <field name="notification_type_id" ref="ntype_payment_failed"/>
+            <field name="channel">sms</field>
+            <field name="text_ar">ClickBuild: فشل الدفع. حدّث طريقة الدفع: {{ portal_url }}</field>
+            <field name="text_en">ClickBuild: Payment failed. Update method: {{ portal_url }}</field>
+        </record>
+
+        <record id="tmpl_payment_received_email" model="saas.notification.template">
+            <field name="notification_type_id" ref="ntype_payment_received"/>
+            <field name="channel">email</field>
+            <field name="subject_ar">تم استلام دفعتك</field>
+            <field name="subject_en">Payment Received</field>
+            <field name="body_ar"><![CDATA[<p>مرحباً {{ customer_name }}،</p><p>شكراً! تم استلام <strong>{{ amount }} {{ currency }}</strong> بنجاح.</p>]]></field>
+            <field name="body_en"><![CDATA[<p>Hi {{ customer_name }},</p><p>Thank you! Received <strong>{{ amount }} {{ currency }}</strong>.</p>]]></field>
+            <field name="cta_url">{{ portal_url }}/invoices</field>
+            <field name="cta_label_ar">عرض الفواتير</field>
+            <field name="cta_label_en">View Invoices</field>
+        </record>
+
+        <record id="tmpl_invoice_email" model="saas.notification.template">
+            <field name="notification_type_id" ref="ntype_invoice_generated"/>
+            <field name="channel">email</field>
+            <field name="subject_ar">فاتورة جديدة {{ number }}</field>
+            <field name="subject_en">New Invoice {{ number }}</field>
+            <field name="body_ar"><![CDATA[<p>مرحباً {{ customer_name }}،</p><p>فاتورتك بمبلغ <strong>{{ amount }} {{ currency }}</strong> جاهزة.</p>]]></field>
+            <field name="body_en"><![CDATA[<p>Hi {{ customer_name }},</p><p>Your invoice for <strong>{{ amount }} {{ currency }}</strong> is ready.</p>]]></field>
+            <field name="cta_url">{{ portal_url }}/invoices</field>
+            <field name="cta_label_ar">عرض الفاتورة</field>
+            <field name="cta_label_en">View Invoice</field>
+        </record>
+
+        <record id="tmpl_suspended_email" model="saas.notification.template">
+            <field name="notification_type_id" ref="ntype_tenant_suspended"/>
+            <field name="channel">email</field>
+            <field name="subject_ar">تم إيقاف حسابك مؤقتاً</field>
+            <field name="subject_en">Your account has been suspended</field>
+            <field name="body_ar"><![CDATA[<p>مرحباً {{ customer_name }}،</p><p>تم إيقاف حسابك مؤقتاً. بياناتك محفوظة. ادفع لإعادة التفعيل.</p>]]></field>
+            <field name="body_en"><![CDATA[<p>Hi {{ customer_name }},</p><p>Your account has been suspended. Your data is safe. Pay to reactivate.</p>]]></field>
+            <field name="cta_url">{{ portal_url }}/subscription</field>
+            <field name="cta_label_ar">إعادة التفعيل</field>
+            <field name="cta_label_en">Reactivate</field>
+        </record>
+
+        <record id="tmpl_suspended_sms" model="saas.notification.template">
+            <field name="notification_type_id" ref="ntype_tenant_suspended"/>
+            <field name="channel">sms</field>
+            <field name="text_ar">ClickBuild: تم إيقاف حسابك. ادفع لإعادة التفعيل: {{ portal_url }}</field>
+            <field name="text_en">ClickBuild: Account suspended. Pay to reactivate: {{ portal_url }}</field>
+        </record>
+
+        <record id="tmpl_domain_ssl_email" model="saas.notification.template">
+            <field name="notification_type_id" ref="ntype_domain_ssl_issued"/>
+            <field name="channel">email</field>
+            <field name="subject_ar">نطاقك {{ domain }} أصبح نشطاً</field>
+            <field name="subject_en">Your domain {{ domain }} is now live</field>
+            <field name="body_ar"><![CDATA[<p>مرحباً {{ customer_name }}،</p><p>تم تفعيل نطاقك المخصص <strong>{{ domain }}</strong> مع شهادة SSL مجانية.</p>]]></field>
+            <field name="body_en"><![CDATA[<p>Hi {{ customer_name }},</p><p>Your custom domain <strong>{{ domain }}</strong> is now active with a free SSL certificate.</p>]]></field>
+        </record>
+
+        <record id="tmpl_payment_received_inapp" model="saas.notification.template">
+            <field name="notification_type_id" ref="ntype_payment_received"/>
+            <field name="channel">inapp</field>
+            <field name="title_ar">تم استلام الدفع</field>
+            <field name="title_en">Payment Received</field>
+            <field name="text_ar">تم استلام {{ amount }} {{ currency }}</field>
+            <field name="text_en">Received {{ amount }} {{ currency }}</field>
+            <field name="cta_url">{{ portal_url }}/invoices</field>
+        </record>
+
+        <record id="tmpl_invoice_inapp" model="saas.notification.template">
+            <field name="notification_type_id" ref="ntype_invoice_generated"/>
+            <field name="channel">inapp</field>
+            <field name="title_ar">فاتورة جديدة</field>
+            <field name="title_en">New Invoice</field>
+            <field name="text_ar">فاتورة {{ number }} بمبلغ {{ amount }} {{ currency }}</field>
+            <field name="text_en">Invoice {{ number }} for {{ amount }} {{ currency }}</field>
+            <field name="cta_url">{{ portal_url }}/invoices</field>
+        </record>
+
+        <record id="tmpl_domain_ssl_inapp" model="saas.notification.template">
+            <field name="notification_type_id" ref="ntype_domain_ssl_issued"/>
+            <field name="channel">inapp</field>
+            <field name="title_ar">النطاق نشط</field>
+            <field name="title_en">Domain Active</field>
+            <field name="text_ar">{{ domain }} نشط مع SSL</field>
+            <field name="text_en">{{ domain }} is live with SSL</field>
+        </record>
+
+        <record id="tmpl_trial_started_inapp" model="saas.notification.template">
+            <field name="notification_type_id" ref="ntype_trial_started"/>
+            <field name="channel">inapp</field>
+            <field name="title_ar">بدأت تجربتك</field>
+            <field name="title_en">Trial Started</field>
+            <field name="text_ar">تجربتك المجانية لمدة 14 يوماً بدأت الآن</field>
+            <field name="text_en">Your 14-day free trial has started</field>
+        </record>
+
+    </data>
+</odoo>

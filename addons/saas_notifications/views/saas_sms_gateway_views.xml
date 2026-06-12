@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_sms_gateway_form" model="ir.ui.view">
+        <field name="name">saas.sms.gateway.form</field>
+        <field name="model">saas.sms.gateway</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="float-end"><field name="active" widget="boolean_toggle"/></div>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group string="Provider">
+                            <field name="provider"/>
+                            <field name="priority"/>
+                            <field name="is_sandbox"/>
+                            <field name="sender_id"/>
+                            <field name="supported_countries"/>
+                        </group>
+                        <group string="Credentials" groups="saas_core.group_saas_super_admin">
+                            <field name="api_key" password="True"/>
+                            <field name="api_secret" password="True"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_saas_sms_gateway_list" model="ir.ui.view">
+        <field name="name">saas.sms.gateway.list</field>
+        <field name="model">saas.sms.gateway</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="priority" widget="handle"/>
+                <field name="name"/>
+                <field name="provider" widget="badge"/>
+                <field name="sender_id"/>
+                <field name="is_sandbox"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_saas_sms_gateway" model="ir.actions.act_window">
+        <field name="name">SMS Gateways</field>
+        <field name="res_model">saas.sms.gateway</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

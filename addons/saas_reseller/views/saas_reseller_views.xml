@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_reseller_list" model="ir.ui.view">
+        <field name="name">saas.reseller.list</field>
+        <field name="model">saas.reseller</field>
+        <field name="arch" type="xml">
+            <list string="Resellers"
+                  decoration-success="state == 'active'"
+                  decoration-muted="state in ('terminated','suspended')">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="contact_email"/>
+                <field name="commission_model"/>
+                <field name="commission_rate"/>
+                <field name="customer_count"/>
+                <field name="active_customer_count"/>
+                <field name="total_earned"/>
+                <field name="balance_due"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_reseller_form" model="ir.ui.view">
+        <field name="name">saas.reseller.form</field>
+        <field name="model">saas.reseller</field>
+        <field name="arch" type="xml">
+            <form string="Reseller">
+                <header>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary"
+                        invisible="state != 'pending'"/>
+                    <button name="action_suspend" type="object" string="Suspend"
+                        invisible="state != 'active'"/>
+                    <button name="action_terminate" type="object" string="Terminate" class="btn-danger"
+                        invisible="state == 'terminated'"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="pending,active,suspended"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1><field name="code"/></div>
+                    <group>
+                        <group string="Contact">
+                            <field name="contact_name"/>
+                            <field name="contact_email"/>
+                            <field name="contact_phone"/>
+                            <field name="country"/>
+                            <field name="portal_user_id" readonly="1"/>
+                        </group>
+                        <group string="Commission">
+                            <field name="commission_model"/>
+                            <field name="commission_rate" invisible="commission_model == 'fixed'"/>
+                            <field name="commission_fixed" invisible="commission_model != 'fixed'"/>
+                            <field name="tier_json" invisible="commission_model != 'tiered'"/>
+                            <field name="currency"/>
+                        </group>
+                    </group>
+                    <group string="Balances">
+                        <group>
+                            <field name="total_earned" readonly="1"/>
+                            <field name="total_paid" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="balance_due" readonly="1"/>
+                            <field name="active_customer_count" readonly="1"/>
+                        </group>
+                    </group>
+                    <group string="White-Label">
+                        <field name="is_white_label"/>
+                        <field name="brand_name" invisible="not is_white_label"/>
+                        <field name="brand_domain" invisible="not is_white_label"/>
+                        <field name="brand_primary_color" invisible="not is_white_label"/>
+                        <field name="brand_logo" widget="image" invisible="not is_white_label"/>
+                    </group>
+                    <notebook>
+                        <page string="Customers">
+                            <field name="tenant_ids" readonly="1">
+                                <list>
+                                    <field name="name"/>
+                                    <field name="subdomain"/>
+                                    <field name="state"/>
+                                    <field name="plan_id"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Commissions">
+                            <field name="commission_ids" readonly="1">
+                                <list>
+                                    <field name="create_date"/>
+                                    <field name="tenant_id"/>
+                                    <field name="payment_amount"/>
+                                    <field name="amount"/>
+                                    <field name="state" widget="badge"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Payouts">
+                            <field name="payout_ids" readonly="1">
+                                <list>
+                                    <field name="number"/>
+                                    <field name="amount"/>
+                                    <field name="state" widget="badge"/>
+                                    <field name="paid_date"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter"><field name="message_ids"/></div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_reseller" model="ir.actions.act_window">
+        <field name="name">Resellers</field>
+        <field name="res_model">saas.reseller</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

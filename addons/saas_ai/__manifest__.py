@@ -1,0 +1,22 @@
+{
+    'name': 'SaaS AI',
+    'version': '19.0.1.0.0',
+    'category': 'SaaS',
+    'summary': 'AI provider abstraction, usage tracking, prompt templates',
+    'author': 'ClickBuild',
+    'website': 'https://clickbuild.com',
+    'depends': ['saas_security'],
+    'data': [
+        'security/ir.model.access.csv',
+        'data/saas_ai_provider_data.xml',
+        'data/saas_ai_prompt_template_data.xml',
+        'views/saas_ai_provider_views.xml',
+        'views/saas_ai_usage_views.xml',
+        'views/saas_ai_prompt_template_views.xml',
+        'views/saas_ai_menu.xml',
+    ],
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+    'license': 'LGPL-3',
+}

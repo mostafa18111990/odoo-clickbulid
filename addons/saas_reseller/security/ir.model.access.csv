@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_reseller_admin,saas.reseller admin,model_saas_reseller,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_reseller_manager,saas.reseller manager,model_saas_reseller,saas_tenant_manager.group_saas_manager,1,1,0,0
+access_reseller_portal,saas.reseller portal,model_saas_reseller,saas_reseller.group_saas_reseller,1,0,0,0
+access_commission_admin,saas.reseller.commission admin,model_saas_reseller_commission,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_commission_system,saas.reseller.commission system,model_saas_reseller_commission,base.group_system,1,1,1,0
+access_commission_portal,saas.reseller.commission portal,model_saas_reseller_commission,saas_reseller.group_saas_reseller,1,0,0,0
+access_payout_admin,saas.reseller.payout admin,model_saas_reseller_payout,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_payout_system,saas.reseller.payout system,model_saas_reseller_payout,base.group_system,1,1,1,0
+access_payout_portal,saas.reseller.payout portal,model_saas_reseller_payout,saas_reseller.group_saas_reseller,1,0,0,0

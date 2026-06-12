@@ -1,0 +1,6 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_api_token_admin,saas.api.token admin,model_saas_api_token,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_api_token_user,saas.api.token user,model_saas_api_token,base.group_user,1,1,1,1
+access_api_token_portal,saas.api.token portal,model_saas_api_token,base.group_portal,1,1,1,1
+access_api_log_admin,saas.api.request.log admin,model_saas_api_request_log,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_api_log_user,saas.api.request.log user,model_saas_api_request_log,base.group_user,1,0,1,0

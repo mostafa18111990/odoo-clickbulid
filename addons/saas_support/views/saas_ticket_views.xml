@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_ticket_list" model="ir.ui.view">
+        <field name="name">saas.ticket.list</field>
+        <field name="model">saas.ticket</field>
+        <field name="arch" type="xml">
+            <list string="Tickets" decoration-danger="sla_breached" decoration-warning="state == 'waiting_customer'" decoration-success="state in ('resolved','closed')">
+                <field name="name"/>
+                <field name="subject"/>
+                <field name="tenant_id"/>
+                <field name="category_id"/>
+                <field name="priority_id"/>
+                <field name="assignee_id"/>
+                <field name="state"/>
+                <field name="sla_breached" widget="boolean_toggle"/>
+                <field name="create_date"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_saas_ticket_kanban" model="ir.ui.view">
+        <field name="name">saas.ticket.kanban</field>
+        <field name="model">saas.ticket</field>
+        <field name="arch" type="xml">
+            <kanban default_group_by="state">
+                <field name="name"/>
+                <field name="subject"/>
+                <field name="tenant_id"/>
+                <field name="priority_id"/>
+                <field name="assignee_id"/>
+                <field name="sla_breached"/>
+                <templates>
+                    <t t-name="card">
+                        <div class="oe_kanban_global_click">
+                            <strong><field name="name"/></strong>
+                            <div><field name="subject"/></div>
+                            <div><field name="tenant_id"/></div>
+                            <div><field name="priority_id"/> · <field name="assignee_id"/></div>
+                        </div>
+                    </t>
+                </templates>
+            </kanban>
+        </field>
+    </record>
+    <record id="view_saas_ticket_form" model="ir.ui.view">
+        <field name="name">saas.ticket.form</field>
+        <field name="model">saas.ticket</field>
+        <field name="arch" type="xml">
+            <form string="Ticket">
+                <header>
+                    <field name="state" widget="statusbar" statusbar_visible="new,assigned,in_progress,waiting_customer,resolved,closed"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                        <h2><field name="subject"/></h2>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="tenant_id"/>
+                            <field name="category_id"/>
+                            <field name="priority_id"/>
+                            <field name="assignee_id"/>
+                            <field name="team"/>
+                        </group>
+                        <group>
+                            <field name="sla_response_deadline"/>
+                            <field name="sla_resolution_deadline"/>
+                            <field name="sla_first_response_at"/>
+                            <field name="sla_resolved_at"/>
+                            <field name="sla_breached"/>
+                            <field name="csat_rating"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Description">
+                            <field name="description"/>
+                        </page>
+                        <page string="Messages">
+                            <field name="message_ids_typed">
+                                <list>
+                                    <field name="create_date"/>
+                                    <field name="author_id"/>
+                                    <field name="is_internal"/>
+                                    <field name="body"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_saas_ticket_search" model="ir.ui.view">
+        <field name="name">saas.ticket.search</field>
+        <field name="model">saas.ticket</field>
+        <field name="arch" type="xml">
+            <search string="Tickets">
+                <field name="name"/>
+                <field name="subject"/>
+                <field name="tenant_id"/>
+                <field name="assignee_id"/>
+                <filter name="open" string="Open" domain="[('state','not in',['resolved','closed'])]"/>
+                <filter name="breached" string="SLA Breached" domain="[('sla_breached','=',True)]"/>
+                <filter name="mine" string="My Tickets" domain="[('assignee_id','=',uid)]"/>
+                <filter name="group_state" string="State" context="{'group_by':'state'}"/>
+                <filter name="group_priority" string="Priority" context="{'group_by':'priority_id'}"/>
+                <filter name="group_tenant" string="Tenant" context="{'group_by':'tenant_id'}"/>
+                <filter name="group_assignee" string="Assignee" context="{'group_by':'assignee_id'}"/>
+            </search>
+        </field>
+    </record>
+    <record id="action_saas_ticket" model="ir.actions.act_window">
+        <field name="name">Support Tickets</field>
+        <field name="res_model">saas.ticket</field>
+        <field name="view_mode">kanban,list,form</field>
+        <field name="search_view_id" ref="view_saas_ticket_search"/>
+    </record>
+</odoo>

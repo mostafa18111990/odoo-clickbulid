@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <record id="plan_starter" model="saas.plan">
+            <field name="name">Starter</field>
+            <field name="code">starter</field>
+            <field name="monthly_price">149.00</field>
+            <field name="yearly_price">1490.00</field>
+            <field name="trial_days">14</field>
+            <field name="max_users">3</field>
+            <field name="max_storage_mb">2048</field>
+            <field name="max_companies">1</field>
+            <field name="extra_user_price">49.00</field>
+            <field name="extra_storage_price">9.00</field>
+            <field name="allowed_modules">base,mail,account,sale</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="plan_business" model="saas.plan">
+            <field name="name">Business</field>
+            <field name="code">business</field>
+            <field name="monthly_price">349.00</field>
+            <field name="yearly_price">3490.00</field>
+            <field name="trial_days">14</field>
+            <field name="max_users">10</field>
+            <field name="max_storage_mb">10240</field>
+            <field name="max_companies">2</field>
+            <field name="extra_user_price">39.00</field>
+            <field name="extra_storage_price">7.00</field>
+            <field name="is_popular" eval="True"/>
+            <field name="is_recommended" eval="True"/>
+            <field name="allowed_modules">base,mail,account,sale,purchase,stock,crm,project,hr</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="plan_enterprise_saas" model="saas.plan">
+            <field name="name">Enterprise</field>
+            <field name="code">enterprise</field>
+            <field name="monthly_price">749.00</field>
+            <field name="yearly_price">7490.00</field>
+            <field name="trial_days">14</field>
+            <field name="max_users">9999</field>
+            <field name="max_storage_mb">51200</field>
+            <field name="max_companies">10</field>
+            <field name="extra_user_price">0.00</field>
+            <field name="extra_storage_price">5.00</field>
+            <field name="allowed_modules">base,mail,account,sale,purchase,stock,crm,project,hr,manufacturing,pos,website</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- ════════════════════════════════════════════════════════════════
+             Enterprise-edition plans.
+             Pricing rule of thumb:
+               retail = (community_tier_price + license_cost × max_users) × 1.25
+             License cost reflects Odoo SA wholesale (~$31.10/user/month).
+             Customers landing on these plans get the Odoo Enterprise binary
+             (Studio, Helpdesk, Subscriptions, Field Service, Documents…).
+             ════════════════════════════════════════════════════════════════ -->
+
+        <record id="plan_starter_ee" model="saas.plan">
+            <field name="name">Starter — Enterprise</field>
+            <field name="code">starter_ee</field>
+            <field name="edition">enterprise</field>
+            <field name="enterprise_license_cost_per_user">117.00</field>
+            <field name="enterprise_modules">studio,helpdesk,documents,sign</field>
+            <field name="monthly_price">599.00</field>
+            <field name="yearly_price">5990.00</field>
+            <field name="trial_days">14</field>
+            <field name="max_users">3</field>
+            <field name="max_storage_mb">5120</field>
+            <field name="max_companies">1</field>
+            <field name="extra_user_price">189.00</field>
+            <field name="extra_storage_price">9.00</field>
+            <field name="allowed_modules">base,mail,account,sale,studio,helpdesk,documents,sign</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="plan_business_ee" model="saas.plan">
+            <field name="name">Business — Enterprise</field>
+            <field name="code">business_ee</field>
+            <field name="edition">enterprise</field>
+            <field name="enterprise_license_cost_per_user">117.00</field>
+            <field name="enterprise_modules">studio,helpdesk,documents,sign,subscriptions,marketing_automation,project_forecast</field>
+            <field name="monthly_price">1199.00</field>
+            <field name="yearly_price">11990.00</field>
+            <field name="trial_days">14</field>
+            <field name="max_users">10</field>
+            <field name="max_storage_mb">20480</field>
+            <field name="max_companies">2</field>
+            <field name="extra_user_price">149.00</field>
+            <field name="extra_storage_price">7.00</field>
+            <field name="is_popular" eval="True"/>
+            <field name="is_recommended" eval="True"/>
+            <field name="allowed_modules">base,mail,account,sale,purchase,stock,crm,project,hr,studio,helpdesk,documents,sign,subscriptions,marketing_automation,project_forecast</field>
+            <field name="active" eval="True"/>
+        </record>
+
+        <record id="plan_enterprise_ee" model="saas.plan">
+            <field name="name">Enterprise — Plus</field>
+            <field name="code">enterprise_ee</field>
+            <field name="edition">enterprise</field>
+            <field name="enterprise_license_cost_per_user">117.00</field>
+            <field name="enterprise_modules">studio,helpdesk,documents,sign,subscriptions,marketing_automation,project_forecast,industry_fsm,quality,mrp_plm,planning,timesheet_grid,voip</field>
+            <field name="monthly_price">2499.00</field>
+            <field name="yearly_price">24990.00</field>
+            <field name="trial_days">14</field>
+            <field name="max_users">9999</field>
+            <field name="max_storage_mb">102400</field>
+            <field name="max_companies">10</field>
+            <field name="extra_user_price">0.00</field>
+            <field name="extra_storage_price">5.00</field>
+            <field name="allowed_modules">base,mail,account,sale,purchase,stock,crm,project,hr,manufacturing,pos,website,studio,helpdesk,documents,sign,subscriptions,marketing_automation,project_forecast,industry_fsm,quality,mrp_plm,planning,timesheet_grid,voip</field>
+            <field name="active" eval="True"/>
+        </record>
+
+    </data>
+</odoo>

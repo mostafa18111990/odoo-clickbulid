@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_ai_provider_admin,saas.ai.provider admin,model_saas_ai_provider,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_ai_provider_user,saas.ai.provider user,model_saas_ai_provider,base.group_user,1,0,0,0
+access_ai_usage_admin,saas.ai.usage admin,model_saas_ai_usage,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_ai_usage_user,saas.ai.usage user,model_saas_ai_usage,base.group_user,1,0,1,0
+access_ai_usage_portal,saas.ai.usage portal,model_saas_ai_usage,base.group_portal,1,0,0,0
+access_ai_prompt_admin,saas.ai.prompt.template admin,model_saas_ai_prompt_template,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_ai_prompt_user,saas.ai.prompt.template user,model_saas_ai_prompt_template,base.group_user,1,0,0,0

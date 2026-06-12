@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="referral_program_default" model="saas.referral.program">
+            <field name="name">Default Referral Program</field>
+            <field name="referrer_reward_type">credit</field>
+            <field name="referrer_reward_value">50.0</field>
+            <field name="referee_discount_percent">10.0</field>
+            <field name="expiry_days">90</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

@@ -1,0 +1,23 @@
+{
+    'name': 'SaaS Marketing',
+    'version': '19.0.1.0.0',
+    'category': 'SaaS',
+    'summary': 'Coupons, referrals, campaigns',
+    'author': 'ClickBuild',
+    'website': 'https://clickbuild.com',
+    'depends': ['saas_knowledge', 'saas_billing', 'saas_notifications'],
+    'data': [
+        'security/ir.model.access.csv',
+        'data/saas_marketing_sequence_data.xml',
+        'data/saas_referral_program_data.xml',
+        'views/saas_coupon_views.xml',
+        'views/saas_referral_views.xml',
+        'views/saas_campaign_views.xml',
+        'views/portal_marketing_templates.xml',
+        'views/saas_marketing_menu.xml',
+    ],
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+    'license': 'LGPL-3',
+}

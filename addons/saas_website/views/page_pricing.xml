@@ -1,0 +1,416 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="page_pricing" name="Pricing">
+        <t t-call="website.layout">
+            <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>
+            <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+
+            <!-- ===== HEADER ===== -->
+            <section class="cb-hero py-5">
+                <div class="container text-center py-4" data-cb-reveal="1">
+                    <span class="badge-pill mb-3 d-inline-block">
+                        <i class="fa fa-tag me-1" style="color:#fbbf24;"/>
+                        <t t-if="lang_is_ar">أسعار شفافة</t><t t-else="">Transparent pricing</t>
+                    </span>
+                    <h1 class="display-3 mb-3">
+                        <t t-if="lang_is_ar">أسعار بسيطة وعادلة</t>
+                        <t t-else="">Simple, fair pricing</t></h1>
+                    <p class="lead" style="opacity:0.9; max-width:640px; margin:0 auto;">
+                        <t t-if="lang_is_ar">كل الخطط تشمل تجربة مجانية 14 يوماً، نسخاً احتياطياً يومياً، ودعماً بالعربية.
+                        غيّر خطتك أو ألغها في أي وقت.</t>
+                        <t t-else="">Every plan includes a 14-day free trial, daily backups, and bilingual support.
+                        Change or cancel anytime.</t>
+                    </p>
+
+                    <div class="mt-4 d-inline-block">
+                        <div class="cb-billing-toggle">
+                            <button type="button" data-billing="monthly" class="active">
+                                <t t-if="lang_is_ar">شهري</t><t t-else="">Monthly</t></button>
+                            <button type="button" data-billing="yearly">
+                                <t t-if="lang_is_ar">سنوي</t><t t-else="">Yearly</t>
+                                <span class="save-badge">
+                                    <t t-if="lang_is_ar">وفّر 15%</t><t t-else="">save 15%</t></span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== EDITION TOGGLE ===== -->
+            <section class="text-center mb-4">
+                <div class="container">
+                    <div class="cb-edition-toggle d-inline-flex align-items-center"
+                         style="background:#fff; border:1px solid #e2e8f0; border-radius:9999px; padding:4px; box-shadow:0 2px 8px rgba(0,0,0,0.04);">
+                        <button type="button" data-edition="community" class="active px-4 py-2"
+                                style="border:0; border-radius:9999px; font-weight:600; background:#6d28d9; color:#fff; cursor:pointer;">
+                            <i class="fa fa-cube me-1"/>
+                            <t t-if="lang_is_ar">Community (مفتوح المصدر)</t>
+                            <t t-else="">Community (open source)</t>
+                        </button>
+                        <button type="button" data-edition="enterprise" class="px-4 py-2"
+                                style="border:0; border-radius:9999px; font-weight:600; background:transparent; color:#6d28d9; cursor:pointer;">
+                            <i class="fa fa-rocket me-1"/>
+                            <t t-if="lang_is_ar">Enterprise (مع Studio &amp; Helpdesk)</t>
+                            <t t-else="">Enterprise (with Studio &amp; Helpdesk)</t>
+                        </button>
+                    </div>
+                    <p class="text-muted small mt-2 mb-0">
+                        <t t-if="lang_is_ar">جميع الباقات تشمل: ZATCA، نسخ احتياطي يومي، عربي/إنجليزي، دعم فني.</t>
+                        <t t-else="">All plans include: ZATCA, daily backups, Arabic/English, support.</t>
+                    </p>
+                </div>
+            </section>
+
+            <!-- ===== PRICING CARDS ===== -->
+            <section class="py-5" style="margin-top:-1rem;"><div class="container">
+                <div class="row g-4 justify-content-center align-items-stretch">
+                    <t t-foreach="plans" t-as="plan">
+                        <t t-set="monthly_price" t-value="'%.0f' % plan.monthly_price"/>
+                        <t t-set="yearly_per_month" t-value="'%.0f' % (plan.get_effective_yearly_price() / 12)"/>
+                        <t t-set="yearly_total" t-value="'%.0f' % plan.get_effective_yearly_price()"/>
+                        <!-- The toggle above hides cards whose edition doesn't match. -->
+                        <div t-attf-class="col-lg-4 col-md-6 cb-pricing-col"
+                             t-att-data-edition="plan.edition or 'community'"
+                             data-cb-reveal="1">
+                            <div t-attf-class="cb-pricing-card #{'featured' if plan.is_recommended else ''}">
+                                <!-- Edition badge on the card -->
+                                <div t-if="plan.edition == 'enterprise'" class="edition-badge"
+                                     style="position:absolute; top:14px; left:14px; background:#6d28d9; color:#fff;
+                                            font-size:0.7rem; font-weight:700; padding:4px 10px; border-radius:9999px;">
+                                    <i class="fa fa-rocket me-1"/>Enterprise
+                                </div>
+                                <div t-if="plan.edition == 'community'" class="edition-badge"
+                                     style="position:absolute; top:14px; left:14px; background:#e2e8f0; color:#475569;
+                                            font-size:0.7rem; font-weight:700; padding:4px 10px; border-radius:9999px;">
+                                    <i class="fa fa-cube me-1"/>Community
+                                </div>
+                                <t t-if="plan.is_recommended">
+                                    <div class="featured-ribbon">
+                                        <t t-if="lang_is_ar">⭐ الأكثر شيوعاً</t>
+                                        <t t-else="">⭐ Most popular</t></div>
+                                </t>
+                                <h4 class="fw-bold text-center mb-2" t-esc="plan.name"/>
+                                <p class="text-center text-muted small mb-4" t-esc="plan.description or ''"/>
+
+                                <div class="text-center mb-3">
+                                    <span class="price js-price"
+                                          t-att-data-monthly="monthly_price"
+                                          t-att-data-yearly="yearly_per_month"
+                                          t-esc="monthly_price"/>
+                                    <t t-set="suffix_text" t-value="'ريال / شهر' if lang_is_ar else 'SAR / month'"/>
+                                    <span class="price-suffix js-price-suffix"
+                                          t-att-data-monthly-text="suffix_text"
+                                          t-att-data-yearly-text="suffix_text"
+                                          t-esc="suffix_text"/>
+                                </div>
+                                <div class="js-yearly-note text-center small text-success mb-3" style="display:none;">
+                                    <t t-if="lang_is_ar">يُحصَّل سنوياً: <strong t-esc="yearly_total"/> ريال</t>
+                                    <t t-else="">Billed yearly: <strong t-esc="yearly_total"/> SAR</t>
+                                </div>
+
+                                <ul class="list-unstyled mb-4">
+                                    <li><i class="fa fa-check me-2"/><strong t-esc="plan.max_users"/>
+                                        <t t-if="lang_is_ar"> مستخدمون</t><t t-else=""> users</t></li>
+                                    <li><i class="fa fa-check me-2"/><strong t-esc="round(plan.max_storage_mb/1024, 1)"/>
+                                        <t t-if="lang_is_ar"> جيجابايت تخزين</t><t t-else=""> GB storage</t></li>
+                                    <li><i class="fa fa-check me-2"/><strong t-esc="plan.max_companies"/>
+                                        <t t-if="lang_is_ar"> شركة</t><t t-else=""> companies</t></li>
+                                    <li t-if="plan.extra_user_price">
+                                        <i class="fa fa-plus me-2"/>
+                                        <t t-if="lang_is_ar">مستخدم إضافي: <t t-esc="'%.0f' % plan.extra_user_price"/> ريال</t>
+                                        <t t-else="">Extra user: <t t-esc="'%.0f' % plan.extra_user_price"/> SAR</t>
+                                    </li>
+                                    <li><i class="fa fa-check me-2"/>
+                                        <t t-if="lang_is_ar">محاسبة + ZATCA</t><t t-else="">Accounting + ZATCA</t></li>
+                                    <li><i class="fa fa-check me-2"/>
+                                        <t t-if="lang_is_ar">مبيعات + CRM</t><t t-else="">Sales + CRM</t></li>
+                                    <li><i class="fa fa-check me-2"/>
+                                        <t t-if="lang_is_ar">مخزون + POS</t><t t-else="">Inventory + POS</t></li>
+                                    <li><i class="fa fa-check me-2"/>
+                                        <t t-if="lang_is_ar">دعم بالعربية</t><t t-else="">Arabic &amp; English support</t></li>
+                                    <li><i class="fa fa-check me-2"/>
+                                        <t t-if="lang_is_ar">نسخ احتياطي يومي</t><t t-else="">Daily backups</t></li>
+                                </ul>
+                                <a t-attf-href="/get-started/#{plan.code}"
+                                   t-attf-class="btn #{'btn-primary' if plan.is_recommended else 'btn-outline-primary'} w-100 btn-lg">
+                                    <t t-if="lang_is_ar">ابدأ التجربة المجانية</t>
+                                    <t t-else="">Start free trial</t>
+                                </a>
+                                <p class="text-center text-muted small mt-2 mb-0">
+                                    <t t-if="lang_is_ar">14 يوماً مجاناً · بدون بطاقة ائتمان</t>
+                                    <t t-else="">14 days free · no credit card</t>
+                                </p>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+            </div></section>
+
+            <!-- ===== TRUST FEATURES ===== -->
+            <section class="py-5"><div class="container">
+                <div class="row text-center g-4" data-cb-reveal="1">
+                    <div class="col-md-3 col-6">
+                        <div class="cb-feature-icon"><i class="fa fa-shield"/></div>
+                        <h6 class="fw-bold"><t t-if="lang_is_ar">بياناتك آمنة</t><t t-else="">Your data is safe</t></h6>
+                        <p class="small text-muted mb-0">
+                            <t t-if="lang_is_ar">تشفير TLS + عزل كامل لكل عميل</t>
+                            <t t-else="">TLS encryption + full per-tenant isolation</t></p>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="cb-feature-icon"><i class="fa fa-refresh"/></div>
+                        <h6 class="fw-bold"><t t-if="lang_is_ar">نسخ احتياطي</t><t t-else="">Backups</t></h6>
+                        <p class="small text-muted mb-0">
+                            <t t-if="lang_is_ar">نسخة يومية تلقائية محفوظة 7 أيام</t>
+                            <t t-else="">Automatic daily backups, kept for 7 days</t></p>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="cb-feature-icon"><i class="fa fa-headset"/></div>
+                        <h6 class="fw-bold"><t t-if="lang_is_ar">دعم 24/7</t><t t-else="">24/7 support</t></h6>
+                        <p class="small text-muted mb-0">
+                            <t t-if="lang_is_ar">فريق دعم بالعربية على مدار الساعة</t>
+                            <t t-else="">Bilingual support around the clock</t></p>
+                    </div>
+                    <div class="col-md-3 col-6">
+                        <div class="cb-feature-icon"><i class="fa fa-times-circle"/></div>
+                        <h6 class="fw-bold"><t t-if="lang_is_ar">إلغاء مرن</t><t t-else="">Flexible cancellation</t></h6>
+                        <p class="small text-muted mb-0">
+                            <t t-if="lang_is_ar">ألغِ خطتك في أي وقت بدون رسوم</t>
+                            <t t-else="">Cancel any time with no fees</t></p>
+                    </div>
+                </div>
+            </div></section>
+
+            <!-- ===== COMPARISON TABLE ===== -->
+            <section class="py-5 bg-light"><div class="container">
+                <div class="text-center mb-5" data-cb-reveal="1">
+                    <h2 class="display-5 mb-2">
+                        <t t-if="lang_is_ar">مقارنة كاملة بين الخطط</t>
+                        <t t-else="">Full plan comparison</t></h2>
+                    <p class="text-muted">
+                        <t t-if="lang_is_ar">كل المميزات في كل الخطط — الفرق فقط في الحدود</t>
+                        <t t-else="">All features in every plan — only the limits change</t></p>
+                </div>
+                <div class="table-responsive shadow-sm rounded-3 bg-white" data-cb-reveal="1">
+                    <table class="table mb-0 align-middle text-center">
+                        <thead style="background:#f5f3ff;">
+                            <tr>
+                                <th class="text-start" style="width:35%;">
+                                    <t t-if="lang_is_ar">المميزات</t><t t-else="">Features</t></th>
+                                <t t-foreach="plans" t-as="p">
+                                    <th t-attf-class="fw-bold #{'text-primary' if p.is_recommended else ''}">
+                                        <t t-esc="p.name"/>
+                                        <t t-if="p.is_recommended">
+                                            <span class="d-block small text-warning">
+                                                <t t-if="lang_is_ar">⭐ موصى به</t><t t-else="">⭐ Recommended</t></span>
+                                        </t>
+                                    </th>
+                                </t>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td class="text-start fw-bold">
+                                    <t t-if="lang_is_ar">السعر الشهري</t><t t-else="">Monthly price</t></td>
+                                <t t-foreach="plans" t-as="p">
+                                    <td><strong t-esc="'%.0f' % p.monthly_price"/>
+                                        <t t-if="lang_is_ar"> ريال</t><t t-else=""> SAR</t></td>
+                                </t>
+                            </tr>
+                            <tr>
+                                <td class="text-start fw-bold">
+                                    <t t-if="lang_is_ar">عدد المستخدمين</t><t t-else="">Users</t></td>
+                                <t t-foreach="plans" t-as="p"><td><strong t-esc="p.max_users"/></td></t>
+                            </tr>
+                            <tr>
+                                <td class="text-start fw-bold">
+                                    <t t-if="lang_is_ar">مساحة التخزين</t><t t-else="">Storage</t></td>
+                                <t t-foreach="plans" t-as="p"><td><strong t-esc="round(p.max_storage_mb/1024, 1)"/> GB</td></t>
+                            </tr>
+                            <tr>
+                                <td class="text-start fw-bold">
+                                    <t t-if="lang_is_ar">عدد الشركات</t><t t-else="">Companies</t></td>
+                                <t t-foreach="plans" t-as="p"><td><strong t-esc="p.max_companies"/></td></t>
+                            </tr>
+                            <tr>
+                                <td class="text-start fw-bold">
+                                    <t t-if="lang_is_ar">المحاسبة + ZATCA</t><t t-else="">Accounting + ZATCA</t></td>
+                                <t t-foreach="plans" t-as="p"><td><i class="fa fa-check text-success"/></td></t>
+                            </tr>
+                            <tr>
+                                <td class="text-start fw-bold">
+                                    <t t-if="lang_is_ar">المبيعات + CRM</t><t t-else="">Sales + CRM</t></td>
+                                <t t-foreach="plans" t-as="p"><td><i class="fa fa-check text-success"/></td></t>
+                            </tr>
+                            <tr>
+                                <td class="text-start fw-bold">
+                                    <t t-if="lang_is_ar">المخزون + POS</t><t t-else="">Inventory + POS</t></td>
+                                <t t-foreach="plans" t-as="p"><td><i class="fa fa-check text-success"/></td></t>
+                            </tr>
+                            <tr>
+                                <td class="text-start fw-bold">
+                                    <t t-if="lang_is_ar">الموارد البشرية</t><t t-else="">Human Resources</t></td>
+                                <t t-foreach="plans" t-as="p"><td><i class="fa fa-check text-success"/></td></t>
+                            </tr>
+                            <tr>
+                                <td class="text-start fw-bold">
+                                    <t t-if="lang_is_ar">دعم بالعربية</t><t t-else="">Bilingual support</t></td>
+                                <t t-foreach="plans" t-as="p"><td><i class="fa fa-check text-success"/></td></t>
+                            </tr>
+                            <tr>
+                                <td class="text-start fw-bold">
+                                    <t t-if="lang_is_ar">نسخ احتياطي يومي</t><t t-else="">Daily backups</t></td>
+                                <t t-foreach="plans" t-as="p"><td><i class="fa fa-check text-success"/></td></t>
+                            </tr>
+                            <tr>
+                                <td class="text-start fw-bold">
+                                    <t t-if="lang_is_ar">دومين مخصص</t><t t-else="">Custom domain</t></td>
+                                <t t-foreach="plans" t-as="p">
+                                    <td>
+                                        <t t-if="p.is_recommended or p.code == 'enterprise'">
+                                            <i class="fa fa-check text-success"/></t>
+                                        <t t-else=""><i class="fa fa-minus text-muted"/></t>
+                                    </td>
+                                </t>
+                            </tr>
+                            <tr>
+                                <td class="text-start fw-bold">
+                                    <t t-if="lang_is_ar">دعم أولوية</t><t t-else="">Priority support</t></td>
+                                <t t-foreach="plans" t-as="p">
+                                    <td>
+                                        <t t-if="p.is_recommended or p.code == 'enterprise'">
+                                            <i class="fa fa-check text-success"/></t>
+                                        <t t-else=""><i class="fa fa-minus text-muted"/></t>
+                                    </td>
+                                </t>
+                            </tr>
+                            <tr>
+                                <td class="text-start"></td>
+                                <t t-foreach="plans" t-as="p">
+                                    <td>
+                                        <a t-attf-href="/get-started/#{p.code}"
+                                           t-attf-class="btn #{'btn-primary' if p.is_recommended else 'btn-outline-primary'} btn-sm">
+                                            <t t-if="lang_is_ar">اختر</t><t t-else="">Choose</t>
+                                        </a>
+                                    </td>
+                                </t>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div></section>
+
+            <!-- ===== PRICING FAQ ===== -->
+            <section class="py-5"><div class="container">
+                <div class="text-center mb-5" data-cb-reveal="1">
+                    <h2 class="display-5 mb-2">
+                        <t t-if="lang_is_ar">أسئلة شائعة عن الأسعار</t>
+                        <t t-else="">Pricing FAQ</t></h2>
+                </div>
+                <div class="row justify-content-center"><div class="col-lg-8" data-cb-reveal="1">
+                    <div class="accordion" id="pricingFaq">
+                        <div class="accordion-item shadow-sm">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed"
+                                data-bs-toggle="collapse" data-bs-target="#pf1">
+                                <t t-if="lang_is_ar">هل أحتاج بطاقة ائتمان للتسجيل؟</t>
+                                <t t-else="">Do I need a credit card to sign up?</t></button></h2>
+                            <div id="pf1" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
+                                <div class="accordion-body text-muted">
+                                    <t t-if="lang_is_ar">لا. التجربة المجانية لمدة 14 يوماً لا تتطلب أي بطاقة. تبدأ مباشرة من غير أي رسوم.</t>
+                                    <t t-else="">No. The 14-day free trial doesn't require a card. You start immediately with no charges.</t></div>
+                            </div>
+                        </div>
+                        <div class="accordion-item shadow-sm">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed"
+                                data-bs-toggle="collapse" data-bs-target="#pf2">
+                                <t t-if="lang_is_ar">هل أستطيع تغيير الخطة لاحقاً؟</t>
+                                <t t-else="">Can I change my plan later?</t></button></h2>
+                            <div id="pf2" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
+                                <div class="accordion-body text-muted">
+                                    <t t-if="lang_is_ar">نعم، تستطيع الترقية أو التخفيض في أي وقت من لوحة التحكم. الفروقات تُحسب تلقائياً.</t>
+                                    <t t-else="">Yes — upgrade or downgrade any time from your dashboard. We prorate automatically.</t></div>
+                            </div>
+                        </div>
+                        <div class="accordion-item shadow-sm">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed"
+                                data-bs-toggle="collapse" data-bs-target="#pf3">
+                                <t t-if="lang_is_ar">ما طرق الدفع المقبولة؟</t>
+                                <t t-else="">What payment methods do you accept?</t></button></h2>
+                            <div id="pf3" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
+                                <div class="accordion-body text-muted">
+                                    <t t-if="lang_is_ar">نقبل البطاقات الائتمانية (Visa, MasterCard, Mada)، Apple Pay، وحوالات بنكية للخطط السنوية.</t>
+                                    <t t-else="">Credit cards (Visa, MasterCard, Mada), Apple Pay, and bank transfers for annual plans.</t></div>
+                            </div>
+                        </div>
+                        <div class="accordion-item shadow-sm">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed"
+                                data-bs-toggle="collapse" data-bs-target="#pf4">
+                                <t t-if="lang_is_ar">ماذا يحدث عند انتهاء التجربة المجانية؟</t>
+                                <t t-else="">What happens when the free trial ends?</t></button></h2>
+                            <div id="pf4" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
+                                <div class="accordion-body text-muted">
+                                    <t t-if="lang_is_ar">ستصلك رسائل تنبيه قبل انتهاء التجربة بـ 7 و3 و1 يوم. تستطيع الترقية في أي وقت أو تركها بدون رسوم.</t>
+                                    <t t-else="">You'll get reminders 7, 3 and 1 day before it ends. Upgrade any time or simply let it lapse with no charge.</t></div>
+                            </div>
+                        </div>
+                        <div class="accordion-item shadow-sm">
+                            <h2 class="accordion-header"><button class="accordion-button collapsed"
+                                data-bs-toggle="collapse" data-bs-target="#pf5">
+                                <t t-if="lang_is_ar">هل بياناتي آمنة معكم؟</t>
+                                <t t-else="">Is my data safe with you?</t></button></h2>
+                            <div id="pf5" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
+                                <div class="accordion-body text-muted">
+                                    <t t-if="lang_is_ar">نعم. كل عميل في قاعدة بيانات معزولة، تشفير TLS أثناء النقل و AES-256 للتخزين، ونسخ احتياطية يومية محفوظة 7 أيام.</t>
+                                    <t t-else="">Yes. Each customer lives in an isolated database, with TLS in transit and AES-256 at rest, plus daily backups kept for 7 days.</t></div>
+                            </div>
+                        </div>
+                    </div>
+                </div></div>
+            </div></section>
+
+            <!-- ===== FINAL CTA ===== -->
+            <section class="py-5 cb-hero">
+                <div class="container text-center py-4" data-cb-reveal="1">
+                    <h2 class="display-4 mb-3">
+                        <t t-if="lang_is_ar">جاهز للبدء؟</t><t t-else="">Ready to launch?</t></h2>
+                    <p class="lead mb-4" style="opacity:0.92;">
+                        <t t-if="lang_is_ar">انضم لأكثر من 500 شركة تثق بـ ClickBuild</t>
+                        <t t-else="">Join 500+ companies running on ClickBuild</t></p>
+                    <a href="/get-started" class="btn btn-light btn-lg">
+                        <i class="fa fa-rocket me-2"/>
+                        <t t-if="lang_is_ar">ابدأ تجربتك المجانية</t><t t-else="">Start your free trial</t>
+                    </a>
+                </div>
+            </section>
+
+            <!-- Edition toggle JS — runs once on first render -->
+            <script type="text/javascript">
+                (function() {
+                    var buttons = document.querySelectorAll('.cb-edition-toggle button[data-edition]');
+                    var cols    = document.querySelectorAll('.cb-pricing-col[data-edition]');
+                    if (!buttons.length || !cols.length) return;
+                    function applyEdition(ed) {
+                        buttons.forEach(function(b) {
+                            var active = b.dataset.edition === ed;
+                            b.style.background = active ? '#6d28d9' : 'transparent';
+                            b.style.color      = active ? '#fff'    : '#6d28d9';
+                            b.classList.toggle('active', active);
+                        });
+                        cols.forEach(function(c) {
+                            c.style.display = (c.dataset.edition === ed) ? '' : 'none';
+                        });
+                    }
+                    buttons.forEach(function(b) {
+                        b.addEventListener('click', function() {
+                            applyEdition(b.dataset.edition);
+                            // Reflect the choice in the URL so the user can bookmark.
+                            history.replaceState(null, '', '#' + b.dataset.edition);
+                        });
+                    });
+                    // Honour any hash from incoming links (e.g. /pricing#enterprise).
+                    var initial = (location.hash || '').replace('#', '');
+                    applyEdition(initial === 'enterprise' ? 'enterprise' : 'community');
+                })();
+            </script>
+        </t>
+    </template>
+</odoo>

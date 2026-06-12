@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="website_help_index" name="Public Help Center">
+        <t t-call="website.layout">
+            <div class="container my-5">
+                <h1 class="text-center mb-4">Help Center / مركز المساعدة</h1>
+                <form method="get" action="/help" class="mb-4 mx-auto" style="max-width:600px;">
+                    <input type="text" name="search" t-att-value="search" class="form-control form-control-lg" placeholder="Search for articles..."/>
+                </form>
+                <div class="row">
+                    <div t-foreach="categories" t-as="c" class="col-md-4 mb-3">
+                        <div class="card">
+                            <div class="card-body">
+                                <h5><i t-attf-class="fa #{c.icon}"/> <t t-out="c.name"/></h5>
+                                <p t-out="c.description"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <h3 class="mt-4">Articles</h3>
+                <ul>
+                    <li t-foreach="articles" t-as="a">
+                        <a t-attf-href="/help/#{a.slug}"><t t-out="a.name"/></a>
+                    </li>
+                </ul>
+            </div>
+        </t>
+    </template>
+
+    <template id="website_help_article" name="Public Help Article">
+        <t t-call="website.layout">
+            <div class="container my-5" style="max-width:900px;">
+                <nav><a href="/help">← Help Center</a></nav>
+                <h1><t t-out="article.name"/></h1>
+                <p class="text-muted"><small><t t-out="article.category_id.name"/> · <t t-out="article.view_count"/> views</small></p>
+                <div t-field="article.body"/>
+            </div>
+        </t>
+    </template>
+</odoo>

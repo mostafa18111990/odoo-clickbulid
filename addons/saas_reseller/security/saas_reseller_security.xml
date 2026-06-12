@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="group_saas_reseller" model="res.groups">
+            <field name="name">SaaS Reseller</field>
+            <field name="implied_ids" eval="[(4, ref('base.group_portal'))]"/>
+        </record>
+        <record id="rule_reseller_own" model="ir.rule">
+            <field name="name">Reseller: Own Record Only</field>
+            <field name="model_id" ref="model_saas_reseller"/>
+            <field name="groups" eval="[(4, ref('group_saas_reseller'))]"/>
+            <field name="domain_force">[('portal_user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_reseller_own_commissions" model="ir.rule">
+            <field name="name">Reseller: Own Commissions Only</field>
+            <field name="model_id" ref="model_saas_reseller_commission"/>
+            <field name="groups" eval="[(4, ref('group_saas_reseller'))]"/>
+            <field name="domain_force">[('reseller_id.portal_user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+        <record id="rule_reseller_own_payouts" model="ir.rule">
+            <field name="name">Reseller: Own Payouts Only</field>
+            <field name="model_id" ref="model_saas_reseller_payout"/>
+            <field name="groups" eval="[(4, ref('group_saas_reseller'))]"/>
+            <field name="domain_force">[('reseller_id.portal_user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+    </data>
+</odoo>

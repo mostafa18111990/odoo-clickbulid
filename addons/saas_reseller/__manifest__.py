@@ -1,0 +1,23 @@
+{
+    'name': 'SaaS Reseller',
+    'version': '19.0.1.0.0',
+    'category': 'SaaS',
+    'summary': 'White-label resellers, customer assignment, commission engine',
+    'author': 'ClickBuild',
+    'website': 'https://clickbuild.com',
+    'depends': ['saas_marketplace'],
+    'data': [
+        'security/saas_reseller_security.xml',
+        'security/ir.model.access.csv',
+        'data/saas_reseller_sequence_data.xml',
+        'data/saas_reseller_cron.xml',
+        'views/saas_reseller_views.xml',
+        'views/saas_reseller_commission_views.xml',
+        'views/reseller_portal_templates.xml',
+        'views/saas_reseller_menu.xml',
+    ],
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+    'license': 'LGPL-3',
+}

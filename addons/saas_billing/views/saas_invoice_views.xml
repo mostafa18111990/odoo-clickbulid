@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_invoice_list" model="ir.ui.view">
+        <field name="name">saas.invoice.list</field>
+        <field name="model">saas.invoice</field>
+        <field name="arch" type="xml">
+            <list string="Invoices"
+                  decoration-success="status == 'paid'"
+                  decoration-warning="status == 'sent'"
+                  decoration-danger="status == 'overdue'"
+                  decoration-muted="status == 'voided'">
+                <field name="number"/>
+                <field name="invoice_date"/>
+                <field name="due_date"/>
+                <field name="tenant_id"/>
+                <field name="invoice_type" widget="badge"/>
+                <field name="status" widget="badge"/>
+                <field name="amount_subtotal" string="Subtotal"/>
+                <field name="amount_tax" string="Tax"/>
+                <field name="amount_total" string="Total" sum="Total"/>
+                <field name="currency"/>
+                <field name="paid_date" optional="show"/>
+                <button name="action_print_invoice" type="object" string="" icon="fa-download"
+                    invisible="status == 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_saas_invoice_form" model="ir.ui.view">
+        <field name="name">saas.invoice.form</field>
+        <field name="model">saas.invoice</field>
+        <field name="arch" type="xml">
+            <form string="Invoice">
+                <header>
+                    <button name="action_confirm" type="object" string="Confirm and Send" class="btn-primary"
+                        invisible="status != 'draft'"/>
+                    <button name="action_mark_paid" type="object" string="Mark as Paid" class="btn-success"
+                        invisible="status not in ('sent','overdue')"/>
+                    <button name="action_send_reminder" type="object" string="Send Reminder"
+                        invisible="status not in ('sent','overdue')"/>
+                    <button name="action_print_invoice" type="object" string="Print PDF" icon="fa-download"
+                        invisible="status == 'draft'"/>
+                    <button name="action_void" type="object" string="Void" class="btn-danger"
+                        invisible="status in ('paid','voided')"
+                        groups="saas_core.group_saas_super_admin"/>
+                    <field name="status" widget="statusbar" statusbar_visible="draft,sent,paid,overdue"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object" name="action_view_credit_notes" icon="fa-minus-circle">
+                            <field name="credit_note_count" widget="statinfo" string="Credit Notes"/>
+                        </button>
+                    </div>
+                    <div class="oe_title"><h1><field name="number" readonly="1"/></h1></div>
+                    <group>
+                        <group string="Invoice Details">
+                            <field name="invoice_type"/>
+                            <field name="tenant_id"/>
+                            <field name="subscription_id"/>
+                            <field name="invoice_date"/>
+                            <field name="due_date"/>
+                            <field name="currency"/>
+                        </group>
+                        <group string="Customer">
+                            <field name="customer_name"/>
+                            <field name="customer_email"/>
+                            <field name="customer_vat"/>
+                            <field name="customer_country"/>
+                        </group>
+                    </group>
+                    <field name="line_ids" mode="list">
+                        <list editable="bottom">
+                            <field name="sequence" widget="handle"/>
+                            <field name="line_type" widget="badge"/>
+                            <field name="name"/>
+                            <field name="quantity"/>
+                            <field name="unit_price"/>
+                            <field name="discount_pct" string="Disc.%"/>
+                            <field name="subtotal" readonly="1"/>
+                            <field name="tax_amount" optional="show"/>
+                            <field name="total" readonly="1"/>
+                        </list>
+                    </field>
+                    <group class="oe_subtotal_footer">
+                        <field name="amount_subtotal" readonly="1"/>
+                        <field name="amount_tax" readonly="1" string="Tax"/>
+                        <field name="amount_total" readonly="1" string="Total"/>
+                        <field name="amount_paid" readonly="1"/>
+                        <field name="amount_due" readonly="1"/>
+                    </group>
+                    <group>
+                        <group string="Payment">
+                            <field name="payment_gateway"/>
+                            <field name="gateway_tx_id"/>
+                            <field name="paid_date" readonly="1"/>
+                        </group>
+                        <group string="Tax / ZATCA">
+                            <field name="tax_rate_id"/>
+                            <field name="tax_rate_pct" readonly="1"/>
+                            <field name="company_vat" groups="saas_core.group_saas_super_admin"/>
+                        </group>
+                    </group>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_saas_invoice_search" model="ir.ui.view">
+        <field name="name">saas.invoice.search</field>
+        <field name="model">saas.invoice</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="number"/>
+                <field name="tenant_id"/>
+                <field name="gateway_tx_id"/>
+                <filter name="filter_draft" string="Draft" domain="[('status','=','draft')]"/>
+                <filter name="filter_sent" string="Sent" domain="[('status','=','sent')]"/>
+                <filter name="filter_paid" string="Paid" domain="[('status','=','paid')]"/>
+                <filter name="filter_overdue" string="Overdue" domain="[('status','=','overdue')]"/>
+                <group name="group_by">
+                    <filter name="group_status" string="Status" context="{'group_by': 'status'}"/>
+                    <filter name="group_type" string="Type" context="{'group_by': 'invoice_type'}"/>
+                    <filter name="group_tenant" string="Tenant" context="{'group_by': 'tenant_id'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_saas_invoice" model="ir.actions.act_window">
+        <field name="name">Invoices</field>
+        <field name="res_model">saas.invoice</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_saas_invoice_search"/>
+    </record>
+</odoo>

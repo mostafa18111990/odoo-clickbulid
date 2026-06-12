@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_reseller_root" name="Resellers"
+              parent="saas_core.menu_saas_root" sequence="45"
+              groups="saas_tenant_manager.group_saas_admin"/>
+
+    <menuitem id="menu_resellers" name="Resellers"
+              parent="menu_reseller_root" action="action_reseller" sequence="10"/>
+
+    <menuitem id="menu_commissions" name="Commissions"
+              parent="menu_reseller_root" action="action_commission" sequence="20"/>
+
+    <menuitem id="menu_payouts" name="Payouts"
+              parent="menu_reseller_root" action="action_payout" sequence="30"/>
+</odoo>

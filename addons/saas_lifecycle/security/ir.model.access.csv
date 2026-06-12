@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_dunning_rule_admin,saas.dunning.rule admin,model_saas_dunning_rule,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_dunning_rule_manager,saas.dunning.rule manager,model_saas_dunning_rule,saas_tenant_manager.group_saas_manager,1,0,0,0
+access_dunning_attempt_admin,saas.dunning.attempt admin,model_saas_dunning_attempt,saas_tenant_manager.group_saas_admin,1,1,1,0
+access_dunning_attempt_system,saas.dunning.attempt system,model_saas_dunning_attempt,base.group_system,1,1,1,0
+access_lifecycle_rule_admin,saas.lifecycle.rule admin,model_saas_lifecycle_rule,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_lifecycle_rule_manager,saas.lifecycle.rule manager,model_saas_lifecycle_rule,saas_tenant_manager.group_saas_manager,1,0,0,0
+access_lifecycle_log_admin,saas.lifecycle.log admin,model_saas_lifecycle_log,saas_tenant_manager.group_saas_admin,1,0,1,0
+access_lifecycle_log_system,saas.lifecycle.log system,model_saas_lifecycle_log,base.group_system,1,1,1,0
+access_lifecycle_log_analyst,saas.lifecycle.log analyst,model_saas_lifecycle_log,saas_core.group_saas_analyst,1,0,0,0
+access_cancellation_reason_admin,saas.cancellation.reason admin,model_saas_cancellation_reason,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_cancellation_reason_all,saas.cancellation.reason all,model_saas_cancellation_reason,base.group_user,1,0,0,0

@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_health_check_list" model="ir.ui.view">
+        <field name="name">saas.health.check.list</field>
+        <field name="model">saas.health.check</field>
+        <field name="arch" type="xml">
+            <list decoration-success="last_status == 'up'" decoration-warning="last_status == 'degraded'" decoration-danger="last_status == 'down'">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="code"/>
+                <field name="check_type"/>
+                <field name="target_url"/>
+                <field name="last_status"/>
+                <field name="last_response_ms"/>
+                <field name="last_checked_at"/>
+                <field name="consecutive_failures"/>
+                <field name="uptime_pct_24h"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_health_check_form" model="ir.ui.view">
+        <field name="name">saas.health.check.form</field>
+        <field name="model">saas.health.check</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="check_type"/>
+                            <field name="target_url"/>
+                            <field name="expected_status_code"/>
+                            <field name="timeout_seconds"/>
+                            <field name="interval_minutes"/>
+                            <field name="alert_threshold"/>
+                            <field name="active"/>
+                        </group>
+                        <group>
+                            <field name="last_status" readonly="1"/>
+                            <field name="last_response_ms" readonly="1"/>
+                            <field name="last_checked_at" readonly="1"/>
+                            <field name="consecutive_failures" readonly="1"/>
+                            <field name="uptime_pct_24h" readonly="1"/>
+                            <field name="sequence"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="History">
+                            <field name="history_ids">
+                                <list>
+                                    <field name="checked_at"/>
+                                    <field name="status"/>
+                                    <field name="response_ms"/>
+                                    <field name="status_code"/>
+                                    <field name="error_message"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_health_check" model="ir.actions.act_window">
+        <field name="name">Health Checks</field>
+        <field name="res_model">saas.health.check</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

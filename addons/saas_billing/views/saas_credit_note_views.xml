@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_credit_note_list" model="ir.ui.view">
+        <field name="name">saas.credit.note.list</field>
+        <field name="model">saas.credit.note</field>
+        <field name="arch" type="xml">
+            <list string="Credit Notes"
+                  decoration-success="status == 'applied'"
+                  decoration-muted="status == 'cancelled'">
+                <field name="number"/>
+                <field name="cn_date"/>
+                <field name="invoice_id"/>
+                <field name="tenant_id"/>
+                <field name="cn_type" widget="badge"/>
+                <field name="amount"/>
+                <field name="tax_amount"/>
+                <field name="total"/>
+                <field name="currency"/>
+                <field name="status" widget="badge"/>
+                <field name="reason"/>
+                <button name="action_apply" type="object" string="Apply" icon="fa-check"
+                    invisible="status != 'draft'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_saas_credit_note" model="ir.actions.act_window">
+        <field name="name">Credit Notes</field>
+        <field name="res_model">saas.credit.note</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

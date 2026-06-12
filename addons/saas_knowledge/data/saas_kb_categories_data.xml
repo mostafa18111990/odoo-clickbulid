@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="kb_cat_getting_started" model="saas.kb.category">
+            <field name="name">Getting Started</field>
+            <field name="name_ar">البداية</field>
+            <field name="slug">getting-started</field>
+            <field name="icon">fa-rocket</field>
+            <field name="color">#10b981</field>
+            <field name="sequence">10</field>
+        </record>
+        <record id="kb_cat_billing" model="saas.kb.category">
+            <field name="name">Billing &amp; Payments</field>
+            <field name="name_ar">الفواتير والمدفوعات</field>
+            <field name="slug">billing-payments</field>
+            <field name="icon">fa-credit-card</field>
+            <field name="color">#3b82f6</field>
+            <field name="sequence">20</field>
+        </record>
+        <record id="kb_cat_account" model="saas.kb.category">
+            <field name="name">Account Management</field>
+            <field name="name_ar">إدارة الحساب</field>
+            <field name="slug">account</field>
+            <field name="icon">fa-user-circle</field>
+            <field name="color">#8b5cf6</field>
+            <field name="sequence">30</field>
+        </record>
+        <record id="kb_cat_apps" model="saas.kb.category">
+            <field name="name">Apps &amp; Integrations</field>
+            <field name="name_ar">التطبيقات والتكاملات</field>
+            <field name="slug">apps</field>
+            <field name="icon">fa-puzzle-piece</field>
+            <field name="color">#f59e0b</field>
+            <field name="sequence">40</field>
+        </record>
+        <record id="kb_cat_troubleshooting" model="saas.kb.category">
+            <field name="name">Troubleshooting</field>
+            <field name="name_ar">حل المشاكل</field>
+            <field name="slug">troubleshooting</field>
+            <field name="icon">fa-wrench</field>
+            <field name="color">#ef4444</field>
+            <field name="sequence">50</field>
+        </record>
+    </data>
+</odoo>

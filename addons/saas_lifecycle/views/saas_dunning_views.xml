@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_dunning_rule_list" model="ir.ui.view">
+        <field name="name">saas.dunning.rule.list</field>
+        <field name="model">saas.dunning.rule</field>
+        <field name="arch" type="xml">
+            <list string="Dunning Rules" editable="bottom" decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="applies_to_state" widget="badge"/>
+                <field name="attempt_number"/>
+                <field name="delay_days" string="After (days)"/>
+                <field name="action" widget="badge"/>
+                <field name="send_email"/>
+                <field name="is_final"/>
+                <field name="active" optional="hide"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_saas_dunning_rule_form" model="ir.ui.view">
+        <field name="name">saas.dunning.rule.form</field>
+        <field name="model">saas.dunning.rule</field>
+        <field name="arch" type="xml">
+            <form string="Dunning Rule">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group string="Trigger">
+                            <field name="applies_to_state"/>
+                            <field name="attempt_number"/>
+                            <field name="delay_days"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Action">
+                            <field name="action"/>
+                            <field name="send_email"/>
+                            <field name="email_template_id" invisible="not send_email"/>
+                            <field name="is_final"/>
+                        </group>
+                    </group>
+                    <group string="Plan Filter (optional)">
+                        <field name="plan_ids" widget="many2many_tags"/>
+                        <field name="billing_cycle"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_saas_dunning_rule" model="ir.actions.act_window">
+        <field name="name">Dunning Rules</field>
+        <field name="res_model">saas.dunning.rule</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_saas_dunning_attempt_list" model="ir.ui.view">
+        <field name="name">saas.dunning.attempt.list</field>
+        <field name="model">saas.dunning.attempt</field>
+        <field name="arch" type="xml">
+            <list string="Dunning Attempts" create="0">
+                <field name="tenant_id"/>
+                <field name="rule_id"/>
+                <field name="attempt_number"/>
+                <field name="state" widget="badge"/>
+                <field name="result" widget="badge"/>
+                <field name="scheduled_at"/>
+                <field name="executed_at"/>
+                <field name="payment_amount"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_saas_dunning_attempt" model="ir.actions.act_window">
+        <field name="name">Dunning Attempts</field>
+        <field name="res_model">saas.dunning.attempt</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

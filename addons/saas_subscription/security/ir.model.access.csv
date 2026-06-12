@@ -1,0 +1,13 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_saas_subscription_admin,saas.subscription admin,model_saas_subscription,saas_tenant_manager.group_saas_admin,1,1,1,0
+access_saas_subscription_manager,saas.subscription manager,model_saas_subscription,saas_tenant_manager.group_saas_manager,1,0,0,0
+access_saas_subscription_system,saas.subscription system,model_saas_subscription,base.group_system,1,1,1,1
+access_saas_subscription_analyst,saas.subscription analyst,model_saas_subscription,saas_core.group_saas_analyst,1,0,0,0
+access_saas_sub_history_admin,saas.subscription.history admin,model_saas_subscription_history,saas_tenant_manager.group_saas_admin,1,0,1,0
+access_saas_sub_history_system,saas.subscription.history system,model_saas_subscription_history,base.group_system,1,1,1,0
+access_saas_sub_history_manager,saas.subscription.history manager,model_saas_subscription_history,saas_tenant_manager.group_saas_manager,1,0,0,0
+access_saas_sub_line_admin,saas.subscription.line admin,model_saas_subscription_line,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_saas_sub_line_system,saas.subscription.line system,model_saas_subscription_line,base.group_system,1,1,1,1
+access_saas_plan_change_admin,saas.plan.change admin,model_saas_plan_change,saas_tenant_manager.group_saas_admin,1,1,1,0
+access_saas_plan_change_system,saas.plan.change system,model_saas_plan_change,base.group_system,1,1,1,0
+access_saas_plan_change_manager,saas.plan.change manager,model_saas_plan_change,saas_tenant_manager.group_saas_manager,1,1,1,0

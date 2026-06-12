@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_tenant_app_list" model="ir.ui.view">
+        <field name="name">saas.tenant.app.list</field>
+        <field name="model">saas.tenant.app</field>
+        <field name="arch" type="xml">
+            <list string="Tenant Apps"
+                  decoration-success="state == 'installed'"
+                  decoration-warning="state in ('installing','uninstalling')"
+                  decoration-danger="state == 'failed'">
+                <field name="tenant_id"/>
+                <field name="app_id"/>
+                <field name="state" widget="badge"/>
+                <field name="installed_at"/>
+                <field name="addon_id"/>
+                <field name="error_message"/>
+                <button name="action_retry_install" type="object" string="Retry"
+                    icon="fa-refresh" invisible="state != 'failed'"/>
+                <button name="action_uninstall" type="object" string="Uninstall"
+                    icon="fa-trash" invisible="state != 'installed'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_tenant_app" model="ir.actions.act_window">
+        <field name="name">Installed Apps</field>
+        <field name="res_model">saas.tenant.app</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

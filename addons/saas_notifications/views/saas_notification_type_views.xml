@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_ntype_list" model="ir.ui.view">
+        <field name="name">saas.notification.type.list</field>
+        <field name="model">saas.notification.type</field>
+        <field name="arch" type="xml">
+            <list string="Notification Types">
+                <field name="name"/>
+                <field name="code"/>
+                <field name="category" widget="badge"/>
+                <field name="priority" widget="badge"/>
+                <field name="channel_email"/>
+                <field name="channel_sms"/>
+                <field name="channel_inapp"/>
+                <field name="is_critical"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_saas_ntype_form" model="ir.ui.view">
+        <field name="name">saas.notification.type.form</field>
+        <field name="model">saas.notification.type</field>
+        <field name="arch" type="xml">
+            <form>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1><field name="code"/></div>
+                    <group>
+                        <group string="Settings">
+                            <field name="category"/>
+                            <field name="priority"/>
+                            <field name="is_critical"/>
+                            <field name="active"/>
+                        </group>
+                        <group string="Channels">
+                            <field name="channel_email"/>
+                            <field name="channel_sms"/>
+                            <field name="channel_inapp"/>
+                        </group>
+                    </group>
+                    <field name="description"/>
+                    <notebook>
+                        <page string="Templates">
+                            <field name="template_ids">
+                                <list>
+                                    <field name="channel" widget="badge"/>
+                                    <field name="subject_en"/>
+                                    <field name="active"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_saas_ntype" model="ir.actions.act_window">
+        <field name="name">Notification Types</field>
+        <field name="res_model">saas.notification.type</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

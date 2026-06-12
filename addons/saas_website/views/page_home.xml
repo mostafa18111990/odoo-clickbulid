@@ -1,0 +1,314 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="page_home" name="Homepage">
+        <t t-call="website.layout">
+            <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/><t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+
+            <!-- ===== HERO ===== -->
+            <section class="cb-hero" style="min-height:78vh;">
+                <div class="container py-5">
+                    <div class="row align-items-center" style="min-height:70vh;">
+                        <div class="col-lg-7 py-5" data-cb-reveal="1">
+                            <div class="d-flex flex-wrap gap-2 mb-4">
+                                <span class="badge-pill d-inline-block">
+                                    <i class="fa fa-bolt me-1" style="color:#fbbf24;"/>
+                                    <t t-if="lang_is_ar">نظام ERP سحابي متكامل</t>
+                                    <t t-else="">All-in-one cloud ERP</t>
+                                </span>
+                                <a href="/pricing#enterprise" class="badge-pill d-inline-block text-decoration-none"
+                                   style="background:rgba(255,255,255,0.18); border:1px solid rgba(255,255,255,0.4); cursor:pointer;">
+                                    <i class="fa fa-rocket me-1" style="color:#fbbf24;"/>
+                                    <t t-if="lang_is_ar">جديد: Enterprise مع Studio &amp; Helpdesk</t>
+                                    <t t-else="">New: Enterprise — Studio &amp; Helpdesk</t>
+                                </a>
+                            </div>
+                            <h1 class="display-3 mb-4">
+                                <t t-if="lang_is_ar">
+                                    أدر أعمالك<br/>
+                                    <span style="color:#fbbf24;">من السحابة</span>
+                                    <span class="d-inline-block">في دقائق</span>
+                                </t>
+                                <t t-else="">
+                                    Run your business<br/>
+                                    <span style="color:#fbbf24;">from the cloud</span>
+                                    <span class="d-inline-block">in minutes</span>
+                                </t>
+                            </h1>
+                            <p class="lead mb-4" style="opacity:0.92; max-width:560px;">
+                                <t t-if="lang_is_ar">ClickBuild منصة Odoo 19 سحابية متكاملة باللغة العربية.
+                                محاسبة معتمدة من ZATCA، مبيعات، مخزون، موارد بشرية،
+                                ونقاط بيع — كلها من مكان واحد.</t>
+                                <t t-else="">ClickBuild is a complete cloud Odoo 19 platform for Arabic-speaking
+                                businesses. ZATCA-compliant accounting, sales, inventory, HR
+                                and POS — all in one place.</t>
+                            </p>
+                            <div class="d-flex gap-3 flex-wrap mt-4">
+                                <a href="/get-started" class="btn btn-light btn-lg">
+                                    <i class="fa fa-rocket me-2"/>
+                                    <t t-if="lang_is_ar">ابدأ مجاناً</t><t t-else="">Start free</t>
+                                </a>
+                                <a href="/pricing" class="btn btn-outline-light btn-lg">
+                                    <t t-if="lang_is_ar">عرض الأسعار <i class="fa fa-arrow-left ms-2"/></t>
+                                    <t t-else="">View pricing <i class="fa fa-arrow-right ms-2"/></t>
+                                </a>
+                            </div>
+                            <p class="mt-3 small d-flex flex-wrap gap-3" style="opacity:0.8;">
+                                <span><i class="fa fa-check-circle me-1" style="color:#fbbf24;"/>
+                                    <t t-if="lang_is_ar">14 يوم تجريبي</t><t t-else="">14-day trial</t></span>
+                                <span><i class="fa fa-check-circle me-1" style="color:#fbbf24;"/>
+                                    <t t-if="lang_is_ar">بدون بطاقة ائتمان</t><t t-else="">No credit card</t></span>
+                                <span><i class="fa fa-check-circle me-1" style="color:#fbbf24;"/>
+                                    <t t-if="lang_is_ar">إلغاء في أي وقت</t><t t-else="">Cancel anytime</t></span>
+                            </p>
+
+                            <div class="row mt-5 pt-4 border-top border-light border-opacity-25">
+                                <div class="col-4 cb-stat"><div class="number">500+</div>
+                                    <small class="label"><t t-if="lang_is_ar">عميل سعيد</t><t t-else="">happy customers</t></small></div>
+                                <div class="col-4 cb-stat"><div class="number">99.9%</div>
+                                    <small class="label"><t t-if="lang_is_ar">وقت تشغيل</t><t t-else="">uptime</t></small></div>
+                                <div class="col-4 cb-stat"><div class="number">24/7</div>
+                                    <small class="label"><t t-if="lang_is_ar">دعم فني</t><t t-else="">support</t></small></div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-5 d-none d-lg-block" data-cb-reveal="1">
+                            <div class="cb-hero-visual">
+                                <div class="blob blob-1"/>
+                                <div class="blob blob-2"/>
+                                <div class="panel">
+                                    <div class="d-flex justify-content-between align-items-center mb-3">
+                                        <strong><t t-if="lang_is_ar">لوحة التحكم</t><t t-else="">Dashboard</t></strong>
+                                        <span class="badge" style="background:#10b981; color:#fff;">
+                                            <t t-if="lang_is_ar">مباشر</t><t t-else="">Live</t></span>
+                                    </div>
+                                    <div class="row g-2">
+                                        <div class="col-4"><i class="fa fa-calculator"/><div class="small mt-1">
+                                            <t t-if="lang_is_ar">محاسبة</t><t t-else="">Accounting</t></div></div>
+                                        <div class="col-4"><i class="fa fa-shopping-cart"/><div class="small mt-1">
+                                            <t t-if="lang_is_ar">مبيعات</t><t t-else="">Sales</t></div></div>
+                                        <div class="col-4"><i class="fa fa-cubes"/><div class="small mt-1">
+                                            <t t-if="lang_is_ar">مخزون</t><t t-else="">Inventory</t></div></div>
+                                        <div class="col-4"><i class="fa fa-users"/><div class="small mt-1">
+                                            <t t-if="lang_is_ar">موارد بشرية</t><t t-else="">HR</t></div></div>
+                                        <div class="col-4"><i class="fa fa-shopping-bag"/><div class="small mt-1">POS</div></div>
+                                        <div class="col-4"><i class="fa fa-bullseye"/><div class="small mt-1">CRM</div></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== TRUST STRIP ===== -->
+            <section class="cb-trust py-4">
+                <div class="container">
+                    <div class="row text-center text-md-start g-3 justify-content-around">
+                        <div class="col-md-3 col-6"><div class="item justify-content-center justify-content-md-start">
+                            <i class="fa fa-shield"/>
+                            <div><strong class="d-block"><t t-if="lang_is_ar">SSL مشفّر</t><t t-else="">SSL secured</t></strong>
+                                <small><t t-if="lang_is_ar">بياناتك آمنة</t><t t-else="">your data is safe</t></small></div>
+                        </div></div>
+                        <div class="col-md-3 col-6"><div class="item justify-content-center justify-content-md-start">
+                            <i class="fa fa-check-circle"/>
+                            <div><strong class="d-block"><t t-if="lang_is_ar">معتمد ZATCA</t><t t-else="">ZATCA certified</t></strong>
+                                <small><t t-if="lang_is_ar">فوترة إلكترونية</t><t t-else="">e-invoicing</t></small></div>
+                        </div></div>
+                        <div class="col-md-3 col-6"><div class="item justify-content-center justify-content-md-start">
+                            <i class="fa fa-cloud"/>
+                            <div><strong class="d-block"><t t-if="lang_is_ar">نسخ احتياطي يومي</t><t t-else="">Daily backups</t></strong>
+                                <small><t t-if="lang_is_ar">لا تفقد شيئاً</t><t t-else="">never lose data</t></small></div>
+                        </div></div>
+                        <div class="col-md-3 col-6"><div class="item justify-content-center justify-content-md-start">
+                            <i class="fa fa-headset"/>
+                            <div><strong class="d-block">
+                                <t t-if="lang_is_ar">دعم بالعربية</t><t t-else="">Arabic &amp; English support</t></strong>
+                                <small><t t-if="lang_is_ar">طوال الأسبوع</t><t t-else="">7 days a week</t></small></div>
+                        </div></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- ===== FEATURES GRID ===== -->
+            <section class="py-5 bg-light"><div class="container py-4">
+                <div class="text-center mb-5" data-cb-reveal="1">
+                    <span class="badge rounded-pill px-3 py-2 mb-2" style="background:#f5f3ff; color:#6d28d9;">
+                        <t t-if="lang_is_ar">المميزات</t><t t-else="">Features</t></span>
+                    <h2 class="display-5 mb-3">
+                        <t t-if="lang_is_ar">كل ما تحتاجه لإدارة أعمالك</t>
+                        <t t-else="">Everything you need to run your business</t></h2>
+                    <p class="lead text-muted">
+                        <t t-if="lang_is_ar">منصة واحدة، تطبيقات متكاملة، تجربة سلسة</t>
+                        <t t-else="">One platform, integrated apps, seamless experience</t></p>
+                </div>
+                <div class="row g-4">
+                    <t t-set="features_ar" t-value="[
+                        {'icon':'fa-calculator','title':'المحاسبة والفوترة','desc':'فواتير إلكترونية متوافقة مع ZATCA، قيود تلقائية، تقارير مالية شاملة.'},
+                        {'icon':'fa-shopping-cart','title':'المبيعات و CRM','desc':'إدارة العملاء، عروض الأسعار، أوامر البيع، خطوط أنابيب مرئية.'},
+                        {'icon':'fa-cubes','title':'إدارة المخزون','desc':'تتبع لحظي للمخزون، مستودعات متعددة، باركود، تنبيهات إعادة الطلب.'},
+                        {'icon':'fa-users','title':'الموارد البشرية','desc':'موظفون، رواتب وفق نظام السعودية، إجازات، حضور وانصراف.'},
+                        {'icon':'fa-shopping-bag','title':'نقاط البيع','desc':'كاشير سريع، يعمل بدون إنترنت، مزامنة تلقائية مع المحاسبة.'},
+                        {'icon':'fa-bullseye','title':'التسويق والحملات','desc':'حملات بريد إلكتروني، SMS، تتبع التحويلات، تقارير ROI.'},
+                        {'icon':'fa-industry','title':'التصنيع والإنتاج','desc':'أوامر تصنيع، قوائم مواد، تخطيط الإنتاج، جودة.'},
+                        {'icon':'fa-truck','title':'سلسلة التوريد','desc':'موردون، مشتريات، استلام بضاعة، تتبع شحنات.'},
+                        {'icon':'fa-mobile','title':'تطبيقات الجوال','desc':'تطبيق Android و iOS لإدارة أعمالك من أي مكان.'}]"/>
+                    <t t-set="features_en" t-value="[
+                        {'icon':'fa-calculator','title':'Accounting &amp; Invoicing','desc':'ZATCA-compliant e-invoices, automatic journal entries, full financial reports.'},
+                        {'icon':'fa-shopping-cart','title':'Sales &amp; CRM','desc':'Customer management, quotations, sales orders, visual pipelines.'},
+                        {'icon':'fa-cubes','title':'Inventory Management','desc':'Real-time stock, multi-warehouse, barcode, reorder alerts.'},
+                        {'icon':'fa-users','title':'Human Resources','desc':'Employees, KSA-compliant payroll, leaves, attendance.'},
+                        {'icon':'fa-shopping-bag','title':'Point of Sale','desc':'Fast cashier, works offline, automatic sync with accounting.'},
+                        {'icon':'fa-bullseye','title':'Marketing','desc':'Email and SMS campaigns, conversion tracking, ROI reports.'},
+                        {'icon':'fa-industry','title':'Manufacturing','desc':'Manufacturing orders, BOMs, production planning, quality.'},
+                        {'icon':'fa-truck','title':'Supply Chain','desc':'Suppliers, purchases, goods receipt, shipment tracking.'},
+                        {'icon':'fa-mobile','title':'Mobile Apps','desc':'Android &amp; iOS apps to manage your business anywhere.'}]"/>
+                    <t t-foreach="features_ar if lang_is_ar else features_en" t-as="feat">
+                        <div class="col-md-6 col-lg-4" data-cb-reveal="1">
+                            <div class="card border-0 shadow-sm h-100 p-3"><div class="card-body">
+                                <div class="cb-feature-icon">
+                                    <i t-attf-class="fa #{feat['icon']}"/>
+                                </div>
+                                <h5 class="fw-bold" t-esc="feat['title']"/>
+                                <p class="text-muted mb-0" t-esc="feat['desc']"/>
+                            </div></div>
+                        </div>
+                    </t>
+                </div>
+            </div></section>
+
+            <!-- ===== HOW IT WORKS ===== -->
+            <section class="py-5"><div class="container py-4">
+                <div class="text-center mb-5" data-cb-reveal="1">
+                    <span class="badge rounded-pill px-3 py-2 mb-2" style="background:#f5f3ff; color:#6d28d9;">
+                        <t t-if="lang_is_ar">كيف يعمل</t><t t-else="">How it works</t></span>
+                    <h2 class="display-5 mb-3">
+                        <t t-if="lang_is_ar">ابدأ في ٣ خطوات بسيطة</t>
+                        <t t-else="">Get started in 3 simple steps</t></h2>
+                </div>
+                <div class="row g-4">
+                    <div class="col-md-4" data-cb-reveal="1"><div class="cb-step">
+                        <div class="step-num">1</div>
+                        <h5 class="fw-bold"><t t-if="lang_is_ar">سجّل حسابك</t><t t-else="">Sign up</t></h5>
+                        <p class="text-muted">
+                            <t t-if="lang_is_ar">اختر اسم مساحة العمل وأنشئ حسابك المجاني في دقيقة واحدة.</t>
+                            <t t-else="">Pick a workspace name and create your free account in one minute.</t></p>
+                    </div></div>
+                    <div class="col-md-4" data-cb-reveal="1"><div class="cb-step">
+                        <div class="step-num">2</div>
+                        <h5 class="fw-bold"><t t-if="lang_is_ar">جهّز نظامك</t><t t-else="">Set up</t></h5>
+                        <p class="text-muted">
+                            <t t-if="lang_is_ar">أضف شركتك، استورد بياناتك، أو ابدأ من القوالب الجاهزة.</t>
+                            <t t-else="">Add your company, import data, or start from a ready template.</t></p>
+                    </div></div>
+                    <div class="col-md-4" data-cb-reveal="1"><div class="cb-step">
+                        <div class="step-num">3</div>
+                        <h5 class="fw-bold"><t t-if="lang_is_ar">انطلق</t><t t-else="">Launch</t></h5>
+                        <p class="text-muted">
+                            <t t-if="lang_is_ar">ابدأ في إصدار الفواتير، إدارة المخزون، وتتبع أعمالك فوراً.</t>
+                            <t t-else="">Start issuing invoices, managing stock, and tracking your business right away.</t></p>
+                    </div></div>
+                </div>
+            </div></section>
+
+            <!-- ===== PRICING TEASER ===== -->
+            <section class="py-5 bg-light"><div class="container py-4">
+                <div class="text-center mb-5" data-cb-reveal="1">
+                    <span class="badge rounded-pill px-3 py-2 mb-2" style="background:#f5f3ff; color:#6d28d9;">
+                        <t t-if="lang_is_ar">الأسعار</t><t t-else="">Pricing</t></span>
+                    <h2 class="display-5 mb-3">
+                        <t t-if="lang_is_ar">خطط تناسب الجميع</t>
+                        <t t-else="">Plans that fit every team</t></h2>
+                    <p class="lead text-muted">
+                        <t t-if="lang_is_ar">ابدأ بخطة مجانية لمدة 14 يوماً — بدون التزام</t>
+                        <t t-else="">Start with a 14-day free trial — no commitment</t></p>
+                </div>
+                <div class="row g-4 justify-content-center align-items-stretch">
+                    <t t-foreach="plans" t-as="plan">
+                        <div class="col-lg-4 col-md-6" data-cb-reveal="1">
+                            <div t-attf-class="cb-pricing-card #{'featured' if plan.is_recommended else ''}">
+                                <t t-if="plan.is_recommended">
+                                    <div class="featured-ribbon">
+                                        <t t-if="lang_is_ar">⭐ الأكثر شيوعاً</t><t t-else="">⭐ Most popular</t></div>
+                                </t>
+                                <h4 class="fw-bold text-center mb-3" t-esc="plan.name"/>
+                                <div class="text-center mb-3">
+                                    <span class="price" t-esc="'%.0f' % plan.monthly_price"/>
+                                    <span class="price-suffix">
+                                        <t t-if="lang_is_ar">ريال / شهر</t><t t-else="">SAR / month</t></span>
+                                </div>
+                                <ul class="list-unstyled mb-4">
+                                    <li><i class="fa fa-check me-2"/><t t-esc="plan.max_users"/>
+                                        <t t-if="lang_is_ar"> مستخدمون</t><t t-else=""> users</t></li>
+                                    <li><i class="fa fa-check me-2"/><t t-esc="round(plan.max_storage_mb/1024, 1)"/>
+                                        <t t-if="lang_is_ar"> جيجابايت</t><t t-else=""> GB storage</t></li>
+                                    <li><i class="fa fa-check me-2"/><t t-esc="plan.max_companies"/>
+                                        <t t-if="lang_is_ar"> شركة</t><t t-else=""> companies</t></li>
+                                    <li><i class="fa fa-check me-2"/>
+                                        <t t-if="lang_is_ar">دعم بالعربية</t><t t-else="">Arabic &amp; English support</t></li>
+                                    <li><i class="fa fa-check me-2"/>
+                                        <t t-if="lang_is_ar">تحديثات تلقائية</t><t t-else="">Automatic updates</t></li>
+                                </ul>
+                                <a t-attf-href="/get-started/#{plan.code}"
+                                   t-attf-class="btn #{'btn-primary' if plan.is_recommended else 'btn-outline-primary'} w-100">
+                                    <t t-if="lang_is_ar">ابدأ التجربة المجانية</t><t t-else="">Start free trial</t>
+                                </a>
+                            </div>
+                        </div>
+                    </t>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="/pricing" class="btn btn-link text-decoration-none">
+                        <t t-if="lang_is_ar">مقارنة كاملة لجميع الخطط <i class="fa fa-arrow-left ms-1"/></t>
+                        <t t-else="">Full plan comparison <i class="fa fa-arrow-right ms-1"/></t>
+                    </a>
+                </div>
+            </div></section>
+
+            <!-- ===== FAQ ===== -->
+            <section class="py-5 bg-light"><div class="container py-4">
+                <div class="text-center mb-5" data-cb-reveal="1">
+                    <span class="badge rounded-pill px-3 py-2 mb-2" style="background:#f5f3ff; color:#6d28d9;">
+                        <t t-if="lang_is_ar">الأسئلة الشائعة</t><t t-else="">FAQ</t></span>
+                    <h2 class="display-5 mb-3">
+                        <t t-if="lang_is_ar">أجوبة سريعة لأكثر الأسئلة شيوعاً</t>
+                        <t t-else="">Quick answers to common questions</t></h2>
+                </div>
+                <div class="row justify-content-center"><div class="col-lg-8">
+                    <div class="accordion" id="homeFaq">
+                        <t t-foreach="faqs" t-as="faq">
+                            <div class="accordion-item shadow-sm" data-cb-reveal="1">
+                                <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button"
+                                            data-bs-toggle="collapse" t-attf-data-bs-target="#faq#{faq.id}">
+                                        <t t-esc="faq.question"/>
+                                    </button>
+                                </h2>
+                                <div t-attf-id="faq#{faq.id}" class="accordion-collapse collapse"
+                                     data-bs-parent="#homeFaq">
+                                    <div class="accordion-body text-muted"><t t-esc="faq.answer"/></div>
+                                </div>
+                            </div>
+                        </t>
+                    </div>
+                </div></div>
+            </div></section>
+
+            <!-- ===== FINAL CTA ===== -->
+            <section class="py-5 cb-hero">
+                <div class="container text-center py-4" data-cb-reveal="1">
+                    <h2 class="display-4 mb-3">
+                        <t t-if="lang_is_ar">جاهز لتنطلق؟</t><t t-else="">Ready to launch?</t></h2>
+                    <p class="lead mb-4" style="opacity:0.92;">
+                        <t t-if="lang_is_ar">ابدأ تجربتك المجانية الآن — لا حاجة لبطاقة ائتمان</t>
+                        <t t-else="">Start your free trial now — no credit card required</t></p>
+                    <a href="/get-started" class="btn btn-light btn-lg">
+                        <i class="fa fa-rocket me-2"/>
+                        <t t-if="lang_is_ar">أنشئ حسابك المجاني</t><t t-else="">Create your free account</t></a>
+                    <p class="mt-3 small" style="opacity:0.75;">
+                        <t t-if="lang_is_ar">14 يوماً مجاناً · بكامل المميزات · إلغاء في أي وقت</t>
+                        <t t-else="">14 days free · full features · cancel anytime</t></p>
+                </div>
+            </section>
+        </t>
+    </template>
+</odoo>

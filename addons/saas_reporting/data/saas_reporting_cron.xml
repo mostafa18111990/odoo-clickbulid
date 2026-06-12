@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="cron_daily_snapshot" model="ir.cron">
+            <field name="name">SaaS Reporting: Daily Metrics Snapshot</field>
+            <field name="model_id" ref="model_saas_report_snapshot"/>
+            <field name="state">code</field>
+            <field name="code">model.cron_daily_snapshot()</field>
+            <field name="interval_number">1</field>
+            <field name="interval_type">days</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

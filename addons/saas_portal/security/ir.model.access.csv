@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_portal_tenant,portal saas.tenant,saas_core.model_saas_tenant,base.group_portal,1,0,0,0
+access_portal_invoice,portal saas.invoice,saas_billing.model_saas_invoice,base.group_portal,1,0,0,0
+access_portal_invoice_line,portal saas.invoice.line,saas_billing.model_saas_invoice_line,base.group_portal,1,0,0,0
+access_portal_subscription,portal saas.subscription,saas_subscription.model_saas_subscription,base.group_portal,1,0,0,0
+access_portal_plan,portal saas.plan,saas_tenant_manager.model_saas_plan,base.group_portal,1,0,0,0
+access_portal_payment_method,portal saas.payment.method,saas_payment.model_saas_payment_method,base.group_portal,1,0,0,0
+access_portal_cancellation_reason,portal saas.cancellation.reason,saas_lifecycle.model_saas_cancellation_reason,base.group_portal,1,0,0,0

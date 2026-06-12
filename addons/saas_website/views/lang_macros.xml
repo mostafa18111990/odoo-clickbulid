@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--
+        Bilingual helper macros.
+
+        Usage in any template:
+            <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/><t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>     ← sets `lang_is_ar` boolean
+            <t t-if="lang_is_ar">عربي</t><t t-else="">English</t>
+
+        Or inline shorthand for short labels:
+            <t t-call="saas_website.bi">
+                <t t-set="ar">ابدأ مجاناً</t>
+                <t t-set="en">Start free</t>
+            </t>
+    -->
+
+    <!-- Sets `lang_is_ar` based on the current request language.
+         request.env.lang is the canonical place in Odoo 19 (returns the
+         lang code as a string e.g. 'ar_001' or 'en_US'). -->
+    <template id="lang_helper" name="Language Helper">
+        <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>
+        <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+    </template>
+
+    <!-- Inline bilingual: renders `ar` if Arabic, `en` otherwise.
+         Caller provides both via <t t-set="ar">...</t><t t-set="en">...</t> -->
+    <template id="bi" name="Bilingual Inline">
+        <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>
+        <t t-if="lang_code in ('ar_001', 'ar')" t-out="ar"/>
+        <t t-else="" t-out="en"/>
+    </template>
+
+    <!-- Language switcher button.
+         Posts the click through /switch-lang/<code> which clears Odoo's
+         session lang and redirects to the requested path. Without this,
+         the session lang persists and Odoo would re-prefix the URL back to
+         the previous language. -->
+    <template id="lang_switcher_widget" name="Language Switcher">
+        <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>
+        <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+        <t t-set="cur_path" t-value="request.httprequest.path or '/'"/>
+        <!-- Strip any /en/ or /ar/ prefix so r= contains the canonical path. -->
+        <t t-set="canon" t-value="(cur_path[3:] if cur_path.startswith(('/en/','/ar/')) else (cur_path[3:] if cur_path in ('/en','/ar') else cur_path)) or '/'"/>
+        <t t-set="host" t-value="request.httprequest.host"/>
+        <t t-set="url_to_en" t-value="'//' + host + '/switch-lang/en_US?r=' + canon"/>
+        <t t-set="url_to_ar" t-value="'//' + host + '/switch-lang/ar_001?r=' + canon"/>
+        <li class="nav-item">
+            <t t-if="lang_is_ar">
+                <a class="nav-link cb-lang-switch" t-att-href="url_to_en"
+                   title="Switch to English" rel="alternate" hreflang="en">
+                    <i class="fa fa-globe me-1"/>
+                    <span>EN</span>
+                </a>
+            </t>
+            <t t-else="">
+                <a class="nav-link cb-lang-switch" t-att-href="url_to_ar"
+                   title="التحويل إلى العربية" rel="alternate" hreflang="ar">
+                    <i class="fa fa-globe me-1"/>
+                    <span>عربي</span>
+                </a>
+            </t>
+        </li>
+    </template>
+
+    <!-- Inject the language switcher into the Odoo website navbar. -->
+    <template id="layout_navbar_lang_inherit" name="Navbar: language switcher"
+              inherit_id="website.layout">
+        <xpath expr="//header//ul[contains(@class, 'navbar-nav')]" position="inside">
+            <!-- Highlight Enterprise so customers discover the new tier even
+                 if they only ever look at the navbar. Links straight to the
+                 pricing page with the Enterprise toggle pre-selected. -->
+            <t t-set="lc" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>
+            <li class="nav-item">
+                <a class="nav-link cb-nav-enterprise" href="/pricing#enterprise"
+                   style="color:#fbbf24; font-weight:600;">
+                    <i class="fa fa-rocket me-1"/>
+                    <span t-if="lc in ('ar_001','ar')">Enterprise</span>
+                    <span t-else="">Enterprise</span>
+                    <span class="badge ms-1" style="background:#fbbf24; color:#1f2937; font-size:0.6rem;">NEW</span>
+                </a>
+            </li>
+            <t t-call="saas_website.lang_switcher_widget"/>
+        </xpath>
+    </template>
+
+</odoo>

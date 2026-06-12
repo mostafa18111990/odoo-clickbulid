@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_saas_kb_root" name="Knowledge Base"
+              parent="saas_core.menu_saas_root" sequence="70"/>
+    <menuitem id="menu_saas_kb_articles" name="Articles"
+              parent="menu_saas_kb_root" action="action_saas_kb_article" sequence="10"/>
+    <menuitem id="menu_saas_kb_categories" name="Categories"
+              parent="menu_saas_kb_root" action="action_saas_kb_category" sequence="20"/>
+</odoo>

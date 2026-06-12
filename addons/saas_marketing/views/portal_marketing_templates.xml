@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_referrals" name="My Referrals">
+        <t t-call="portal.portal_layout">
+            <div class="container my-4">
+                <h2>My Referrals</h2>
+                <div t-if="program" class="alert alert-info">
+                    Refer a friend and earn <strong t-out="program.referrer_reward_value"/>
+                    <t t-out="program.currency_id.symbol"/>! They get
+                    <strong t-out="program.referee_discount_percent"/>% off.
+                </div>
+                <form action="/my/saas/referrals/new" method="post" class="mb-3">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <div class="input-group">
+                        <input type="email" name="email" class="form-control" placeholder="friend@example.com"/>
+                        <button type="submit" class="btn btn-primary">Generate Code</button>
+                    </div>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr><th>Code</th><th>Referred</th><th>State</th><th>Reward</th><th>Created</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="referrals" t-as="r">
+                            <td><strong t-out="r.name"/></td>
+                            <td><t t-out="r.referred_email or r.referred_tenant_id.name"/></td>
+                            <td><t t-out="r.state"/></td>
+                            <td><t t-out="r.reward_amount"/></td>
+                            <td><t t-out="r.create_date"/></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+</odoo>

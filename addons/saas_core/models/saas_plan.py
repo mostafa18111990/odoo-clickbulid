@@ -1,0 +1,78 @@
+from odoo import models, fields, api
+from odoo.exceptions import ValidationError
+
+
+class SaasPlan(models.Model):
+    _name = 'saas.plan'
+    _inherit = ['saas.plan', 'saas.mixin']
+    _description = 'SaaS Subscription Plan (Extended)'
+
+    # ─── Edition selector ───────────────────────────────────────────────────
+    # Determines which Odoo image hosts new tenants on this plan:
+    #   community  → odoo_saas_app container (LGPL, no extra license cost)
+    #   enterprise → odoo_saas_ent container (Studio, Helpdesk Pro, Subscriptions,
+    #                Field Service, Documents, Sign, MRP Plan, etc.)
+    edition = fields.Selection(
+        selection=[('community', 'Community'), ('enterprise', 'Enterprise')],
+        string='Odoo Edition', default='community', required=True, index=True,
+        help='Community runs the free LGPL Odoo. Enterprise unlocks Studio, '
+             'Helpdesk, Subscriptions, Field Service, Documents, Sign and more.')
+    enterprise_license_cost_per_user = fields.Monetary(
+        string='Odoo SA License Cost / User / Month', currency_field='currency_id',
+        default=0.0,
+        help='Wholesale cost Odoo SA charges per user for Enterprise. Used in '
+             'monthly partner reconciliation reports.')
+    enterprise_modules = fields.Text(
+        string='Enterprise Modules to Auto-install',
+        help='Comma-separated module names installed at provisioning time for '
+             'Enterprise plans (e.g. studio,helpdesk,subscriptions).')
+    currency_id = fields.Many2one('res.currency', string='Currency',
+        default=lambda self: self.env.company.currency_id)
+
+    yearly_price = fields.Float(string='Yearly Price (SAR)', digits=(10, 2), default=0.0)
+    yearly_price_computed = fields.Float(string='Yearly Price (Auto)', compute='_compute_yearly_price', digits=(10, 2))
+    yearly_discount_pct = fields.Float(string='Yearly Discount %', compute='_compute_yearly_discount', digits=(5, 1))
+    extra_user_price = fields.Float(string='Extra User Price (SAR/month)', digits=(10, 2), default=0.0)
+    extra_storage_price = fields.Float(string='Extra Storage Price (SAR/GB/month)', digits=(10, 2), default=0.0)
+    setup_fee = fields.Float(string='One-Time Setup Fee (SAR)', digits=(10, 2), default=0.0)
+    max_companies = fields.Integer(string='Max Companies', default=1)
+    is_popular = fields.Boolean(string='Popular', default=False)
+    is_recommended = fields.Boolean(string='Recommended', default=False)
+    feature_json = fields.Text(string='Feature Matrix (JSON)')
+
+    @api.depends('monthly_price')
+    def _compute_yearly_price(self):
+        for rec in self:
+            rec.yearly_price_computed = round(rec.monthly_price * 10, 2)
+
+    @api.depends('monthly_price', 'yearly_price', 'yearly_price_computed')
+    def _compute_yearly_discount(self):
+        for rec in self:
+            annual_monthly = rec.monthly_price * 12
+            effective_yearly = rec.yearly_price or rec.yearly_price_computed
+            if annual_monthly > 0 and effective_yearly > 0:
+                rec.yearly_discount_pct = round((1 - effective_yearly / annual_monthly) * 100, 1)
+            else:
+                rec.yearly_discount_pct = 0.0
+
+    @api.constrains('monthly_price')
+    def _check_price(self):
+        for rec in self:
+            if rec.monthly_price < 0:
+                raise ValidationError('Monthly price cannot be negative.')
+
+    def get_effective_yearly_price(self):
+        self.ensure_one()
+        return self.yearly_price if self.yearly_price > 0 else self.yearly_price_computed
+
+    def calculate_bill(self, billing_cycle, extra_users=0, extra_gb=0):
+        self.ensure_one()
+        base = self.get_effective_yearly_price() if billing_cycle == 'yearly' else self.monthly_price
+        extra_users_cost = max(0, extra_users) * self.extra_user_price
+        extra_storage_cost = max(0, extra_gb) * self.extra_storage_price
+        if billing_cycle == 'yearly':
+            extra_users_cost *= 10
+            extra_storage_cost *= 10
+        total = base + extra_users_cost + extra_storage_cost
+        return {'base': base, 'extra_users': extra_users_cost, 'extra_storage': extra_storage_cost,
+                'setup_fee': self.setup_fee, 'total': total, 'currency': 'SAR', 'cycle': billing_cycle}

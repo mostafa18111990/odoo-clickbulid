@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="tax_sa_vat" model="saas.tax.rate">
+            <field name="name">Saudi Arabia VAT</field>
+            <field name="name_ar">ضريبة القيمة المضافة - السعودية</field>
+            <field name="code">SA_VAT_15</field>
+            <field name="country_code">SA</field>
+            <field name="tax_type">percentage</field>
+            <field name="rate">15.0</field>
+            <field name="invoice_label">VAT (15%)</field>
+            <field name="invoice_label_ar">ضريبة القيمة المضافة (15٪)</field>
+            <field name="active" eval="True"/>
+        </record>
+        <record id="tax_ae_vat" model="saas.tax.rate">
+            <field name="name">UAE VAT</field>
+            <field name="code">AE_VAT_5</field>
+            <field name="country_code">AE</field>
+            <field name="rate">5.0</field>
+            <field name="invoice_label">VAT (5%)</field>
+            <field name="invoice_label_ar">ضريبة القيمة المضافة (5٪)</field>
+            <field name="active" eval="True"/>
+        </record>
+        <record id="tax_eg_vat" model="saas.tax.rate">
+            <field name="name">Egypt VAT</field>
+            <field name="code">EG_VAT_14</field>
+            <field name="country_code">EG</field>
+            <field name="rate">14.0</field>
+            <field name="invoice_label">VAT (14%)</field>
+            <field name="invoice_label_ar">ضريبة القيمة المضافة (14٪)</field>
+            <field name="active" eval="True"/>
+        </record>
+        <record id="tax_kw_zero" model="saas.tax.rate">
+            <field name="name">Kuwait (Tax Exempt)</field>
+            <field name="code">KW_EXEMPT</field>
+            <field name="country_code">KW</field>
+            <field name="rate">0.0</field>
+            <field name="invoice_label">Tax Exempt</field>
+            <field name="invoice_label_ar">معفى من الضريبة</field>
+            <field name="active" eval="True"/>
+        </record>
+        <record id="tax_qa_zero" model="saas.tax.rate">
+            <field name="name">Qatar (Tax Exempt)</field>
+            <field name="code">QA_EXEMPT</field>
+            <field name="country_code">QA</field>
+            <field name="rate">0.0</field>
+            <field name="invoice_label">Tax Exempt</field>
+            <field name="invoice_label_ar">معفى من الضريبة</field>
+            <field name="active" eval="True"/>
+        </record>
+        <record id="tax_bh_vat" model="saas.tax.rate">
+            <field name="name">Bahrain VAT</field>
+            <field name="code">BH_VAT_10</field>
+            <field name="country_code">BH</field>
+            <field name="rate">10.0</field>
+            <field name="invoice_label">VAT (10%)</field>
+            <field name="invoice_label_ar">ضريبة القيمة المضافة (10٪)</field>
+            <field name="active" eval="True"/>
+        </record>
+        <record id="tax_jo_gst" model="saas.tax.rate">
+            <field name="name">Jordan General Sales Tax</field>
+            <field name="code">JO_GST_16</field>
+            <field name="country_code">JO</field>
+            <field name="rate">16.0</field>
+            <field name="invoice_label">Sales Tax (16%)</field>
+            <field name="invoice_label_ar">ضريبة المبيعات (16٪)</field>
+            <field name="active" eval="True"/>
+        </record>
+    </data>
+</odoo>

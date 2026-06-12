@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_invoices" name="SaaS Invoices">
+        <t t-call="saas_portal.saas_portal_layout">
+            <h3 class="mb-4">Invoices / الفواتير</h3>
+            <div class="card border-0 shadow-sm"><div class="card-body">
+                <t t-if="invoices">
+                    <table class="table">
+                        <thead><tr><th>Number</th><th>Date</th><th>Due</th><th>Total</th><th>Status</th><th></th></tr></thead>
+                        <tbody><t t-foreach="invoices" t-as="inv"><tr>
+                            <td><strong t-esc="inv['number']"/></td><td t-esc="inv['date']"/><td t-esc="inv['due_date']"/>
+                            <td><t t-esc="'%.2f' % inv['amount_total']"/> <t t-esc="inv['currency']"/></td>
+                            <td><span t-attf-class="badge #{'bg-success' if inv['status'] == 'paid' else 'bg-danger' if inv['status'] == 'overdue' else 'bg-warning'}" t-esc="inv['status']"/></td>
+                            <td><a t-attf-href="/my/saas/invoices/#{inv['id']}" class="btn btn-sm btn-outline-primary">View</a>
+                                <t t-if="inv['has_pdf']"><a t-attf-href="/my/saas/invoices/#{inv['id']}/pdf" class="btn btn-sm btn-outline-secondary"><i class="fa fa-download"/></a></t></td>
+                        </tr></t></tbody>
+                    </table>
+                </t>
+                <t t-else=""><p class="text-muted text-center py-4">No invoices yet.</p></t>
+            </div></div>
+        </t>
+    </template>
+
+    <template id="portal_invoice_detail" name="SaaS Invoice Detail">
+        <t t-call="saas_portal.saas_portal_layout">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0">Invoice <t t-esc="invoice.number"/></h3>
+                <a t-attf-href="/my/saas/invoices/#{invoice.id}/pdf" class="btn btn-primary"><i class="fa fa-download me-1"/> Download PDF</a>
+            </div>
+            <div class="card border-0 shadow-sm"><div class="card-body">
+                <div class="row mb-3">
+                    <div class="col-md-6"><strong>Status:</strong>
+                        <span t-attf-class="badge #{'bg-success' if invoice.status == 'paid' else 'bg-warning'}" t-esc="invoice.status"/></div>
+                    <div class="col-md-6 text-end"><strong>Date:</strong> <t t-esc="invoice.invoice_date"/></div>
+                </div>
+                <table class="table">
+                    <thead><tr><th>Description</th><th class="text-end">Amount</th></tr></thead>
+                    <tbody><t t-foreach="invoice.line_ids" t-as="line"><tr>
+                        <td t-esc="line.name"/>
+                        <td class="text-end">
+                            <t t-if="line.line_type == 'tax'"><t t-esc="'%.2f' % line.tax_amount"/></t>
+                            <t t-else=""><t t-esc="'%.2f' % line.subtotal"/></t> <t t-esc="invoice.currency"/></td>
+                    </tr></t></tbody>
+                    <tfoot>
+                        <tr><td class="text-end"><strong>Subtotal</strong></td><td class="text-end"><t t-esc="'%.2f' % invoice.amount_subtotal"/> <t t-esc="invoice.currency"/></td></tr>
+                        <tr><td class="text-end"><strong>Tax</strong></td><td class="text-end"><t t-esc="'%.2f' % invoice.amount_tax"/> <t t-esc="invoice.currency"/></td></tr>
+                        <tr class="table-active"><td class="text-end"><strong>Total</strong></td><td class="text-end"><strong><t t-esc="'%.2f' % invoice.amount_total"/> <t t-esc="invoice.currency"/></strong></td></tr>
+                    </tfoot>
+                </table>
+            </div></div>
+        </t>
+    </template>
+
+    <template id="portal_payment_methods" name="SaaS Payment Methods">
+        <t t-call="saas_portal.saas_portal_layout">
+            <h3 class="mb-4">Payment Methods / طرق الدفع</h3>
+            <div class="card border-0 shadow-sm"><div class="card-body">
+                <t t-if="methods">
+                    <t t-foreach="methods" t-as="method">
+                        <div class="d-flex justify-content-between align-items-center border-bottom py-3">
+                            <div><i class="fa fa-credit-card fa-2x me-3" style="color:#6d28d9;"/>
+                                <span t-esc="method.display_name"/>
+                                <t t-if="method.card_expiry"><small class="text-muted ms-2">Exp: <t t-esc="method.card_expiry"/></small></t>
+                                <t t-if="method.is_default"><span class="badge bg-success ms-2">Default</span></t></div>
+                            <t t-if="not method.is_default">
+                                <form method="post" t-attf-action="/my/saas/payment-methods/#{method.id}/default">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <button type="submit" class="btn btn-sm btn-outline-primary">Set Default</button>
+                                </form>
+                            </t>
+                        </div>
+                    </t>
+                </t>
+                <t t-else=""><p class="text-muted text-center py-4">No saved payment methods.</p></t>
+            </div></div>
+        </t>
+    </template>
+</odoo>

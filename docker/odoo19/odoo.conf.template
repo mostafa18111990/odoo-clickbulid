@@ -1,0 +1,48 @@
+[options]
+; ─── Database ─────────────────────────────────────────────────────────────────
+db_host = ${DB_HOST}
+db_port = ${DB_PORT}
+db_user = ${DB_USER}
+db_password = ${DB_PASSWORD}
+db_name = ${DB_NAME}
+db_maxconn = 64
+
+; ─── Server ───────────────────────────────────────────────────────────────────
+http_port = 8069
+http_interface = 0.0.0.0
+longpolling_port = 8072
+workers = 2
+max_cron_threads = 1
+
+; ─── Paths ────────────────────────────────────────────────────────────────────
+addons_path = /usr/lib/python3/dist-packages/odoo/addons,/mnt/extra-addons
+data_dir = /var/lib/odoo
+
+; ─── Admin ────────────────────────────────────────────────────────────────────
+admin_passwd = ${MASTER_PASSWORD}
+
+; ─── Limits (SaaS Multi-tenant) ───────────────────────────────────────────────
+limit_memory_hard = 2684354560
+limit_memory_soft = 2147483648
+limit_request = 8192
+limit_time_cpu = 120
+limit_time_real = 240
+
+; ─── Proxy ────────────────────────────────────────────────────────────────────
+proxy_mode = True
+
+; ─── Email ────────────────────────────────────────────────────────────────────
+smtp_server = ${SMTP_HOST}
+smtp_port = ${SMTP_PORT}
+smtp_ssl = ${SMTP_SSL}
+smtp_user = ${SMTP_USER}
+smtp_password = ${SMTP_PASSWORD}
+email_from = ${EMAIL_FROM}
+
+; ─── Logging ──────────────────────────────────────────────────────────────────
+logfile = /var/log/odoo/odoo.log
+log_level = warn
+log_db = False
+
+; ─── Security ─────────────────────────────────────────────────────────────────
+list_db = False

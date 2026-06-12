@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_my_tokens" name="My API Tokens">
+        <t t-call="portal.portal_layout">
+            <div class="container my-4">
+                <h2>API Tokens</h2>
+                <p class="text-muted">Use these tokens to access the SaaS REST API at <code>/api/v1/*</code>.</p>
+                <form action="/my/saas/api-tokens/new" method="post" class="mb-3">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <div class="input-group">
+                        <input type="text" name="name" class="form-control" placeholder="Token name"/>
+                        <input type="text" name="scopes" class="form-control" placeholder="read,write" value="read"/>
+                        <button type="submit" class="btn btn-primary">Generate</button>
+                    </div>
+                </form>
+                <table class="table">
+                    <thead>
+                        <tr><th>Name</th><th>Prefix</th><th>Scopes</th><th>Used</th><th>Created</th><th></th></tr>
+                    </thead>
+                    <tbody>
+                        <tr t-foreach="tokens" t-as="t" t-attf-class="#{'text-muted' if t.revoked else ''}">
+                            <td><t t-out="t.name"/></td>
+                            <td><code><t t-out="t.token_prefix"/>…</code></td>
+                            <td><t t-out="t.scopes"/></td>
+                            <td><t t-out="t.request_count"/></td>
+                            <td><t t-out="t.create_date"/></td>
+                            <td>
+                                <form t-if="not t.revoked" t-attf-action="/my/saas/api-tokens/#{t.id}/revoke" method="post" class="d-inline">
+                                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                                    <button type="submit" class="btn btn-outline-danger btn-sm">Revoke</button>
+                                </form>
+                                <span t-if="t.revoked" class="badge bg-secondary">Revoked</span>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_token_created" name="Token Created">
+        <t t-call="portal.portal_layout">
+            <div class="container my-4">
+                <h2>Token Created</h2>
+                <div class="alert alert-warning">
+                    <strong>Save this token now.</strong> You won't be able to view it again.
+                </div>
+                <pre class="bg-light p-3"><t t-out="token.plain_token_once"/></pre>
+                <p>Use it in your requests as:</p>
+                <pre>Authorization: Bearer <t t-out="token.plain_token_once"/></pre>
+                <a href="/my/saas/api-tokens" class="btn btn-primary">Back to tokens</a>
+            </div>
+        </t>
+    </template>
+</odoo>

@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+        <record id="rule_portal_own_tenant" model="ir.rule">
+            <field name="name">Portal: Own Tenant Only</field>
+            <field name="model_id" ref="saas_core.model_saas_tenant"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('portal_user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_portal_own_invoices" model="ir.rule">
+            <field name="name">Portal: Own Invoices Only</field>
+            <field name="model_id" ref="saas_billing.model_saas_invoice"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('tenant_id.portal_user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_portal_own_subscriptions" model="ir.rule">
+            <field name="name">Portal: Own Subscriptions Only</field>
+            <field name="model_id" ref="saas_subscription.model_saas_subscription"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('tenant_id.portal_user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+
+        <record id="rule_portal_own_payment_methods" model="ir.rule">
+            <field name="name">Portal: Own Payment Methods Only</field>
+            <field name="model_id" ref="saas_payment.model_saas_payment_method"/>
+            <field name="groups" eval="[(4, ref('base.group_portal'))]"/>
+            <field name="domain_force">[('tenant_id.portal_user_id', '=', user.id)]</field>
+            <field name="perm_read" eval="True"/>
+            <field name="perm_write" eval="False"/>
+            <field name="perm_create" eval="False"/>
+            <field name="perm_unlink" eval="False"/>
+        </record>
+    </data>
+</odoo>

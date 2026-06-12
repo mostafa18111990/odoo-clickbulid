@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_health_check_admin,saas.health.check admin,model_saas_health_check,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_health_check_user,saas.health.check user,model_saas_health_check,base.group_user,1,0,0,0
+access_health_history_admin,saas.health.history admin,model_saas_health_history,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_health_history_user,saas.health.history user,model_saas_health_history,base.group_user,1,0,1,0
+access_metric_snapshot_admin,saas.metric.snapshot admin,model_saas_metric_snapshot,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_metric_snapshot_analyst,saas.metric.snapshot analyst,model_saas_metric_snapshot,saas_core.group_saas_analyst,1,0,1,0
+access_metric_snapshot_user,saas.metric.snapshot user,model_saas_metric_snapshot,base.group_user,1,0,0,0

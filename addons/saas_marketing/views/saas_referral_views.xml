@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_referral_list" model="ir.ui.view">
+        <field name="name">saas.referral.list</field>
+        <field name="model">saas.referral</field>
+        <field name="arch" type="xml">
+            <list string="Referrals" decoration-success="state == 'rewarded'" decoration-muted="state in ('expired','cancelled')">
+                <field name="name"/>
+                <field name="referrer_user_id"/>
+                <field name="referred_email"/>
+                <field name="referred_tenant_id"/>
+                <field name="state"/>
+                <field name="reward_amount"/>
+                <field name="rewarded_at"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_saas_referral_form" model="ir.ui.view">
+        <field name="name">saas.referral.form</field>
+        <field name="model">saas.referral</field>
+        <field name="arch" type="xml">
+            <form string="Referral">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <h1><field name="name" readonly="1"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="referrer_user_id"/>
+                            <field name="referrer_tenant_id"/>
+                            <field name="referred_email"/>
+                            <field name="referred_tenant_id"/>
+                        </group>
+                        <group>
+                            <field name="reward_amount"/>
+                            <field name="rewarded_at"/>
+                            <field name="expires_at"/>
+                        </group>
+                    </group>
+                    <field name="notes"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="action_saas_referral" model="ir.actions.act_window">
+        <field name="name">Referrals</field>
+        <field name="res_model">saas.referral</field>
+        <field name="view_mode">list,form</field>
+    </record>
+    <record id="view_saas_ref_program_form" model="ir.ui.view">
+        <field name="name">saas.referral.program.form</field>
+        <field name="model">saas.referral.program</field>
+        <field name="arch" type="xml">
+            <form string="Referral Program">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name"/>
+                            <field name="active"/>
+                            <field name="referrer_reward_type"/>
+                            <field name="referrer_reward_value"/>
+                            <field name="currency_id"/>
+                        </group>
+                        <group>
+                            <field name="referee_discount_percent"/>
+                            <field name="minimum_paid_amount"/>
+                            <field name="expiry_days"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+    <record id="view_saas_ref_program_list" model="ir.ui.view">
+        <field name="name">saas.referral.program.list</field>
+        <field name="model">saas.referral.program</field>
+        <field name="arch" type="xml">
+            <list>
+                <field name="name"/>
+                <field name="referrer_reward_type"/>
+                <field name="referrer_reward_value"/>
+                <field name="referee_discount_percent"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="action_saas_ref_program" model="ir.actions.act_window">
+        <field name="name">Referral Programs</field>
+        <field name="res_model">saas.referral.program</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,33 @@
+# ── Python ───────────────────────────────────────────────────────────────────
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# ── Secrets / env ─────────────────────────────────────────────────────────────
+.env
+backend/.env
+*.pem
+*.key
+~/.ssh/
+
+# ── Node / frontend ───────────────────────────────────────────────────────────
+node_modules/
+frontend/.next/
+frontend/out/
+
+# ── Vendored base module (fetched by scripts/ci_fetch_base_module.sh) ─────────
+# NOT committed — obtained at build/CI time. Becomes a submodule later.
+vendor/saas_tenant_manager/
+
+# ── Logs / artifacts ──────────────────────────────────────────────────────────
+*.log
+odoo_test.log
+/backups/
+*.dump
+
+# ── OS ────────────────────────────────────────────────────────────────────────
+.DS_Store
+Thumbs.db

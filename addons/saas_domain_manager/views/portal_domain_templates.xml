@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_domains" name="Custom Domains">
+        <t t-call="saas_portal.saas_portal_layout">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0">Custom Domains / النطاقات المخصصة</h3>
+                <t t-if="can_add"><a href="/my/saas/domains/add" class="btn btn-primary"><i class="fa fa-plus me-1"/> Add Domain</a></t>
+            </div>
+            <t t-if="not can_add">
+                <div class="alert alert-info"><i class="fa fa-lock me-2"/>
+                    Custom domains are available on <strong>Business</strong> and <strong>Enterprise</strong> plans.
+                    <a href="/my/saas/subscription/plans">Upgrade now</a>.</div>
+            </t>
+            <t t-if="domains">
+                <div class="card border-0 shadow-sm"><div class="card-body">
+                    <table class="table">
+                        <thead><tr><th>Domain</th><th>Status</th><th>SSL</th><th></th></tr></thead>
+                        <tbody><t t-foreach="domains" t-as="domain"><tr>
+                            <td><strong t-esc="domain.domain"/>
+                                <t t-if="domain.is_primary"><span class="badge bg-primary ms-2">Primary</span></t></td>
+                            <td><span t-attf-class="badge #{'bg-success' if domain.state == 'active' else 'bg-warning' if domain.state in ('pending_dns','dns_verified','ssl_pending') else 'bg-danger'}" t-esc="domain.state"/></td>
+                            <td><t t-if="domain.ssl_issued"><i class="fa fa-lock text-success"/> <small class="text-muted"><t t-esc="domain.ssl_days_left"/>d</small></t>
+                                <t t-else=""><i class="fa fa-unlock text-muted"/></t></td>
+                            <td><a t-attf-href="/my/saas/domains/#{domain.id}" class="btn btn-sm btn-outline-primary">Manage</a></td>
+                        </tr></t></tbody>
+                    </table>
+                </div></div>
+            </t>
+            <t t-else="">
+                <div class="card border-0 shadow-sm"><div class="card-body text-center py-5">
+                    <i class="fa fa-globe fa-3x text-muted mb-3"/><p class="text-muted">No custom domains yet.</p>
+                    <t t-if="can_add"><a href="/my/saas/domains/add" class="btn btn-primary">Add Your First Domain</a></t>
+                </div></div>
+            </t>
+        </t>
+    </template>
+
+    <template id="portal_domain_add" name="Add Domain">
+        <t t-call="saas_portal.saas_portal_layout">
+            <h3 class="mb-4">Add Custom Domain / إضافة نطاق</h3>
+            <div class="card border-0 shadow-sm"><div class="card-body p-4">
+                <t t-if="error"><div class="alert alert-danger" t-esc="error"/></t>
+                <form method="post" action="/my/saas/domains/add">
+                    <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                    <div class="mb-3"><label class="form-label fw-bold">Your Domain</label>
+                        <input type="text" name="domain" class="form-control" placeholder="erp.yourcompany.com" required="required"/>
+                        <small class="text-muted">Enter the full subdomain (e.g. erp.acme.com).</small></div>
+                    <div class="mb-3"><label class="form-label fw-bold">Routing Method</label>
+                        <select name="routing_type" class="form-select">
+                            <option value="cname">CNAME (recommended for subdomains)</option>
+                            <option value="a">A Record (for root domains)</option>
+                        </select></div>
+                    <div class="alert alert-info"><i class="fa fa-info-circle me-2"/>
+                        After adding, you will receive DNS records to configure. We auto-verify and issue free SSL.</div>
+                    <button type="submit" class="btn btn-primary">Add Domain</button>
+                    <a href="/my/saas/domains" class="btn btn-secondary">Cancel</a>
+                </form>
+            </div></div>
+        </t>
+    </template>
+
+    <template id="portal_domain_detail" name="Domain Detail">
+        <t t-call="saas_portal.saas_portal_layout">
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <h3 class="mb-0"><t t-esc="domain.domain"/></h3>
+                <span t-attf-class="badge fs-6 #{'bg-success' if domain.state == 'active' else 'bg-warning' if domain.state in ('pending_dns','dns_verified','ssl_pending') else 'bg-danger'}" t-esc="domain.state"/>
+            </div>
+            <t t-if="domain.state == 'active'">
+                <div class="alert alert-success"><i class="fa fa-check-circle me-2"/>
+                    Your domain is live with HTTPS! Visit <a t-attf-href="https://#{domain.domain}" target="_blank">https://<t t-esc="domain.domain"/></a></div>
+            </t>
+            <t t-if="domain.state in ('pending_dns', 'dns_verified', 'failed')">
+                <div class="card border-0 shadow-sm mb-4"><div class="card-body">
+                    <h5 class="mb-3">DNS Configuration Required</h5>
+                    <p class="text-muted">Add these records with your domain provider:</p>
+                    <label class="fw-bold small text-muted">1. Verification (TXT Record)</label>
+                    <table class="table table-sm table-bordered mb-3">
+                        <tr><td class="bg-light" style="width:80px;">Type</td><td><code>TXT</code></td></tr>
+                        <tr><td class="bg-light">Name</td><td><code t-esc="domain.txt_record_name"/></td></tr>
+                        <tr><td class="bg-light">Value</td><td><code t-esc="domain.verification_token"/></td></tr>
+                    </table>
+                    <label class="fw-bold small text-muted">2. Routing (<t t-esc="domain.routing_type.upper()"/> Record)</label>
+                    <table class="table table-sm table-bordered mb-3">
+                        <tr><td class="bg-light" style="width:80px;">Type</td><td><code t-esc="domain.routing_type.upper()"/></td></tr>
+                        <tr><td class="bg-light">Name</td><td><code t-esc="domain.domain"/></td></tr>
+                        <tr><td class="bg-light">Value</td><td><code t-esc="domain.routing_target"/></td></tr>
+                    </table>
+                    <t t-if="domain.error_message"><div class="alert alert-warning small"><i class="fa fa-exclamation-triangle me-1"/><t t-esc="domain.error_message"/></div></t>
+                    <form method="post" t-attf-action="/my/saas/domains/#{domain.id}/verify" class="mt-3">
+                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                        <button type="submit" class="btn btn-primary"><i class="fa fa-refresh me-1"/> Check DNS and Verify</button>
+                    </form>
+                    <p class="text-muted small mt-2">We also check automatically every 30 minutes. DNS can take up to 48 hours.</p>
+                </div></div>
+            </t>
+            <t t-if="domain.state == 'ssl_pending'">
+                <div class="alert alert-info"><i class="fa fa-spinner fa-spin me-2"/>
+                    DNS verified! Issuing your SSL certificate. This may take a few minutes.</div>
+            </t>
+            <form method="post" t-attf-action="/my/saas/domains/#{domain.id}/remove" onsubmit="return confirm('Remove this domain?');">
+                <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
+                <button type="submit" class="btn btn-outline-danger btn-sm"><i class="fa fa-trash me-1"/> Remove Domain</button>
+            </form>
+        </t>
+    </template>
+
+    <template id="portal_sidebar_domains" inherit_id="saas_portal.saas_portal_layout" priority="20">
+        <xpath expr="//a[@href='/my/saas/account']" position="before">
+            <a href="/my/saas/domains" class="list-group-item list-group-item-action">
+                <i class="fa fa-globe me-2"/> Domains / النطاقات</a>
+        </xpath>
+    </template>
+</odoo>

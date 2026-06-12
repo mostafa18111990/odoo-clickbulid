@@ -1,0 +1,433 @@
+/* ========================================================================
+   ClickBuild — Brand stylesheet
+   Custom CSS layered on top of Odoo's website Bootstrap. Centralizes the
+   brand palette, typography, and reusable components for a polished look.
+   ======================================================================== */
+
+/* Arabic-optimized typography (Google Fonts — Cairo).
+   Using the v1 URL format because v2's `wght@400;500;...` syntax contains
+   semicolons that Odoo's asset bundler treats as statement terminators,
+   which truncates the @import and breaks every subsequent rule. */
+@import url('https://fonts.googleapis.com/css?family=Cairo:400,500,600,700,800,900&display=swap');
+
+:root {
+    --cb-primary:    #6d28d9;
+    --cb-primary-dk: #4c1d95;
+    --cb-primary-lt: #a78bfa;
+    --cb-accent:     #fbbf24;
+    --cb-bg-soft:    #f5f3ff;
+    --cb-text-dark:  #1f2937;
+    --cb-text-muted: #6b7280;
+    --cb-success:    #10b981;
+    --cb-radius:     14px;
+    --cb-shadow-sm:  0 2px 8px rgba(109, 40, 217, 0.08);
+    --cb-shadow-md:  0 8px 24px rgba(109, 40, 217, 0.12);
+    --cb-shadow-lg:  0 16px 48px rgba(109, 40, 217, 0.18);
+    --cb-grad:       linear-gradient(135deg, #1e1b4b 0%, #6d28d9 50%, #9333ea 100%);
+    --cb-grad-soft:  linear-gradient(135deg, #6d28d9 0%, #9333ea 100%);
+}
+
+/* Apply Cairo globally — keeps fallbacks for ascii-heavy areas */
+body, .o_homepage_editor_promote, h1, h2, h3, h4, h5, h6, .btn, input, select, textarea {
+    font-family: 'Cairo', 'Segoe UI', Tahoma, sans-serif !important;
+}
+
+body {
+    color: var(--cb-text-dark);
+    line-height: 1.65;
+}
+
+/* ---- Headings rhythm ---- */
+h1, .h1 { font-weight: 800; letter-spacing: -0.02em; }
+h2, .h2 { font-weight: 700; letter-spacing: -0.01em; }
+.display-3, .display-4, .display-5 { font-weight: 800; letter-spacing: -0.02em; }
+.lead { font-weight: 400; }
+
+/* ---- Buttons ---- */
+.btn {
+    border-radius: 10px;
+    font-weight: 600;
+    padding: 0.625rem 1.25rem;
+    transition: all 0.2s ease;
+}
+.btn-lg { padding: 0.85rem 1.75rem; font-size: 1.1rem; }
+.btn-primary {
+    background: var(--cb-primary);
+    border-color: var(--cb-primary);
+    box-shadow: 0 4px 14px rgba(109, 40, 217, 0.35);
+}
+.btn-primary:hover, .btn-primary:focus {
+    background: var(--cb-primary-dk);
+    border-color: var(--cb-primary-dk);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 18px rgba(109, 40, 217, 0.45);
+}
+.btn-outline-primary {
+    color: var(--cb-primary);
+    border-color: var(--cb-primary);
+    border-width: 2px;
+}
+.btn-outline-primary:hover {
+    background: var(--cb-primary);
+    border-color: var(--cb-primary);
+}
+.btn-light {
+    background: #fff;
+    border-color: #fff;
+    color: var(--cb-primary);
+}
+.btn-light:hover {
+    background: var(--cb-bg-soft);
+    color: var(--cb-primary-dk);
+    transform: translateY(-1px);
+}
+
+/* ---- Cards ---- */
+.card {
+    border-radius: var(--cb-radius);
+    transition: transform 0.25s ease, box-shadow 0.25s ease;
+}
+.shadow-sm { box-shadow: var(--cb-shadow-sm) !important; }
+.card:hover { transform: translateY(-4px); box-shadow: var(--cb-shadow-md); }
+
+/* ---- Hero / sections ---- */
+.cb-hero {
+    background: var(--cb-grad);
+    color: #fff;
+    position: relative;
+    overflow: hidden;
+}
+.cb-hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle at 15% 30%, rgba(251, 191, 36, 0.18) 0, transparent 50%),
+        radial-gradient(circle at 85% 70%, rgba(167, 139, 250, 0.25) 0, transparent 50%);
+    pointer-events: none;
+}
+.cb-hero > * { position: relative; z-index: 1; }
+.cb-hero .badge-pill {
+    background: rgba(255, 255, 255, 0.15);
+    backdrop-filter: blur(6px);
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    padding: 0.5rem 1rem;
+    border-radius: 99px;
+    font-weight: 500;
+}
+
+/* Hero decorative blob (replaces the lonely fa-cubes icon) */
+.cb-hero-visual {
+    position: relative;
+    aspect-ratio: 1 / 1;
+    max-width: 460px;
+    margin: 0 auto;
+}
+.cb-hero-visual .blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(40px);
+    opacity: 0.55;
+}
+.cb-hero-visual .blob-1 {
+    width: 70%; height: 70%; left: 0; top: 0;
+    background: var(--cb-accent);
+}
+.cb-hero-visual .blob-2 {
+    width: 60%; height: 60%; right: 0; bottom: 0;
+    background: var(--cb-primary-lt);
+}
+.cb-hero-visual .panel {
+    position: relative;
+    z-index: 2;
+    margin: 12% auto 0;
+    width: 88%;
+    background: rgba(255, 255, 255, 0.95);
+    color: var(--cb-text-dark);
+    border-radius: 18px;
+    padding: 1.5rem;
+    box-shadow: 0 24px 60px rgba(0, 0, 0, 0.25);
+}
+.cb-hero-visual .panel .row > div {
+    background: var(--cb-bg-soft);
+    border-radius: 10px;
+    padding: 0.85rem;
+    margin: 0.3rem;
+    text-align: center;
+}
+.cb-hero-visual .panel .row i {
+    font-size: 1.5rem;
+    color: var(--cb-primary);
+}
+
+/* ---- Feature icon tiles ---- */
+.cb-feature-icon {
+    width: 64px;
+    height: 64px;
+    border-radius: 14px;
+    background: var(--cb-bg-soft);
+    color: var(--cb-primary);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.75rem;
+    margin-bottom: 1rem;
+}
+
+/* ---- Stat blocks ---- */
+.cb-stat .number {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--cb-accent);
+    line-height: 1;
+}
+.cb-stat .label { opacity: 0.75; }
+
+/* ---- Pricing cards ---- */
+.cb-pricing-card {
+    border: 2px solid transparent;
+    background: #fff;
+    border-radius: var(--cb-radius);
+    padding: 2rem 1.5rem;
+    height: 100%;
+    transition: all 0.25s ease;
+}
+.cb-pricing-card:hover { box-shadow: var(--cb-shadow-md); transform: translateY(-4px); }
+.cb-pricing-card.featured {
+    border-color: var(--cb-primary);
+    transform: scale(1.03);
+    box-shadow: var(--cb-shadow-lg);
+    background: linear-gradient(180deg, #fff 0%, #faf7ff 100%);
+    position: relative;
+}
+.cb-pricing-card.featured:hover { transform: scale(1.05); }
+.cb-pricing-card .price {
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--cb-text-dark);
+    line-height: 1;
+}
+.cb-pricing-card .price-suffix {
+    color: var(--cb-text-muted);
+    font-size: 1rem;
+    margin-inline-start: 0.25rem;
+}
+.cb-pricing-card .featured-ribbon {
+    position: absolute;
+    inset-block-start: -14px;
+    inset-inline: 0;
+    margin: auto;
+    width: max-content;
+    background: var(--cb-accent);
+    color: var(--cb-text-dark);
+    font-weight: 700;
+    padding: 0.35rem 1rem;
+    border-radius: 99px;
+    font-size: 0.85rem;
+    box-shadow: 0 4px 12px rgba(251, 191, 36, 0.4);
+}
+.cb-pricing-card ul li {
+    padding: 0.5rem 0;
+    border-bottom: 1px dashed rgba(109, 40, 217, 0.08);
+}
+.cb-pricing-card ul li:last-child { border: 0; }
+.cb-pricing-card ul li i { color: var(--cb-success); }
+
+/* Monthly/Yearly toggle */
+.cb-billing-toggle {
+    display: inline-flex;
+    background: var(--cb-bg-soft);
+    border-radius: 99px;
+    padding: 4px;
+    gap: 4px;
+}
+.cb-billing-toggle button {
+    border: 0;
+    background: transparent;
+    color: var(--cb-text-muted);
+    padding: 0.5rem 1.25rem;
+    border-radius: 99px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+.cb-billing-toggle button.active {
+    background: var(--cb-primary);
+    color: #fff;
+    box-shadow: 0 2px 8px rgba(109, 40, 217, 0.3);
+}
+.cb-billing-toggle .save-badge {
+    background: var(--cb-accent);
+    color: var(--cb-text-dark);
+    border-radius: 99px;
+    padding: 1px 8px;
+    font-size: 0.75rem;
+    margin-inline-start: 6px;
+    font-weight: 700;
+}
+
+/* ---- How it works steps ---- */
+.cb-step {
+    position: relative;
+    padding: 2rem 1.5rem;
+    text-align: center;
+}
+.cb-step .step-num {
+    width: 56px;
+    height: 56px;
+    margin: 0 auto 1rem;
+    background: var(--cb-grad-soft);
+    color: #fff;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.5rem;
+    font-weight: 800;
+    box-shadow: var(--cb-shadow-md);
+}
+
+/* ---- Testimonials ---- */
+.cb-testimonial {
+    background: #fff;
+    border-radius: var(--cb-radius);
+    padding: 2rem;
+    box-shadow: var(--cb-shadow-sm);
+    height: 100%;
+    position: relative;
+}
+.cb-testimonial::before {
+    content: '"';
+    position: absolute;
+    inset-block-start: 1rem;
+    inset-inline-end: 1.5rem;
+    color: var(--cb-primary-lt);
+    font-size: 4rem;
+    font-weight: 800;
+    line-height: 1;
+    opacity: 0.4;
+    font-family: serif;
+}
+.cb-testimonial .avatar {
+    width: 48px; height: 48px;
+    border-radius: 50%;
+    background: var(--cb-bg-soft);
+    color: var(--cb-primary);
+    display: inline-flex; align-items: center; justify-content: center;
+    font-weight: 700; font-size: 1.1rem;
+    margin-inline-end: 12px;
+}
+.cb-testimonial .stars i { color: var(--cb-accent); }
+
+/* ---- Trust strip ---- */
+.cb-trust {
+    background: #fff;
+    border-block: 1px solid rgba(0, 0, 0, 0.05);
+}
+.cb-trust .item {
+    display: flex; align-items: center; gap: 12px;
+    color: var(--cb-text-muted);
+}
+.cb-trust .item i {
+    color: var(--cb-primary);
+    background: var(--cb-bg-soft);
+    width: 40px; height: 40px;
+    border-radius: 10px;
+    display: inline-flex; align-items: center; justify-content: center;
+}
+
+/* ---- Footer ---- */
+.cb-footer {
+    background: linear-gradient(180deg, #1f2937 0%, #111827 100%);
+    color: #d1d5db;
+    padding-block: 3rem 1.5rem;
+}
+.cb-footer h5 { color: #fff; margin-bottom: 1.25rem; font-weight: 700; }
+.cb-footer a { color: #d1d5db; text-decoration: none; transition: color 0.2s; }
+.cb-footer a:hover { color: var(--cb-accent); }
+.cb-footer ul { list-style: none; padding: 0; }
+.cb-footer ul li { padding: 0.35rem 0; }
+.cb-footer .brand-logo {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #fff;
+    margin-bottom: 1rem;
+}
+.cb-footer .brand-logo .accent { color: var(--cb-accent); }
+.cb-footer .socials a {
+    display: inline-flex;
+    width: 36px; height: 36px;
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 50%;
+    align-items: center; justify-content: center;
+    margin-inline-end: 8px;
+}
+.cb-footer .socials a:hover { background: var(--cb-primary); color: #fff; }
+.cb-footer .bottom-bar {
+    border-block-start: 1px solid rgba(255, 255, 255, 0.08);
+    margin-block-start: 2rem; padding-block-start: 1.5rem;
+    color: #9ca3af; font-size: 0.875rem;
+}
+
+/* ---- Navbar polish ---- */
+.o_main_navbar, .navbar.navbar-light {
+    box-shadow: 0 2px 12px rgba(0, 0, 0, 0.05);
+    background: #fff !important;
+    backdrop-filter: blur(8px);
+}
+.navbar .nav-link {
+    font-weight: 600;
+    color: var(--cb-text-dark) !important;
+    padding: 0.5rem 1rem;
+    border-radius: 8px;
+    transition: all 0.2s;
+}
+.navbar .nav-link:hover {
+    color: var(--cb-primary) !important;
+    background: var(--cb-bg-soft);
+}
+.navbar .nav-link.active { color: var(--cb-primary) !important; }
+.navbar .navbar-brand {
+    font-weight: 800;
+    font-size: 1.4rem;
+    color: var(--cb-primary) !important;
+}
+.navbar .navbar-brand .accent { color: var(--cb-accent); }
+
+/* ---- Smooth reveal animation (used by data-cb-reveal) ---- */
+[data-cb-reveal] {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+}
+[data-cb-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* ---- FAQ accordion polish ---- */
+.accordion-item {
+    border: 1px solid rgba(109, 40, 217, 0.08) !important;
+    border-radius: var(--cb-radius) !important;
+    margin-bottom: 0.75rem;
+    overflow: hidden;
+}
+.accordion-button {
+    font-weight: 600;
+    padding: 1.1rem 1.25rem;
+}
+.accordion-button:not(.collapsed) {
+    color: var(--cb-primary);
+    background: var(--cb-bg-soft);
+}
+.accordion-button:focus { box-shadow: none; }
+
+/* ---- Responsive tweaks ---- */
+@media (max-width: 767px) {
+    .cb-hero { padding-block: 2.5rem; min-height: auto !important; }
+    .display-3 { font-size: 2.25rem; }
+    .display-4 { font-size: 2rem; }
+    .display-5 { font-size: 1.75rem; }
+    .cb-pricing-card.featured { transform: none; }
+    .cb-pricing-card.featured:hover { transform: translateY(-4px); }
+}

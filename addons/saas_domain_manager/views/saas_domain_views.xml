@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_domain_list" model="ir.ui.view">
+        <field name="name">saas.domain.list</field>
+        <field name="model">saas.domain</field>
+        <field name="arch" type="xml">
+            <list string="Custom Domains"
+                  decoration-success="state == 'active'"
+                  decoration-warning="state in ('pending_dns','dns_verified','ssl_pending')"
+                  decoration-danger="state == 'failed'"
+                  decoration-muted="state == 'removed'">
+                <field name="domain"/>
+                <field name="tenant_id"/>
+                <field name="state" widget="badge"/>
+                <field name="routing_type"/>
+                <field name="ssl_issued"/>
+                <field name="ssl_days_left" string="SSL Days"/>
+                <field name="is_primary"/>
+                <field name="check_count" string="Checks"/>
+                <field name="last_check_at"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_saas_domain_form" model="ir.ui.view">
+        <field name="name">saas.domain.form</field>
+        <field name="model">saas.domain</field>
+        <field name="arch" type="xml">
+            <form string="Custom Domain">
+                <header>
+                    <button name="action_start_verification" type="object" string="Start Verification"
+                        class="btn-primary" invisible="state not in ('draft','failed')"/>
+                    <button name="action_check_dns" type="object" string="Check DNS Now"
+                        invisible="state not in ('pending_dns','dns_verified')"/>
+                    <button name="action_set_primary" type="object" string="Set as Primary"
+                        invisible="state != 'active' or is_primary"/>
+                    <button name="action_retry" type="object" string="Retry" invisible="state != 'failed'"/>
+                    <button name="action_remove" type="object" string="Remove" class="btn-danger"
+                        invisible="state == 'removed'" confirm="Remove this domain and its SSL?"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,pending_dns,dns_verified,ssl_pending,active"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="domain" placeholder="erp.acme.com"/></h1></div>
+                    <group>
+                        <group string="Configuration">
+                            <field name="tenant_id"/>
+                            <field name="routing_type"/>
+                            <field name="is_primary"/>
+                        </group>
+                        <group string="SSL">
+                            <field name="ssl_issued"/>
+                            <field name="ssl_issued_at"/>
+                            <field name="ssl_expires_at"/>
+                            <field name="ssl_days_left"/>
+                        </group>
+                    </group>
+                    <group string="DNS Instructions">
+                        <field name="txt_record_name" readonly="1"/>
+                        <field name="txt_record_value" readonly="1"/>
+                        <field name="routing_target" readonly="1"/>
+                    </group>
+                    <group string="Verification">
+                        <field name="check_count" readonly="1"/>
+                        <field name="last_check_at" readonly="1"/>
+                        <field name="error_message" readonly="1"/>
+                    </group>
+                    <notebook>
+                        <page string="Verification Log">
+                            <field name="verification_ids" readonly="1">
+                                <list>
+                                    <field name="create_date"/>
+                                    <field name="check_type" widget="badge"/>
+                                    <field name="result" widget="badge"/>
+                                    <field name="expected_value"/>
+                                    <field name="found_value"/>
+                                    <field name="details"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter"><field name="message_ids"/></div>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_saas_domain" model="ir.actions.act_window">
+        <field name="name">Custom Domains</field>
+        <field name="res_model">saas.domain</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

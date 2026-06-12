@@ -1,0 +1,22 @@
+{
+    'name': 'SaaS Knowledge Base',
+    'version': '19.0.1.0.0',
+    'category': 'SaaS',
+    'summary': 'Help center: articles, categories, search',
+    'author': 'ClickBuild',
+    'website': 'https://clickbuild.com',
+    'depends': ['saas_support', 'website'],
+    'data': [
+        'security/ir.model.access.csv',
+        'data/saas_kb_categories_data.xml',
+        'views/saas_kb_category_views.xml',
+        'views/saas_kb_article_views.xml',
+        'views/portal_kb_templates.xml',
+        'views/website_kb_templates.xml',
+        'views/saas_kb_menu.xml',
+    ],
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+    'license': 'LGPL-3',
+}

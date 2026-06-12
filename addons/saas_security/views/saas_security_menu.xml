@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_saas_security_root" name="Security"
+              parent="saas_core.menu_saas_root" sequence="110"/>
+    <menuitem id="menu_security_events" name="Security Events"
+              parent="menu_saas_security_root" action="action_security_event" sequence="10"/>
+    <menuitem id="menu_login_attempts" name="Login Attempts"
+              parent="menu_saas_security_root" action="action_login_attempt" sequence="20"/>
+    <menuitem id="menu_user_2fa" name="User 2FA"
+              parent="menu_saas_security_root" action="action_user_2fa" sequence="30"/>
+    <menuitem id="menu_security_config" name="Configuration"
+              parent="menu_saas_security_root" sequence="90"/>
+    <menuitem id="menu_pwd_policy" name="Password Policies"
+              parent="menu_security_config" action="action_pwd_policy" sequence="10"/>
+</odoo>

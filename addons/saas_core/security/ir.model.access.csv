@@ -1,0 +1,10 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_saas_config_admin,saas.config admin,model_saas_config,saas_core.group_saas_super_admin,1,1,1,1
+access_saas_config_user,saas.config user,model_saas_config,saas_tenant_manager.group_saas_manager,1,0,0,0
+access_saas_event_admin,saas.event admin,model_saas_event,saas_tenant_manager.group_saas_admin,1,0,1,0
+access_saas_event_support,saas.event support,model_saas_event,saas_core.group_saas_support,1,0,0,0
+access_saas_event_analyst,saas.event analyst,model_saas_event,saas_core.group_saas_analyst,1,0,0,0
+access_saas_audit_log_admin,saas.audit.log admin,model_saas_audit_log,saas_tenant_manager.group_saas_admin,1,0,1,0
+access_saas_audit_log_analyst,saas.audit.log analyst,model_saas_audit_log,saas_core.group_saas_analyst,1,0,0,0
+access_saas_provisioning_job_admin,saas.provisioning.job admin,model_saas_provisioning_job,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_saas_provisioning_job_system,saas.provisioning.job system,model_saas_provisioning_job,base.group_system,1,1,1,0

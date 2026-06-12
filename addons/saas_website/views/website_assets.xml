@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Inject ClickBuild brand CSS + JS into every Odoo website page.
+         Loaded via the `web.assets_frontend` bundle so they're concatenated
+         with the rest of the public-facing assets. -->
+    <template id="assets_frontend" name="ClickBuild Frontend Assets"
+              inherit_id="web.assets_frontend">
+        <xpath expr="." position="inside">
+            <link rel="stylesheet" type="text/css"
+                  href="/saas_website/static/src/css/clickbuild.css"/>
+            <script type="text/javascript"
+                    src="/saas_website/static/src/js/clickbuild.js"/>
+        </xpath>
+    </template>
+</odoo>

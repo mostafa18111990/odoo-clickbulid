@@ -1,0 +1,14 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_kb_category_admin,saas.kb.category admin,model_saas_kb_category,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_kb_category_all,saas.kb.category all,model_saas_kb_category,base.group_user,1,0,0,0
+access_kb_category_portal,saas.kb.category portal,model_saas_kb_category,base.group_portal,1,0,0,0
+access_kb_category_public,saas.kb.category public,model_saas_kb_category,base.group_public,1,0,0,0
+access_kb_article_admin,saas.kb.article admin,model_saas_kb_article,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_kb_article_manager,saas.kb.article manager,model_saas_kb_article,saas_tenant_manager.group_saas_manager,1,1,1,0
+access_kb_article_all,saas.kb.article all,model_saas_kb_article,base.group_user,1,0,0,0
+access_kb_article_portal,saas.kb.article portal,model_saas_kb_article,base.group_portal,1,0,0,0
+access_kb_article_public,saas.kb.article public,model_saas_kb_article,base.group_public,1,0,0,0
+access_kb_feedback_admin,saas.kb.feedback admin,model_saas_kb_feedback,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_kb_feedback_user,saas.kb.feedback user,model_saas_kb_feedback,base.group_user,1,1,1,0
+access_kb_feedback_portal,saas.kb.feedback portal,model_saas_kb_feedback,base.group_portal,1,0,1,0
+access_kb_feedback_public,saas.kb.feedback public,model_saas_kb_feedback,base.group_public,0,0,1,0

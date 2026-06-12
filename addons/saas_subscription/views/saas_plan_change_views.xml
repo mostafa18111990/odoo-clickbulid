@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_plan_change_list" model="ir.ui.view">
+        <field name="name">saas.plan.change.list</field>
+        <field name="model">saas.plan.change</field>
+        <field name="arch" type="xml">
+            <list string="Plan Changes"
+                  decoration-warning="status == 'pending'"
+                  decoration-success="status == 'applied'"
+                  decoration-muted="status == 'cancelled'">
+                <field name="create_date" string="Requested"/>
+                <field name="tenant_id"/>
+                <field name="change_type" widget="badge"/>
+                <field name="from_plan_id" string="From"/>
+                <field name="to_plan_id" string="To"/>
+                <field name="apply_immediately" string="Immediate"/>
+                <field name="effective_date"/>
+                <field name="proration_amount" string="Charge"/>
+                <field name="credit_to_apply" string="Credit"/>
+                <field name="status" widget="badge"/>
+                <button name="action_apply" type="object" string="Apply"
+                    icon="fa-check" invisible="status != 'pending'"
+                    groups="saas_tenant_manager.group_saas_admin"/>
+                <button name="action_cancel_change" type="object" string="Cancel"
+                    icon="fa-times" invisible="status != 'pending'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="action_saas_plan_change" model="ir.actions.act_window">
+        <field name="name">Plan Changes</field>
+        <field name="res_model">saas.plan.change</field>
+        <field name="view_mode">list</field>
+    </record>
+</odoo>

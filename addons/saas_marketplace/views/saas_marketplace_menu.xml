@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_marketplace_root" name="Marketplace"
+              parent="saas_core.menu_saas_root" sequence="40"
+              groups="saas_tenant_manager.group_saas_manager"/>
+
+    <menuitem id="menu_marketplace_apps" name="Apps"
+              parent="menu_marketplace_root" action="action_marketplace_app" sequence="10"/>
+
+    <menuitem id="menu_marketplace_categories" name="Categories"
+              parent="menu_marketplace_root" action="action_marketplace_category" sequence="20"/>
+
+    <menuitem id="menu_marketplace_installs" name="Installations"
+              parent="menu_marketplace_root" action="action_tenant_app" sequence="30"
+              groups="saas_tenant_manager.group_saas_admin"/>
+</odoo>

@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_dashboard" name="SaaS Dashboard">
+        <t t-call="saas_portal.saas_portal_layout">
+            <t t-if="data['subscription']['is_trial']">
+                <div class="alert alert-warning d-flex justify-content-between align-items-center">
+                    <div><i class="fa fa-clock-o me-2"/><strong>Trial Active</strong> -
+                        <t t-esc="data['subscription']['trial_days_left']"/> days remaining</div>
+                    <a href="/my/saas/subscription/plans" class="btn btn-sm btn-warning">Upgrade Now</a>
+                </div>
+            </t>
+            <div class="row g-3 mb-4">
+                <div class="col-md-3"><div class="card h-100 border-0 shadow-sm"><div class="card-body text-center">
+                    <i class="fa fa-check-circle fa-2x mb-2" style="color:#16a34a;"/>
+                    <h6 class="text-muted">Status</h6><h4 class="mb-0 text-capitalize" t-esc="data['subscription']['status']"/>
+                </div></div></div>
+                <div class="col-md-3"><div class="card h-100 border-0 shadow-sm"><div class="card-body text-center">
+                    <i class="fa fa-cube fa-2x mb-2" style="color:#6d28d9;"/>
+                    <h6 class="text-muted">Plan</h6><h4 class="mb-0" t-esc="data['subscription']['plan_name']"/>
+                </div></div></div>
+                <div class="col-md-3"><div class="card h-100 border-0 shadow-sm"><div class="card-body text-center">
+                    <i class="fa fa-calendar fa-2x mb-2" style="color:#3b82f6;"/>
+                    <h6 class="text-muted">Renews In</h6><h4 class="mb-0"><t t-esc="data['subscription']['days_to_renewal']"/> days</h4>
+                </div></div></div>
+                <div class="col-md-3"><div class="card h-100 border-0 shadow-sm"><div class="card-body text-center">
+                    <i class="fa fa-money fa-2x mb-2" style="color:#16a34a;"/>
+                    <h6 class="text-muted">Monthly</h6><h4 class="mb-0"><t t-esc="'%.0f' % data['subscription']['amount']"/>
+                    <small t-esc="data['subscription']['currency']"/></h4>
+                </div></div></div>
+            </div>
+            <div class="row g-3 mb-4">
+                <div class="col-md-6"><div class="card border-0 shadow-sm"><div class="card-body">
+                    <h6 class="text-muted mb-3"><i class="fa fa-users me-2"/>Users</h6>
+                    <div class="d-flex justify-content-between mb-1"><span><t t-esc="data['usage']['users_used']"/> used</span>
+                        <span class="text-muted"><t t-esc="data['usage']['users_max']"/> max</span></div>
+                    <div class="progress" style="height:10px;"><div class="progress-bar bg-primary"
+                        t-attf-style="width:#{data['usage']['users_pct']}%;"/></div>
+                </div></div></div>
+                <div class="col-md-6"><div class="card border-0 shadow-sm"><div class="card-body">
+                    <h6 class="text-muted mb-3"><i class="fa fa-hdd-o me-2"/>Storage</h6>
+                    <div class="d-flex justify-content-between mb-1"><span><t t-esc="data['usage']['storage_used_gb']"/> GB used</span>
+                        <span class="text-muted"><t t-esc="data['usage']['storage_max_gb']"/> GB max</span></div>
+                    <div class="progress" style="height:10px;"><div t-attf-class="progress-bar #{'bg-danger' if data['usage']['storage_pct'] &gt; 90 else 'bg-success'}"
+                        t-attf-style="width:#{data['usage']['storage_pct']}%;"/></div>
+                </div></div></div>
+            </div>
+            <div class="card border-0 shadow-sm mb-4"><div class="card-body">
+                <h6 class="text-muted mb-3">Quick Actions</h6>
+                <div class="d-flex gap-2 flex-wrap">
+                    <a href="/my/saas/access" target="_blank" class="btn btn-primary"><i class="fa fa-external-link me-1"/> Open ERP</a>
+                    <a href="/my/saas/subscription/plans" class="btn btn-outline-primary"><i class="fa fa-arrow-up me-1"/> Upgrade Plan</a>
+                    <a href="/my/saas/invoices" class="btn btn-outline-secondary"><i class="fa fa-file-text me-1"/> Invoices</a>
+                </div>
+            </div></div>
+            <div class="card border-0 shadow-sm"><div class="card-body">
+                <h6 class="text-muted mb-3">Recent Invoices</h6>
+                <t t-if="data['invoices']">
+                    <table class="table table-sm">
+                        <thead><tr><th>Number</th><th>Date</th><th>Amount</th><th>Status</th><th></th></tr></thead>
+                        <tbody><t t-foreach="data['invoices']" t-as="inv"><tr>
+                            <td t-esc="inv['number']"/><td t-esc="inv['date']"/>
+                            <td><t t-esc="'%.2f' % inv['amount']"/> <t t-esc="inv['currency']"/></td>
+                            <td><span t-attf-class="badge #{'bg-success' if inv['status'] == 'paid' else 'bg-warning'}" t-esc="inv['status']"/></td>
+                            <td><a t-attf-href="/my/saas/invoices/#{inv['id']}" class="btn btn-sm btn-link">View</a></td>
+                        </tr></t></tbody>
+                    </table>
+                </t>
+                <t t-else=""><p class="text-muted">No invoices yet.</p></t>
+            </div></div>
+        </t>
+    </template>
+
+    <template id="portal_usage" name="SaaS Usage">
+        <t t-call="saas_portal.saas_portal_layout">
+            <h3 class="mb-4">Usage Statistics / إحصائيات الاستخدام</h3>
+            <div class="row g-3">
+                <div class="col-md-6"><div class="card border-0 shadow-sm"><div class="card-body text-center">
+                    <i class="fa fa-users fa-3x mb-3" style="color:#6d28d9;"/>
+                    <h2><t t-esc="usage['users']['used']"/></h2>
+                    <p class="text-muted">of <t t-esc="usage['users']['max']"/> users</p>
+                </div></div></div>
+                <div class="col-md-6"><div class="card border-0 shadow-sm"><div class="card-body text-center">
+                    <i class="fa fa-database fa-3x mb-3" style="color:#16a34a;"/>
+                    <h2><t t-esc="usage['storage']['used_gb']"/> GB</h2>
+                    <p class="text-muted">of <t t-esc="usage['storage']['max_gb']"/> GB</p>
+                </div></div></div>
+            </div>
+        </t>
+    </template>
+
+    <template id="portal_my_home_saas" name="Portal Home SaaS"
+              inherit_id="portal.portal_my_home" priority="20">
+        <xpath expr="//div[hasclass('o_portal_docs')]" position="inside">
+            <t t-if="request.env.user.saas_tenant_id">
+                <div class="o_portal_category row g-2 mt-3">
+                    <div class="col-12">
+                        <a href="/my/saas" class="d-block p-3 rounded shadow-sm text-decoration-none"
+                           style="background:linear-gradient(135deg,#6d28d9,#9333ea); color:white;">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div><h5 class="mb-1"><i class="fa fa-rocket me-2"/>My SaaS Workspace</h5>
+                                    <small style="opacity:0.85;">Manage your ClickBuild subscription</small></div>
+                                <i class="fa fa-chevron-right fa-2x"/>
+                            </div>
+                        </a>
+                    </div>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_ai_usage_list" model="ir.ui.view">
+        <field name="name">saas.ai.usage.list</field>
+        <field name="model">saas.ai.usage</field>
+        <field name="arch" type="xml">
+            <list decoration-danger="status == 'error'" decoration-warning="status == 'rate_limited'">
+                <field name="create_date"/>
+                <field name="provider_id"/>
+                <field name="user_id"/>
+                <field name="tenant_id"/>
+                <field name="request_type"/>
+                <field name="model"/>
+                <field name="input_tokens"/>
+                <field name="output_tokens"/>
+                <field name="total_tokens"/>
+                <field name="cost"/>
+                <field name="status"/>
+                <field name="response_time_ms"/>
+                <field name="currency_id" column_invisible="1"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_ai_usage_pivot" model="ir.ui.view">
+        <field name="name">saas.ai.usage.pivot</field>
+        <field name="model">saas.ai.usage</field>
+        <field name="arch" type="xml">
+            <pivot>
+                <field name="provider_id" type="row"/>
+                <field name="request_type" type="col"/>
+                <field name="total_tokens" type="measure"/>
+                <field name="cost" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+    <record id="action_ai_usage" model="ir.actions.act_window">
+        <field name="name">AI Usage</field>
+        <field name="res_model">saas.ai.usage</field>
+        <field name="view_mode">list,pivot</field>
+    </record>
+</odoo>
