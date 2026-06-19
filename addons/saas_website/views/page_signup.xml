@@ -68,7 +68,7 @@
                                     <optgroup label="Enterprise" class="signup-plan-group" data-edition="enterprise">
                                         <t t-foreach="grouped['enterprise']" t-as="plan">
                                             <option t-att-value="plan.id"
-                                                    t-att-data-edition="enterprise"
+                                                    t-att-data-edition="plan.edition"
                                                     t-att-selected="'selected' if (selected_plan and plan.id == selected_plan.id) else None">
                                                 <t t-esc="plan.name"/> - <t t-esc="'%.0f' % plan.monthly_price"/>
                                                 <t t-if="lang_is_ar"> ريال/شهر</t><t t-else=""> SAR/month</t></option>
@@ -141,7 +141,10 @@
                                             opt.hidden = !match;
                                             if (match &amp;&amp; !firstMatch) firstMatch = opt;
                                         });
-                                        if (firstMatch &amp;&amp; (!sel.selectedOptions[0] || sel.selectedOptions[0].hidden)) {
+                                        // Always switch to first matching plan when edition changes.
+                                        // (opt.hidden is unreliable across browsers — compare data-edition instead.)
+                                        var curEd = sel.selectedOptions[0] ? (sel.selectedOptions[0].dataset.edition || 'community') : null;
+                                        if (firstMatch &amp;&amp; (!sel.selectedOptions[0] || curEd !== ed)) {
                                             firstMatch.selected = true;
                                         }
                                     }

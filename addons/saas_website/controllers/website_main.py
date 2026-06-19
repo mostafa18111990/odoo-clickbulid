@@ -1,10 +1,12 @@
 from odoo import http
 from odoo.http import request
+from odoo.addons.saas_website.services.error_handler import ErrorHandler, HealthCheck, PlatformError
 
 
 class SaasWebsiteMain(http.Controller):
 
     @http.route('/switch-lang/<string:lang_code>', type='http', auth='public', website=True, sitemap=False)
+    @ErrorHandler.handle_request_error
     def switch_lang(self, lang_code, **kw):
         """Force-switch the website language and redirect to the requested path.
         Bypasses Odoo's session-lang persistence that would otherwise re-redirect
@@ -40,6 +42,7 @@ class SaasWebsiteMain(http.Controller):
         return resp
 
     @http.route('/', type='http', auth='public', website=True, sitemap=True)
+    @ErrorHandler.handle_request_error
     def homepage(self, **kw):
         plans = request.env['website'].get_saas_plans()
         faqs = request.env['website'].get_featured_faqs(limit=6)
@@ -76,3 +79,38 @@ class SaasWebsiteMain(http.Controller):
         from odoo.addons.saas_website.services.signup_service import SignupService
         return SignupService(request.env).capture_lead({
             'name': email.split('@')[0], 'email': email, 'source': 'newsletter', 'newsletter': True})
+
+    @http.route('/about', type='http', auth='public', website=True, sitemap=True)
+    def about(self, **kw):
+        return request.render('saas_website.page_about', {})
+
+    @http.route('/terms', type='http', auth='public', website=True, sitemap=True)
+    def terms(self, **kw):
+        return request.render('saas_website.page_legal', {'page': 'terms'})
+
+    @http.route('/privacy', type='http', auth='public', website=True, sitemap=True)
+    def privacy(self, **kw):
+        return request.render('saas_website.page_legal', {'page': 'privacy'})
+
+    @http.route('/dpa', type='http', auth='public', website=True, sitemap=True)
+    def dpa(self, **kw):
+        return request.render('saas_website.page_legal', {'page': 'dpa'})
+
+    @http.route('/sla', type='http', auth='public', website=True, sitemap=True)
+    def sla(self, **kw):
+        return request.render('saas_website.page_legal', {'page': 'sla'})
+
+    @http.route('/health', type='json', auth='public', csrf=False)
+    def health_check(self, **kw):
+        """Platform health status endpoint."""
+        return HealthCheck.get_platform_status()
+
+    @http.route('/error', type='http', auth='public', website=True)
+    def error_page(self, code='UNKNOWN', **kw):
+        """Graceful error page."""
+        lang = request.env.lang if hasattr(request, 'env') else 'ar'
+        error_msg = ErrorHandler.get_graceful_response(code, lang)
+        return request.render('saas_website.page_error', {
+            'error_code': code,
+            'error_message': error_msg
+        })

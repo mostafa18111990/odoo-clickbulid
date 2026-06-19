@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="page_about" name="About ClickBuild">
+        <t t-set="lang_code" t-value="request.env.lang or 'ar_001'"/>
+        <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+        <t t-call="website.layout">
+            <t t-set="title"><t t-if="lang_is_ar">عن ClickBuild</t><t t-else="">About ClickBuild</t></t>
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+                        <h1 class="display-5 fw-bold mb-4">
+                            <t t-if="lang_is_ar">عن <span class="text-primary">ClickBuild</span></t>
+                            <t t-else="">About <span class="text-primary">ClickBuild</span></t>
+                        </h1>
+
+                        <p class="lead mb-4">
+                            <t t-if="lang_is_ar">
+                                ClickBuild منصة SaaS سحابية متكاملة مبنية على Odoo 19،
+                                تُمكّن الشركات في المملكة العربية السعودية ومنطقة الشرق الأوسط
+                                من إدارة جميع عملياتها من مكان واحد.
+                            </t>
+                            <t t-else="">
+                                ClickBuild is a fully managed SaaS platform built on Odoo 19,
+                                empowering businesses across Saudi Arabia and the Middle East
+                                to run all their operations from a single place.
+                            </t>
+                        </p>
+
+                        <h2 class="h4 fw-bold mt-5 mb-3">
+                            <t t-if="lang_is_ar">مهمتنا</t><t t-else="">Our Mission</t>
+                        </h2>
+                        <p>
+                            <t t-if="lang_is_ar">
+                                نؤمن بأن كل شركة — بغض النظر عن حجمها — تستحق وصولاً سهلاً
+                                لأفضل أدوات إدارة الأعمال. نقدم Odoo بشكل مُدار بالكامل مع
+                                دعم متوافق مع ZATCA وفاتورة إلكترونية، بدون تعقيدات تقنية.
+                            </t>
+                            <t t-else="">
+                                We believe every business — regardless of size — deserves easy access
+                                to world-class ERP tools. We deliver fully managed Odoo with
+                                built-in ZATCA compliance and e-invoicing, with zero technical complexity.
+                            </t>
+                        </p>
+
+                        <h2 class="h4 fw-bold mt-5 mb-3">
+                            <t t-if="lang_is_ar">ما يميّزنا</t><t t-else="">What Sets Us Apart</t>
+                        </h2>
+                        <div class="row g-3 mb-4">
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded-3 h-100">
+                                    <i class="fa fa-shield text-primary mb-2 d-block" style="font-size:1.5rem;"/>
+                                    <strong><t t-if="lang_is_ar">متوافق مع ZATCA</t><t t-else="">ZATCA Compliant</t></strong>
+                                    <p class="mb-0 text-muted small mt-1">
+                                        <t t-if="lang_is_ar">فاتورة إلكترونية معتمدة من هيئة الزكاة والضريبة</t>
+                                        <t t-else="">Approved e-invoicing for Saudi tax authority</t>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded-3 h-100">
+                                    <i class="fa fa-language text-primary mb-2 d-block" style="font-size:1.5rem;"/>
+                                    <strong><t t-if="lang_is_ar">ثنائي اللغة</t><t t-else="">Bilingual</t></strong>
+                                    <p class="mb-0 text-muted small mt-1">
+                                        <t t-if="lang_is_ar">واجهة كاملة بالعربية والإنجليزية</t>
+                                        <t t-else="">Full Arabic and English interface</t>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded-3 h-100">
+                                    <i class="fa fa-cloud text-primary mb-2 d-block" style="font-size:1.5rem;"/>
+                                    <strong><t t-if="lang_is_ar">مُدار بالكامل</t><t t-else="">Fully Managed</t></strong>
+                                    <p class="mb-0 text-muted small mt-1">
+                                        <t t-if="lang_is_ar">نحن نتولى الخوادم، النسخ الاحتياطية، والتحديثات</t>
+                                        <t t-else="">We handle servers, backups, and updates</t>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="p-3 border rounded-3 h-100">
+                                    <i class="fa fa-headphones text-primary mb-2 d-block" style="font-size:1.5rem;"/>
+                                    <strong><t t-if="lang_is_ar">دعم متخصص</t><t t-else="">Expert Support</t></strong>
+                                    <p class="mb-0 text-muted small mt-1">
+                                        <t t-if="lang_is_ar">فريق دعم متخصص في Odoo باللغة العربية</t>
+                                        <t t-else="">Dedicated Odoo support team in Arabic</t>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="text-center mt-5">
+                            <a href="/get-started" class="btn btn-primary btn-lg px-5">
+                                <t t-if="lang_is_ar">ابدأ تجربتك المجانية</t>
+                                <t t-else="">Start your free trial</t>
+                            </a>
+                            <a href="/contact" class="btn btn-outline-secondary btn-lg px-5 ms-3">
+                                <t t-if="lang_is_ar">تواصل معنا</t>
+                                <t t-else="">Contact us</t>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

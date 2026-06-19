@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Upgrade Success Email -->
+        <record id="email_tenant_upgrade_success" model="mail.template">
+            <field name="name">Tenant Upgrade Success Notification</field>
+            <field name="model_id" ref="saas_core.model_saas_tenant"/>
+            <field name="subject">Upgrade Successful: Welcome to Enterprise Edition 🎉</field>
+            <field name="email_from">noreply@clickbuild.com</field>
+            <field name="email_to">${object.contact_email}</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; direction: rtl; padding: 20px;">
+    <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 30px; border-radius: 8px; color: white; margin-bottom: 20px;">
+        <h1 style="margin: 0; font-size: 28px;">🎉 مبروك!</h1>
+        <p style="margin: 10px 0 0 0; font-size: 16px;">تم ترقية حسابك بنجاح إلى Enterprise</p>
+    </div>
+
+    <p style="font-size: 16px; color: #333;">مرحباً ${object.name},</p>
+
+    <p style="font-size: 15px; color: #666; line-height: 1.6;">
+        تم ترقية حسابك من <strong>Community</strong> إلى <strong>Enterprise Edition</strong> بنجاح.
+        استمتع بالمميزات الجديدة والدعم الفني المتقدم.
+    </p>
+
+    <div style="background: #f0f4ff; padding: 20px; border-radius: 8px; margin: 20px 0; border-right: 4px solid #667eea;">
+        <h3 style="margin-top: 0; color: #667eea;">المميزات الجديدة:</h3>
+        <ul style="padding-right: 20px; color: #555;">
+            <li style="margin: 8px 0;"><strong>🔐 الدعم الفني 24/7</strong> - فريق متخصص لمساعدتك</li>
+            <li style="margin: 8px 0;"><strong>⚡ أداء محسّن</strong> - خوادم مخصصة وموارد إضافية</li>
+            <li style="margin: 8px 0;"><strong>📊 ميزات متقدمة</strong> - أدوات تحليل وتقارير إضافية</li>
+            <li style="margin: 8px 0;"><strong>🔄 نسخ احتياطية أوتوماتيكية</strong> - حماية بيانات شاملة</li>
+            <li style="margin: 8px 0;"><strong>🌐 أولويات في التحديثات</strong> - الحصول على الميزات الجديدة أولاً</li>
+        </ul>
+    </div>
+
+    <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 20px 0; border-right: 4px solid #ffc107;">
+        <p style="margin: 0; color: #856404;">
+            <strong>💡 نصيحة:</strong> تحقق من لوحة التحكم الخاصة بك لاستكشاف الميزات الجديدة والإعدادات المتقدمة.
+        </p>
+    </div>
+
+    <div style="margin: 30px 0; text-align: center;">
+        <a href="https://app.clickbuild.com" style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold; display: inline-block;">
+            تسجيل الدخول الآن
+        </a>
+    </div>
+
+    <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+
+    <div style="font-size: 14px; color: #999;">
+        <p>إذا كان لديك أي أسئلة أو تحتاج إلى مساعدة، يرجى التواصل معنا:</p>
+        <p>
+            📧 <strong>البريد الإلكتروني:</strong> support@clickbuild.com<br>
+            📞 <strong>الهاتف:</strong> +966 50 123 4567<br>
+            🌐 <strong>الموقع:</strong> www.clickbuild.com
+        </p>
+    </div>
+
+    <div style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #eee; font-size: 12px; color: #999; text-align: center;">
+        <p>© 2026 ClickBuild Platform. جميع الحقوق محفوظة.</p>
+    </div>
+</div>
+            ]]></field>
+            <field name="auto_delete">True</field>
+        </record>
+
+        <!-- Upgrade Rejection Email -->
+        <record id="email_tenant_upgrade_rejected" model="mail.template">
+            <field name="name">Tenant Upgrade Rejected Notification</field>
+            <field name="model_id" ref="saas_core.model_saas_tenant"/>
+            <field name="subject">Update: Upgrade Request Status</field>
+            <field name="email_from">noreply@clickbuild.com</field>
+            <field name="email_to">${object.contact_email}</field>
+            <field name="body_html"><![CDATA[
+<div style="font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; direction: rtl; padding: 20px;">
+    <div style="background: #fff5f5; padding: 20px; border-radius: 8px; border-right: 4px solid #f56565; margin-bottom: 20px;">
+        <h2 style="margin: 0; color: #c53030;">تحديث: طلب الترقية</h2>
+    </div>
+
+    <p style="font-size: 16px; color: #333;">مرحباً ${object.name},</p>
+
+    <p style="font-size: 15px; color: #666; line-height: 1.6;">
+        شكراً لاهتمامك بترقية حسابك إلى الإصدار Enterprise.
+        للأسف، لم نتمكن من الموافقة على طلبك في الوقت الحالي.
+    </p>
+
+    <div style="background: #fef5e7; padding: 15px; border-radius: 8px; margin: 20px 0;">
+        <p style="margin: 0; color: #7d6608;">
+            <strong>السبب:</strong> سيتم إرسال تفاصيل إضافية عبر البريد الإلكتروني.
+        </p>
+    </div>
+
+    <p style="font-size: 15px; color: #666;">
+        يمكنك التواصل مع فريق الدعم الخاص بنا للمزيد من المعلومات أو لمناقشة خيارات بديلة.
+    </p>
+
+    <div style="margin: 30px 0; text-align: center;">
+        <a href="mailto:support@clickbuild.com" style="background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; font-weight: bold;">
+            التواصل مع الدعم
+        </a>
+    </div>
+
+    <hr style="border: none; border-top: 1px solid #ddd; margin: 30px 0;">
+
+    <div style="font-size: 14px; color: #999;">
+        <p>📧 <strong>البريد الإلكتروني:</strong> support@clickbuild.com<br>
+        📞 <strong>الهاتف:</strong> +966 50 123 4567</p>
+    </div>
+</div>
+            ]]></field>
+            <field name="auto_delete">True</field>
+        </record>
+    </data>
+</odoo>

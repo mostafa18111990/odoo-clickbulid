@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="page_legal" name="Legal Pages">
+        <t t-set="lang_code" t-value="request.env.lang or 'ar_001'"/>
+        <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+
+        <!-- Page titles -->
+        <t t-if="page == 'terms'">
+            <t t-set="page_title"><t t-if="lang_is_ar">شروط الخدمة</t><t t-else="">Terms of Service</t></t>
+        </t>
+        <t t-elif="page == 'privacy'">
+            <t t-set="page_title"><t t-if="lang_is_ar">سياسة الخصوصية</t><t t-else="">Privacy Policy</t></t>
+        </t>
+        <t t-elif="page == 'dpa'">
+            <t t-set="page_title"><t t-if="lang_is_ar">اتفاقية معالجة البيانات</t><t t-else="">Data Processing Agreement</t></t>
+        </t>
+        <t t-elif="page == 'sla'">
+            <t t-set="page_title"><t t-if="lang_is_ar">اتفاقية مستوى الخدمة</t><t t-else="">Service Level Agreement (SLA)</t></t>
+        </t>
+
+        <t t-call="website.layout">
+            <t t-set="title" t-value="page_title"/>
+            <div class="container py-5">
+                <div class="row justify-content-center">
+                    <div class="col-lg-8">
+
+                        <!-- Breadcrumb -->
+                        <nav aria-label="breadcrumb" class="mb-4">
+                            <ol class="breadcrumb">
+                                <li class="breadcrumb-item">
+                                    <a href="/"><t t-if="lang_is_ar">الرئيسية</t><t t-else="">Home</t></a>
+                                </li>
+                                <li class="breadcrumb-item active" t-att-aria-current="'page'">
+                                    <t t-esc="page_title"/>
+                                </li>
+                            </ol>
+                        </nav>
+
+                        <h1 class="display-6 fw-bold mb-2"><t t-esc="page_title"/></h1>
+                        <p class="text-muted mb-5">
+                            <t t-if="lang_is_ar">آخر تحديث: يونيو 2026</t>
+                            <t t-else="">Last updated: June 2026</t>
+                        </p>
+
+                        <!-- TERMS OF SERVICE -->
+                        <t t-if="page == 'terms'">
+                            <div t-if="lang_is_ar">
+                                <h2 class="h5 fw-bold mt-4">1. قبول الشروط</h2>
+                                <p>باستخدامك لمنصة ClickBuild، فإنك توافق على الالتزام بهذه الشروط والأحكام. إذا كنت لا توافق على هذه الشروط، يُرجى عدم استخدام الخدمة.</p>
+
+                                <h2 class="h5 fw-bold mt-4">2. وصف الخدمة</h2>
+                                <p>ClickBuild توفر منصة ERP سحابية مبنية على Odoo 19، تشمل إدارة المحاسبة، المبيعات، المخزون، الموارد البشرية، وغيرها. تُقدَّم الخدمة بشكل اشتراك شهري أو سنوي.</p>
+
+                                <h2 class="h5 fw-bold mt-4">3. حساب المستخدم</h2>
+                                <p>أنت مسؤول عن الحفاظ على سرية بيانات تسجيل الدخول الخاصة بك. يجب إبلاغنا فوراً عن أي استخدام غير مصرح به لحسابك.</p>
+
+                                <h2 class="h5 fw-bold mt-4">4. الرسوم والمدفوعات</h2>
+                                <p>تُحتسب رسوم الاشتراك مقدماً على أساس شهري أو سنوي. في حالة عدم السداد، يحق لنا تعليق الخدمة بعد فترة سماح مدتها 7 أيام.</p>
+
+                                <h2 class="h5 fw-bold mt-4">5. إنهاء الخدمة</h2>
+                                <p>يمكنك إلغاء اشتراكك في أي وقت. ستظل بياناتك محفوظة لمدة 90 يوماً بعد الإلغاء، بعدها تُحذف نهائياً.</p>
+
+                                <h2 class="h5 fw-bold mt-4">6. القانون المطبق</h2>
+                                <p>تخضع هذه الشروط لقوانين المملكة العربية السعودية، وتختص المحاكم السعودية بالنظر في أي نزاعات.</p>
+                            </div>
+                            <div t-else="">
+                                <h2 class="h5 fw-bold mt-4">1. Acceptance of Terms</h2>
+                                <p>By using ClickBuild, you agree to be bound by these Terms of Service. If you do not agree, please do not use the service.</p>
+
+                                <h2 class="h5 fw-bold mt-4">2. Service Description</h2>
+                                <p>ClickBuild provides a cloud ERP platform built on Odoo 19, including accounting, sales, inventory, HR, and more. The service is offered on a monthly or annual subscription basis.</p>
+
+                                <h2 class="h5 fw-bold mt-4">3. User Account</h2>
+                                <p>You are responsible for maintaining the confidentiality of your login credentials. You must notify us immediately of any unauthorized use of your account.</p>
+
+                                <h2 class="h5 fw-bold mt-4">4. Fees and Payments</h2>
+                                <p>Subscription fees are charged in advance on a monthly or annual basis. In case of non-payment, we may suspend service after a 7-day grace period.</p>
+
+                                <h2 class="h5 fw-bold mt-4">5. Termination</h2>
+                                <p>You may cancel your subscription at any time. Your data will be retained for 90 days after cancellation, after which it will be permanently deleted.</p>
+
+                                <h2 class="h5 fw-bold mt-4">6. Governing Law</h2>
+                                <p>These terms are governed by the laws of the Kingdom of Saudi Arabia, and Saudi courts shall have exclusive jurisdiction over any disputes.</p>
+                            </div>
+                        </t>
+
+                        <!-- PRIVACY POLICY -->
+                        <t t-elif="page == 'privacy'">
+                            <div t-if="lang_is_ar">
+                                <h2 class="h5 fw-bold mt-4">1. البيانات التي نجمعها</h2>
+                                <p>نجمع المعلومات التي تقدمها عند التسجيل (الاسم، البريد الإلكتروني، الهاتف)، وبيانات الاستخدام، والبيانات التجارية التي تدخلها في المنصة.</p>
+
+                                <h2 class="h5 fw-bold mt-4">2. كيف نستخدم بياناتك</h2>
+                                <p>نستخدم بياناتك لتشغيل الخدمة، إرسال الإشعارات المهمة، وتحسين المنصة. لا نبيع بياناتك لأطراف ثالثة.</p>
+
+                                <h2 class="h5 fw-bold mt-4">3. حفظ البيانات وأمانها</h2>
+                                <p>تُحفظ جميع البيانات على خوادم مؤمّنة بتشفير SSL. نحتفظ بنسخ احتياطية يومية لضمان سلامة بياناتك.</p>
+
+                                <h2 class="h5 fw-bold mt-4">4. حقوقك</h2>
+                                <p>يحق لك طلب الاطلاع على بياناتك، تعديلها، أو حذفها في أي وقت عبر التواصل مع فريق الدعم.</p>
+
+                                <h2 class="h5 fw-bold mt-4">5. ملفات تعريف الارتباط (Cookies)</h2>
+                                <p>نستخدم ملفات تعريف الارتباط الضرورية لتشغيل الموقع وتحسين تجربة المستخدم. يمكنك إلغاء تفعيلها من إعدادات متصفحك.</p>
+
+                                <h2 class="h5 fw-bold mt-4">6. التواصل</h2>
+                                <p>لأي استفسارات متعلقة بالخصوصية، تواصل معنا على: <a href="mailto:support@clickbulid.com">support@clickbulid.com</a></p>
+                            </div>
+                            <div t-else="">
+                                <h2 class="h5 fw-bold mt-4">1. Data We Collect</h2>
+                                <p>We collect information you provide at registration (name, email, phone), usage data, and business data you enter into the platform.</p>
+
+                                <h2 class="h5 fw-bold mt-4">2. How We Use Your Data</h2>
+                                <p>We use your data to operate the service, send important notifications, and improve the platform. We do not sell your data to third parties.</p>
+
+                                <h2 class="h5 fw-bold mt-4">3. Data Storage and Security</h2>
+                                <p>All data is stored on SSL-encrypted servers. We maintain daily backups to ensure your data integrity.</p>
+
+                                <h2 class="h5 fw-bold mt-4">4. Your Rights</h2>
+                                <p>You have the right to access, modify, or delete your data at any time by contacting our support team.</p>
+
+                                <h2 class="h5 fw-bold mt-4">5. Cookies</h2>
+                                <p>We use essential cookies to operate the site and improve user experience. You can disable them in your browser settings.</p>
+
+                                <h2 class="h5 fw-bold mt-4">6. Contact</h2>
+                                <p>For privacy inquiries, contact us at: <a href="mailto:support@clickbulid.com">support@clickbulid.com</a></p>
+                            </div>
+                        </t>
+
+                        <!-- DPA -->
+                        <t t-elif="page == 'dpa'">
+                            <div t-if="lang_is_ar">
+                                <h2 class="h5 fw-bold mt-4">1. نطاق الاتفاقية</h2>
+                                <p>تحكم هذه الاتفاقية معالجة البيانات الشخصية التي يقوم بها ClickBuild بصفته معالجاً للبيانات نيابةً عن العميل بصفته مسؤولاً عن البيانات.</p>
+
+                                <h2 class="h5 fw-bold mt-4">2. التزامات ClickBuild</h2>
+                                <ul>
+                                    <li>معالجة البيانات وفق تعليمات العميل فقط</li>
+                                    <li>تطبيق تدابير أمنية تقنية وتنظيمية مناسبة</li>
+                                    <li>إخطار العميل خلال 72 ساعة من اكتشاف أي اختراق للبيانات</li>
+                                    <li>حذف أو إعادة بيانات العميل عند انتهاء العقد</li>
+                                </ul>
+
+                                <h2 class="h5 fw-bold mt-4">3. المعالجون الفرعيون</h2>
+                                <p>قد نستخدم مزودي خدمات موثوقين (خوادم، بريد إلكتروني) لتقديم الخدمة. يُبلَّغ العملاء بأي تغييرات مسبقاً.</p>
+
+                                <h2 class="h5 fw-bold mt-4">4. الامتثال</h2>
+                                <p>يلتزم ClickBuild بمتطلبات حماية البيانات وفق نظام حماية البيانات الشخصية السعودي (PDPL).</p>
+                            </div>
+                            <div t-else="">
+                                <h2 class="h5 fw-bold mt-4">1. Scope</h2>
+                                <p>This DPA governs the processing of personal data by ClickBuild as data processor on behalf of the customer as data controller.</p>
+
+                                <h2 class="h5 fw-bold mt-4">2. ClickBuild Obligations</h2>
+                                <ul>
+                                    <li>Process data only per customer instructions</li>
+                                    <li>Implement appropriate technical and organizational security measures</li>
+                                    <li>Notify the customer within 72 hours of discovering a data breach</li>
+                                    <li>Delete or return customer data upon contract termination</li>
+                                </ul>
+
+                                <h2 class="h5 fw-bold mt-4">3. Sub-processors</h2>
+                                <p>We may use trusted service providers (servers, email) to deliver the service. Customers are notified in advance of any changes.</p>
+
+                                <h2 class="h5 fw-bold mt-4">4. Compliance</h2>
+                                <p>ClickBuild complies with data protection requirements under the Saudi Personal Data Protection Law (PDPL).</p>
+                            </div>
+                        </t>
+
+                        <!-- SLA -->
+                        <t t-elif="page == 'sla'">
+                            <div t-if="lang_is_ar">
+                                <h2 class="h5 fw-bold mt-4">1. نسبة التوفر المضمونة</h2>
+                                <p>نضمن توفر المنصة بنسبة <strong>99.9%</strong> شهرياً (ما يعادل أقل من 44 دقيقة توقف شهرياً)، باستثناء أوقات الصيانة المجدولة.</p>
+
+                                <h2 class="h5 fw-bold mt-4">2. الصيانة المجدولة</h2>
+                                <p>تُجرى أعمال الصيانة في أوقات الذروة المنخفضة (عادةً بين 2 صباحاً و4 صباحاً بتوقيت الرياض) مع إشعار مسبق 24 ساعة.</p>
+
+                                <h2 class="h5 fw-bold mt-4">3. وقت الاستجابة للدعم</h2>
+                                <table class="table table-bordered mt-3">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>الخطة</th>
+                                            <th>وقت الاستجابة</th>
+                                            <th>ساعات الدعم</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Starter</td><td>خلال 24 ساعة</td><td>أيام العمل</td></tr>
+                                        <tr><td>Growth</td><td>خلال 8 ساعات</td><td>أيام العمل</td></tr>
+                                        <tr><td>Professional</td><td>خلال 4 ساعات</td><td>24/7</td></tr>
+                                        <tr><td>Enterprise</td><td>خلال ساعة</td><td>24/7</td></tr>
+                                    </tbody>
+                                </table>
+
+                                <h2 class="h5 fw-bold mt-4">4. التعويض</h2>
+                                <p>في حال عدم تحقق نسبة التوفر المضمونة، يحق للعميل الحصول على خصم على الفاتورة الشهرية التالية وفق الجدول التالي:</p>
+                                <ul>
+                                    <li>99.0% - 99.9%: خصم 10%</li>
+                                    <li>95.0% - 99.0%: خصم 25%</li>
+                                    <li>أقل من 95%: خصم 50%</li>
+                                </ul>
+
+                                <h2 class="h5 fw-bold mt-4">5. النسخ الاحتياطية</h2>
+                                <p>نُجري نسخاً احتياطية يومية لجميع بيانات العملاء ونحتفظ بها لمدة 7 أيام. يمكن استعادة البيانات خلال 4 ساعات من الطلب.</p>
+                            </div>
+                            <div t-else="">
+                                <h2 class="h5 fw-bold mt-4">1. Uptime Guarantee</h2>
+                                <p>We guarantee <strong>99.9% monthly uptime</strong> (less than 44 minutes of downtime per month), excluding scheduled maintenance windows.</p>
+
+                                <h2 class="h5 fw-bold mt-4">2. Scheduled Maintenance</h2>
+                                <p>Maintenance is performed during low-traffic hours (typically 2am–4am Riyadh time) with 24-hour advance notice.</p>
+
+                                <h2 class="h5 fw-bold mt-4">3. Support Response Times</h2>
+                                <table class="table table-bordered mt-3">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Plan</th>
+                                            <th>Response Time</th>
+                                            <th>Support Hours</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr><td>Starter</td><td>Within 24 hours</td><td>Business days</td></tr>
+                                        <tr><td>Growth</td><td>Within 8 hours</td><td>Business days</td></tr>
+                                        <tr><td>Professional</td><td>Within 4 hours</td><td>24/7</td></tr>
+                                        <tr><td>Enterprise</td><td>Within 1 hour</td><td>24/7</td></tr>
+                                    </tbody>
+                                </table>
+
+                                <h2 class="h5 fw-bold mt-4">4. Service Credits</h2>
+                                <p>If uptime falls below the guarantee, customers are entitled to credits on the next monthly invoice:</p>
+                                <ul>
+                                    <li>99.0% – 99.9%: 10% credit</li>
+                                    <li>95.0% – 99.0%: 25% credit</li>
+                                    <li>Below 95%: 50% credit</li>
+                                </ul>
+
+                                <h2 class="h5 fw-bold mt-4">5. Backups</h2>
+                                <p>We perform daily backups of all customer data and retain them for 7 days. Data can be restored within 4 hours of request.</p>
+                            </div>
+                        </t>
+
+                        <!-- Contact footer on legal pages -->
+                        <div class="alert alert-light border mt-5">
+                            <i class="fa fa-envelope me-2"/>
+                            <t t-if="lang_is_ar">
+                                أسئلة؟ تواصل معنا على
+                                <a href="mailto:support@clickbulid.com">support@clickbulid.com</a>
+                                أو زر <a href="/contact">صفحة التواصل</a>.
+                            </t>
+                            <t t-else="">
+                                Questions? Contact us at
+                                <a href="mailto:support@clickbulid.com">support@clickbulid.com</a>
+                                or visit our <a href="/contact">contact page</a>.
+                            </t>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </t>
+    </template>
+</odoo>

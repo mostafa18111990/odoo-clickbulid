@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Error Log Views -->
+        <record id="saas_error_log_tree" model="ir.ui.view">
+            <field name="name">saas.error.log.tree</field>
+            <field name="model">saas.error.log</field>
+            <field name="arch" type="xml">
+                <tree string="Error Logs">
+                    <field name="code"/>
+                    <field name="message"/>
+                    <field name="severity"/>
+                    <field name="create_date"/>
+                    <field name="resolved"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="saas_error_log_form" model="ir.ui.view">
+            <field name="name">saas.error.log.form</field>
+            <field name="model">saas.error.log</field>
+            <field name="arch" type="xml">
+                <form string="Error Log">
+                    <sheet>
+                        <group>
+                            <field name="code"/>
+                            <field name="severity"/>
+                            <field name="resolved"/>
+                        </group>
+                        <field name="message"/>
+                        <field name="details" widget="html"/>
+                        <group string="Resolution">
+                            <field name="resolution_notes"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="saas_error_log_search" model="ir.ui.view">
+            <field name="name">saas.error.log.search</field>
+            <field name="model">saas.error.log</field>
+            <field name="arch" type="xml">
+                <search string="Error Logs">
+                    <field name="code"/>
+                    <field name="message"/>
+                    <filter name="unresolved" string="Unresolved" domain="[('resolved', '=', False)]"/>
+                    <filter name="critical" string="Critical" domain="[('severity', '=', 'critical')]"/>
+                    <separator/>
+                    <filter name="today" string="Today" domain="[('create_date', '>=', context_today().strftime('%Y-%m-%d')), ('create_date', '&lt;', (context_today() + timedelta(days=1)).strftime('%Y-%m-%d'))]"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Alert Views -->
+        <record id="saas_alert_tree" model="ir.ui.view">
+            <field name="name">saas.alert.tree</field>
+            <field name="model">saas.alert</field>
+            <field name="arch" type="xml">
+                <tree string="Alerts">
+                    <field name="code"/>
+                    <field name="message"/>
+                    <field name="severity"/>
+                    <field name="create_date"/>
+                    <field name="acknowledged"/>
+                </tree>
+            </field>
+        </record>
+
+        <record id="saas_alert_form" model="ir.ui.view">
+            <field name="name">saas.alert.form</field>
+            <field name="model">saas.alert</field>
+            <field name="arch" type="xml">
+                <form string="Alert">
+                    <sheet>
+                        <button name="action_acknowledge" type="object" string="Acknowledge"
+                                class="btn btn-primary" attrs="{'invisible': [('acknowledged', '=', True)]}"/>
+                        <group>
+                            <field name="code"/>
+                            <field name="severity"/>
+                            <field name="acknowledged"/>
+                            <field name="acknowledged_by" attrs="{'invisible': [('acknowledged', '=', False)]}"/>
+                            <field name="acknowledged_date" attrs="{'invisible': [('acknowledged', '=', False)]}"/>
+                        </group>
+                        <field name="message"/>
+                        <field name="details" widget="html"/>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+        <record id="saas_alert_search" model="ir.ui.view">
+            <field name="name">saas.alert.search</field>
+            <field name="model">saas.alert</field>
+            <field name="arch" type="xml">
+                <search string="Alerts">
+                    <field name="code"/>
+                    <field name="message"/>
+                    <filter name="unacknowledged" string="Unacknowledged" domain="[('acknowledged', '=', False)]"/>
+                    <filter name="critical" string="Critical" domain="[('severity', '=', 'critical')]"/>
+                    <separator/>
+                    <filter name="recent" string="Last 24 Hours" domain="[('create_date', '>=', (context_today() - timedelta(hours=24)).strftime('%Y-%m-%d %H:%M:%S'))]"/>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action menus -->
+        <record id="saas_error_log_action" model="ir.actions.act_window">
+            <field name="name">Error Logs</field>
+            <field name="res_model">saas.error.log</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="saas_error_log_tree"/>
+        </record>
+
+        <record id="saas_alert_action" model="ir.actions.act_window">
+            <field name="name">Alerts</field>
+            <field name="res_model">saas.alert</field>
+            <field name="view_mode">tree,form</field>
+            <field name="view_id" ref="saas_alert_tree"/>
+        </record>
+
+        <!-- Menu items -->
+        <menuitem id="menu_error_alert" name="Error &amp; Alerts" parent="saas_core.menu_saas_admin" sequence="50"/>
+        <menuitem id="menu_error_logs" name="Error Logs" parent="menu_error_alert" action="saas_error_log_action" sequence="10"/>
+        <menuitem id="menu_alerts" name="Alerts" parent="menu_error_alert" action="saas_alert_action" sequence="20"/>
+    </data>
+</odoo>

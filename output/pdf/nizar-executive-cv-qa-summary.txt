@@ -1,0 +1,19 @@
+Summary of Improvements Made
+- Rebuilt the candidate profile into two separate executive CV versions: Arabic and English.
+- Updated the contact number to 0599109021.
+- Added a Key Professional Highlights section in each version.
+- Reorganized experience into Position, Organization, Location, Duration, Key Responsibilities, Technical Scope, and Key Contributions.
+- Preserved documented experience only; no invented certifications, figures, or unsupported achievements were added.
+- Removed the personal photo and kept the CV files free of submission-specific positioning.
+
+Final Quality Review Checklist
+- No tender-related wording in the CV files.
+- No proposal-related wording in the CV files.
+- No government procurement wording in the CV files.
+- No GSO references in the CV files.
+- No hackathon references in the CV files.
+- No project-specific positioning or future-role language in the CV files.
+- Contact number updated to 0599109021.
+- Old phone number removed from the CV files.
+- DOCX files generated for editability.
+- PDF files rendered and visually reviewed.

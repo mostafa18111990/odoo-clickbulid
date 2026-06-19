@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Wizard Form -->
+        <record id="saas_tenant_upgrade_wizard_form" model="ir.ui.view">
+            <field name="name">saas.tenant.upgrade.wizard.form</field>
+            <field name="model">saas.tenant.upgrade.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Upgrade Tenant to Enterprise">
+                    <group>
+                        <group string="Current Setup">
+                            <field name="tenant_id" readonly="True"/>
+                            <field name="from_edition" readonly="True"/>
+                            <field name="from_plan_id" readonly="True"/>
+                        </group>
+                        <group string="New Setup">
+                            <field name="to_edition" readonly="True"/>
+                            <field name="to_plan_id" widget="selection" context="{'default_edition': 'enterprise'}"/>
+                            <field name="price_difference"/>
+                        </group>
+                    </group>
+
+                    <group>
+                        <field name="coupon_code" placeholder="Optional discount code"/>
+                        <field name="approve_immediately" widget="boolean"/>
+                        <label for="approve_immediately">Approve & execute immediately</label>
+                    </group>
+
+                    <footer>
+                        <button name="action_create_upgrade" type="object" string="Create Upgrade" class="btn btn-primary"/>
+                        <button name="action_cancel" type="object" string="Cancel" class="btn btn-secondary"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="saas_tenant_upgrade_wizard_action" model="ir.actions.act_window">
+            <field name="name">Upgrade Tenant</field>
+            <field name="res_model">saas.tenant.upgrade.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="saas_tenant_upgrade_wizard_form"/>
+            <field name="target">new</field>
+        </record>
+    </data>
+</odoo>

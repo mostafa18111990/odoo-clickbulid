@@ -11,6 +11,8 @@
         'data/faq_data.xml',
         'data/website_menu_data.xml',
         'data/welcome_email_template.xml',
+        'data/error_recovery_cron.xml',
+        'data/upgrade_email_templates.xml',
         'views/website_layout_inherit.xml',
         'views/lang_macros.xml',
         'views/page_home.xml',
@@ -19,6 +21,13 @@
         'views/page_contact.xml',
         'views/page_faq.xml',
         'views/page_signup.xml',
+        'views/page_about.xml',
+        'views/page_legal.xml',
+        'views/page_error.xml',
+        'views/admin_dashboard.xml',
+        'views/error_alert_dashboard.xml',
+        'views/tenant_upgrade_views.xml',
+        'views/tenant_upgrade_wizard_view.xml',
     ],
     'assets': {
         'web.assets_frontend': [

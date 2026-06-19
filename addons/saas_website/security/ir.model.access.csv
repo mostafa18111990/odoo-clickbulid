@@ -5,3 +5,10 @@ access_website_lead_admin,saas.website.lead admin,model_saas_website_lead,saas_t
 access_website_lead_manager,saas.website.lead manager,model_saas_website_lead,saas_tenant_manager.group_saas_manager,1,1,0,0
 access_website_faq_public,saas.website.faq public,model_saas_website_faq,base.group_public,1,0,0,0
 access_website_faq_admin,saas.website.faq admin,model_saas_website_faq,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_error_log_admin,saas.error.log admin,model_saas_error_log,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_error_log_manager,saas.error.log manager,model_saas_error_log,saas_tenant_manager.group_saas_manager,1,0,0,0
+access_alert_admin,saas.alert admin,model_saas_alert,saas_tenant_manager.group_saas_admin,1,1,0,1
+access_alert_manager,saas.alert manager,model_saas_alert,saas_tenant_manager.group_saas_manager,1,1,0,0
+access_upgrade_admin,saas.tenant.upgrade admin,model_saas_tenant_upgrade,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_upgrade_manager,saas.tenant.upgrade manager,model_saas_tenant_upgrade,saas_tenant_manager.group_saas_manager,1,1,0,0
+access_upgrade_wizard_user,saas.tenant.upgrade.wizard user,model_saas_tenant_upgrade_wizard,base.group_user,1,1,1,1

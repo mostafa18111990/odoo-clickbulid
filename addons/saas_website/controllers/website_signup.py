@@ -1,5 +1,6 @@
 from odoo import http, _
 from odoo.http import request
+from odoo.addons.saas_website.services.error_handler import ErrorHandler
 import time
 import logging
 
@@ -23,6 +24,7 @@ class SaasWebsiteSignup(http.Controller):
 
     @http.route(['/get-started', '/get-started/<string:plan_code>'],
                 type='http', auth='public', website=True, sitemap=True)
+    @ErrorHandler.handle_request_error
     def get_started(self, plan_code=None, **kw):
         plans = request.env['website'].get_saas_plans()
         selected_plan = None
@@ -104,6 +106,7 @@ class SaasWebsiteSignup(http.Controller):
 
     @http.route('/get-started/register', type='http', auth='public',
                 website=True, methods=['POST'], csrf=True)
+    @ErrorHandler.handle_request_error
     def register(self, **post):
         ip = request.httprequest.environ.get('HTTP_X_FORWARDED_FOR',
                                              request.httprequest.remote_addr).split(',')[0].strip()

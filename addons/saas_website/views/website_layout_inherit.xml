@@ -39,16 +39,13 @@
                             <ul>
                                 <li><a href="/about"><t t-if="lang_is_ar">عن ClickBuild</t><t t-else="">About</t></a></li>
                                 <li><a href="/contact"><t t-if="lang_is_ar">تواصل معنا</t><t t-else="">Contact</t></a></li>
-                                <li><a href="/blog"><t t-if="lang_is_ar">المدونة</t><t t-else="">Blog</t></a></li>
-                                <li><a href="/careers"><t t-if="lang_is_ar">وظائف</t><t t-else="">Careers</t></a></li>
                             </ul>
                         </div>
                         <div class="col-lg-2 col-md-4 col-6">
                             <h5><t t-if="lang_is_ar">الموارد</t><t t-else="">Resources</t></h5>
                             <ul>
                                 <li><a href="/faq"><t t-if="lang_is_ar">الأسئلة الشائعة</t><t t-else="">FAQ</t></a></li>
-                                <li><a href="/help"><t t-if="lang_is_ar">الدليل</t><t t-else="">Documentation</t></a></li>
-                                <li><a href="/api/docs">API</a></li>
+                                <li><a href="/help"><t t-if="lang_is_ar">مركز المساعدة</t><t t-else="">Help center</t></a></li>
                                 <li><a href="https://odoo.clickbulid.com/web/login"><t t-if="lang_is_ar">تسجيل الدخول</t><t t-else="">Log in</t></a></li>
                             </ul>
                         </div>

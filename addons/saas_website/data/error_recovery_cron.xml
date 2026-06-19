@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <!-- Auto-retry failed provisioning every 5 minutes -->
+        <record id="ir_cron_retry_failed_provisioning" model="ir.cron">
+            <field name="name">Retry Failed Provisioning</field>
+            <field name="model_name">saas.error.log</field>
+            <field name="state">code</field>
+            <field name="code">env['saas.error.log'].search([('code', '=', 'TENANT_PROVISION'), ('resolved', '=', False)]).action_retry()</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">5</field>
+            <field name="interval_type">minutes</field>
+            <field name="nextcall" eval="datetime.now()"/>
+        </record>
+
+        <!-- Check platform health every 30 minutes -->
+        <record id="ir_cron_check_platform_health" model="ir.cron">
+            <field name="name">Check Platform Health</field>
+            <field name="model_name">saas.alert</field>
+            <field name="state">code</field>
+            <field name="code">
+from odoo.addons.saas_website.services.error_handler import HealthCheck
+from odoo.addons.saas_website.services.alert_notifier import AlertNotifier
+status = HealthCheck.get_platform_status()
+if not status['healthy']:
+    for check_name, result in status['checks'].items():
+        if not result['ok']:
+            AlertNotifier.notify_error(f'HEALTH_CHECK_{check_name.upper()}', result['details'], 'critical', {'check': check_name})
+            </field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">30</field>
+            <field name="interval_type">minutes</field>
+            <field name="nextcall" eval="datetime.now()"/>
+        </record>
+
+        <!-- Clean up old error logs weekly -->
+        <record id="ir_cron_cleanup_error_logs" model="ir.cron">
+            <field name="name">Cleanup Old Error Logs</field>
+            <field name="model_name">saas.error.log</field>
+            <field name="state">code</field>
+            <field name="code">env['saas.error.log'].cleanup_old_logs(days=90)</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="nextcall" eval="datetime.now()"/>
+        </record>
+
+        <!-- Clean up old alerts weekly -->
+        <record id="ir_cron_cleanup_alerts" model="ir.cron">
+            <field name="name">Cleanup Old Alerts</field>
+            <field name="model_name">saas.alert</field>
+            <field name="state">code</field>
+            <field name="code">env['saas.alert'].cleanup_old_alerts(days=30)</field>
+            <field name="user_id" ref="base.user_root"/>
+            <field name="interval_number">1</field>
+            <field name="interval_type">weeks</field>
+            <field name="nextcall" eval="datetime.now()"/>
+        </record>
+    </data>
+</odoo>
