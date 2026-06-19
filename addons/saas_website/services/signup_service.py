@@ -48,8 +48,8 @@ class SignupService:
             errors.append(check.get('reason', {}).get('en', 'Invalid subdomain.'))
         plan_id = data.get('plan_id')
         if plan_id:
-            plan = self.env['saas.plan'].sudo().browse(int(plan_id)).exists()
-            if not plan or not plan.active:
+            plan = self.env['saas.plan'].sudo().browse(int(plan_id))
+            if not plan.exists() or not plan.active:
                 errors.append(_('Selected plan is not available.'))
         return errors
 
@@ -63,12 +63,20 @@ class SignupService:
         company = (data.get('company') or '').strip()
         phone = (data.get('phone') or '').strip()
         country = (data.get('country') or 'SA').strip()
-        plan_id = int(data['plan_id']) if data.get('plan_id') else None
+        try:
+            plan_id = int(data['plan_id']) if data.get('plan_id') else None
+        except (ValueError, TypeError):
+            plan_id = None
+
         if not plan_id:
             plan = self.env['saas.plan'].sudo().search([('active', '=', True)], order='monthly_price asc', limit=1)
             plan_id = plan.id if plan else None
         else:
             plan = self.env['saas.plan'].sudo().browse(plan_id)
+            if not plan.exists():
+                plan = None
+                plan_id = None
+
         if not plan_id:
             return {'success': False, 'errors': [_('No plans available.')]}
         from odoo.addons.saas_core.services.tenant_service import TenantService
@@ -81,7 +89,7 @@ class SignupService:
             # (saas.tenant has no customer_country field in the current base module.)
             provision_result = tenant.sudo().action_provision()
             admin_password = (provision_result or {}).get('admin_password_one_time')
-            if 'saas.subscription' in self.env:
+            if 'saas.subscription' in self.env and plan:
                 from odoo.addons.saas_subscription.services.subscription_service import SubscriptionService
                 currency = self._currency_for_country(country)
                 SubscriptionService(self.env.sudo()).create_trial(tenant, plan, 'monthly', currency)
