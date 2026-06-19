@@ -95,12 +95,13 @@ class ErrorHandler:
             except PlatformError as pe:
                 ErrorHandler.log_error(pe.code, pe.message, pe, pe.details)
                 lang = request.env.lang if hasattr(request, 'env') else 'ar'
+                is_json = hasattr(request, 'httprequest') and request.httprequest.content_type and 'json' in request.httprequest.content_type
                 return {
                     'success': False,
                     'error': ErrorHandler.get_graceful_response(pe.code, lang),
                     'code': pe.code,
                     'status': pe.status
-                } if http.request_type == 'json' else request.redirect('/error?code=' + pe.code)
+                } if is_json else request.redirect('/error?code=' + pe.code)
             except ValidationError as ve:
                 ErrorHandler.log_error('INVALID_INPUT', str(ve), ve)
                 lang = request.env.lang if hasattr(request, 'env') else 'ar'

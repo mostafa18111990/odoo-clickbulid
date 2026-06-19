@@ -72,7 +72,7 @@ class SignupService:
         if not plan_id:
             return {'success': False, 'errors': [_('No plans available.')]}
         from odoo.addons.saas_core.services.tenant_service import TenantService
-        svc = TenantService(self.env(su=True))
+        svc = TenantService(self.env.sudo())
         try:
             tenant = svc.create_lead(subdomain=subdomain, customer_name=name, customer_email=email,
                 plan_id=plan_id, lead_source='website', phone=phone, company_name=company,
@@ -84,7 +84,7 @@ class SignupService:
             if 'saas.subscription' in self.env:
                 from odoo.addons.saas_subscription.services.subscription_service import SubscriptionService
                 currency = self._currency_for_country(country)
-                SubscriptionService(self.env(su=True)).create_trial(tenant, plan, 'monthly', currency)
+                SubscriptionService(self.env.sudo()).create_trial(tenant, plan, 'monthly', currency)
             self._link_website_lead(email, tenant)
             # Send the welcome email with credentials (best-effort —
             # never block signup if SMTP isn't configured).
