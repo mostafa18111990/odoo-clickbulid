@@ -5,21 +5,33 @@
     'use strict';
 
     // ---- Scroll reveal -----------------------------------------------------
+    function revealAll(els) {
+        els.forEach(function (e) { e.classList.add('is-visible'); });
+    }
     function initReveal() {
         var els = document.querySelectorAll('[data-cb-reveal]');
-        if (!els.length || !window.IntersectionObserver) {
-            els.forEach(function (e) { e.classList.add('is-visible'); });
-            return;
+        if (!els.length) { return; }
+        // Belt-and-suspenders: if anything below throws, or IntersectionObserver
+        // is unavailable, just show everything. Content must never stay hidden.
+        if (!window.IntersectionObserver) { revealAll(els); return; }
+        try {
+            var io = new IntersectionObserver(function (entries) {
+                entries.forEach(function (entry) {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('is-visible');
+                        io.unobserve(entry.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+            els.forEach(function (e) { io.observe(e); });
+        } catch (err) {
+            revealAll(els);
         }
-        var io = new IntersectionObserver(function (entries) {
-            entries.forEach(function (entry) {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('is-visible');
-                    io.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
-        els.forEach(function (e) { io.observe(e); });
+        // Final safety net: whatever happens, ensure nothing is left hidden
+        // shortly after load (mirrors the CSS @keyframes failsafe).
+        window.addEventListener('load', function () {
+            setTimeout(function () { revealAll(els); }, 1600);
+        });
     }
 
     // ---- Pricing billing toggle (monthly <-> yearly) -----------------------
