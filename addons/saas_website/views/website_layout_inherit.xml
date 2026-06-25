@@ -18,12 +18,9 @@
                                 <t t-else="">All-in-one cloud ERP that lets companies run accounting, sales,
                                 inventory and HR from a single place.</t>
                             </p>
-                            <div class="socials">
-                                <a href="#" aria-label="Twitter"><i class="fa fa-twitter"/></a>
-                                <a href="#" aria-label="LinkedIn"><i class="fa fa-linkedin"/></a>
-                                <a href="#" aria-label="Facebook"><i class="fa fa-facebook"/></a>
-                                <a href="#" aria-label="YouTube"><i class="fa fa-youtube-play"/></a>
-                            </div>
+                            <a href="mailto:sales@clickbulid.com" class="cb-footer-contact o_force_ltr">
+                                <i class="fa fa-envelope"/> sales@clickbulid.com
+                            </a>
                         </div>
                         <div class="col-lg-2 col-md-4 col-6">
                             <h5><t t-if="lang_is_ar">المنتج</t><t t-else="">Product</t></h5>
@@ -70,12 +67,48 @@
                             <span><i class="fa fa-shield me-1"/>
                                 <t t-if="lang_is_ar">SSL مشفّر</t><t t-else="">SSL secured</t></span>
                             <span><i class="fa fa-check-circle me-1"/>
-                                <t t-if="lang_is_ar">متوافق مع ZATCA</t><t t-else="">ZATCA compliant</t></span>
-                            <span><i class="fa fa-cloud me-1"/> 99.9% uptime</span>
+                                <t t-if="lang_is_ar">نسخ احتياطي يومي</t><t t-else="">Daily backups</t></span>
+                            <span><i class="fa fa-language me-1"/>
+                                <t t-if="lang_is_ar">عربي وإنجليزي</t><t t-else="">Arabic &amp; English</t></span>
                         </div>
                     </div>
                 </div>
             </footer>
+        </xpath>
+    </template>
+
+    <template id="header_contact_details_inherit" name="ClickBuild Header Contact"
+              inherit_id="website.header_text_element">
+        <xpath expr="(//a[starts-with(@href, 'tel:+1 555-555-5556')])[3]"
+               position="replace">
+            <a href="mailto:sales@clickbulid.com" class="nav-link o_nav-link_secondary p-2">
+                <i class="fa fa-1x fa-fw fa-envelope me-1"/>
+                <span class="o_force_ltr"><small>sales@clickbulid.com</small></span>
+            </a>
+        </xpath>
+        <xpath expr="(//a[starts-with(@href, 'tel:+1 555-555-5556')])[2]"
+               position="replace">
+            <a href="mailto:sales@clickbulid.com"
+               class="nav-link o_nav-link_secondary p-2 o_navlink_background_hover d-flex align-items-center h-100 text-reset">
+                <i class="fa fa-1x fa-fw fa-envelope me-1"/>
+                <span class="o_force_ltr"><small>sales@clickbulid.com</small></span>
+            </a>
+        </xpath>
+        <xpath expr="(//a[starts-with(@href, 'tel:+1 555-555-5556')])[1]"
+               position="replace">
+            <a href="mailto:sales@clickbulid.com" class="nav-link o_nav-link_secondary">
+                <small>
+                    <i class="fa fa-1x fa-fw fa-envelope me-1"/>
+                    <span class="o_force_ltr">sales@clickbulid.com</span>
+                </small>
+            </a>
+        </xpath>
+    </template>
+
+    <template id="header_cta_inherit" name="ClickBuild Header CTA"
+              inherit_id="website.header_call_to_action">
+        <xpath expr="//a[contains(@class, 'btn_cta')]" position="attributes">
+            <attribute name="href">/contact</attribute>
         </xpath>
     </template>
 </odoo>

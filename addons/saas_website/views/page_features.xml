@@ -6,21 +6,31 @@
             <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
 
             <!-- HEADER -->
-            <section class="cb-hero py-5">
-                <div class="container text-center py-4" data-cb-reveal="1">
-                    <span class="badge-pill mb-3 d-inline-block">
-                        <i class="fa fa-th-large me-1" style="color:#fbbf24;"/>
-                        <t t-if="lang_is_ar">المميزات</t><t t-else="">Features</t>
+            <section class="cb-hero py-5" style="background:var(--cb-grad-hero);position:relative;overflow:hidden;">
+                <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 70% 40%,rgba(20,184,166,0.12) 0%,transparent 60%);pointer-events:none;"/>
+                <div class="container text-center py-5" data-cb-reveal="1" style="position:relative;z-index:1;">
+                    <span style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.35rem 1rem;border-radius:100px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);font-size:0.8rem;font-weight:700;margin-bottom:1.4rem;">
+                        <i class="fa fa-th-large" style="color:var(--cb-gold);"/>
+                        <t t-if="lang_is_ar">ميزات شاملة</t><t t-else="">Comprehensive Features</t>
                     </span>
-                    <h1 class="display-3 mb-3">
+                    <h1 style="color:#fff;font-size:3.2rem;font-weight:900;line-height:1.2;margin-bottom:1.1rem;">
                         <t t-if="lang_is_ar">كل الأدوات في منصة واحدة</t>
-                        <t t-else="">Every tool, one platform</t></h1>
-                    <p class="lead" style="opacity:0.92; max-width:640px; margin:0 auto;">
-                        <t t-if="lang_is_ar">من المحاسبة وحتى نقاط البيع — كل ما تحتاجه لإدارة أعمالك بفعالية،
-                        متكامل ومُعرَّب بالكامل.</t>
-                        <t t-else="">From accounting to point of sale — everything you need to run your
-                        business, fully integrated and bilingual (Arabic + English).</t>
+                        <t t-else="">Every tool, one platform</t>
+                    </h1>
+                    <p style="color:rgba(255,255,255,0.78);font-size:1.08rem;max-width:640px;margin:0 auto 2rem;">
+                        <t t-if="lang_is_ar">من المحاسبة وحتى نقاط البيع — كل ما تحتاجه لإدارة أعمالك، متكامل ومُعرَّب بالكامل.</t>
+                        <t t-else="">From accounting to point of sale — everything you need to run your business, fully integrated and bilingual.</t>
                     </p>
+                    <div class="d-flex justify-content-center gap-3 flex-wrap">
+                        <a href="/get-started" class="btn btn-primary btn-lg">
+                            <i class="fa fa-rocket"/>
+                            <t t-if="lang_is_ar">ابدأ التجربة المجانية</t><t t-else="">Start Free Trial</t>
+                        </a>
+                        <a href="/contact?type=quote" class="btn btn-outline-light btn-lg">
+                            <i class="fa fa-tag"/>
+                            <t t-if="lang_is_ar">احصل على عرض سعر</t><t t-else="">Get a Quote</t>
+                        </a>
+                    </div>
                 </div>
             </section>
 
@@ -71,18 +81,28 @@
             </div></section>
 
             <!-- FINAL CTA -->
-            <section class="py-5 cb-hero">
-                <div class="container text-center py-4" data-cb-reveal="1">
-                    <h2 class="display-4 mb-3">
-                        <t t-if="lang_is_ar">جرّبها بنفسك مجاناً</t>
-                        <t t-else="">Try it free</t></h2>
-                    <p class="lead mb-4" style="opacity:0.92;">
-                        <t t-if="lang_is_ar">14 يوماً بكامل المميزات — بدون التزام</t>
-                        <t t-else="">14 days, full features, no commitment</t></p>
-                    <a href="/get-started" class="btn btn-light btn-lg">
-                        <i class="fa fa-rocket me-2"/>
-                        <t t-if="lang_is_ar">ابدأ الآن</t><t t-else="">Start now</t>
-                    </a>
+            <section class="cb-v2-final">
+                <div class="container">
+                    <div class="cb-v2-final-inner" data-cb-reveal="1">
+                        <div>
+                            <span><t t-if="lang_is_ar">14 يوماً مجاناً</t><t t-else="">14 Days Free</t></span>
+                            <h2><t t-if="lang_is_ar">جرّبها بنفسك — بدون أي التزام</t><t t-else="">Try it yourself — no commitment required</t></h2>
+                        </div>
+                        <div class="cb-v2-final-actions">
+                            <a href="/get-started" class="btn btn-primary btn-lg">
+                                <i class="fa fa-rocket"/>
+                                <t t-if="lang_is_ar">ابدأ التجربة المجانية</t><t t-else="">Start Free Trial</t>
+                            </a>
+                            <a href="/contact" class="btn btn-outline-light btn-lg">
+                                <i class="fa fa-phone"/>
+                                <t t-if="lang_is_ar">تواصل معنا</t><t t-else="">Contact Us</t>
+                            </a>
+                            <a href="/contact?type=quote" class="btn btn-outline-light btn-lg">
+                                <i class="fa fa-tag"/>
+                                <t t-if="lang_is_ar">احصل على عرض سعر</t><t t-else="">Get a Quote</t>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </section>
         </t>

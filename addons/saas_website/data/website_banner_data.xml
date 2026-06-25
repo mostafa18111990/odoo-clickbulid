@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="banner_cloud_erp" model="saas.website.banner">
+        <field name="name">Cloud ERP</field>
+        <field name="sequence">10</field>
+        <field name="eyebrow">Odoo cloud platform</field>
+        <field name="eyebrow_ar">منصة Odoo السحابية</field>
+        <field name="title">Your entire business. One connected platform.</field>
+        <field name="title_ar">أعمالك بالكامل في منصة واحدة مترابطة</field>
+        <field name="subtitle">Run accounting, sales, inventory, HR and operations with a workspace built for Saudi companies.</field>
+        <field name="subtitle_ar">أدر المحاسبة والمبيعات والمخزون والموارد البشرية والعمليات ضمن مساحة عمل مصممة للشركات السعودية.</field>
+        <field name="visual_style">operations</field>
+        <field name="cta_label">Start free</field>
+        <field name="cta_label_ar">ابدأ مجاناً</field>
+        <field name="cta_url">/get-started</field>
+        <field name="secondary_label">Explore features</field>
+        <field name="secondary_label_ar">استكشف المميزات</field>
+        <field name="secondary_url">/features</field>
+    </record>
+
+    <record id="banner_enterprise" model="saas.website.banner">
+        <field name="name">Enterprise</field>
+        <field name="sequence">20</field>
+        <field name="eyebrow">ClickBuild Enterprise</field>
+        <field name="eyebrow_ar">ClickBuild Enterprise</field>
+        <field name="title">More control for growing teams.</field>
+        <field name="title_ar">تحكم أكبر للفرق سريعة النمو</field>
+        <field name="subtitle">Advanced apps, Studio, Helpdesk and the flexibility to shape Odoo around your operation.</field>
+        <field name="subtitle_ar">تطبيقات متقدمة وStudio وHelpdesk ومرونة أكبر لتشكيل Odoo وفق عمليات شركتك.</field>
+        <field name="visual_style">enterprise</field>
+        <field name="cta_label">View Enterprise</field>
+        <field name="cta_label_ar">عرض Enterprise</field>
+        <field name="cta_url">/pricing#enterprise</field>
+        <field name="secondary_label">Compare plans</field>
+        <field name="secondary_label_ar">قارن الباقات</field>
+        <field name="secondary_url">/pricing</field>
+    </record>
+
+    <record id="banner_industries" model="saas.website.banner">
+        <field name="name">Industry Solutions</field>
+        <field name="sequence">30</field>
+        <field name="eyebrow">Ready for your industry</field>
+        <field name="eyebrow_ar">جاهز لقطاعك</field>
+        <field name="title">Start with a workspace that understands your business.</field>
+        <field name="title_ar">ابدأ بمساحة عمل تفهم طبيعة نشاطك</field>
+        <field name="subtitle">Retail, restaurants, construction, manufacturing, services and more, with the right apps from day one.</field>
+        <field name="subtitle_ar">التجزئة والمطاعم والمقاولات والتصنيع والخدمات والمزيد، مع التطبيقات المناسبة من اليوم الأول.</field>
+        <field name="visual_style">industries</field>
+        <field name="cta_label">Choose your industry</field>
+        <field name="cta_label_ar">اختر قطاعك</field>
+        <field name="cta_url">/get-started</field>
+        <field name="secondary_label">See solutions</field>
+        <field name="secondary_label_ar">عرض الحلول</field>
+        <field name="secondary_url">/#industries</field>
+    </record>
+</odoo>

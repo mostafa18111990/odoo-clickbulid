@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_website_banner_list" model="ir.ui.view">
+        <field name="name">saas.website.banner.list</field>
+        <field name="model">saas.website.banner</field>
+        <field name="arch" type="xml">
+            <list string="Homepage Banners" default_order="sequence,id" editable="bottom">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="title"/>
+                <field name="visual_style"/>
+                <field name="website_id" groups="website.group_multi_website"/>
+                <field name="date_start" optional="hide"/>
+                <field name="date_end" optional="hide"/>
+                <field name="active" widget="boolean_toggle"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_saas_website_banner_form" model="ir.ui.view">
+        <field name="name">saas.website.banner.form</field>
+        <field name="model">saas.website.banner</field>
+        <field name="arch" type="xml">
+            <form string="Homepage Banner">
+                <sheet>
+                    <widget name="web_ribbon" text="Inactive" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Internal banner name"/></h1>
+                    </div>
+                    <group>
+                        <group>
+                            <field name="active"/>
+                            <field name="sequence"/>
+                            <field name="website_id" groups="website.group_multi_website"/>
+                            <field name="visual_style"/>
+                            <field name="text_theme"/>
+                        </group>
+                        <group>
+                            <field name="date_start"/>
+                            <field name="date_end"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="English">
+                            <group>
+                                <field name="eyebrow"/>
+                                <field name="title"/>
+                                <field name="subtitle"/>
+                                <field name="cta_label"/>
+                                <field name="cta_url"/>
+                                <field name="secondary_label"/>
+                                <field name="secondary_url"/>
+                            </group>
+                        </page>
+                        <page string="العربية">
+                            <group>
+                                <field name="eyebrow_ar"/>
+                                <field name="title_ar"/>
+                                <field name="subtitle_ar"/>
+                                <field name="cta_label_ar"/>
+                                <field name="secondary_label_ar"/>
+                            </group>
+                        </page>
+                        <page string="Media">
+                            <group>
+                                <field name="image_desktop" widget="image" class="oe_avatar"/>
+                                <field name="image_mobile" widget="image" class="oe_avatar"/>
+                                <field name="image_path" placeholder="/saas_website/static/src/img/banner.jpg"/>
+                                <field name="mobile_image_path"/>
+                            </group>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_saas_website_banners" model="ir.actions.act_window">
+        <field name="name">Homepage Banners</field>
+        <field name="res_model">saas.website.banner</field>
+        <field name="view_mode">list,form</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face">Create the first homepage banner</p>
+            <p>Manage campaign images, bilingual text, links, ordering, and publishing dates.</p>
+        </field>
+    </record>
+
+    <menuitem id="menu_saas_website_banners"
+              name="Homepage Banners"
+              parent="website.menu_website_configuration"
+              action="action_saas_website_banners"
+              sequence="35"
+              groups="base.group_system"/>
+</odoo>

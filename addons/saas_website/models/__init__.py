@@ -1,6 +1,7 @@
 from . import saas_website_lead
 from . import saas_website_faq
 from . import website
+from . import website_banner
 from . import error_log
 from . import alert
 from . import tenant_upgrade

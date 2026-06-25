@@ -6,32 +6,38 @@
             <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
 
             <!-- ===== HEADER ===== -->
-            <section class="cb-hero py-5">
-                <div class="container text-center py-4" data-cb-reveal="1">
-                    <span class="badge-pill mb-3 d-inline-block">
-                        <i class="fa fa-tag me-1" style="color:#fbbf24;"/>
-                        <t t-if="lang_is_ar">أسعار شفافة</t><t t-else="">Transparent pricing</t>
+            <section class="cb-hero py-5" style="background:var(--cb-grad-hero); position:relative; overflow:hidden;">
+                <div style="position:absolute;inset:0;background:radial-gradient(ellipse at 30% 50%,rgba(123,63,200,0.2) 0%,transparent 70%);pointer-events:none;"/>
+                <div class="container text-center py-5" data-cb-reveal="1" style="position:relative;z-index:1;">
+                    <span style="display:inline-flex;align-items:center;gap:0.5rem;padding:0.35rem 1rem;border-radius:100px;background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.15);color:rgba(255,255,255,0.9);font-size:0.8rem;font-weight:700;margin-bottom:1.4rem;">
+                        <i class="fa fa-tag" style="color:var(--cb-gold);"/>
+                        <t t-if="lang_is_ar">أسعار شفافة وواضحة</t><t t-else="">Transparent pricing</t>
                     </span>
-                    <h1 class="display-3 mb-3">
+                    <h1 style="color:#fff;font-size:3.2rem;font-weight:900;line-height:1.2;margin-bottom:1.1rem;">
                         <t t-if="lang_is_ar">أسعار بسيطة وعادلة</t>
-                        <t t-else="">Simple, fair pricing</t></h1>
-                    <p class="lead" style="opacity:0.9; max-width:640px; margin:0 auto;">
-                        <t t-if="lang_is_ar">كل الخطط تشمل تجربة مجانية 14 يوماً، نسخاً احتياطياً يومياً، ودعماً بالعربية.
-                        غيّر خطتك أو ألغها في أي وقت.</t>
-                        <t t-else="">Every plan includes a 14-day free trial, daily backups, and bilingual support.
-                        Change or cancel anytime.</t>
+                        <t t-else="">Simple, fair pricing</t>
+                    </h1>
+                    <p style="color:rgba(255,255,255,0.78);font-size:1.08rem;max-width:640px;margin:0 auto 2rem;">
+                        <t t-if="lang_is_ar">كل الخطط تشمل تجربة مجانية 14 يوماً، نسخاً احتياطياً يومياً، ودعماً بالعربية والإنجليزية. غيّر خطتك أو ألغها في أي وقت.</t>
+                        <t t-else="">Every plan includes a 14-day free trial, daily backups, and bilingual support. Change or cancel anytime.</t>
                     </p>
-
-                    <div class="mt-4 d-inline-block">
+                    <div class="d-flex justify-content-center gap-3 flex-wrap mb-4">
                         <div class="cb-billing-toggle">
                             <button type="button" data-billing="monthly" class="active">
-                                <t t-if="lang_is_ar">شهري</t><t t-else="">Monthly</t></button>
+                                <t t-if="lang_is_ar">شهري</t><t t-else="">Monthly</t>
+                            </button>
                             <button type="button" data-billing="yearly">
                                 <t t-if="lang_is_ar">سنوي</t><t t-else="">Yearly</t>
-                                <span class="save-badge">
-                                    <t t-if="lang_is_ar">وفّر 15%</t><t t-else="">save 15%</t></span>
+                                <span class="save-badge" style="margin-inline-start:0.4rem;padding:0.1rem 0.5rem;background:var(--cb-gold);color:#000;border-radius:100px;font-size:0.7rem;font-weight:800;">
+                                    <t t-if="lang_is_ar">وفّر 15%</t><t t-else="">save 15%</t>
+                                </span>
                             </button>
                         </div>
+                    </div>
+                    <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;color:rgba(255,255,255,0.55);font-size:0.82rem;">
+                        <span><i class="fa fa-check-circle" style="color:var(--cb-teal);margin-inline-end:0.4rem;"/><t t-if="lang_is_ar">بدون بطاقة ائتمان</t><t t-else="">No credit card</t></span>
+                        <span><i class="fa fa-check-circle" style="color:var(--cb-teal);margin-inline-end:0.4rem;"/><t t-if="lang_is_ar">إلغاء مجاني في أي وقت</t><t t-else="">Cancel anytime free</t></span>
+                        <span><i class="fa fa-check-circle" style="color:var(--cb-teal);margin-inline-end:0.4rem;"/><t t-if="lang_is_ar">دعم باللغة العربية</t><t t-else="">Arabic support</t></span>
                     </div>
                 </div>
             </section>
@@ -368,17 +374,28 @@
             </div></section>
 
             <!-- ===== FINAL CTA ===== -->
-            <section class="py-5 cb-hero">
-                <div class="container text-center py-4" data-cb-reveal="1">
-                    <h2 class="display-4 mb-3">
-                        <t t-if="lang_is_ar">جاهز للبدء؟</t><t t-else="">Ready to launch?</t></h2>
-                    <p class="lead mb-4" style="opacity:0.92;">
-                        <t t-if="lang_is_ar">انضم لأكثر من 500 شركة تثق بـ ClickBuild</t>
-                        <t t-else="">Join 500+ companies running on ClickBuild</t></p>
-                    <a href="/get-started" class="btn btn-light btn-lg">
-                        <i class="fa fa-rocket me-2"/>
-                        <t t-if="lang_is_ar">ابدأ تجربتك المجانية</t><t t-else="">Start your free trial</t>
-                    </a>
+            <section class="cb-v2-final">
+                <div class="container">
+                    <div class="cb-v2-final-inner" data-cb-reveal="1">
+                        <div>
+                            <span><t t-if="lang_is_ar">ابدأ اليوم</t><t t-else="">Start Today</t></span>
+                            <h2><t t-if="lang_is_ar">انضم لأكثر من 500 شركة تثق بـ ClickBuild</t><t t-else="">Join 500+ businesses running on ClickBuild</t></h2>
+                        </div>
+                        <div class="cb-v2-final-actions">
+                            <a href="/get-started" class="btn btn-primary btn-lg">
+                                <i class="fa fa-rocket"/>
+                                <t t-if="lang_is_ar">ابدأ تجربتك المجانية</t><t t-else="">Start Free Trial</t>
+                            </a>
+                            <a href="/contact" class="btn btn-outline-light btn-lg">
+                                <i class="fa fa-headphones"/>
+                                <t t-if="lang_is_ar">تواصل معنا</t><t t-else="">Talk to Sales</t>
+                            </a>
+                            <a href="/contact?type=quote" class="btn btn-outline-light btn-lg">
+                                <i class="fa fa-tag"/>
+                                <t t-if="lang_is_ar">احصل على عرض سعر</t><t t-else="">Get a Quote</t>
+                            </a>
+                        </div>
+                    </div>
                 </div>
             </section>
 
