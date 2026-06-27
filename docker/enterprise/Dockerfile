@@ -45,6 +45,7 @@ RUN chown -R odoo:odoo /mnt/enterprise \
 RUN pip install --no-cache-dir --break-system-packages \
         phonenumbers \
         ofxparse \
+        qifparse \
         cryptography \
         firebase-admin \
         google-auth \
