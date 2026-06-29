@@ -76,9 +76,12 @@ class SignupService:
         try:
             tenant = svc.create_lead(subdomain=subdomain, customer_name=name, customer_email=email,
                 plan_id=plan_id, lead_source='website', phone=phone, company_name=company,
-                coupon_code=data.get('coupon_code'), referral_code=data.get('referral_code'))
-            # Country is preserved via the subscription currency derived below.
-            # (saas.tenant has no customer_country field in the current base module.)
+                coupon_code=data.get('coupon_code'), referral_code=data.get('referral_code'),
+                country=country)
+            # Country also drives the subscription currency derived below, and is
+            # now persisted on the tenant so the provisioner installs the matching
+            # localization (e.g. Saudi l10n_sa + ZATCA e-invoicing) and sets the
+            # company's country/currency.
             provision_result = tenant.sudo().action_provision()
             admin_password = (provision_result or {}).get('admin_password_one_time')
             if 'saas.subscription' in self.env:

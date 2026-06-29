@@ -12,6 +12,26 @@ REQUEST_TIMEOUT = 30
 PROVISION_REQUEST_DIR = '/mnt/cert-requests'  # Shared volume with the host sweeper.
 SUBDOMAIN_RE = re.compile(r'^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$')
 
+# ── Localization auto-install per signup country ──────────────────────────────
+# When a customer picks a country at signup we install that country's official
+# Odoo localization (chart of accounts + taxes) plus, where it exists, the
+# e-invoicing module. Saudi tenants get ZATCA / Fatoora e-invoicing.
+LOCALIZATION_MODULES = {
+    'SA': ['l10n_sa', 'l10n_sa_edi'],          # Saudi Arabia + ZATCA e-invoice
+    'AE': ['l10n_ae'],
+    'EG': ['l10n_eg'],
+    'KW': ['l10n_gcc_invoice'],
+    'QA': ['l10n_gcc_invoice'],
+    'BH': ['l10n_gcc_invoice'],
+    'OM': ['l10n_gcc_invoice'],
+    'JO': [],
+}
+# Full Accounting Kit (Cybrosys) — turns the bare `account` app into a complete
+# accounting suite. Installed for every tenant so the Accounting app is ready
+# the moment the customer logs in.
+ACCOUNTING_MODULES = ['base_accounting_kit']
+DEFAULT_COUNTRY = 'SA'  # Platform is Saudi-first; fall back to SA if unknown.
+
 
 class ProvisioningBridgeService:
     def __init__(self, env):
@@ -153,6 +173,16 @@ class ProvisioningBridgeService:
             for m in ee_modules:
                 if m not in modules:
                     modules.append(m)
+        # Accounting + country localization. The customer's chosen country
+        # drives which localization (chart of accounts, taxes, e-invoicing) is
+        # installed; Saudi tenants get ZATCA e-invoicing. Full Accounting Kit is
+        # installed for everyone so the Accounting app is ready out of the box.
+        country = (getattr(tenant, 'customer_country', None) or DEFAULT_COUNTRY).upper()
+        if 'account' not in modules:
+            modules.append('account')  # localization + accounting kit need it
+        for m in ACCOUNTING_MODULES + LOCALIZATION_MODULES.get(country, []):
+            if m not in modules:
+                modules.append(m)
         # Always install the tenant login helper — it pre-fills email on
         # /web/login from the URL hash we send in the success-page link, so
         # customers don't have to re-type the address.
@@ -170,6 +200,9 @@ class ProvisioningBridgeService:
             # NEW — host sweeper routes the docker exec to the right container
             # and the cert provisioner picks the right nginx upstream.
             'edition': edition,
+            # NEW — host sweeper sets the company's country + currency so the
+            # localization's chart of accounts lands on the right company.
+            'customer_country': country,
         }
         with open(req_path, 'w') as f:
             json.dump(payload, f, ensure_ascii=False)

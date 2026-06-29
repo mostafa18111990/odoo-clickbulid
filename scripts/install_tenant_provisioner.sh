@@ -37,6 +37,7 @@ ADMIN_PASSWORD=$(read_json admin_password)
 COMPANY=$(read_json company_name)
 LANG=$(read_json language)
 EDITION=$(read_json edition)
+COUNTRY=$(read_json customer_country)
 # Pick the right container based on edition. Community tenants run on the
 # existing odoo_saas_app; Enterprise tenants run on the new odoo_saas_ent.
 case "$EDITION" in
@@ -89,6 +90,7 @@ docker exec \
     -e SAAS_ADMIN_NAME="$ADMIN_NAME" \
     -e SAAS_ADMIN_PASSWORD="$ADMIN_PASSWORD" \
     -e SAAS_COMPANY="$COMPANY" \
+    -e SAAS_COUNTRY="${COUNTRY:-SA}" \
     "$ODOO_CONTAINER" python3 -c '
 import os, odoo
 from odoo.tools import config
@@ -102,9 +104,31 @@ with reg.cursor() as cr:
         "name":  os.environ["SAAS_ADMIN_NAME"],
         "password": os.environ["SAAS_ADMIN_PASSWORD"],
     })
-    admin.company_id.write({"name": os.environ["SAAS_COMPANY"]})
+    company = admin.company_id
+    company_vals = {"name": os.environ["SAAS_COMPANY"]}
+    # Set the company country + currency from the signup choice so the
+    # localization (chart of accounts, taxes, ZATCA e-invoicing) applies to
+    # the right country. Defaults to Saudi Arabia.
+    code = (os.environ.get("SAAS_COUNTRY") or "SA").upper()[:2]
+    country = env["res.country"].search([("code", "=", code)], limit=1)
+    if country:
+        company_vals["country_id"] = country.id
+        if country.currency_id:
+            company_vals["currency_id"] = country.currency_id.id
+    company.write(company_vals)
+    # Load the country chart of accounts onto this company if a localization
+    # template is available and no chart is installed yet (Odoo 17+ API).
+    try:
+        if not company.chart_template:
+            tmpl = env["account.chart.template"]
+            ref = {"SA": "sa", "AE": "ae", "EG": "eg"}.get(code)
+            if ref:
+                tmpl.try_loading(ref, company=company, install_demo=False)
+    except Exception as e:
+        print("chart load skipped:", e)
     cr.commit()
-    print("admin configured:", admin.login, "/", admin.name, "/", admin.company_id.name)
+    print("admin configured:", admin.login, "/", company.name,
+          "/", (country.name if country else "?"))
 ' >> "$LOG" 2>&1
 
 # 4. Notify the master DB that provisioning succeeded.

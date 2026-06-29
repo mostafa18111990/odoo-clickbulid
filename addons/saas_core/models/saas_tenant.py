@@ -38,6 +38,10 @@ class SaasTenant(models.Model):
     lead_date = fields.Datetime(string='Lead Date', readonly=True, default=fields.Datetime.now)
     referral_code = fields.Char(string='Referral Code', index=True)
     coupon_code = fields.Char(string='Coupon Code')
+    # ISO country code chosen at signup (SA, AE, EG…). Drives which Odoo
+    # localization (chart of accounts, taxes, e-invoicing) is auto-installed and
+    # which country/currency the tenant's company is set to at provisioning.
+    customer_country = fields.Char(string='Customer Country', default='SA', index=True)
 
     trial_started_at = fields.Datetime(string='Trial Started', readonly=True)
     trial_ends_at = fields.Datetime(string='Trial Ends At', index=True)
