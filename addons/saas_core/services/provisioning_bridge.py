@@ -308,13 +308,23 @@ class ProvisioningBridgeService:
         with open(req_path, 'w') as f:
             json.dump(payload, f, ensure_ascii=False)
         _logger.info('Provisioning queued for %s (tenant %s)', sub, tenant.id)
-        # Store credentials onto the tenant so admin can retrieve them later.
+        # Store credentials onto the tenant so admin can retrieve them later
+        # (Tenants form → "Admin Credentials"). The base saas_tenant_manager
+        # module already has admin_login/admin_password fields on the form;
+        # they were just never populated by the provisioning flow.
         # 'api_instance_id' = the new DB name; we'll set it for real when done.
         try:
             tenant.sudo().with_context(bypass_fsm=True).write({
-                'api_instance_id': f'pending:{sub}'})
+                'api_instance_id': f'pending:{sub}',
+                'admin_login': tenant.customer_email,
+                'admin_password': admin_password})
         except Exception:
-            pass  # field may be readonly; non-critical
+            _logger.warning('Could not store admin credentials on tenant %s', tenant.id)
+            try:
+                tenant.sudo().with_context(bypass_fsm=True).write({
+                    'api_instance_id': f'pending:{sub}'})
+            except Exception:
+                pass  # field may be readonly; non-critical
         return {'instance_id': sub, 'status': 'queued',
                 'admin_password_one_time': admin_password,
                 'message': 'Tenant DB will be created within 2 minutes.'}
