@@ -48,6 +48,36 @@ echo "[cybrosys] Checking out ${#MODULES[@]} modules …"
 git -C "$REPO_DIR" sparse-checkout set "${MODULES[@]}"
 git -C "$REPO_DIR" checkout "$BRANCH" -- 2>&1 | tail -2 || true
 
+# ── Patch known upstream bugs (re-applied after every pull/reset) ────────────
+# base_hospital_management's pharmacy_dashboard.css ships two syntax errors
+# (`padding-top:1.6rem:` colon-for-semicolon, and an extra closing brace).
+# Browsers tolerate both but rtlcss aborts, which kills the whole Arabic RTL
+# asset bundle: tenants then render with the ugly fallback style and show
+# "A css error occured" in the backend.
+PHARMACY_CSS="$REPO_DIR/base_hospital_management/static/src/css/pharmacy_dashboard.css"
+if [ -f "$PHARMACY_CSS" ]; then
+    sed -i 's/padding-top:1\.6rem:/padding-top:1.6rem;/' "$PHARMACY_CSS"
+    # Drop any unbalanced extra closing braces (idempotent rewrite).
+    python3 - "$PHARMACY_CSS" <<'PYFIX'
+import sys
+path = sys.argv[1]
+out, depth = [], 0
+for line in open(path):
+    keep = []
+    for ch in line:
+        if ch == '{':
+            depth += 1
+        elif ch == '}':
+            if depth == 0:
+                continue  # extra brace — drop it
+            depth -= 1
+        keep.append(ch)
+    out.append(''.join(keep))
+open(path, 'w').write(''.join(out))
+PYFIX
+    echo "[cybrosys] patched pharmacy_dashboard.css rtlcss-breaking syntax"
+fi
+
 # Make world-readable for the odoo user inside containers.
 chmod -R a+rX "$CYBROSYS_ROOT"
 
