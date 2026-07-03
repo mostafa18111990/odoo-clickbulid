@@ -32,6 +32,94 @@ LOCALIZATION_MODULES = {
 ACCOUNTING_MODULES = ['base_accounting_kit']
 DEFAULT_COUNTRY = 'SA'  # Platform is Saudi-first; fall back to SA if unknown.
 
+# ── Industry app bundles ───────────────────────────────────────────────────────
+# The sector the customer picks at signup (homepage cards → ?industry=… →
+# signup form) selects which Odoo apps are pre-installed so the workspace is
+# ready for their business on first login. All module names below exist in
+# Odoo 19 Community. Accounting (account + Full Accounting Kit + country
+# localization/ZATCA) is appended separately for every tenant.
+INDUSTRY_MODULES = {
+    'retail': [
+        'point_of_sale',     # نقاط البيع
+        'stock',             # المخزون
+        'sale_management',   # المبيعات
+        'purchase',          # المشتريات
+        'crm',               # علاقات العملاء
+        'contacts',          # جهات الاتصال
+        'hr',                # الموظفون
+        'hr_holidays',       # الإجازات
+        'hr_attendance',     # الحضور
+        'fleet',             # الأسطول
+    ],
+    'restaurant': [
+        'point_of_sale', 'pos_restaurant', 'stock', 'purchase',
+        'contacts', 'hr', 'hr_holidays', 'hr_attendance',
+    ],
+    'ecommerce': [
+        'website_sale', 'stock', 'sale_management', 'purchase',
+        'crm', 'contacts', 'hr', 'hr_holidays', 'hr_attendance',
+    ],
+    'trading': [
+        'stock', 'purchase', 'sale_management', 'crm', 'contacts',
+        'hr', 'hr_holidays', 'hr_attendance', 'fleet',
+    ],
+    'construction': [
+        'project', 'hr_timesheet', 'stock', 'sale_management', 'purchase',
+        'crm', 'contacts', 'hr', 'hr_holidays', 'hr_attendance', 'fleet',
+    ],
+    'manufacturing': [
+        'mrp', 'stock', 'sale_management', 'purchase', 'maintenance',
+        'crm', 'contacts', 'hr', 'hr_holidays', 'hr_attendance',
+    ],
+    'services': [
+        'project', 'hr_timesheet', 'sale_management', 'crm',
+        'contacts', 'hr', 'hr_holidays', 'hr_attendance', 'calendar',
+    ],
+    # Healthcare/clinics get the full Cybrosys medical suite on top of the
+    # generic apps: patient records + doctors + prescriptions
+    # (base_hospital_management), dental clinic with interactive dental chart
+    # (dental_clinical_management), and lab tests (medical_lab_management).
+    # Multi-doctor scheduling comes from `calendar` (one calendar per doctor)
+    # and the hospital module's own doctor-allocation screens.
+    'healthcare': [
+        'calendar', 'crm', 'contacts', 'sale_management', 'purchase',
+        'stock', 'hr', 'hr_holidays', 'hr_attendance',
+        'base_hospital_management', 'dental_clinical_management',
+        'medical_lab_management',
+    ],
+    'education': [
+        'calendar', 'crm', 'contacts', 'sale_management', 'project',
+        'hr', 'hr_holidays', 'hr_attendance',
+    ],
+    'real_estate': [
+        'crm', 'contacts', 'sale_management', 'project', 'calendar',
+        'hr', 'hr_holidays', 'hr_attendance',
+    ],
+    'logistics': [
+        'stock', 'purchase', 'sale_management', 'fleet',
+        'crm', 'contacts', 'hr', 'hr_holidays', 'hr_attendance',
+    ],
+    'hospitality': [
+        'point_of_sale', 'pos_restaurant', 'calendar', 'crm', 'contacts',
+        'sale_management', 'purchase', 'stock', 'hr', 'hr_holidays', 'hr_attendance',
+    ],
+    'accounting': [
+        'contacts', 'crm', 'sale_management', 'project', 'hr_timesheet',
+        'hr', 'hr_holidays', 'hr_attendance',
+    ],
+    'agriculture': [
+        'stock', 'purchase', 'sale_management', 'fleet', 'contacts',
+        'crm', 'hr', 'hr_holidays', 'hr_attendance',
+    ],
+    'technology': [
+        'project', 'hr_timesheet', 'crm', 'sale_management', 'contacts',
+        'hr', 'hr_holidays', 'hr_attendance', 'calendar',
+    ],
+    'other': [
+        'contacts', 'crm', 'sale_management',
+    ],
+}
+
 
 class ProvisioningBridgeService:
     def __init__(self, env):
@@ -73,10 +161,17 @@ class ProvisioningBridgeService:
             allowed_modules = [m.strip() for m in tenant.plan_id.allowed_modules.split(',') if m.strip()]
         if not allowed_modules:
             allowed_modules = ['base', 'web']
+        # Industry bundle: pre-install the apps matching the sector chosen at
+        # signup (retail → POS/Inventory/Sales/Purchase/HR/Fleet, …).
+        industry = getattr(tenant, 'industry', None)
+        for m in INDUSTRY_MODULES.get(industry or '', []):
+            if m not in allowed_modules:
+                allowed_modules.append(m)
         return {'subdomain': tenant.subdomain, 'modules': allowed_modules, 'language': 'ar',
                 'odoo_version': '19', 'saas_tenant_id': tenant.id,
                 'customer_email': tenant.customer_email,
-                'company_name': tenant.company_name or tenant.customer_name}
+                'company_name': tenant.company_name or tenant.customer_name,
+                'industry': industry or ''}
 
     def _call_provision_api(self, tenant):
         if not self.config.use_api_bridge:
@@ -193,6 +288,12 @@ class ProvisioningBridgeService:
             'admin_email': tenant.customer_email,
             'admin_name': tenant.customer_name or tenant.company_name or sub,
             'company_name': tenant.company_name or tenant.customer_name or sub,
+            # Signup contact details — the host sweeper writes these into the
+            # tenant company (Settings → Companies) so the customer finds their
+            # own name/email/phone pre-filled inside their Odoo.
+            'company_email': tenant.customer_email or '',
+            'company_phone': getattr(tenant, 'phone', '') or '',
+            'industry': getattr(tenant, 'industry', '') or '',
             'admin_password': admin_password,
             'plan_code': tenant.plan_id.code if tenant.plan_id else 'starter',
             'modules': modules,

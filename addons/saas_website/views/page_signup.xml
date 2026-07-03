@@ -103,6 +103,41 @@
                                     <input type="tel" name="phone" class="form-control"/></div>
                             </div>
                             <div class="mb-3"><label class="form-label fw-bold">
+                                <t t-if="lang_is_ar">قطاع نشاطك</t><t t-else="">Your industry</t></label>
+                                <select name="industry" class="form-select">
+                                    <t t-set="ind" t-value="selected_industry or ''"/>
+                                    <t t-set="industry_options" t-value="[
+                                        ('retail', 'تجارة التجزئة والمحلات', 'Retail &amp; Shops'),
+                                        ('restaurant', 'مطاعم وكافيهات', 'Restaurants &amp; Cafés'),
+                                        ('ecommerce', 'تجارة إلكترونية', 'E-Commerce'),
+                                        ('trading', 'استيراد وتصدير', 'Import &amp; Export'),
+                                        ('construction', 'مقاولات وإنشاءات', 'Construction'),
+                                        ('manufacturing', 'تصنيع', 'Manufacturing'),
+                                        ('services', 'خدمات مهنية', 'Professional Services'),
+                                        ('healthcare', 'رعاية صحية وعيادات', 'Healthcare &amp; Clinics'),
+                                        ('education', 'تعليم وتدريب', 'Education &amp; Training'),
+                                        ('real_estate', 'عقارات', 'Real Estate'),
+                                        ('logistics', 'نقل ولوجستيات', 'Logistics &amp; Transport'),
+                                        ('hospitality', 'فنادق وسياحة', 'Hotels &amp; Tourism'),
+                                        ('accounting', 'محاسبة ومالية', 'Accounting &amp; Finance'),
+                                        ('agriculture', 'زراعة', 'Agriculture'),
+                                        ('technology', 'تقنية وبرمجيات', 'Technology &amp; Software'),
+                                        ('other', 'أخرى', 'Other'),
+                                    ]"/>
+                                    <option value="" t-att-selected="'selected' if not ind else None">
+                                        <t t-if="lang_is_ar">— اختر القطاع (اختياري) —</t>
+                                        <t t-else="">— Choose industry (optional) —</t></option>
+                                    <t t-foreach="industry_options" t-as="opt">
+                                        <option t-att-value="opt[0]" t-att-selected="'selected' if ind == opt[0] else None">
+                                            <t t-if="lang_is_ar" t-esc="opt[1]"/><t t-else="" t-esc="opt[2]"/></option>
+                                    </t>
+                                </select>
+                                <div class="form-text">
+                                    <t t-if="lang_is_ar">سيتم تجهيز تطبيقات قطاعك تلقائياً (مثال: التجزئة = نقاط البيع + المخزون + المبيعات + المشتريات + الموظفون + المحاسبة السعودية)</t>
+                                    <t t-else="">Your sector's apps are installed automatically (e.g. Retail = POS + Inventory + Sales + Purchases + HR + Saudi accounting)</t>
+                                </div>
+                            </div>
+                            <div class="mb-3"><label class="form-label fw-bold">
                                 <t t-if="lang_is_ar">الدولة</t><t t-else="">Country</t></label>
                                 <select name="country" class="form-select">
                                     <t t-if="lang_is_ar">

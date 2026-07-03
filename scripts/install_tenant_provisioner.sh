@@ -35,14 +35,26 @@ ADMIN_EMAIL=$(read_json admin_email)
 ADMIN_NAME=$(read_json admin_name)
 ADMIN_PASSWORD=$(read_json admin_password)
 COMPANY=$(read_json company_name)
+COMPANY_EMAIL=$(read_json company_email)
+COMPANY_PHONE=$(read_json company_phone)
 LANG=$(read_json language)
 EDITION=$(read_json edition)
 COUNTRY=$(read_json customer_country)
-# Pick the right container based on edition. Community tenants run on the
-# existing odoo_saas_app; Enterprise tenants run on the new odoo_saas_ent.
+# Pick the right container + Postgres role based on edition. Community
+# tenants run on odoo_saas_app (db_user odoo_community); Enterprise tenants
+# run on odoo_saas_ent (db_user odoo_enterprise). The DB MUST be owned by the
+# container's own role: Odoo only lists databases whose owner matches its
+# connection user, so a wrong owner makes the tenant invisible to dbfilter
+# and /web/login bounces to the (blocked) database selector.
 case "$EDITION" in
-    enterprise) ODOO_CONTAINER=odoo_saas_ent ;;
-    *)          ODOO_CONTAINER=odoo_saas_app ;;
+    enterprise)
+        ODOO_CONTAINER=odoo_saas_ent
+        DB_OWNER=odoo_enterprise
+        ;;
+    *)
+        ODOO_CONTAINER=odoo_saas_app
+        DB_OWNER=odoo_community
+        ;;
 esac
 # Modules to install at first boot. Comma-joined for the -i flag.
 MODULES_JSON=$(python3 -c "import json; d=json.load(open('$REQ')); print(','.join(d.get('modules', []) or ['base']))")
@@ -62,7 +74,7 @@ if docker exec odoo_saas_postgres psql -U odoo -lqt 2>/dev/null \
         | cut -d'|' -f1 | tr -d ' ' | grep -qx "$DB"; then
     echo "$(date -Is) DB $DB already exists, skipping createdb" >> "$LOG"
 else
-    docker exec odoo_saas_postgres createdb -U odoo -O odoo "$DB" >> "$LOG" 2>&1
+    docker exec odoo_saas_postgres createdb -U odoo -O "$DB_OWNER" "$DB" >> "$LOG" 2>&1
     echo "$(date -Is) created DB $DB" >> "$LOG"
 fi
 
@@ -90,6 +102,8 @@ docker exec \
     -e SAAS_ADMIN_NAME="$ADMIN_NAME" \
     -e SAAS_ADMIN_PASSWORD="$ADMIN_PASSWORD" \
     -e SAAS_COMPANY="$COMPANY" \
+    -e SAAS_COMPANY_EMAIL="${COMPANY_EMAIL:-$ADMIN_EMAIL}" \
+    -e SAAS_COMPANY_PHONE="$COMPANY_PHONE" \
     -e SAAS_COUNTRY="${COUNTRY:-SA}" \
     "$ODOO_CONTAINER" python3 -c '
 import os, odoo
@@ -106,6 +120,12 @@ with reg.cursor() as cr:
     })
     company = admin.company_id
     company_vals = {"name": os.environ["SAAS_COMPANY"]}
+    # Pre-fill the signup contact details into the company record so the
+    # customer finds their email/phone already set in Settings → Companies.
+    if os.environ.get("SAAS_COMPANY_EMAIL"):
+        company_vals["email"] = os.environ["SAAS_COMPANY_EMAIL"]
+    if os.environ.get("SAAS_COMPANY_PHONE"):
+        company_vals["phone"] = os.environ["SAAS_COMPANY_PHONE"]
     # Set the company country + currency from the signup choice so the
     # localization (chart of accounts, taxes, ZATCA e-invoicing) applies to
     # the right country. Defaults to Saudi Arabia.

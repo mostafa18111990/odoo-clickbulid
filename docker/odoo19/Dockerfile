@@ -31,7 +31,8 @@ RUN pip3 install --no-cache-dir \
     Pillow \
     suds-py3 \
     qifparse \
-    ofxparse
+    ofxparse \
+    python-barcode
 
 # ─── Odoo Config Template ─────────────────────────────────────────────────────
 COPY odoo.conf.template /etc/odoo/odoo.conf.template

@@ -63,6 +63,12 @@ class SignupService:
         company = (data.get('company') or '').strip()
         phone = (data.get('phone') or '').strip()
         country = (data.get('country') or 'SA').strip()
+        # Validate the sector against the tenant field's own selection so the
+        # form, the model and the provisioner can never drift apart.
+        allowed_industries = dict(self.env['saas.tenant']._fields['industry'].selection)
+        industry = (data.get('industry') or '').strip().lower()
+        if industry not in allowed_industries:
+            industry = 'other' if data.get('industry') else None
         plan_id = int(data['plan_id']) if data.get('plan_id') else None
         if not plan_id:
             plan = self.env['saas.plan'].sudo().search([('active', '=', True)], order='monthly_price asc', limit=1)
@@ -77,7 +83,7 @@ class SignupService:
             tenant = svc.create_lead(subdomain=subdomain, customer_name=name, customer_email=email,
                 plan_id=plan_id, lead_source='website', phone=phone, company_name=company,
                 coupon_code=data.get('coupon_code'), referral_code=data.get('referral_code'),
-                country=country)
+                country=country, industry=industry)
             # Country also drives the subscription currency derived below, and is
             # now persisted on the tenant so the provisioner installs the matching
             # localization (e.g. Saudi l10n_sa + ZATCA e-invoicing) and sets the

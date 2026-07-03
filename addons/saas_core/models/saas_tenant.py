@@ -42,6 +42,30 @@ class SaasTenant(models.Model):
     # localization (chart of accounts, taxes, e-invoicing) is auto-installed and
     # which country/currency the tenant's company is set to at provisioning.
     customer_country = fields.Char(string='Customer Country', default='SA', index=True)
+    # Sector chosen at signup (homepage industry cards / signup form). Drives
+    # which Odoo apps are auto-installed at provisioning — e.g. retail gets
+    # POS + Inventory + Sales + Purchase + HR + Fleet on top of accounting.
+    industry = fields.Selection(
+        selection=[
+            ('retail',          'Retail & Shops'),
+            ('restaurant',      'Restaurants & Cafés'),
+            ('ecommerce',       'E-Commerce'),
+            ('trading',         'Import & Export'),
+            ('construction',    'Construction'),
+            ('manufacturing',   'Manufacturing'),
+            ('services',        'Professional Services'),
+            ('healthcare',      'Healthcare & Clinics'),
+            ('education',       'Education & Training'),
+            ('real_estate',     'Real Estate'),
+            ('logistics',       'Logistics & Transport'),
+            ('hospitality',     'Hotels & Tourism'),
+            ('accounting',      'Accounting & Finance'),
+            ('agriculture',     'Agriculture'),
+            ('technology',      'Technology & Software'),
+            ('other',           'Other'),
+        ],
+        string='Industry / Sector', index=True,
+        help='Business sector chosen by the customer at signup.')
 
     trial_started_at = fields.Datetime(string='Trial Started', readonly=True)
     trial_ends_at = fields.Datetime(string='Trial Ends At', index=True)

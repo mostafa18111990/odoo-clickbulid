@@ -32,9 +32,13 @@ class SaasWebsiteSignup(http.Controller):
             selected_plan = request.env['saas.plan'].sudo().search([
                 ('code', '=', plan_code), ('active', '=', True)], limit=1)
         platform_domain = request.env['saas.config'].sudo()._get_config().platform_domain
+        # Sector pre-selected from the homepage industry cards (?industry=retail).
+        industries = dict(request.env['saas.tenant'].sudo()._fields['industry'].selection)
+        selected_industry = kw.get('industry') if kw.get('industry') in industries else ''
         return request.render('saas_website.page_signup',
                               {'plans': plans, 'selected_plan': selected_plan,
                                'coupon': kw.get('coupon', ''),
+                               'selected_industry': selected_industry,
                                'platform_domain': platform_domain})
 
     @http.route('/get-started/check', type='json', auth='public', csrf=False)
@@ -120,6 +124,7 @@ class SaasWebsiteSignup(http.Controller):
         result = SignupService(request.env).register({
             'name': post.get('name'), 'email': post.get('email'), 'subdomain': post.get('subdomain'),
             'company': post.get('company'), 'phone': post.get('phone'), 'country': post.get('country', 'SA'),
+            'industry': post.get('industry'),
             'plan_id': post.get('plan_id'), 'coupon_code': post.get('coupon_code'),
             'referral_code': post.get('referral_code')})
         if result.get('success'):
