@@ -3,16 +3,16 @@
     <data>
         <!-- Error Log Views -->
         <record id="saas_error_log_tree" model="ir.ui.view">
-            <field name="name">saas.error.log.tree</field>
+            <field name="name">saas.error.log.list</field>
             <field name="model">saas.error.log</field>
             <field name="arch" type="xml">
-                <tree string="Error Logs">
+                <list>
                     <field name="code"/>
                     <field name="message"/>
                     <field name="severity"/>
                     <field name="create_date"/>
                     <field name="resolved"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -47,23 +47,23 @@
                     <filter name="unresolved" string="Unresolved" domain="[('resolved', '=', False)]"/>
                     <filter name="critical" string="Critical" domain="[('severity', '=', 'critical')]"/>
                     <separator/>
-                    <filter name="today" string="Today" domain="[('create_date', '>=', context_today().strftime('%Y-%m-%d')), ('create_date', '&lt;', (context_today() + timedelta(days=1)).strftime('%Y-%m-%d'))]"/>
+                    <filter name="today" string="Today" domain="[('create_date', '&gt;=', context_today().strftime('%Y-%m-%d'))]"/>
                 </search>
             </field>
         </record>
 
         <!-- Alert Views -->
         <record id="saas_alert_tree" model="ir.ui.view">
-            <field name="name">saas.alert.tree</field>
+            <field name="name">saas.alert.list</field>
             <field name="model">saas.alert</field>
             <field name="arch" type="xml">
-                <tree string="Alerts">
+                <list>
                     <field name="code"/>
                     <field name="message"/>
                     <field name="severity"/>
                     <field name="create_date"/>
                     <field name="acknowledged"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -74,13 +74,13 @@
                 <form string="Alert">
                     <sheet>
                         <button name="action_acknowledge" type="object" string="Acknowledge"
-                                class="btn btn-primary" attrs="{'invisible': [('acknowledged', '=', True)]}"/>
+                                class="btn btn-primary" invisible="acknowledged"/>
                         <group>
                             <field name="code"/>
                             <field name="severity"/>
                             <field name="acknowledged"/>
-                            <field name="acknowledged_by" attrs="{'invisible': [('acknowledged', '=', False)]}"/>
-                            <field name="acknowledged_date" attrs="{'invisible': [('acknowledged', '=', False)]}"/>
+                            <field name="acknowledged_by" invisible="not acknowledged"/>
+                            <field name="acknowledged_date" invisible="not acknowledged"/>
                         </group>
                         <field name="message"/>
                         <field name="details" widget="html"/>
@@ -99,7 +99,7 @@
                     <filter name="unacknowledged" string="Unacknowledged" domain="[('acknowledged', '=', False)]"/>
                     <filter name="critical" string="Critical" domain="[('severity', '=', 'critical')]"/>
                     <separator/>
-                    <filter name="recent" string="Last 24 Hours" domain="[('create_date', '>=', (context_today() - timedelta(hours=24)).strftime('%Y-%m-%d %H:%M:%S'))]"/>
+                    <filter name="recent" string="Last 24 Hours" domain="[('create_date', '&gt;=', (context_today() - datetime.timedelta(days=1)).strftime('%Y-%m-%d'))]"/>
                 </search>
             </field>
         </record>
@@ -108,19 +108,19 @@
         <record id="saas_error_log_action" model="ir.actions.act_window">
             <field name="name">Error Logs</field>
             <field name="res_model">saas.error.log</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="view_id" ref="saas_error_log_tree"/>
         </record>
 
         <record id="saas_alert_action" model="ir.actions.act_window">
             <field name="name">Alerts</field>
             <field name="res_model">saas.alert</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="view_id" ref="saas_alert_tree"/>
         </record>
 
         <!-- Menu items -->
-        <menuitem id="menu_error_alert" name="Error &amp; Alerts" parent="saas_core.menu_saas_admin" sequence="50"/>
+        <menuitem id="menu_error_alert" name="Error &amp; Alerts" parent="saas_core.menu_saas_operations" sequence="50"/>
         <menuitem id="menu_error_logs" name="Error Logs" parent="menu_error_alert" action="saas_error_log_action" sequence="10"/>
         <menuitem id="menu_alerts" name="Alerts" parent="menu_error_alert" action="saas_alert_action" sequence="20"/>
     </data>

@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
     <data>
-        <!-- Tree View -->
+        <!-- List View -->
         <record id="saas_tenant_upgrade_tree" model="ir.ui.view">
-            <field name="name">saas.tenant.upgrade.tree</field>
+            <field name="name">saas.tenant.upgrade.list</field>
             <field name="model">saas.tenant.upgrade</field>
             <field name="arch" type="xml">
-                <tree string="Tenant Upgrades" create="false">
+                <list create="false">
                     <field name="tenant_id"/>
                     <field name="from_edition"/>
                     <field name="to_edition"/>
                     <field name="status" decoration-danger="status=='failed'" decoration-warning="status=='pending'" decoration-success="status=='completed'"/>
                     <field name="requested_date"/>
                     <field name="price_difference" sum="Total"/>
-                </tree>
+                </list>
             </field>
         </record>
 
@@ -25,35 +25,35 @@
                 <form string="Tenant Upgrade">
                     <header>
                         <button name="action_approve" type="object" string="✅ Approve"
-                                class="btn btn-success" states="pending"/>
+                                class="btn btn-success" invisible="status != 'pending'"/>
                         <button name="action_reject" type="object" string="❌ Reject"
-                                class="btn btn-danger" states="pending"/>
+                                class="btn btn-danger" invisible="status != 'pending'"/>
                         <button name="action_cancel" type="object" string="Cancel"
-                                class="btn btn-secondary" states="pending"/>
-                        <field name="status" widget="statusbar" clickable="False"/>
+                                class="btn btn-secondary" invisible="status != 'pending'"/>
+                        <field name="status" widget="statusbar"/>
                     </header>
                     <sheet>
-                        <div class="alert alert-info" attrs="{'invisible': [('status', '!=', 'pending')]}">
+                        <div class="alert alert-info" role="alert" invisible="status != 'pending'">
                             <strong>⏳ Upgrade Request Pending Admin Approval</strong>
                         </div>
-                        <div class="alert alert-success" attrs="{'invisible': [('status', '!=', 'completed')]}">
+                        <div class="alert alert-success" role="alert" invisible="status != 'completed'">
                             <strong>✅ Upgrade Completed Successfully</strong>
                         </div>
-                        <div class="alert alert-danger" attrs="{'invisible': [('status', '!=', 'failed')]}">
+                        <div class="alert alert-danger" role="alert" invisible="status != 'failed'">
                             <strong>❌ Upgrade Failed</strong>
-                            <p t-esc="error_message"/>
+                            <field name="error_message" readonly="1"/>
                         </div>
 
                         <group>
                             <group string="Tenant Info">
-                                <field name="tenant_id" readonly="True"/>
-                                <field name="requested_by" readonly="True"/>
-                                <field name="requested_date" readonly="True"/>
+                                <field name="tenant_id" readonly="1"/>
+                                <field name="requested_by" readonly="1"/>
+                                <field name="requested_date" readonly="1"/>
                             </group>
                             <group string="Upgrade Details">
-                                <field name="from_edition" readonly="True"/>
-                                <field name="to_edition" readonly="True"/>
-                                <field name="from_plan_id" readonly="True"/>
+                                <field name="from_edition" readonly="1"/>
+                                <field name="to_edition" readonly="1"/>
+                                <field name="from_plan_id" readonly="1"/>
                                 <field name="to_plan_id"/>
                             </group>
                         </group>
@@ -62,23 +62,23 @@
                             <group>
                                 <field name="old_price"/>
                                 <field name="new_price"/>
-                                <field name="price_difference" attrs="{'invisible': [('price_difference', '=', 0)]}"/>
+                                <field name="price_difference" invisible="price_difference == 0"/>
                                 <field name="coupon_code"/>
                             </group>
                         </group>
 
-                        <group string="Status Information" attrs="{'invisible': [('status', '=', 'pending')]}">
+                        <group string="Status Information" invisible="status == 'pending'">
                             <group>
-                                <field name="approved_by" attrs="{'invisible': [('status', '!=', 'completed')]}"/>
-                                <field name="approved_date" attrs="{'invisible': [('status', '!=', 'completed')]}"/>
-                                <field name="completed_date" attrs="{'invisible': [('status', '!=', 'completed')]}"/>
-                                <field name="backup_file" attrs="{'invisible': [('status', '!=', 'completed')]}"/>
-                                <field name="migration_time" attrs="{'invisible': [('status', '!=', 'completed')]}"/>
+                                <field name="approved_by" invisible="status != 'completed'"/>
+                                <field name="approved_date" invisible="status != 'completed'"/>
+                                <field name="completed_date" invisible="status != 'completed'"/>
+                                <field name="backup_file" invisible="status != 'completed'"/>
+                                <field name="migration_time" invisible="status != 'completed'"/>
                             </group>
                         </group>
 
-                        <group string="Rejection" attrs="{'invisible': [('status', '!=', 'rejected')]}">
-                            <field name="rejection_reason" nolabel="1" readonly="True"/>
+                        <group string="Rejection" invisible="status != 'rejected'">
+                            <field name="rejection_reason" nolabel="1" readonly="1"/>
                         </group>
 
                         <field name="notes"/>
@@ -100,7 +100,7 @@
                     <filter name="failed" string="Failed" domain="[('status', '=', 'failed')]"/>
                     <filter name="rejected" string="Rejected" domain="[('status', '=', 'rejected')]"/>
                     <separator/>
-                    <filter name="recent" string="Last 30 Days" domain="[('requested_date', '>=', (context_today() - timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
+                    <filter name="recent" string="Last 30 Days" domain="[('requested_date', '&gt;=', (context_today() - datetime.timedelta(days=30)).strftime('%Y-%m-%d'))]"/>
                 </search>
             </field>
         </record>
@@ -109,14 +109,14 @@
         <record id="saas_tenant_upgrade_action" model="ir.actions.act_window">
             <field name="name">Tenant Upgrades</field>
             <field name="res_model">saas.tenant.upgrade</field>
-            <field name="view_mode">tree,form</field>
+            <field name="view_mode">list,form</field>
             <field name="view_id" ref="saas_tenant_upgrade_tree"/>
             <field name="domain">[('status', '=', 'pending')]</field>
             <field name="context">{'search_default_pending': 1}</field>
         </record>
 
         <!-- Menu -->
-        <menuitem id="menu_tenant_upgrades" name="Tenant Upgrades" parent="saas_core.menu_saas_admin"
+        <menuitem id="menu_tenant_upgrades" name="Tenant Upgrades" parent="saas_core.menu_saas_operations"
                   action="saas_tenant_upgrade_action" sequence="20"/>
     </data>
 </odoo>

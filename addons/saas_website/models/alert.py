@@ -50,3 +50,20 @@ class SaasAlert(models.Model):
             ('acknowledged', '=', True),
         ])
         old_alerts.unlink()
+
+    def cron_check_platform_health(self):
+        """Run the platform health checks and raise alerts for failures.
+
+        Lives here (not inline in the ir.cron code) because server-action
+        code runs in safe_eval, where import statements are forbidden.
+        """
+        from odoo.addons.saas_website.services.error_handler import HealthCheck
+        from odoo.addons.saas_website.services.alert_notifier import AlertNotifier
+        status = HealthCheck.get_platform_status()
+        if not status.get('healthy'):
+            for check_name, result in status.get('checks', {}).items():
+                if not result.get('ok'):
+                    AlertNotifier.notify_error(
+                        f'HEALTH_CHECK_{check_name.upper()}',
+                        result.get('details'), 'critical',
+                        {'check': check_name})

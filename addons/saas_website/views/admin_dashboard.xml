@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+<template id="admin_dashboard" name="SaaS Admin Dashboard">
+  <t t-call="website.layout">
+    <div class="container-fluid py-4" style="background:#f1f5f9;min-height:100vh;">
+      <div class="container-lg">
+
+        <!-- Header -->
+        <div class="d-flex align-items-center justify-content-between mb-4">
+          <h1 class="fw-bold mb-0" style="color:#1e293b;">
+            <i class="fa fa-tachometer-alt me-2" style="color:#6d28d9;"/>
+            ClickBuild Admin Dashboard
+          </h1>
+          <span class="badge bg-primary fs-6">
+            <i class="fa fa-clock me-1"/>
+            <t t-esc="context_today()"/>
+          </span>
+        </div>
+
+        <!-- KPI Cards -->
+        <div class="row g-3 mb-4">
+          <div class="col-sm-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center py-4">
+                <div style="font-size:2.5rem;font-weight:900;color:#6d28d9;" t-esc="total_tenants"/>
+                <div class="text-muted mt-1">إجمالي المستأجرين</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center py-4">
+                <div style="font-size:2.5rem;font-weight:900;color:#16a34a;" t-esc="by_state.get('trial',0)"/>
+                <div class="text-muted mt-1">في التجربة المجانية</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center py-4">
+                <div style="font-size:2.5rem;font-weight:900;color:#0891b2;" t-esc="new_30d"/>
+                <div class="text-muted mt-1">جديد (30 يوم)</div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-6 col-lg-3">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-body text-center py-4">
+                <t t-if="backup_today">
+                  <div style="font-size:2.5rem;font-weight:900;color:#16a34a;">✅</div>
+                  <div class="text-muted mt-1">Backup اليوم — OK</div>
+                </t>
+                <t t-else="">
+                  <div style="font-size:2.5rem;font-weight:900;color:#dc2626;">⚠️</div>
+                  <div class="text-danger mt-1 fw-bold">Backup لم يعمل اليوم!</div>
+                </t>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="row g-3 mb-4">
+          <!-- Edition breakdown -->
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-header bg-white fw-bold border-0 pt-3">📊 توزيع الإصدارات</div>
+              <div class="card-body">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                  <span><i class="fa fa-cube me-2" style="color:#6d28d9;"/>Community</span>
+                  <span class="badge bg-secondary fs-6" t-esc="by_edition.get('community',0)"/>
+                </div>
+                <div class="d-flex justify-content-between align-items-center">
+                  <span><i class="fa fa-rocket me-2" style="color:#dc2626;"/>Enterprise</span>
+                  <span class="badge bg-danger fs-6" t-esc="by_edition.get('enterprise',0)"/>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- State breakdown -->
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-header bg-white fw-bold border-0 pt-3">📈 الحالات</div>
+              <div class="card-body">
+                <t t-foreach="by_state.items()" t-as="item">
+                  <div class="d-flex justify-content-between mb-2">
+                    <span t-esc="item[0]"/>
+                    <span class="badge bg-primary" t-esc="item[1]"/>
+                  </div>
+                </t>
+              </div>
+            </div>
+          </div>
+
+          <!-- Failed provisions -->
+          <div class="col-md-4">
+            <div class="card border-0 shadow-sm h-100">
+              <div class="card-header bg-white fw-bold border-0 pt-3">
+                ⚠️ Provision Errors
+                <t t-if="failed_provisions">
+                  <span class="badge bg-danger ms-2" t-esc="len(failed_provisions)"/>
+                </t>
+              </div>
+              <div class="card-body">
+                <t t-if="not failed_provisions">
+                  <p class="text-success mb-0">✅ لا توجد أخطاء</p>
+                </t>
+                <t t-foreach="failed_provisions" t-as="fp">
+                  <div class="alert alert-warning p-2 mb-2 small">
+                    <strong t-esc="fp['sub']"/><br/>
+                    محاولات: <t t-esc="fp['retries']"/> |
+                    منذ: <t t-esc="fp['age_min']"/> دقيقة
+                  </div>
+                </t>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent Trials -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-white fw-bold border-0 pt-3">👥 آخر المشتركين في التجربة</div>
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr><th>الاسم</th><th>البريد</th><th>subdomain</th><th>الإصدار</th><th>تاريخ التسجيل</th><th>انتهاء التجربة</th></tr>
+              </thead>
+              <tbody>
+                <t t-foreach="trial_tenants" t-as="t">
+                  <tr>
+                    <td t-esc="t.customer_name"/>
+                    <td><a t-att-href="'mailto:'+t.customer_email" t-esc="t.customer_email"/></td>
+                    <td><a t-att-href="t.tenant_url" target="_blank" t-esc="t.subdomain"/></td>
+                    <td>
+                      <span t-if="t.edition=='enterprise'" class="badge bg-danger">Enterprise</span>
+                      <span t-else="" class="badge bg-secondary">Community</span>
+                    </td>
+                    <td t-esc="t.create_date" t-options='{"widget":"date"}'/>
+                    <td t-esc="t.trial_end" t-options='{"widget":"date"}'/>
+                  </tr>
+                </t>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Plans -->
+        <div class="card border-0 shadow-sm">
+          <div class="card-header bg-white fw-bold border-0 pt-3">💳 الخطط الفعّالة</div>
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light"><tr><th>الخطة</th><th>الكود</th><th>الإصدار</th><th>السعر/شهر</th><th>الحالة</th></tr></thead>
+              <tbody>
+                <t t-foreach="plans" t-as="p">
+                  <tr>
+                    <td t-esc="p.name"/>
+                    <td><code t-esc="p.code"/></td>
+                    <td t-esc="p.edition"/>
+                    <td><t t-esc="'%.0f' % p.monthly_price"/> ريال</td>
+                    <td><span class="badge bg-success">فعّالة</span></td>
+                  </tr>
+                </t>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+
+        <!-- Industry Breakdown Card -->
+        <div class="card border-0 shadow-sm mb-4">
+          <div class="card-header bg-white fw-bold border-0 pt-3">&#x1F3ED; توزيع العملاء حسب القطاع</div>
+          <div class="card-body pt-0">
+            <t t-if="industry_stats">
+              <div class="row g-2">
+                <t t-foreach="industry_stats" t-as="ind">
+                  <div class="col-6 col-md-4 col-lg-3">
+                    <div class="d-flex align-items-center justify-content-between p-2 rounded" style="background:#f8f9fa;">
+                      <span class="fw-semibold small" t-esc="ind['label']"/>
+                      <span class="badge bg-primary rounded-pill" t-esc="ind['count']"/>
+                    </div>
+                  </div>
+                </t>
+              </div>
+            </t>
+            <t t-else="">
+              <p class="text-muted small mb-0">لا توجد بيانات بعد</p>
+            </t>
+          </div>
+        </div>
+      </div>
+    </div>
+  </t>
+</template>
+</odoo>
