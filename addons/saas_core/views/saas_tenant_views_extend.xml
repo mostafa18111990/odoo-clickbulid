@@ -49,12 +49,36 @@
                 <attribute name="widget">CopyClipboardChar</attribute>
             </xpath>
             <xpath expr="//header" position="inside">
+                <button name="action_extend_trial" type="object"
+                        string="⏰ تمديد 7 أيام / Extend +7 Days"
+                        class="btn btn-info"
+                        groups="saas_tenant_manager.group_saas_admin"
+                        invisible="state not in ('trial', 'suspended')"
+                        confirm="سيتم تمديد تاريخ قفل القاعدة 7 أيام. إذا كان العميل موقوفاً سيعود للعمل فوراً ويُلغى العد التنازلي للحذف. متابعة؟ — Extends the lock date by 7 days. A suspended tenant is unblocked immediately and the auto-delete countdown resets. Continue?"/>
                 <button name="action_destroy_permanently" type="object"
                         string="🗑 حذف نهائي / Delete Permanently"
                         class="btn btn-danger"
                         groups="saas_tenant_manager.group_saas_admin"
                         invisible="state == 'deleted'"
                         confirm="⚠️ سيتم حذف قاعدة بيانات العميل وملفاته ودومينه نهائياً ولا يمكن تشغيلها مرة أخرى (تُحفظ نسخة احتياطية أخيرة في /opt/backups/deleted). هل أنت متأكد؟ — This PERMANENTLY destroys the tenant database, files, domain and SSL cert. A final backup is kept in /opt/backups/deleted. Continue?"/>
+            </xpath>
+            <!-- Lock-date control: the trial end date drives when the
+                 lifecycle engine physically stops the tenant, so editing it
+                 here = full admin control over the lock date. -->
+            <xpath expr="//field[@name='admin_login']/.." position="before">
+                <group string="🔒 التحكم في القفل والحذف — Lock &amp; Deletion Control">
+                    <group>
+                        <field name="trial_ends_at" string="تاريخ القفل (نهاية التجربة)"
+                               help="عند حلول هذا التاريخ يتم إيقاف العميل تلقائياً وعرض صفحة التجديد. عدّل التاريخ لتمديد أو تقصير الفترة."/>
+                        <field name="trial_days_left" readonly="1"/>
+                    </group>
+                    <group>
+                        <field name="suspended_at" readonly="1"/>
+                        <field name="auto_delete_at" readonly="1"
+                               decoration-danger="auto_delete_at"
+                               help="التاريخ الذي سيتم فيه الحذف النهائي التلقائي إذا لم يُسدَّد الاشتراك (تاريخ الإيقاف + مهلة قاعدة دورة الحياة)."/>
+                    </group>
+                </group>
             </xpath>
         </field>
     </record>

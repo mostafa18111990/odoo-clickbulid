@@ -103,6 +103,20 @@ class SaasTenant(models.Model):
     last_payment_amount = fields.Float(string='Last Payment Amount', digits=(10, 2), readonly=True)
 
     trial_days_left = fields.Integer(string='Trial Days Left', compute='_compute_trial_days_left')
+    # When the platform will auto-purge a suspended tenant (suspended_at +
+    # the "Suspended -> Delete" lifecycle rule delay). Display-only helper so
+    # the admin sees exactly when the customer's data disappears.
+    auto_delete_at = fields.Datetime(string='Auto-Delete On', compute='_compute_auto_delete_at')
+
+    def _compute_auto_delete_at(self):
+        rule = self.env['saas.lifecycle.rule'].sudo().search([
+            ('from_state', '=', 'suspended'), ('to_state', '=', 'deleted'),
+            ('action', '=', 'transition'), ('active', '=', True)], limit=1)
+        for rec in self:
+            if rec.state == 'suspended' and rec.suspended_at and rule:
+                rec.auto_delete_at = rec.suspended_at + timedelta(hours=rule.delay_hours)
+            else:
+                rec.auto_delete_at = False
 
     @api.depends('provisioning_job_ids')
     def _compute_job_count(self):
@@ -209,6 +223,34 @@ class SaasTenant(models.Model):
         self._queue_physical_flag('suspend')
         return {'type': 'ir.actions.client', 'tag': 'display_notification',
                 'params': {'type': 'warning', 'message': _('Tenant suspended.')}}
+
+    def action_extend_trial(self):
+        """Extend the tenant's lock date by 7 days (admin quick action).
+
+        Works from any state: on a live trial it just pushes trial_ends_at;
+        on a SUSPENDED tenant it also flips it back to trial and physically
+        unblocks the nginx vhost, cancelling the auto-delete countdown.
+        """
+        now = fields.Datetime.now()
+        for tenant in self:
+            base = tenant.trial_ends_at if (tenant.trial_ends_at and tenant.trial_ends_at > now) else now
+            new_end = base + timedelta(days=7)
+            if tenant.state == 'suspended':
+                tenant.with_context(bypass_fsm=True).write({
+                    'state': 'trial', 'trial_ends_at': new_end, 'suspended_at': False})
+                tenant._queue_physical_flag('activate')
+                tenant._publish_event('tenant.trial.extended', {
+                    'tenant_id': tenant.id, 'subdomain': tenant.subdomain,
+                    'new_trial_end': str(new_end), 'was_suspended': True})
+            else:
+                tenant.write({'trial_ends_at': new_end})
+                tenant._publish_event('tenant.trial.extended', {
+                    'tenant_id': tenant.id, 'subdomain': tenant.subdomain,
+                    'new_trial_end': str(new_end), 'was_suspended': False})
+        return {'type': 'ir.actions.client', 'tag': 'display_notification',
+                'params': {'type': 'success',
+                           'message': _('Trial extended 7 days — new lock date: %s',
+                                        self[:1].trial_ends_at)}}
 
     def _queue_physical_flag(self, kind):
         from odoo.addons.saas_core.services.provisioning_bridge import ProvisioningBridgeService
