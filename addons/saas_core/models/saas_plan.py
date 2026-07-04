@@ -29,6 +29,15 @@ class SaasPlan(models.Model):
     currency_id = fields.Many2one('res.currency', string='Currency',
         default=lambda self: self.env.company.currency_id)
 
+    # ─── Per-user (seat) pricing ────────────────────────────────────────────
+    # flat     → monthly_price is the plan price regardless of users
+    # per_user → the customer picks a seat count at signup and pays
+    #            seats × price_per_user (max_users acts as the plan ceiling)
+    pricing_mode = fields.Selection(
+        selection=[('flat', 'Flat monthly price'), ('per_user', 'Per user (seat) pricing')],
+        string='Pricing Mode', default='flat', required=True)
+    price_per_user = fields.Float(string='Price / User / Month (SAR)', digits=(10, 2), default=0.0)
+
     yearly_price = fields.Float(string='Yearly Price (SAR)', digits=(10, 2), default=0.0)
     yearly_price_computed = fields.Float(string='Yearly Price (Auto)', compute='_compute_yearly_price', digits=(10, 2))
     yearly_discount_pct = fields.Float(string='Yearly Discount %', compute='_compute_yearly_discount', digits=(5, 1))
@@ -64,6 +73,20 @@ class SaasPlan(models.Model):
     def get_effective_yearly_price(self):
         self.ensure_one()
         return self.yearly_price if self.yearly_price > 0 else self.yearly_price_computed
+
+    def price_for_users(self, user_count, cycle='monthly'):
+        """Price for the given seat count under this plan's pricing mode.
+
+        per_user: seats × price_per_user (yearly = ×10, two months free —
+        same convention as the flat yearly price).
+        flat: the classic plan price, seats ignored.
+        """
+        self.ensure_one()
+        if self.pricing_mode == 'per_user' and self.price_per_user > 0:
+            seats = max(1, int(user_count or 1))
+            monthly = round(seats * self.price_per_user, 2)
+            return round(monthly * 10, 2) if cycle == 'yearly' else monthly
+        return self.get_effective_yearly_price() if cycle == 'yearly' else self.monthly_price
 
     def calculate_bill(self, billing_cycle, extra_users=0, extra_gb=0):
         self.ensure_one()

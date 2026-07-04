@@ -17,7 +17,8 @@ class TenantService:
 
     def create_lead(self, subdomain, customer_name, customer_email, plan_id,
                     lead_source='website', referral_code=None, coupon_code=None,
-                    phone=None, company_name=None, country=None, industry=None):
+                    phone=None, company_name=None, country=None, industry=None,
+                    user_count=0):
         if self.repo.find_by_subdomain(subdomain):
             raise ValidationError(_('Subdomain "%s" is already taken.', subdomain))
         plan = self.env['saas.plan'].browse(plan_id)
@@ -33,6 +34,8 @@ class TenantService:
             'customer_country': (country or 'SA').upper()[:2],
             # Sector chosen at signup — drives which apps are auto-installed.
             'industry': industry or False,
+            # Seats purchased (per-user pricing); 0 = plan's max_users.
+            'user_count': max(0, int(user_count or 0)),
             # Carry the edition over from the chosen plan so the provisioner
             # routes correctly even if the plan is unlinked later.
             'edition': plan.edition or 'community',

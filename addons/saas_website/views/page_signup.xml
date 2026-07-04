@@ -60,21 +60,57 @@
                                         <t t-foreach="grouped['community']" t-as="plan">
                                             <option t-att-value="plan.id"
                                                     t-att-data-edition="plan.edition or 'community'"
+                                                    t-att-data-pricing-mode="plan.pricing_mode or 'flat'"
+                                                    t-att-data-price-per-user="'%.2f' % (plan.price_per_user or 0)"
+                                                    t-att-data-flat-price="'%.2f' % (plan.monthly_price or 0)"
+                                                    t-att-data-max-users="plan.max_users or 0"
                                                     t-att-selected="'selected' if (selected_plan and plan.id == selected_plan.id) else None">
-                                                <t t-esc="plan.name"/> - <t t-esc="'%.0f' % plan.monthly_price"/>
-                                                <t t-if="lang_is_ar"> ريال/شهر</t><t t-else=""> SAR/month</t></option>
+                                                <t t-esc="plan.name"/> -
+                                                <t t-if="plan.pricing_mode == 'per_user'">
+                                                    <t t-esc="'%.0f' % plan.price_per_user"/>
+                                                    <t t-if="lang_is_ar"> ريال/مستخدم/شهر</t><t t-else=""> SAR/user/month</t>
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-esc="'%.0f' % plan.monthly_price"/>
+                                                    <t t-if="lang_is_ar"> ريال/شهر</t><t t-else=""> SAR/month</t>
+                                                </t></option>
                                         </t>
                                     </optgroup>
                                     <optgroup label="Enterprise" class="signup-plan-group" data-edition="enterprise">
                                         <t t-foreach="grouped['enterprise']" t-as="plan">
                                             <option t-att-value="plan.id"
                                                     t-att-data-edition="plan.edition"
+                                                    t-att-data-pricing-mode="plan.pricing_mode or 'flat'"
+                                                    t-att-data-price-per-user="'%.2f' % (plan.price_per_user or 0)"
+                                                    t-att-data-flat-price="'%.2f' % (plan.monthly_price or 0)"
+                                                    t-att-data-max-users="plan.max_users or 0"
                                                     t-att-selected="'selected' if (selected_plan and plan.id == selected_plan.id) else None">
-                                                <t t-esc="plan.name"/> - <t t-esc="'%.0f' % plan.monthly_price"/>
-                                                <t t-if="lang_is_ar"> ريال/شهر</t><t t-else=""> SAR/month</t></option>
+                                                <t t-esc="plan.name"/> -
+                                                <t t-if="plan.pricing_mode == 'per_user'">
+                                                    <t t-esc="'%.0f' % plan.price_per_user"/>
+                                                    <t t-if="lang_is_ar"> ريال/مستخدم/شهر</t><t t-else=""> SAR/user/month</t>
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-esc="'%.0f' % plan.monthly_price"/>
+                                                    <t t-if="lang_is_ar"> ريال/شهر</t><t t-else=""> SAR/month</t>
+                                                </t></option>
                                         </t>
                                     </optgroup>
                                 </select>
+                            </div>
+
+                            <!-- Seat picker: per-user plans compute the live total here -->
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    <t t-if="lang_is_ar">عدد المستخدمين</t><t t-else="">Number of users</t></label>
+                                <div class="input-group">
+                                    <button type="button" class="btn btn-outline-secondary" id="seatMinus">−</button>
+                                    <input type="number" name="user_count" id="userCountInput"
+                                           class="form-control text-center fw-bold" min="1" max="200" value="3"/>
+                                    <button type="button" class="btn btn-outline-secondary" id="seatPlus">+</button>
+                                </div>
+                                <div class="mt-2 p-2 rounded text-center fw-bold" id="seatPriceBox"
+                                     style="background:#f5f3ff; color:#6d28d9; font-size:1.1rem;"></div>
                             </div>
                             <div class="mb-3"><label class="form-label fw-bold">
                                 <t t-if="lang_is_ar">اسم مساحة العمل</t><t t-else="">Workspace name</t></label>
@@ -196,6 +232,43 @@
                                     // Initial state: from server-rendered checked radio.
                                     var initial = (document.querySelector('input[name="_edition"]:checked') || {}).value || 'community';
                                     applyEdition(initial);
+
+                                    // ── Seat picker + live price ─────────────────
+                                    var seatInput = document.getElementById('userCountInput');
+                                    var priceBox  = document.getElementById('seatPriceBox');
+                                    var isAr = document.documentElement.lang &amp;&amp; document.documentElement.lang.indexOf('ar') === 0;
+                                    function fmt(n) { return Number(n).toLocaleString(isAr ? 'ar-SA' : 'en-US'); }
+                                    function updatePrice() {
+                                        var opt = sel.selectedOptions[0];
+                                        if (!opt || !seatInput || !priceBox) return;
+                                        var maxU = parseInt(opt.dataset.maxUsers || '0', 10);
+                                        var seats = Math.max(1, parseInt(seatInput.value || '1', 10));
+                                        if (maxU &gt; 0 &amp;&amp; seats &gt; maxU) { seats = maxU; }
+                                        seatInput.value = seats;
+                                        if (maxU &gt; 0) seatInput.max = maxU;
+                                        if ((opt.dataset.pricingMode || 'flat') === 'per_user') {
+                                            var ppu = parseFloat(opt.dataset.pricePerUser || '0');
+                                            var total = Math.round(seats * ppu * 100) / 100;
+                                            priceBox.textContent = isAr
+                                                ? ('الإجمالي: ' + fmt(total) + ' ريال/شهرياً (' + fmt(seats) + ' مستخدم × ' + fmt(ppu) + ' ريال)')
+                                                : ('Total: ' + fmt(total) + ' SAR/month (' + fmt(seats) + ' users × ' + fmt(ppu) + ' SAR)');
+                                        } else {
+                                            var flat = parseFloat(opt.dataset.flatPrice || '0');
+                                            priceBox.textContent = isAr
+                                                ? ('الباقة: ' + fmt(flat) + ' ريال/شهرياً — حتى ' + fmt(maxU || seats) + ' مستخدم')
+                                                : ('Plan: ' + fmt(flat) + ' SAR/month — up to ' + fmt(maxU || seats) + ' users');
+                                        }
+                                    }
+                                    if (seatInput) {
+                                        seatInput.addEventListener('input', updatePrice);
+                                        var minus = document.getElementById('seatMinus');
+                                        var plus  = document.getElementById('seatPlus');
+                                        if (minus) minus.addEventListener('click', function(){ seatInput.value = Math.max(1, (parseInt(seatInput.value||'1',10) - 1)); updatePrice(); });
+                                        if (plus)  plus.addEventListener('click', function(){ seatInput.value = (parseInt(seatInput.value||'1',10) + 1); updatePrice(); });
+                                        sel.addEventListener('change', updatePrice);
+                                        cards.forEach(function(c){ c.addEventListener('click', function(){ setTimeout(updatePrice, 0); }); });
+                                        updatePrice();
+                                    }
                                 })();
                             </script>
                             <p class="text-center text-muted small mt-3">

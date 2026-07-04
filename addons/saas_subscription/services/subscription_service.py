@@ -26,7 +26,10 @@ class SubscriptionService:
         config = self.env['saas.config']._get_config()
         today = date.today()
         trial_end = today + timedelta(days=config.trial_days)
-        base = plan.monthly_price if cycle == 'monthly' else plan.get_effective_yearly_price()
+        # Per-user plans: amount = purchased seats × price per user.
+        # Flat plans: price_for_users falls back to the classic plan price.
+        seats = getattr(tenant, 'user_count', 0) or (plan.max_users or 0)
+        base = plan.price_for_users(seats, cycle)
         sub = self.env['saas.subscription'].create({
             'tenant_id': tenant.id, 'plan_id': plan.id, 'status': 'trial', 'billing_cycle': cycle,
             'currency': currency, 'trial_start': today, 'trial_end': trial_end,

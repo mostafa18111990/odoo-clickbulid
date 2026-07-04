@@ -332,6 +332,30 @@ for req in "$REQ_DIR"/*.suspend.req; do
     rm -f "$req"
 done
 
+# --- Seat limit sync (admin changed the purchased user count) ---
+for req in "$REQ_DIR"/*.seats.req; do
+    sub=$(basename "$req" .seats.req)
+    sub=$(echo "$sub" | tr -cd 'a-z0-9-')
+    [ -z "$sub" ] && { rm -f "$req"; continue; }
+    limit=$(python3 -c "import json; print(int(json.load(open('$req')).get('max_users', 0)))" 2>/dev/null || echo 0)
+    if docker exec -e SEATS_DB="$sub" -e SEATS_LIMIT="$limit" odoo_saas_app python3 -c '
+import os, odoo
+from odoo.tools import config
+config.parse_config(["-c", "/etc/odoo/odoo.conf"])
+reg = odoo.modules.registry.Registry(os.environ["SEATS_DB"])
+with reg.cursor() as cr:
+    env = odoo.api.Environment(cr, 1, {})
+    env["ir.config_parameter"].sudo().set_param("saas.max_users", os.environ["SEATS_LIMIT"])
+    cr.commit()
+    print("seats set:", os.environ["SEATS_DB"], "->", os.environ["SEATS_LIMIT"])
+' >> "$LOG" 2>&1; then
+        echo "$(date -Is) SEATS $sub -> $limit" >> "$LOG"
+    else
+        echo "$(date -Is) SEATS ERROR $sub" >> "$LOG"
+    fi
+    rm -f "$req"
+done
+
 # --- Tenant resume (restore the original proxy vhost) ---
 for req in "$REQ_DIR"/*.resume.req; do
     sub=$(basename "$req" .resume.req)
@@ -370,6 +394,7 @@ for req in "$REQ_DIR"/*.req; do
     [[ "$req" == *.suspend.req ]] && continue
     [[ "$req" == *.resume.req ]] && continue
     [[ "$req" == *.delete.req ]] && continue
+    [[ "$req" == *.seats.req ]] && continue
     sub=$(basename "$req" .req)
     sub=$(echo "$sub" | tr -cd 'a-z0-9-')
     [ -z "$sub" ] && { rm -f "$req"; continue; }

@@ -124,7 +124,7 @@ class SaasWebsiteSignup(http.Controller):
         result = SignupService(request.env).register({
             'name': post.get('name'), 'email': post.get('email'), 'subdomain': post.get('subdomain'),
             'company': post.get('company'), 'phone': post.get('phone'), 'country': post.get('country', 'SA'),
-            'industry': post.get('industry'),
+            'industry': post.get('industry'), 'user_count': post.get('user_count'),
             'plan_id': post.get('plan_id'), 'coupon_code': post.get('coupon_code'),
             'referral_code': post.get('referral_code')})
         if result.get('success'):

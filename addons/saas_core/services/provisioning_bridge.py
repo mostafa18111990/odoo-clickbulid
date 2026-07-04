@@ -223,6 +223,23 @@ class ProvisioningBridgeService:
         except Exception as e:
             _logger.error('Bridge activate failed for %s: %s', tenant.subdomain, e)
 
+    def sync_seats(self, tenant):
+        """Push the tenant's current seat limit into its live database.
+
+        Writes a <sub>.seats.req file; the host sweeper applies it to the
+        tenant's saas.max_users param, which saas_user_limit enforces.
+        """
+        sub = (tenant.subdomain or '').strip().lower()
+        if not SUBDOMAIN_RE.match(sub) or not os.path.isdir(PROVISION_REQUEST_DIR):
+            return
+        limit = tenant.effective_max_users()
+        req_path = os.path.join(PROVISION_REQUEST_DIR, f'{sub}.seats.req')
+        with open(req_path, 'w') as f:
+            json.dump({'subdomain': sub, 'tenant_id': tenant.id,
+                       'max_users': int(limit)}, f)
+        _logger.info('Seats sync queued for %s: %s users', sub, limit)
+        return {'status': 'seats_queued', 'subdomain': sub, 'max_users': limit}
+
     def _queue_local_flag(self, tenant, kind):
         """Queue a suspend/resume request for the host sweeper.
 
@@ -347,9 +364,10 @@ class ProvisioningBridgeService:
             'industry': getattr(tenant, 'industry', '') or '',
             'admin_password': admin_password,
             'plan_code': tenant.plan_id.code if tenant.plan_id else 'starter',
-            # Plan seat limit — the host sweeper writes it into the tenant's
-            # saas.max_users param, enforced by the saas_user_limit module.
-            'max_users': (tenant.plan_id.max_users if tenant.plan_id else 0) or 0,
+            # Seat limit — the customer's purchased seat count (falls back to
+            # the plan's max_users). The host sweeper writes it into the
+            # tenant's saas.max_users param, enforced by saas_user_limit.
+            'max_users': tenant.effective_max_users(),
             'modules': modules,
             'language': 'ar_001',
             # NEW — host sweeper routes the docker exec to the right container

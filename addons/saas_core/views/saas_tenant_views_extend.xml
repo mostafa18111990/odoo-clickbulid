@@ -79,6 +79,25 @@
                                help="التاريخ الذي سيتم فيه الحذف النهائي التلقائي إذا لم يُسدَّد الاشتراك (تاريخ الإيقاف + مهلة قاعدة دورة الحياة)."/>
                     </group>
                 </group>
+                <group string="👥 المستخدمون والتكلفة — Seats &amp; Cost">
+                    <group>
+                        <field name="user_count" string="عدد المستخدمين المشترى"
+                               help="عدد المقاعد التي اشتراها العميل. عدّل الرقم لتوسيع أو تقليص العدد — يُطبَّق داخل أودو العميل تلقائياً خلال دقيقتين. صفر = استخدام حد الباقة."/>
+                        <field name="seat_monthly_cost" readonly="1"/>
+                    </group>
+                </group>
+            </xpath>
+        </field>
+    </record>
+    <!-- Per-user pricing fields on the plan form -->
+    <record id="view_saas_plan_form_inherit_pricing" model="ir.ui.view">
+        <field name="name">saas.plan.form.inherit.pricing</field>
+        <field name="model">saas.plan</field>
+        <field name="inherit_id" ref="saas_tenant_manager.view_saas_plan_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='monthly_price']" position="after">
+                <field name="pricing_mode" widget="radio"/>
+                <field name="price_per_user" invisible="pricing_mode != 'per_user'"/>
             </xpath>
         </field>
     </record>

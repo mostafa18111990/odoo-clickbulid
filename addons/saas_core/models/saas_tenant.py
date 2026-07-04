@@ -102,6 +102,23 @@ class SaasTenant(models.Model):
     last_payment_date = fields.Date(string='Last Payment Date', readonly=True)
     last_payment_amount = fields.Float(string='Last Payment Amount', digits=(10, 2), readonly=True)
 
+    # Seats purchased by the customer (per-user pricing). 0 = fall back to
+    # the plan's max_users. Editing this from the backend syncs the limit
+    # into the tenant database within 2 minutes (host sweeper).
+    user_count = fields.Integer(string='Purchased Users (Seats)', default=0)
+    seat_monthly_cost = fields.Float(string='Monthly Cost (SAR)',
+                                     compute='_compute_seat_monthly_cost', digits=(10, 2))
+
+    @api.depends('user_count', 'plan_id', 'plan_id.pricing_mode',
+                 'plan_id.price_per_user', 'plan_id.monthly_price')
+    def _compute_seat_monthly_cost(self):
+        for rec in self:
+            rec.seat_monthly_cost = rec.plan_id.price_for_users(rec.user_count) if rec.plan_id else 0.0
+
+    def effective_max_users(self):
+        self.ensure_one()
+        return self.user_count or (self.plan_id.max_users if self.plan_id else 0) or 0
+
     trial_days_left = fields.Integer(string='Trial Days Left', compute='_compute_trial_days_left')
     # When the platform will auto-purge a suspended tenant (suspended_at +
     # the "Suspended -> Delete" lifecycle rule delay). Display-only helper so
@@ -375,4 +392,20 @@ class SaasTenant(models.Model):
                         raise UserError(_('Invalid state transition: %s -> %s', rec.state, new_state))
                     if rec.state == 'deleted':
                         raise UserError(_('Cannot modify a deleted tenant.'))
-        return super().write(vals)
+        res = super().write(vals)
+        # Seat change from the backend → push the new limit into the live
+        # tenant database (host sweeper applies it within 2 minutes).
+        if 'user_count' in vals:
+            for rec in self:
+                if rec.api_instance_id and rec.state not in ('lead', 'deleted'):
+                    rec._queue_seats_sync()
+        return res
+
+    def _queue_seats_sync(self):
+        from odoo.addons.saas_core.services.provisioning_bridge import ProvisioningBridgeService
+        bridge = ProvisioningBridgeService(self.env)
+        for tenant in self:
+            try:
+                bridge.sync_seats(tenant)
+            except Exception as e:
+                _logger.error('Failed to queue seats sync for %s: %s', tenant.subdomain, e)

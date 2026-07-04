@@ -69,6 +69,12 @@ class SignupService:
         industry = (data.get('industry') or '').strip().lower()
         if industry not in allowed_industries:
             industry = 'other' if data.get('industry') else None
+        # Seats chosen at signup (per-user pricing plans). Clamped to the
+        # plan's ceiling further below once the plan is resolved.
+        try:
+            user_count = max(0, min(int(data.get('user_count') or 0), 500))
+        except (TypeError, ValueError):
+            user_count = 0
         plan_id = int(data['plan_id']) if data.get('plan_id') else None
         if not plan_id:
             plan = self.env['saas.plan'].sudo().search([('active', '=', True)], order='monthly_price asc', limit=1)
@@ -80,10 +86,13 @@ class SignupService:
         from odoo.addons.saas_core.services.tenant_service import TenantService
         svc = TenantService(self.env(su=True))
         try:
+            # Clamp seats to the plan ceiling (0 = plan default).
+            if user_count and plan and plan.max_users:
+                user_count = min(user_count, plan.max_users)
             tenant = svc.create_lead(subdomain=subdomain, customer_name=name, customer_email=email,
                 plan_id=plan_id, lead_source='website', phone=phone, company_name=company,
                 coupon_code=data.get('coupon_code'), referral_code=data.get('referral_code'),
-                country=country, industry=industry)
+                country=country, industry=industry, user_count=user_count)
             # Country also drives the subscription currency derived below, and is
             # now persisted on the tenant so the provisioner installs the matching
             # localization (e.g. Saudi l10n_sa + ZATCA e-invoicing) and sets the
