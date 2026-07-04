@@ -69,30 +69,74 @@ fi
 DB="$SUB"
 echo "$(date -Is) === provisioning $DB (edition=$EDITION, container=$ODOO_CONTAINER) ===" >> "$LOG"
 
-# 1. Check if DB exists already
+# 1. Create the tenant DB — fast path clones the prebuilt template.
+# The template (built by build_tenant_template.sh) already contains the
+# common core + Saudi accounting stack, so cloning takes seconds instead of
+# a 2-3 minute full module install. Conditions for the fast path:
+#   - community edition (enterprise runs a different module set/container)
+#   - Saudi customer (the template company is localized to SA; other
+#     countries need their own chart of accounts → classic full init)
+#   - the template database actually exists
+TEMPLATE_DB=tpl_community_core
+CLONED=0
+template_exists() {
+    docker exec odoo_saas_postgres psql -U odoo -lqt 2>/dev/null \
+        | cut -d'|' -f1 | tr -d ' ' | grep -qx "$TEMPLATE_DB"
+}
 if docker exec odoo_saas_postgres psql -U odoo -lqt 2>/dev/null \
         | cut -d'|' -f1 | tr -d ' ' | grep -qx "$DB"; then
     echo "$(date -Is) DB $DB already exists, skipping createdb" >> "$LOG"
+elif [ "$EDITION" != "enterprise" ] && [ "${COUNTRY:-SA}" = "SA" ] && template_exists; then
+    docker exec odoo_saas_postgres createdb -U odoo -T "$TEMPLATE_DB" -O "$DB_OWNER" "$DB" >> "$LOG" 2>&1
+    # The DB references attachments stored on disk under the template's
+    # filestore — clone that too or images/attachments 404 in the new tenant.
+    docker exec "$ODOO_CONTAINER" sh -c \
+        "rm -rf /var/lib/odoo/filestore/$DB && cp -a /var/lib/odoo/filestore/$TEMPLATE_DB /var/lib/odoo/filestore/$DB" >> "$LOG" 2>&1 \
+        || echo "$(date -Is) WARN: filestore clone failed for $DB" >> "$LOG"
+    CLONED=1
+    echo "$(date -Is) cloned DB $DB from $TEMPLATE_DB (with filestore)" >> "$LOG"
 else
     docker exec odoo_saas_postgres createdb -U odoo -O "$DB_OWNER" "$DB" >> "$LOG" 2>&1
     echo "$(date -Is) created DB $DB" >> "$LOG"
 fi
 
-# 2. Initialize Odoo with the requested module set into the new DB.
-# Use --no-http to avoid port conflicts; --stop-after-init exits when done.
-# For Enterprise tenants this runs inside odoo_saas_ent so Studio/Helpdesk
-# etc. become available; for Community it runs inside odoo_saas_app.
-docker exec "$ODOO_CONTAINER" odoo \
-    --config=/etc/odoo/odoo.conf \
-    -d "$DB" \
-    -i "$INIT_MODULES" \
-    --without-demo=all \
-    --load-language=ar_001 \
-    --no-http --stop-after-init >> "$LOG" 2>&1 || {
-        echo "$(date -Is) FAIL: odoo init failed for $DB (container=$ODOO_CONTAINER)" >> "$LOG"
-        exit 4
-    }
-echo "$(date -Is) initialized $DB (modules: $INIT_MODULES)" >> "$LOG"
+# 2. Install modules.
+# Fast path: only the delta between the requested set and what the template
+# already ships. Classic path: the full requested set from scratch.
+if [ "$CLONED" = "1" ]; then
+    INSTALLED=$(docker exec odoo_saas_postgres psql -U odoo -d "$DB" -tAc \
+        "select string_agg(name, ',') from ir_module_module where state in ('installed','to install','to upgrade')")
+    MISSING=$(python3 -c "
+requested = [m.strip() for m in '''$INIT_MODULES'''.split(',') if m.strip()]
+installed = set('''$INSTALLED'''.split(','))
+print(','.join([m for m in requested if m not in installed]))")
+    if [ -n "$MISSING" ]; then
+        docker exec "$ODOO_CONTAINER" odoo \
+            --config=/etc/odoo/odoo.conf \
+            -d "$DB" \
+            -i "$MISSING" \
+            --without-demo=all \
+            --no-http --stop-after-init >> "$LOG" 2>&1 || {
+                echo "$(date -Is) FAIL: delta install failed for $DB (modules: $MISSING)" >> "$LOG"
+                exit 4
+            }
+        echo "$(date -Is) initialized $DB (delta modules: $MISSING)" >> "$LOG"
+    else
+        echo "$(date -Is) initialized $DB (template covered all modules)" >> "$LOG"
+    fi
+else
+    docker exec "$ODOO_CONTAINER" odoo \
+        --config=/etc/odoo/odoo.conf \
+        -d "$DB" \
+        -i "$INIT_MODULES" \
+        --without-demo=all \
+        --load-language=ar_001 \
+        --no-http --stop-after-init >> "$LOG" 2>&1 || {
+            echo "$(date -Is) FAIL: odoo init failed for $DB (container=$ODOO_CONTAINER)" >> "$LOG"
+            exit 4
+        }
+    echo "$(date -Is) initialized $DB (modules: $INIT_MODULES)" >> "$LOG"
+fi
 
 # 3. Set the admin user password + email + name + company.
 # Pass values via env vars to avoid heredoc/shell-escape pitfalls.
@@ -105,6 +149,7 @@ docker exec \
     -e SAAS_COMPANY_EMAIL="${COMPANY_EMAIL:-$ADMIN_EMAIL}" \
     -e SAAS_COMPANY_PHONE="$COMPANY_PHONE" \
     -e SAAS_COUNTRY="${COUNTRY:-SA}" \
+    -e SAAS_CLONED="$CLONED" \
     "$ODOO_CONTAINER" python3 -c '
 import os, odoo
 from odoo.tools import config
@@ -112,6 +157,16 @@ config.parse_config(["-c", "/etc/odoo/odoo.conf"])
 reg = odoo.modules.registry.Registry(os.environ["SAAS_DB"])
 with reg.cursor() as cr:
     env = odoo.api.Environment(cr, 1, {})
+    # Cloned DBs share the template identity — give each tenant its own
+    # database uuid/secret so sessions, tokens and instance identity never
+    # collide across tenants.
+    if os.environ.get("SAAS_CLONED") == "1":
+        import uuid, secrets as pysecrets
+        from odoo import fields as ofields
+        icp = env["ir.config_parameter"].sudo()
+        icp.set_param("database.uuid", str(uuid.uuid4()))
+        icp.set_param("database.secret", pysecrets.token_hex(16))
+        icp.set_param("database.create_date", ofields.Datetime.now())
     admin = env["res.users"].browse(2)
     admin.write({
         "login": os.environ["SAAS_ADMIN_EMAIL"],
@@ -136,14 +191,15 @@ with reg.cursor() as cr:
         if country.currency_id:
             company_vals["currency_id"] = country.currency_id.id
     company.write(company_vals)
-    # Load the country chart of accounts onto this company if a localization
-    # template is available and no chart is installed yet (Odoo 17+ API).
+    # Load the country chart of accounts onto this company. account install
+    # may have auto-loaded generic_coa before the country was set — switching
+    # on a fresh tenant (no journal entries) is safe, same as the Settings ->
+    # Fiscal Localization picker (Odoo 17+ API).
     try:
-        if not company.chart_template:
-            tmpl = env["account.chart.template"]
-            ref = {"SA": "sa", "AE": "ae", "EG": "eg"}.get(code)
-            if ref:
-                tmpl.try_loading(ref, company=company, install_demo=False)
+        tmpl = env["account.chart.template"]
+        ref = {"SA": "sa", "AE": "ae", "EG": "eg"}.get(code)
+        if ref and company.chart_template != ref:
+            tmpl.try_loading(ref, company=company, install_demo=False)
     except Exception as e:
         print("chart load skipped:", e)
     cr.commit()
