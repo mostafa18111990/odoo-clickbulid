@@ -71,9 +71,10 @@
             <section class="py-5" style="margin-top:-1rem;"><div class="container">
                 <div class="row g-4 justify-content-center align-items-stretch">
                     <t t-foreach="plans" t-as="plan">
-                        <t t-set="monthly_price" t-value="'%.0f' % plan.monthly_price"/>
-                        <t t-set="yearly_per_month" t-value="'%.0f' % (plan.get_effective_yearly_price() / 12)"/>
-                        <t t-set="yearly_total" t-value="'%.0f' % plan.get_effective_yearly_price()"/>
+                        <t t-set="is_per_user" t-value="plan.pricing_mode == 'per_user' and plan.price_per_user > 0"/>
+                        <t t-set="monthly_price" t-value="'%.0f' % (plan.price_per_user if is_per_user else plan.monthly_price)"/>
+                        <t t-set="yearly_per_month" t-value="'%.0f' % ((plan.price_per_user * 10 / 12) if is_per_user else (plan.get_effective_yearly_price() / 12))"/>
+                        <t t-set="yearly_total" t-value="'%.0f' % ((plan.price_per_user * 10) if is_per_user else plan.get_effective_yearly_price())"/>
                         <!-- The toggle above hides cards whose edition doesn't match. -->
                         <div t-attf-class="col-lg-4 col-md-6 cb-pricing-col"
                              t-att-data-edition="plan.edition or 'community'"
@@ -103,20 +104,36 @@
                                           t-att-data-monthly="monthly_price"
                                           t-att-data-yearly="yearly_per_month"
                                           t-esc="monthly_price"/>
-                                    <t t-set="suffix_text" t-value="'ريال / شهر' if lang_is_ar else 'SAR / month'"/>
+                                    <t t-if="is_per_user">
+                                        <t t-set="suffix_text" t-value="'ريال / مستخدم / شهرياً' if lang_is_ar else 'SAR / user / month'"/>
+                                    </t>
+                                    <t t-else="">
+                                        <t t-set="suffix_text" t-value="'ريال / شهر' if lang_is_ar else 'SAR / month'"/>
+                                    </t>
                                     <span class="price-suffix js-price-suffix"
                                           t-att-data-monthly-text="suffix_text"
                                           t-att-data-yearly-text="suffix_text"
                                           t-esc="suffix_text"/>
                                 </div>
+                                <div t-if="is_per_user" class="text-center small text-muted mb-2">
+                                    <t t-if="lang_is_ar">اختر عدد المستخدمين عند التسجيل — تدفع فقط مقابل ما تحتاجه</t>
+                                    <t t-else="">Pick your user count at signup — pay only for what you need</t>
+                                </div>
                                 <div class="js-yearly-note text-center small text-success mb-3" style="display:none;">
-                                    <t t-if="lang_is_ar">يُحصَّل سنوياً: <strong t-esc="yearly_total"/> ريال</t>
-                                    <t t-else="">Billed yearly: <strong t-esc="yearly_total"/> SAR</t>
+                                    <t t-if="lang_is_ar">يُحصَّل سنوياً: <strong t-esc="yearly_total"/> ريال<t t-if="is_per_user"> / مستخدم</t> (شهران مجاناً)</t>
+                                    <t t-else="">Billed yearly: <strong t-esc="yearly_total"/> SAR<t t-if="is_per_user"> / user</t> (2 months free)</t>
                                 </div>
 
                                 <ul class="list-unstyled mb-4">
-                                    <li><i class="fa fa-check me-2"/><strong t-esc="plan.max_users"/>
-                                        <t t-if="lang_is_ar"> مستخدمون</t><t t-else=""> users</t></li>
+                                    <li><i class="fa fa-check me-2"/>
+                                        <t t-if="plan.max_users >= 9999">
+                                            <t t-if="lang_is_ar"><strong>مستخدمون غير محدودين</strong></t>
+                                            <t t-else=""><strong>Unlimited users</strong></t>
+                                        </t>
+                                        <t t-else="">
+                                            <t t-if="lang_is_ar">حتى <strong t-esc="plan.max_users"/> مستخدمين</t>
+                                            <t t-else="">Up to <strong t-esc="plan.max_users"/> users</t>
+                                        </t></li>
                                     <li><i class="fa fa-check me-2"/><strong t-esc="round(plan.max_storage_mb/1024, 1)"/>
                                         <t t-if="lang_is_ar"> جيجابايت تخزين</t><t t-else=""> GB storage</t></li>
                                     <li><i class="fa fa-check me-2"/><strong t-esc="plan.max_companies"/>
@@ -218,14 +235,24 @@
                                 <td class="text-start fw-bold">
                                     <t t-if="lang_is_ar">السعر الشهري</t><t t-else="">Monthly price</t></td>
                                 <t t-foreach="plans" t-as="p">
-                                    <td><strong t-esc="'%.0f' % p.monthly_price"/>
-                                        <t t-if="lang_is_ar"> ريال</t><t t-else=""> SAR</t></td>
+                                    <td>
+                                        <t t-if="p.pricing_mode == 'per_user' and p.price_per_user > 0">
+                                            <strong t-esc="'%.0f' % p.price_per_user"/>
+                                            <t t-if="lang_is_ar"> ريال/مستخدم</t><t t-else=""> SAR/user</t>
+                                        </t>
+                                        <t t-else="">
+                                            <strong t-esc="'%.0f' % p.monthly_price"/>
+                                            <t t-if="lang_is_ar"> ريال</t><t t-else=""> SAR</t>
+                                        </t>
+                                    </td>
                                 </t>
                             </tr>
                             <tr>
                                 <td class="text-start fw-bold">
                                     <t t-if="lang_is_ar">عدد المستخدمين</t><t t-else="">Users</t></td>
-                                <t t-foreach="plans" t-as="p"><td><strong t-esc="p.max_users"/></td></t>
+                                <t t-foreach="plans" t-as="p">
+                                    <td><strong t-esc="'∞' if p.max_users >= 9999 else p.max_users"/></td>
+                                </t>
                             </tr>
                             <tr>
                                 <td class="text-start fw-bold">

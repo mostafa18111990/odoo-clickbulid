@@ -394,17 +394,28 @@
                                             </div>
                                         </t>
                                         <h3 t-esc="plan.name"/>
+                                        <t t-set="home_per_user" t-value="plan.pricing_mode == 'per_user' and plan.price_per_user > 0"/>
                                         <div class="cb-v2-plan-price">
-                                            <strong t-esc="'%.0f' % plan.monthly_price"/>
+                                            <strong t-esc="'%.0f' % (plan.price_per_user if home_per_user else plan.monthly_price)"/>
                                             <span>
-                                                <t t-if="lang_is_ar">ريال / شهر</t><t t-else="">SAR / month</t>
+                                                <t t-if="home_per_user">
+                                                    <t t-if="lang_is_ar">ريال / مستخدم / شهرياً</t><t t-else="">SAR / user / month</t>
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-if="lang_is_ar">ريال / شهر</t><t t-else="">SAR / month</t>
+                                                </t>
                                             </span>
                                         </div>
                                         <ul>
                                             <li>
                                                 <i class="fa fa-check"/>
-                                                <t t-esc="plan.max_users"/>
-                                                <t t-if="lang_is_ar"> مستخدمين</t><t t-else=""> Users</t>
+                                                <t t-if="plan.max_users >= 9999">
+                                                    <t t-if="lang_is_ar">مستخدمون غير محدودين</t><t t-else="">Unlimited users</t>
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-if="lang_is_ar">حتى <t t-esc="plan.max_users"/> مستخدمين</t>
+                                                    <t t-else="">Up to <t t-esc="plan.max_users"/> users</t>
+                                                </t>
                                             </li>
                                             <li>
                                                 <i class="fa fa-check"/>

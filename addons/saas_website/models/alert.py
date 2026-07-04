@@ -54,16 +54,50 @@ class SaasAlert(models.Model):
     def cron_check_platform_health(self):
         """Run the platform health checks and raise alerts for failures.
 
-        Lives here (not inline in the ir.cron code) because server-action
-        code runs in safe_eval, where import statements are forbidden.
+        Self-contained: runs on `self.env` (cron context has no HTTP request,
+        so the request-bound HealthCheck/AlertNotifier services can't be used
+        here) and only checks things reachable from inside the container.
         """
-        from odoo.addons.saas_website.services.error_handler import HealthCheck
-        from odoo.addons.saas_website.services.alert_notifier import AlertNotifier
-        status = HealthCheck.get_platform_status()
-        if not status.get('healthy'):
-            for check_name, result in status.get('checks', {}).items():
-                if not result.get('ok'):
-                    AlertNotifier.notify_error(
-                        f'HEALTH_CHECK_{check_name.upper()}',
-                        result.get('details'), 'critical',
-                        {'check': check_name})
+        import os
+        failures = []
+
+        # 1. Database connectivity (our own cursor must answer).
+        try:
+            self.env.cr.execute('SELECT 1')
+        except Exception as e:
+            failures.append(('HEALTH_CHECK_DATABASE', f'Master DB query failed: {e}'))
+
+        # 2. Provisioning queue: failed requests or requests stuck > 15 min.
+        req_dir = '/mnt/cert-requests'
+        try:
+            if os.path.isdir(req_dir):
+                import time
+                now = time.time()
+                errors = [f for f in os.listdir(req_dir) if f.endswith('.error')]
+                stale = [f for f in os.listdir(req_dir)
+                         if f.endswith('.req') and now - os.path.getmtime(os.path.join(req_dir, f)) > 900]
+                if errors:
+                    failures.append(('HEALTH_CHECK_PROVISIONING_QUEUE',
+                                     f'Failed requests: {", ".join(sorted(errors)[:10])}'))
+                if stale:
+                    failures.append(('HEALTH_CHECK_PROVISIONING_QUEUE',
+                                     f'Requests stuck >15min (sweeper down?): {", ".join(sorted(stale)[:10])}'))
+        except Exception as e:
+            failures.append(('HEALTH_CHECK_PROVISIONING_QUEUE', f'Queue check failed: {e}'))
+
+        # 3. Disk space on the data volume.
+        try:
+            st = os.statvfs('/var/lib/odoo')
+            free_pct = st.f_bavail / st.f_blocks * 100
+            if free_pct < 10:
+                failures.append(('HEALTH_CHECK_DISK',
+                                 f'Data volume nearly full: {free_pct:.1f}% free'))
+        except Exception:
+            pass
+
+        Alert = self.sudo()
+        for code, message in failures:
+            # Don't spam: skip if an identical unacknowledged alert exists.
+            if not Alert.search_count([('code', '=', code), ('acknowledged', '=', False)]):
+                Alert.create({'code': code, 'message': message, 'severity': 'critical'})
+        return {'healthy': not failures, 'failures': len(failures)}
