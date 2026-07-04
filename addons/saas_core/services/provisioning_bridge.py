@@ -283,6 +283,10 @@ class ProvisioningBridgeService:
         # customers don't have to re-type the address.
         if 'saas_tenant_login_helper' not in modules:
             modules.append('saas_tenant_login_helper')
+        # Always install the user-limit guard — enforces the plan's max_users
+        # inside the tenant (reads the saas.max_users param set below).
+        if 'saas_user_limit' not in modules:
+            modules.append('saas_user_limit')
         payload = {
             'subdomain': sub, 'tenant_id': tenant.id,
             'admin_email': tenant.customer_email,
@@ -296,6 +300,9 @@ class ProvisioningBridgeService:
             'industry': getattr(tenant, 'industry', '') or '',
             'admin_password': admin_password,
             'plan_code': tenant.plan_id.code if tenant.plan_id else 'starter',
+            # Plan seat limit — the host sweeper writes it into the tenant's
+            # saas.max_users param, enforced by the saas_user_limit module.
+            'max_users': (tenant.plan_id.max_users if tenant.plan_id else 0) or 0,
             'modules': modules,
             'language': 'ar_001',
             # NEW — host sweeper routes the docker exec to the right container

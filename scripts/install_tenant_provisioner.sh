@@ -37,6 +37,7 @@ ADMIN_PASSWORD=$(read_json admin_password)
 COMPANY=$(read_json company_name)
 COMPANY_EMAIL=$(read_json company_email)
 COMPANY_PHONE=$(read_json company_phone)
+MAX_USERS=$(read_json max_users)
 LANG=$(read_json language)
 EDITION=$(read_json edition)
 COUNTRY=$(read_json customer_country)
@@ -150,6 +151,7 @@ docker exec \
     -e SAAS_COMPANY_PHONE="$COMPANY_PHONE" \
     -e SAAS_COUNTRY="${COUNTRY:-SA}" \
     -e SAAS_CLONED="$CLONED" \
+    -e SAAS_MAX_USERS="${MAX_USERS:-0}" \
     "$ODOO_CONTAINER" python3 -c '
 import os, odoo
 from odoo.tools import config
@@ -167,6 +169,10 @@ with reg.cursor() as cr:
         icp.set_param("database.uuid", str(uuid.uuid4()))
         icp.set_param("database.secret", pysecrets.token_hex(16))
         icp.set_param("database.create_date", ofields.Datetime.now())
+    # Plan seat limit, enforced in-tenant by the saas_user_limit module.
+    max_users = (os.environ.get("SAAS_MAX_USERS") or "0").strip()
+    if max_users.isdigit() and int(max_users) > 0:
+        env["ir.config_parameter"].sudo().set_param("saas.max_users", max_users)
     admin = env["res.users"].browse(2)
     admin.write({
         "login": os.environ["SAAS_ADMIN_EMAIL"],

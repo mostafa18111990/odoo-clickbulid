@@ -23,7 +23,7 @@ LOG=/var/log/saas-template-build.log
 # industry bundles + the Saudi accounting stack every tenant gets anyway.
 # Sector-only apps (point_of_sale, fleet, mrp, project, website_sale, medical
 # suite, ...) are NOT here — they install as a small delta after cloning.
-CORE_MODULES="base,web,mail,contacts,calendar,account,base_accounting_kit,l10n_sa,l10n_sa_edi,sale_management,purchase,stock,crm,hr,hr_holidays,hr_attendance,web_responsive,web_dark_mode,saas_tenant_login_helper"
+CORE_MODULES="base,web,mail,contacts,calendar,account,base_accounting_kit,l10n_sa,l10n_sa_edi,sale_management,purchase,stock,crm,hr,hr_holidays,hr_attendance,web_responsive,web_dark_mode,saas_tenant_login_helper,saas_user_limit"
 
 echo "$(date -Is) === building template $TEMPLATE_DB ===" | tee -a "$LOG"
 
