@@ -35,4 +35,19 @@
     <record id="saas_tenant_manager.action_saas_tenant" model="ir.actions.act_window">
         <field name="context">{'search_default_filter_all_live': 1}</field>
     </record>
+
+    <!-- Show the stored tenant admin password in clear text so the platform
+         admin can actually read/copy it. The base form masks it with
+         password="True" which renders unreadable dots with no reveal option. -->
+    <record id="view_saas_tenant_form_inherit_credentials" model="ir.ui.view">
+        <field name="name">saas.tenant.form.inherit.credentials</field>
+        <field name="model">saas.tenant</field>
+        <field name="inherit_id" ref="saas_tenant_manager.view_saas_tenant_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='admin_password']" position="attributes">
+                <attribute name="password"></attribute>
+                <attribute name="widget">CopyClipboardChar</attribute>
+            </xpath>
+        </field>
+    </record>
 </odoo>
