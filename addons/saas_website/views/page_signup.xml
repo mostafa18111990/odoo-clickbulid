@@ -106,7 +106,7 @@
                                 <div class="input-group">
                                     <button type="button" class="btn btn-outline-secondary" id="seatMinus">−</button>
                                     <input type="number" name="user_count" id="userCountInput"
-                                           class="form-control text-center fw-bold" min="1" max="200" value="3"/>
+                                           class="form-control text-center fw-bold" min="1" max="500" value="3"/>
                                     <button type="button" class="btn btn-outline-secondary" id="seatPlus">+</button>
                                 </div>
                                 <div class="mt-2 p-2 rounded text-center fw-bold" id="seatPriceBox"
