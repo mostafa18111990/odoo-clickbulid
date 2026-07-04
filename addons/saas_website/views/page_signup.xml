@@ -33,8 +33,8 @@
                                         <i class="fa fa-cube d-block mb-2" style="font-size:1.4rem; color:#475569;"/>
                                         <strong class="d-block">Community</strong>
                                         <small class="text-muted">
-                                            <t t-if="lang_is_ar">مفتوح المصدر · من 149 ريال</t>
-                                            <t t-else="">Open source · from 149 SAR</t>
+                                            <t t-if="lang_is_ar">مفتوح المصدر · من 99 ريال</t>
+                                            <t t-else="">Open source · from 99 SAR</t>
                                         </small>
                                     </label>
                                     <label t-attf-class="flex-fill p-3 border rounded-3 text-center signup-edition-card #{'active' if default_ed == 'enterprise' else ''}"
