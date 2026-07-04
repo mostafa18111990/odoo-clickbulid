@@ -2,14 +2,17 @@
 <odoo>
     <data noupdate="1">
 
+        <!-- Trial ends (day 14) → suspend IMMEDIATELY: nginx swaps the tenant
+             for a bilingual "renew now" page. Data stays intact; payment
+             reactivates instantly. -->
         <record id="rule_trial_to_pending" model="saas.lifecycle.rule">
-            <field name="name">Trial Expired -> Pending Payment</field>
+            <field name="name">Trial Expired -> Suspend (service stopped)</field>
             <field name="sequence">10</field>
             <field name="from_state">trial</field>
             <field name="delay_hours">0</field>
             <field name="delay_type">since_trial_end</field>
             <field name="action">transition</field>
-            <field name="to_state">pending_payment</field>
+            <field name="to_state">suspended</field>
             <field name="send_email" eval="False"/>
             <field name="active" eval="True"/>
         </record>
@@ -22,6 +25,21 @@
             <field name="delay_type">since_state_entry</field>
             <field name="action">transition</field>
             <field name="to_state">suspended</field>
+            <field name="send_email" eval="False"/>
+            <field name="active" eval="True"/>
+        </record>
+
+        <!-- Suspended 15 days without payment → PERMANENT deletion (the
+             destroyer keeps a final backup in /opt/backups/deleted). Paying
+             moves the tenant to active, which resets this timer. -->
+        <record id="rule_suspended_to_deleted" model="saas.lifecycle.rule">
+            <field name="name">Suspended 15 Days Unpaid -> Delete Permanently</field>
+            <field name="sequence">25</field>
+            <field name="from_state">suspended</field>
+            <field name="delay_hours">360</field>
+            <field name="delay_type">since_state_entry</field>
+            <field name="action">transition</field>
+            <field name="to_state">deleted</field>
             <field name="send_email" eval="False"/>
             <field name="active" eval="True"/>
         </record>

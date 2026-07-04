@@ -263,8 +263,37 @@ cat > "$SWEEPER" << 'SWEEP'
 set -e
 REQ_DIR=/opt/odoo-saas/cert-requests
 LOG=/var/log/saas-cert-sweeper.log
+NGINX_TENANTS=/opt/odoo-saas/nginx-tenants
 
 shopt -s nullglob
+
+nginx_reload() {
+    if docker exec odoo_saas_nginx nginx -t >/dev/null 2>&1; then
+        docker exec odoo_saas_nginx nginx -s reload >/dev/null 2>&1
+        return 0
+    fi
+    return 1
+}
+
+# Write a "subscription expired" vhost for a suspended tenant. Same certs
+# and server_name as the live conf, but every request gets a bilingual
+# renewal page instead of the Odoo proxy. The tenant DB stays untouched.
+write_suspended_conf() {
+    local sub="$1"
+    cat <<NGINXBLOCK
+server {
+    listen 443 ssl http2;
+    server_name $sub.odoo.clickbulid.com;
+    ssl_certificate     /etc/letsencrypt/live/$sub.odoo.clickbulid.com/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$sub.odoo.clickbulid.com/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    location / {
+        default_type "text/html; charset=utf-8";
+        return 402 "<!doctype html><html dir=\"rtl\" lang=\"ar\"><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"><title>الاشتراك منتهي — Subscription Expired</title><style>body{font-family:Tahoma,Arial,sans-serif;background:#f5f3ff;display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}.card{background:#fff;border-radius:16px;box-shadow:0 10px 40px rgba(109,40,217,.12);padding:48px;max-width:520px;text-align:center;margin:16px}h1{color:#6d28d9;font-size:1.6rem;margin:0 0 12px}p{color:#475569;line-height:1.9}a.btn{display:inline-block;background:#6d28d9;color:#fff;text-decoration:none;padding:14px 36px;border-radius:10px;font-weight:bold;margin-top:18px}small{color:#94a3b8;display:block;margin-top:22px}</style></head><body><div class=\"card\"><div style=\"font-size:3rem\">⏸️</div><h1>انتهت الفترة التجريبية / الاشتراك</h1><p>تم إيقاف مساحة العمل الخاصة بك مؤقتاً لعدم تجديد الاشتراك.<br>بياناتك محفوظة بالكامل — جدّد الآن لاستعادة الوصول فوراً.</p><p style=\"direction:ltr\">Your workspace is paused because the subscription was not renewed.<br>Your data is safe — renew now to restore access instantly.</p><a class=\"btn\" href=\"https://odoo.clickbulid.com/pricing\">جدّد اشتراكك الآن — Renew Now</a><small>ClickBuild · support@clickbuild.com</small></div></body></html>";
+    }
+}
+NGINXBLOCK
+}
 
 # --- Tenant destruction (runs first so delete-then-recreate works) ---
 for req in "$REQ_DIR"/*.delete.req; do
@@ -273,12 +302,50 @@ for req in "$REQ_DIR"/*.delete.req; do
     [ -z "$sub" ] && { rm -f "$req"; continue; }
     echo "$(date -Is) sweeping delete $sub" >> "$LOG"
     if bash /usr/local/bin/saas-tenant-destroyer.sh "$req" >> "$LOG" 2>&1; then
-        rm -f "$req"
+        rm -f "$req" "$NGINX_TENANTS/$sub.conf.live-orig"
         echo "$(date -Is) DELETE DONE $sub" >> "$LOG"
     else
         mv "$req" "$REQ_DIR/$sub.delete.error"
         echo "$(date -Is) DELETE ERROR $sub" >> "$LOG"
     fi
+done
+
+# --- Tenant suspension (swap vhost for the renewal page) ---
+for req in "$REQ_DIR"/*.suspend.req; do
+    sub=$(basename "$req" .suspend.req)
+    sub=$(echo "$sub" | tr -cd 'a-z0-9-')
+    [ -z "$sub" ] && { rm -f "$req"; continue; }
+    conf="$NGINX_TENANTS/$sub.conf"
+    if [ -f "$conf" ] && [ ! -f "$conf.live-orig" ]; then
+        cp "$conf" "$conf.live-orig"
+        write_suspended_conf "$sub" > "$conf"
+        if nginx_reload; then
+            echo "$(date -Is) SUSPENDED $sub" >> "$LOG"
+        else
+            mv "$conf.live-orig" "$conf"
+            nginx_reload || true
+            echo "$(date -Is) SUSPEND ERROR $sub (nginx test failed, conf restored)" >> "$LOG"
+        fi
+    else
+        echo "$(date -Is) SUSPEND skipped for $sub (no conf or already suspended)" >> "$LOG"
+    fi
+    rm -f "$req"
+done
+
+# --- Tenant resume (restore the original proxy vhost) ---
+for req in "$REQ_DIR"/*.resume.req; do
+    sub=$(basename "$req" .resume.req)
+    sub=$(echo "$sub" | tr -cd 'a-z0-9-')
+    [ -z "$sub" ] && { rm -f "$req"; continue; }
+    conf="$NGINX_TENANTS/$sub.conf"
+    if [ -f "$conf.live-orig" ]; then
+        mv "$conf.live-orig" "$conf"
+        nginx_reload || true
+        echo "$(date -Is) RESUMED $sub" >> "$LOG"
+    else
+        echo "$(date -Is) RESUME skipped for $sub (not suspended)" >> "$LOG"
+    fi
+    rm -f "$req"
 done
 
 # --- Tenant DB provisioning (priority) ---
@@ -298,8 +365,11 @@ done
 
 # --- HTTPS cert provisioning (after DB exists) ---
 for req in "$REQ_DIR"/*.req; do
-    # Skip .provision.req which we matched above already
+    # Skip request types handled by the dedicated loops above
     [[ "$req" == *.provision.req ]] && continue
+    [[ "$req" == *.suspend.req ]] && continue
+    [[ "$req" == *.resume.req ]] && continue
+    [[ "$req" == *.delete.req ]] && continue
     sub=$(basename "$req" .req)
     sub=$(echo "$sub" | tr -cd 'a-z0-9-')
     [ -z "$sub" ] && { rm -f "$req"; continue; }
@@ -307,6 +377,15 @@ for req in "$REQ_DIR"/*.req; do
     if bash /opt/odoo-saas/provision_tenant_cert.sh "$sub" >> "$LOG" 2>&1; then
         mv "$req" "$REQ_DIR/$sub.done"
         echo "$(date -Is) CERT DONE $sub" >> "$LOG"
+        # provision_tenant_cert.sh regenerates a LIVE proxy conf — if the
+        # tenant is currently suspended, re-apply the block page so a cert
+        # renewal can never silently unblock an unpaid tenant.
+        if [ -f "$NGINX_TENANTS/$sub.conf.live-orig" ]; then
+            cp "$NGINX_TENANTS/$sub.conf" "$NGINX_TENANTS/$sub.conf.live-orig"
+            write_suspended_conf "$sub" > "$NGINX_TENANTS/$sub.conf"
+            nginx_reload || true
+            echo "$(date -Is) CERT: re-applied suspension for $sub" >> "$LOG"
+        fi
     else
         mv "$req" "$REQ_DIR/$sub.error"
         echo "$(date -Is) CERT ERROR $sub" >> "$LOG"

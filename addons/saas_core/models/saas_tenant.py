@@ -11,7 +11,9 @@ ALLOWED_TRANSITIONS = {
     'pending_payment': ['active', 'trial', 'cancelled'],
     'active': ['grace_period', 'suspended', 'cancelled'],
     'grace_period': ['active', 'suspended', 'cancelled'],
-    'suspended': ['active', 'cancelled'],
+    # 'deleted' allowed so the lifecycle engine can auto-purge suspended
+    # tenants that never paid (final backup is kept by the destroyer).
+    'suspended': ['active', 'cancelled', 'deleted'],
     'cancelled': ['archived'],
     'archived': ['deleted', 'active'],
     'deleted': [],
@@ -184,8 +186,12 @@ class SaasTenant(models.Model):
 
     def action_activate(self):
         now = fields.Datetime.now()
+        was_suspended = self.state == 'suspended'
         self._do_state_change('active', {'activated_at': self.activated_at or now,
                                          'payment_retry_count': 0, 'last_payment_date': fields.Date.today()})
+        if was_suspended:
+            # Physically restore the tenant's nginx vhost (was blocked).
+            self._queue_physical_flag('activate')
         return {'type': 'ir.actions.client', 'tag': 'display_notification',
                 'params': {'type': 'success', 'message': _('Tenant activated successfully.')}}
 
@@ -198,8 +204,23 @@ class SaasTenant(models.Model):
 
     def action_suspend(self):
         self._do_state_change('suspended', {'suspended_at': fields.Datetime.now()})
+        # Physically block the tenant: nginx swaps the vhost for a bilingual
+        # "subscription expired — renew to reactivate" page within 2 minutes.
+        self._queue_physical_flag('suspend')
         return {'type': 'ir.actions.client', 'tag': 'display_notification',
                 'params': {'type': 'warning', 'message': _('Tenant suspended.')}}
+
+    def _queue_physical_flag(self, kind):
+        from odoo.addons.saas_core.services.provisioning_bridge import ProvisioningBridgeService
+        bridge = ProvisioningBridgeService(self.env)
+        for tenant in self:
+            try:
+                if kind == 'suspend':
+                    bridge.suspend(tenant)
+                else:
+                    bridge.activate(tenant)
+            except Exception as e:
+                _logger.error('Failed to queue %s for %s: %s', kind, tenant.subdomain, e)
 
     def action_cancel(self):
         self._do_state_change('cancelled', {'cancelled_at': fields.Datetime.now()})

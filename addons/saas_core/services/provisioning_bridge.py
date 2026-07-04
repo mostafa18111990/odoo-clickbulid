@@ -198,6 +198,8 @@ class ProvisioningBridgeService:
             raise UserError(f'FastAPI error {e.response.status_code}: {body}')
 
     def suspend(self, tenant):
+        if not self.config.use_api_bridge:
+            return self._queue_local_flag(tenant, 'suspend')
         if not tenant.api_instance_id:
             return
         try:
@@ -209,6 +211,8 @@ class ProvisioningBridgeService:
             _logger.error('Bridge suspend failed for %s: %s', tenant.subdomain, e)
 
     def activate(self, tenant):
+        if not self.config.use_api_bridge:
+            return self._queue_local_flag(tenant, 'resume')
         if not tenant.api_instance_id:
             return
         try:
@@ -218,6 +222,22 @@ class ProvisioningBridgeService:
             return resp.json()
         except Exception as e:
             _logger.error('Bridge activate failed for %s: %s', tenant.subdomain, e)
+
+    def _queue_local_flag(self, tenant, kind):
+        """Queue a suspend/resume request for the host sweeper.
+
+        suspend → nginx serves a bilingual "subscription expired" page in
+        place of the tenant (the DB stays intact); resume → the original
+        proxy config is restored. Both take effect within 2 minutes.
+        """
+        sub = (tenant.subdomain or '').strip().lower()
+        if not SUBDOMAIN_RE.match(sub) or not os.path.isdir(PROVISION_REQUEST_DIR):
+            return
+        req_path = os.path.join(PROVISION_REQUEST_DIR, f'{sub}.{kind}.req')
+        with open(req_path, 'w') as f:
+            json.dump({'subdomain': sub, 'tenant_id': tenant.id}, f)
+        _logger.info('Tenant %s queued for %s', sub, kind)
+        return {'status': f'{kind}_queued', 'subdomain': sub}
 
     def delete(self, tenant):
         if not self.config.use_api_bridge:
