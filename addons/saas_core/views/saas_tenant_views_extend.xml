@@ -48,6 +48,14 @@
                 <attribute name="password"></attribute>
                 <attribute name="widget">CopyClipboardChar</attribute>
             </xpath>
+            <xpath expr="//header" position="inside">
+                <button name="action_destroy_permanently" type="object"
+                        string="🗑 حذف نهائي / Delete Permanently"
+                        class="btn btn-danger"
+                        groups="saas_tenant_manager.group_saas_admin"
+                        invisible="state == 'deleted'"
+                        confirm="⚠️ سيتم حذف قاعدة بيانات العميل وملفاته ودومينه نهائياً ولا يمكن تشغيلها مرة أخرى (تُحفظ نسخة احتياطية أخيرة في /opt/backups/deleted). هل أنت متأكد؟ — This PERMANENTLY destroys the tenant database, files, domain and SSL cert. A final backup is kept in /opt/backups/deleted. Continue?"/>
+            </xpath>
         </field>
     </record>
 </odoo>

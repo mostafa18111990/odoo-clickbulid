@@ -213,6 +213,39 @@ class SaasTenant(models.Model):
         self._do_state_change('deleted', {'deleted_at': fields.Datetime.now(), 'active': False})
         self._publish_event('tenant.deleted', {'tenant_id': self.id, 'subdomain': self.subdomain,
                                                'db_name': self.db_name})
+        self._queue_physical_destruction()
+
+    def _queue_physical_destruction(self):
+        """Ask the host sweeper to permanently destroy the tenant database
+        (final backup kept in /opt/backups/deleted, then dropdb + filestore +
+        nginx vhost + SSL cert removal)."""
+        from odoo.addons.saas_core.services.provisioning_bridge import ProvisioningBridgeService
+        bridge = ProvisioningBridgeService(self.env)
+        for tenant in self:
+            try:
+                bridge.delete(tenant)
+            except Exception as e:
+                _logger.error('Failed to queue destruction for %s: %s', tenant.subdomain, e)
+
+    def action_destroy_permanently(self):
+        """One-click hard delete from any state (admin only, confirmed in the
+        UI). Marks the record deleted and queues physical destruction of the
+        tenant database — it can never be started again."""
+        for tenant in self:
+            if tenant.state != 'deleted':
+                tenant.with_context(bypass_fsm=True).write({
+                    'state': 'deleted',
+                    'deleted_at': fields.Datetime.now(),
+                    'active': False,
+                })
+                tenant._publish_event('tenant.deleted', {
+                    'tenant_id': tenant.id, 'subdomain': tenant.subdomain,
+                    'db_name': tenant.db_name, 'hard_delete': True})
+        self._queue_physical_destruction()
+        return {'type': 'ir.actions.client', 'tag': 'display_notification',
+                'params': {'type': 'warning', 'sticky': False,
+                           'message': _('Tenant destruction queued — the database '
+                                        'will be permanently removed within 2 minutes.')}}
 
     def action_pending_payment(self):
         self._do_state_change('pending_payment', {})

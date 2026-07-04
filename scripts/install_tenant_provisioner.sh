@@ -266,6 +266,21 @@ LOG=/var/log/saas-cert-sweeper.log
 
 shopt -s nullglob
 
+# --- Tenant destruction (runs first so delete-then-recreate works) ---
+for req in "$REQ_DIR"/*.delete.req; do
+    sub=$(basename "$req" .delete.req)
+    sub=$(echo "$sub" | tr -cd 'a-z0-9-')
+    [ -z "$sub" ] && { rm -f "$req"; continue; }
+    echo "$(date -Is) sweeping delete $sub" >> "$LOG"
+    if bash /usr/local/bin/saas-tenant-destroyer.sh "$req" >> "$LOG" 2>&1; then
+        rm -f "$req"
+        echo "$(date -Is) DELETE DONE $sub" >> "$LOG"
+    else
+        mv "$req" "$REQ_DIR/$sub.delete.error"
+        echo "$(date -Is) DELETE ERROR $sub" >> "$LOG"
+    fi
+done
+
 # --- Tenant DB provisioning (priority) ---
 for req in "$REQ_DIR"/*.provision.req; do
     sub=$(basename "$req" .provision.req)

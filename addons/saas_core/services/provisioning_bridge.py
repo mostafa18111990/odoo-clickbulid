@@ -220,6 +220,9 @@ class ProvisioningBridgeService:
             _logger.error('Bridge activate failed for %s: %s', tenant.subdomain, e)
 
     def delete(self, tenant):
+        if not self.config.use_api_bridge:
+            # Local mode: queue a destruction request for the host sweeper.
+            return self._queue_local_delete(tenant)
         if not tenant.api_instance_id:
             return
         try:
@@ -229,6 +232,30 @@ class ProvisioningBridgeService:
             return resp.json()
         except Exception as e:
             _logger.error('Bridge delete failed for %s: %s', tenant.subdomain, e)
+
+    def _queue_local_delete(self, tenant):
+        """Queue permanent tenant destruction for the host sweeper.
+
+        The sweeper runs saas-tenant-destroyer.sh which takes a final backup
+        into /opt/backups/deleted, then drops the database, removes the
+        filestore from both Odoo volumes, removes the nginx vhost, revokes
+        the SSL cert and cleans the request files. Irreversible from the
+        platform's point of view.
+        """
+        sub = (tenant.subdomain or '').strip().lower()
+        if not SUBDOMAIN_RE.match(sub):
+            raise UserError(f'Invalid subdomain: {sub!r}')
+        if not os.path.isdir(PROVISION_REQUEST_DIR):
+            raise UserError(
+                f'Local provisioner not installed (missing {PROVISION_REQUEST_DIR}).')
+        req_path = os.path.join(PROVISION_REQUEST_DIR, f'{sub}.delete.req')
+        payload = {'subdomain': sub, 'tenant_id': tenant.id,
+                   'edition': tenant.edition or 'community'}
+        with open(req_path, 'w') as f:
+            json.dump(payload, f, ensure_ascii=False)
+        _logger.warning('Tenant DESTRUCTION queued for %s (tenant %s)', sub, tenant.id)
+        return {'status': 'delete_queued', 'subdomain': sub,
+                'message': 'Tenant database will be destroyed within 2 minutes.'}
 
     def _queue_local_provision(self, tenant):
         """Write a JSON request file the host sweeper consumes.
