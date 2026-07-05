@@ -419,6 +419,10 @@ class SaasTenant(models.Model):
         bridge = ProvisioningBridgeService(self.env)
         for tenant in self:
             try:
-                bridge.sync_seats(tenant)
+                if getattr(tenant, 'external_server_id', False):
+                    from odoo.addons.saas_external_server.services.remote_provisioning import RemoteProvisioningService
+                    RemoteProvisioningService(self.env).sync_seats(tenant)
+                else:
+                    bridge.sync_seats(tenant)
             except Exception as e:
                 _logger.error('Failed to queue seats sync for %s: %s', tenant.subdomain, e)

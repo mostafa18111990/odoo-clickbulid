@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_remote_customer_wizard_form" model="ir.ui.view">
+        <field name="name">saas.remote.customer.wizard.form</field>
+        <field name="model">saas.remote.customer.wizard</field>
+        <field name="arch" type="xml">
+            <form string="New Customer on External Server">
+                <group string="1 — Server">
+                    <field name="server_mode" widget="radio"/>
+                    <field name="existing_server_id"
+                           invisible="server_mode != 'existing'"
+                           required="server_mode == 'existing'"
+                           options="{'no_create_edit': True}"/>
+                    <group invisible="server_mode != 'new'" col="4">
+                        <field name="new_server_name" required="server_mode == 'new'"/>
+                        <field name="host" required="server_mode == 'new'"/>
+                        <field name="ssh_user"/>
+                        <field name="ssh_port"/>
+                        <field name="auth_method" widget="radio"/>
+                        <field name="base_domain"/>
+                        <field name="ssh_private_key" password="True" colspan="4"
+                               invisible="auth_method != 'key'"
+                               placeholder="-----BEGIN OPENSSH PRIVATE KEY-----"/>
+                        <field name="ssh_password" password="True"
+                               invisible="auth_method != 'password'"/>
+                    </group>
+                    <field name="auto_install"
+                           invisible="server_mode != 'new'"/>
+                </group>
+                <group string="2 — Customer &amp; Company">
+                    <group>
+                        <field name="company_name"/>
+                        <field name="subdomain" placeholder="acme"/>
+                        <field name="customer_name"/>
+                        <field name="customer_email"/>
+                        <field name="phone"/>
+                    </group>
+                    <group>
+                        <field name="country"/>
+                        <field name="industry"/>
+                        <field name="plan_id"/>
+                        <field name="user_count"/>
+                    </group>
+                </group>
+                <footer>
+                    <button name="action_create_customer" type="object"
+                            string="🚀 Create &amp; Provision" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_remote_customer_wizard" model="ir.actions.act_window">
+        <field name="name">New Remote Customer</field>
+        <field name="res_model">saas.remote.customer.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="menu_remote_customer_wizard" name="New Remote Customer"
+              parent="saas_core.menu_saas_operations"
+              action="action_remote_customer_wizard" sequence="41"
+              groups="saas_tenant_manager.group_saas_admin"/>
+</odoo>

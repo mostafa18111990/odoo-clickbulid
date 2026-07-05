@@ -38,6 +38,8 @@ class RemoteProvisioningService:
             pass
         country = (getattr(tenant, 'customer_country', None) or 'SA').upper()[:2]
         modules += ACCOUNTING_MODULES + LOCALIZATION_MODULES.get(country, [])
+        # Seat-limit guard, same as the local platform tenants get.
+        modules.append('saas_user_limit')
         # De-dup, keep order.
         seen, out = set(), []
         for m in modules:
@@ -102,6 +104,9 @@ class RemoteProvisioningService:
             f'-e CC={shlex.quote(country)} {server.odoo_container} python3 -c {shlex.quote(py)}')
         server.run_ssh(env_prefix)
 
+        # Enforce the purchased seat count inside the remote tenant DB.
+        self._set_remote_seats(server, sub, tenant.effective_max_users())
+
         _logger.info('Remote provision done for %s on %s', sub, server.name)
         tenant.sudo().with_context(bypass_fsm=True).write({
             'api_instance_id': f'remote:{server.id}:{sub}',
@@ -143,6 +148,28 @@ class RemoteProvisioningService:
             '    }\n'
             '}\n'
         )
+
+    def _set_remote_seats(self, server, sub, limit):
+        """Write the seat limit into the remote tenant's saas.max_users param."""
+        py = (
+            "import os,odoo;from odoo.tools import config;"
+            "config.parse_config(['-c','/etc/odoo/odoo.conf']);"
+            "reg=odoo.modules.registry.Registry(os.environ['D']);"
+            "cr=reg.cursor();env=odoo.api.Environment(cr,1,{});"
+            "env['ir.config_parameter'].sudo().set_param('saas.max_users',os.environ['L']);"
+            "cr.commit();print('SEATS_OK')")
+        cmd = (f'docker exec -e D={shlex.quote(sub)} -e L={shlex.quote(str(int(limit)))} '
+               f'{server.odoo_container} python3 -c {shlex.quote(py)}')
+        server.run_ssh(cmd, raise_on_error=False)
+
+    def sync_seats(self, tenant):
+        """Push the tenant's current seat limit to the remote DB (admin edit)."""
+        server = tenant.external_server_id
+        sub = (tenant.subdomain or '').strip().lower()
+        if not server or not SUBDOMAIN_RE.match(sub):
+            return
+        self._set_remote_seats(server, sub, tenant.effective_max_users())
+        return {'status': 'seats_synced', 'subdomain': sub}
 
     def suspend(self, tenant):
         """Swap the remote nginx vhost for the renewal page (DB kept)."""

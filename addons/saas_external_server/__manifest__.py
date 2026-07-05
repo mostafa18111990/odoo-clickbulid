@@ -15,6 +15,7 @@ SSH, managed from the same SaaS backend as local tenants.
         'security/ir.model.access.csv',
         'views/saas_external_server_views.xml',
         'views/saas_tenant_deploy_views.xml',
+        'wizards/remote_customer_wizard_views.xml',
     ],
     'installable': True,
     'application': False,
