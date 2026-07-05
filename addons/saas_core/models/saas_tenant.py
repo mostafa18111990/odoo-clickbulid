@@ -188,6 +188,11 @@ class SaasTenant(models.Model):
         config = self.env['saas.config']._get_config()
         if self.state == 'lead':
             self.action_start_trial()
+        # Remote-hosted tenants (saas_external_server module) are provisioned
+        # on the customer's own server over SSH, not on this platform.
+        if getattr(self, 'external_server_id', False):
+            from odoo.addons.saas_external_server.services.remote_provisioning import RemoteProvisioningService
+            return RemoteProvisioningService(self.env).provision(self)
         if config.use_api_bridge:
             from odoo.addons.saas_core.services.provisioning_bridge import ProvisioningBridgeService
             return ProvisioningBridgeService(self.env).provision(self)
@@ -303,7 +308,11 @@ class SaasTenant(models.Model):
         bridge = ProvisioningBridgeService(self.env)
         for tenant in self:
             try:
-                bridge.delete(tenant)
+                if getattr(tenant, 'external_server_id', False):
+                    from odoo.addons.saas_external_server.services.remote_provisioning import RemoteProvisioningService
+                    RemoteProvisioningService(self.env).delete(tenant)
+                else:
+                    bridge.delete(tenant)
             except Exception as e:
                 _logger.error('Failed to queue destruction for %s: %s', tenant.subdomain, e)
 

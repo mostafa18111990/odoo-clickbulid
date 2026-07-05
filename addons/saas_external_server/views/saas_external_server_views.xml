@@ -1,0 +1,88 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_external_server_list" model="ir.ui.view">
+        <field name="name">saas.external.server.list</field>
+        <field name="model">saas.external.server</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state=='online'" decoration-danger="state in ('offline','error')">
+                <field name="name"/>
+                <field name="host"/>
+                <field name="ssh_user"/>
+                <field name="state"/>
+                <field name="tenant_count"/>
+                <field name="last_check"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_saas_external_server_form" model="ir.ui.view">
+        <field name="name">saas.external.server.form</field>
+        <field name="model">saas.external.server</field>
+        <field name="arch" type="xml">
+            <form string="External Server">
+                <header>
+                    <button name="action_test_connection" type="object"
+                            string="🔌 Test Connection" class="btn-primary"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,online"/>
+                </header>
+                <sheet>
+                    <div class="oe_title">
+                        <label for="name"/>
+                        <h1><field name="name" placeholder="Customer ACME server"/></h1>
+                    </div>
+                    <group>
+                        <group string="SSH Connection">
+                            <field name="host" placeholder="203.0.113.10"/>
+                            <field name="ssh_port"/>
+                            <field name="ssh_user"/>
+                            <field name="auth_method" widget="radio"/>
+                            <field name="ssh_private_key" password="True"
+                                   invisible="auth_method != 'key'"
+                                   placeholder="-----BEGIN OPENSSH PRIVATE KEY-----"/>
+                            <field name="ssh_key_passphrase" password="True"
+                                   invisible="auth_method != 'key'"/>
+                            <field name="ssh_password" password="True"
+                                   invisible="auth_method != 'password'"/>
+                        </group>
+                        <group string="Remote Stack">
+                            <field name="odoo_container"/>
+                            <field name="postgres_container"/>
+                            <field name="postgres_user"/>
+                            <field name="db_owner"/>
+                            <field name="base_domain"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Status" invisible="state == 'draft'">
+                        <field name="last_check" readonly="1"/>
+                        <field name="docker_info" readonly="1"/>
+                        <field name="last_error" readonly="1" invisible="not last_error"/>
+                    </group>
+                    <notebook>
+                        <page string="Tenants">
+                            <field name="tenant_ids" readonly="1">
+                                <list>
+                                    <field name="subdomain"/>
+                                    <field name="customer_email"/>
+                                    <field name="state"/>
+                                </list>
+                            </field>
+                        </page>
+                    </notebook>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_saas_external_server" model="ir.actions.act_window">
+        <field name="name">External Servers</field>
+        <field name="res_model">saas.external.server</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_saas_external_server" name="External Servers"
+              parent="saas_core.menu_saas_operations"
+              action="action_saas_external_server" sequence="40"
+              groups="saas_tenant_manager.group_saas_admin"/>
+</odoo>

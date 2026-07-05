@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Deployment target picker on the tenant form -->
+    <record id="view_saas_tenant_form_inherit_deploy" model="ir.ui.view">
+        <field name="name">saas.tenant.form.inherit.deploy</field>
+        <field name="model">saas.tenant</field>
+        <field name="inherit_id" ref="saas_tenant_manager.view_saas_tenant_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='subdomain']" position="after">
+                <field name="external_server_id"
+                       options="{'no_create_edit': True}"
+                       placeholder="ClickBuild platform (local)"/>
+                <field name="is_remote" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+
+    <!-- Show the deployment column + filter in the tenant list/search -->
+    <record id="view_saas_tenant_search_inherit_deploy" model="ir.ui.view">
+        <field name="name">saas.tenant.search.inherit.deploy</field>
+        <field name="model">saas.tenant</field>
+        <field name="inherit_id" ref="saas_tenant_manager.view_saas_tenant_search"/>
+        <field name="arch" type="xml">
+            <field name="subdomain" position="after">
+                <field name="external_server_id"/>
+                <filter name="filter_remote" string="Remote-hosted"
+                        domain="[('external_server_id', '!=', False)]"/>
+                <filter name="filter_local" string="Local (platform)"
+                        domain="[('external_server_id', '=', False)]"/>
+            </field>
+        </field>
+    </record>
+</odoo>

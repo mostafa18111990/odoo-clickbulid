@@ -7,6 +7,7 @@ USER root
 RUN pip3 install --break-system-packages --no-cache-dir \
     qifparse==0.5 \
     ofxparse==0.21 \
-    python-barcode
+    python-barcode \
+    paramiko
 
 USER odoo
