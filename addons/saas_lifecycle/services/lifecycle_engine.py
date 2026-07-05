@@ -41,10 +41,28 @@ class LifecycleEngine:
                     result='failed', description=f'Rule "{rule.name}" failed: {e}', rule=rule, error=str(e))
         return executed, skipped
 
+    # Rules that stop or destroy a tenant. For these we must NEVER guess the
+    # reference timestamp — a missing trial_ends_at/suspended_at must mean
+    # "skip", never "fall back to create_date and fire immediately". Falling
+    # back to create_date here is what mass-deleted tenants whose date field
+    # was momentarily blank.
+    _DESTRUCTIVE_TARGETS = {'suspended', 'cancelled', 'archived', 'deleted'}
+
     def _should_execute(self, rule, tenant, now):
         if not rule.matches_tenant(tenant):
             return False
-        ref = rule.get_tenant_entry_time(tenant) or tenant.saas_updated_at or tenant.create_date
+        ref = rule.get_tenant_entry_time(tenant)
+        is_destructive = rule.action == 'transition' and rule.to_state in self._DESTRUCTIVE_TARGETS
+        if ref is None:
+            if is_destructive:
+                # No trustworthy anchor date → refuse to stop/delete. Log it
+                # so a misconfigured tenant is visible instead of purged.
+                _logger.warning('Lifecycle: skipping destructive rule "%s" on %s '
+                                '— no reference date (%s)', rule.name, tenant.subdomain,
+                                rule.delay_type)
+                return False
+            # Non-destructive rules (reminders, win-back) may use a soft anchor.
+            ref = tenant.saas_updated_at or tenant.create_date
         if not ref:
             return False
         if (now - ref).total_seconds() / 3600 < rule.delay_hours:
