@@ -34,6 +34,7 @@ class SaasExternalServer(models.Model):
     # ── Remote stack layout (must mirror the ClickBuild docker stack) ───────
     odoo_container = fields.Char(string='Odoo Container', default='odoo_saas_app', required=True)
     postgres_container = fields.Char(string='Postgres Container', default='odoo_saas_postgres', required=True)
+    nginx_container = fields.Char(string='Nginx Container', default='odoo_saas_nginx', required=True)
     postgres_user = fields.Char(string='Postgres User', default='odoo', required=True)
     db_owner = fields.Char(string='DB Owner Role', default='odoo_community', required=True)
     base_domain = fields.Char(

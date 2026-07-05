@@ -279,10 +279,14 @@ class SaasTenant(models.Model):
         bridge = ProvisioningBridgeService(self.env)
         for tenant in self:
             try:
+                svc = bridge
+                if getattr(tenant, 'external_server_id', False):
+                    from odoo.addons.saas_external_server.services.remote_provisioning import RemoteProvisioningService
+                    svc = RemoteProvisioningService(self.env)
                 if kind == 'suspend':
-                    bridge.suspend(tenant)
+                    svc.suspend(tenant)
                 else:
-                    bridge.activate(tenant)
+                    svc.activate(tenant)
             except Exception as e:
                 _logger.error('Failed to queue %s for %s: %s', kind, tenant.subdomain, e)
 

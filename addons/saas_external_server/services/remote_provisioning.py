@@ -113,15 +113,73 @@ class RemoteProvisioningService:
                 'admin_password_one_time': admin_password,
                 'url': f'https://{sub}.{server.base_domain}'}
 
+    def _suspended_conf(self, server, sub):
+        """The nginx server block that replaces a suspended tenant's proxy
+        with a bilingual 'subscription expired' page (HTTP 402)."""
+        fqdn = f'{sub}.{server.base_domain}'
+        page = (
+            '<!doctype html><html dir=\\"rtl\\" lang=\\"ar\\"><head><meta charset=\\"utf-8\\">'
+            '<title>الاشتراك منتهي</title><style>body{font-family:Tahoma,Arial;background:#f5f3ff;'
+            'display:flex;align-items:center;justify-content:center;min-height:100vh;margin:0}'
+            '.c{background:#fff;border-radius:16px;padding:48px;max-width:520px;text-align:center;'
+            'box-shadow:0 10px 40px rgba(109,40,217,.12)}h1{color:#6d28d9}a{display:inline-block;'
+            'background:#6d28d9;color:#fff;text-decoration:none;padding:14px 36px;border-radius:10px;'
+            'font-weight:bold;margin-top:18px}</style></head><body><div class=\\"c\\">'
+            '<div style=\\"font-size:3rem\\">⏸️</div><h1>انتهت الفترة التجريبية / الاشتراك</h1>'
+            '<p>تم إيقاف مساحة العمل مؤقتاً. بياناتك محفوظة — جدّد الآن لاستعادة الوصول.</p>'
+            '<p style=\\"direction:ltr\\">Your workspace is paused. Your data is safe — renew to restore access.</p>'
+            f'<a href=\\"https://{server.base_domain}/pricing\\">جدّد الآن — Renew Now</a></div></body></html>'
+        )
+        return (
+            'server {\n'
+            '    listen 443 ssl http2;\n'
+            f'    server_name {fqdn};\n'
+            f'    ssl_certificate     /etc/letsencrypt/live/{fqdn}/fullchain.pem;\n'
+            f'    ssl_certificate_key /etc/letsencrypt/live/{fqdn}/privkey.pem;\n'
+            '    ssl_protocols TLSv1.2 TLSv1.3;\n'
+            '    location / {\n'
+            '        default_type "text/html; charset=utf-8";\n'
+            f'        return 402 "{page}";\n'
+            '    }\n'
+            '}\n'
+        )
+
     def suspend(self, tenant):
-        # Best-effort: stop the tenant being served is server-specific; we
-        # record intent and let the operator wire nginx there. DB is kept.
-        _logger.info('Remote suspend requested for %s', tenant.subdomain)
-        return {'status': 'suspended', 'subdomain': tenant.subdomain}
+        """Swap the remote nginx vhost for the renewal page (DB kept)."""
+        server = tenant.external_server_id
+        sub = (tenant.subdomain or '').strip().lower()
+        if not server or not SUBDOMAIN_RE.match(sub):
+            return
+        import base64
+        conf_b64 = base64.b64encode(self._suspended_conf(server, sub).encode()).decode()
+        d = '/opt/odoo-saas/nginx-tenants'
+        # Back up the live conf once, write the block page, reload nginx.
+        cmd = (
+            f'[ -f {d}/{sub}.conf ] && [ ! -f {d}/{sub}.conf.live-orig ] && '
+            f'cp {d}/{sub}.conf {d}/{sub}.conf.live-orig; '
+            f'echo {conf_b64} | base64 -d > {d}/{sub}.conf && '
+            f'docker exec {shlex.quote(server.nginx_container)} nginx -t 2>/dev/null && '
+            f'docker exec {shlex.quote(server.nginx_container)} nginx -s reload'
+        )
+        server.run_ssh(cmd, raise_on_error=False)
+        _logger.info('Remote suspend applied for %s on %s', sub, server.name)
+        return {'status': 'suspended', 'subdomain': sub}
 
     def activate(self, tenant):
-        _logger.info('Remote resume requested for %s', tenant.subdomain)
-        return {'status': 'resumed', 'subdomain': tenant.subdomain}
+        """Restore the remote tenant's original proxy vhost."""
+        server = tenant.external_server_id
+        sub = (tenant.subdomain or '').strip().lower()
+        if not server or not SUBDOMAIN_RE.match(sub):
+            return
+        d = '/opt/odoo-saas/nginx-tenants'
+        cmd = (
+            f'[ -f {d}/{sub}.conf.live-orig ] && '
+            f'mv {d}/{sub}.conf.live-orig {d}/{sub}.conf && '
+            f'docker exec {shlex.quote(server.nginx_container)} nginx -s reload'
+        )
+        server.run_ssh(cmd, raise_on_error=False)
+        _logger.info('Remote resume applied for %s on %s', sub, server.name)
+        return {'status': 'resumed', 'subdomain': sub}
 
     def delete(self, tenant):
         """Drop the remote DB (with a backup) + filestore."""
