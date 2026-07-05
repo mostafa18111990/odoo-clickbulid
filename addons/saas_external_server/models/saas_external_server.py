@@ -103,6 +103,22 @@ class SaasExternalServer(models.Model):
                 continue
         raise UserError(_('Could not parse the SSH private key (unsupported format).'))
 
+    def _sftp_put_bytes(self, client, data, remote_path):
+        """Upload in-memory bytes to remote_path over the given SSH client.
+
+        Uses putfo (chunked, with a size check) — a single write() of a large
+        buffer can silently truncate over SFTP.
+        """
+        import io as _io
+        sftp = client.open_sftp()
+        try:
+            attr = sftp.putfo(_io.BytesIO(data), remote_path, confirm=True)
+            if attr.st_size != len(data):
+                raise UserError(_('Upload truncated: %(got)s of %(exp)s bytes',
+                                  got=attr.st_size, exp=len(data)))
+        finally:
+            sftp.close()
+
     def run_ssh(self, command, raise_on_error=True):
         """Run a command on the server, return (exit_code, stdout, stderr)."""
         self.ensure_one()
@@ -118,6 +134,120 @@ class SaasExternalServer(models.Model):
             raise UserError(_('Remote command failed (exit %(code)s):\n%(err)s',
                               code=code, err=(err or out)[:2000]))
         return code, out, err
+
+    # ── One-click remote bootstrap ──────────────────────────────────────────
+    # Cybrosys modules every remote host needs (kept small — the full repo is
+    # 3.4 GB; we ship only what tenants actually install).
+    _ESSENTIAL_CYBROSYS = [
+        'base_accounting_kit', 'base_account_budget', 'account_day_book',
+        'base_hospital_management', 'dental_clinical_management', 'medical_lab_management',
+    ]
+    _PLATFORM_ADDONS = '/mnt/extra-addons'
+    _CYBROSYS_SRC = '/mnt/cybrosys/CybroAddons'
+    ROOT = '/opt/odoo-saas'
+
+    def _bootstrap_infra_cmd(self):
+        """The idempotent shell that turns a bare VPS into a valid host."""
+        r = self.ROOT
+        return f'''set -e
+command -v docker >/dev/null 2>&1 || (curl -fsSL https://get.docker.com | sh)
+systemctl enable --now docker 2>/dev/null || true
+mkdir -p {r}/config {r}/addons {r}/nginx-tenants {r}/cert-requests {r}/certbot/www /opt/backups/deleted
+[ -f {r}/.pg_password ] || (openssl rand -hex 24 > {r}/.pg_password && chmod 600 {r}/.pg_password)
+PGPASS=$(cat {r}/.pg_password)
+if [ ! -f {r}/config/odoo.conf ]; then cat > {r}/config/odoo.conf <<CONF
+[options]
+addons_path = /mnt/extra-addons,/usr/lib/python3/dist-packages/odoo/addons
+data_dir = /var/lib/odoo
+db_host = {self.postgres_container}
+db_port = 5432
+db_user = {self.db_owner}
+db_password = $PGPASS
+dbfilter = ^%d$
+list_db = False
+proxy_mode = True
+workers = 2
+CONF
+fi
+if [ ! -f {r}/docker-compose.yml ]; then cat > {r}/docker-compose.yml <<COMPOSE
+services:
+  {self.postgres_container}:
+    image: postgres:15-alpine
+    container_name: {self.postgres_container}
+    environment: {{ POSTGRES_USER: {self.postgres_user}, POSTGRES_PASSWORD: "$PGPASS", POSTGRES_DB: postgres }}
+    volumes: [ "./pgdata:/var/lib/postgresql/data" ]
+    restart: unless-stopped
+  {self.odoo_container}:
+    image: clickbuild/odoo-community:19
+    container_name: {self.odoo_container}
+    depends_on: [ {self.postgres_container} ]
+    volumes: [ "./config:/etc/odoo", "./addons:/mnt/extra-addons", "odoo-data:/var/lib/odoo" ]
+    restart: unless-stopped
+  {self.nginx_container}:
+    image: nginx:alpine
+    container_name: {self.nginx_container}
+    ports: [ "80:80", "443:443" ]
+    volumes: [ "./nginx-tenants:/etc/nginx/conf.d:ro", "./certbot/www:/var/www/certbot:ro", "/etc/letsencrypt:/etc/letsencrypt:ro" ]
+    restart: unless-stopped
+volumes: {{ odoo-data: {{}} }}
+COMPOSE
+fi
+cd {r} && docker compose up -d
+sleep 8
+docker exec {self.postgres_container} psql -U {self.postgres_user} -tAc "select 1 from pg_roles where rolname='{self.db_owner}'" | grep -qx 1 || docker exec {self.postgres_container} psql -U {self.postgres_user} -c "CREATE ROLE {self.db_owner} LOGIN PASSWORD '$PGPASS' CREATEDB;"
+docker exec -u root {self.odoo_container} pip3 install --break-system-packages -q python-barcode paramiko 2>/dev/null || true
+echo BOOTSTRAP_INFRA_OK'''
+
+    def action_bootstrap_stack(self):
+        """One click: install docker + the full Odoo stack + platform addons
+        on a bare server over SSH, then verify. Idempotent — safe to re-run."""
+        self.ensure_one()
+        import tarfile, io as _io, os as _os
+        try:
+            client = self._ssh_client()
+        except Exception as e:
+            self.write({'state': 'offline', 'last_error': str(e)[:2000],
+                        'last_check': fields.Datetime.now()})
+            return self._notify('danger', _('SSH failed: %s', str(e)[:200]))
+        try:
+            # 1. Infra (docker, dirs, conf, compose, role, deps).
+            _in, out, err = client.exec_command(self._bootstrap_infra_cmd(), timeout=900)
+            infra_log = out.read().decode('utf-8', 'replace') + err.read().decode('utf-8', 'replace')
+            if 'BOOTSTRAP_INFRA_OK' not in infra_log:
+                raise UserError(_('Infra step failed:\n%s', infra_log[-1500:]))
+
+            # 2. Ship platform addons + the essential Cybrosys modules as one
+            #    tar built here (the SaaS container can read both mounts).
+            buf = _io.BytesIO()
+            with tarfile.open(fileobj=buf, mode='w:gz') as tar:
+                if _os.path.isdir(self._PLATFORM_ADDONS):
+                    for name in _os.listdir(self._PLATFORM_ADDONS):
+                        tar.add(_os.path.join(self._PLATFORM_ADDONS, name), arcname=name)
+                for mod in self._ESSENTIAL_CYBROSYS:
+                    src = _os.path.join(self._CYBROSYS_SRC, mod)
+                    if _os.path.isdir(src):
+                        tar.add(src, arcname=mod)
+            self._sftp_put_bytes(client, buf.getvalue(), '/tmp/saas_addons.tgz')
+            _in, out, err = client.exec_command(
+                f'tar -xzf /tmp/saas_addons.tgz -C {self.ROOT}/addons && '
+                f'rm -f /tmp/saas_addons.tgz && '
+                f'docker exec {self.odoo_container} odoo --config=/etc/odoo/odoo.conf '
+                f'-d postgres --stop-after-init --no-http 2>/dev/null; echo ADDONS_OK', timeout=300)
+            addons_log = out.read().decode('utf-8', 'replace')
+        finally:
+            client.close()
+
+        # 3. Re-check to flip status to online.
+        self.action_test_connection()
+        if self.state == 'online':
+            return self._notify('success', _('✅ Stack installed and server is online. '
+                                             'You can now provision tenants here.'))
+        return self._notify('warning', _('Stack installed but the health check did not pass — '
+                                         'open the server and press Test Connection.'))
+
+    def _notify(self, typ, msg):
+        return {'type': 'ir.actions.client', 'tag': 'display_notification',
+                'params': {'type': typ, 'message': msg, 'sticky': typ != 'success'}}
 
     # ── Actions ─────────────────────────────────────────────────────────────
     def action_test_connection(self):

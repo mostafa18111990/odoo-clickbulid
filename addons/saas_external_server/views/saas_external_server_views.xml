@@ -21,8 +21,11 @@
         <field name="arch" type="xml">
             <form string="External Server">
                 <header>
+                    <button name="action_bootstrap_stack" type="object"
+                            string="⚙️ Install Odoo Stack" class="btn-primary"
+                            confirm="سيتم تثبيت Docker وأودو وقاعدة البيانات و nginx على هذا السيرفر عن بُعد عبر SSH (آمن للتكرار — يتخطى ما هو مثبّت). متابعة؟ — This installs Docker, Odoo, Postgres and nginx on the server over SSH (idempotent). Continue?"/>
                     <button name="action_test_connection" type="object"
-                            string="🔌 Test Connection" class="btn-primary"/>
+                            string="🔌 Test Connection" class="btn-secondary"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,online"/>
                 </header>
