@@ -134,14 +134,48 @@ class SignupService:
             if not template:
                 _logger.warning('Welcome email template not found, skipping')
                 return
-            template.with_context(admin_password=admin_password).send_mail(
-                tenant.id, force_send=False, email_layout_xmlid=None)
-            _logger.info('Welcome email queued for tenant %s -> %s',
-                         tenant.subdomain, tenant.customer_email)
+            # Render the template, then send DIRECTLY via the configured
+            # Hostinger mailbox. We bypass Odoo's mail-server From-rewrite
+            # (it rewrites From to noreply@<catchall> which Hostinger rejects
+            # because the sender must equal the authenticated mailbox).
+            tpl = template.with_context(admin_password=admin_password)
+            subject = tpl._render_field('subject', [tenant.id])[tenant.id]
+            body = tpl._render_field('body_html', [tenant.id])[tenant.id]
+            server = self.env['ir.mail_server'].sudo().search([], order='sequence', limit=1)
+            if not server or not server.smtp_user:
+                _logger.warning('No outgoing mail server configured, skipping welcome email')
+                return
+            self._smtp_send(server, tenant.customer_email, subject, body)
+            _logger.info('Welcome email sent to %s (%s)',
+                         tenant.customer_email, tenant.subdomain)
         except Exception as e:
             _logger.warning('Welcome email failed for %s: %s — '
                             'password still shown on success page.',
                             tenant.subdomain, e)
+
+    def _smtp_send(self, server, to_addr, subject, html_body):
+        """Send one HTML email directly, From = the authenticated mailbox."""
+        import smtplib
+        import ssl
+        from email.mime.text import MIMEText
+        from email.utils import formataddr
+        msg = MIMEText(html_body or '', 'html', 'utf-8')
+        msg['Subject'] = subject or 'ClickBuild'
+        msg['From'] = formataddr(('ClickBuild', server.smtp_user))
+        msg['To'] = to_addr
+        ctx = ssl.create_default_context()
+        if (server.smtp_encryption or 'ssl') == 'ssl':
+            smtp = smtplib.SMTP_SSL(server.smtp_host, server.smtp_port or 465,
+                                    timeout=20, context=ctx)
+        else:
+            smtp = smtplib.SMTP(server.smtp_host, server.smtp_port or 587, timeout=20)
+            smtp.starttls(context=ctx)
+        try:
+            if server.smtp_user:
+                smtp.login(server.smtp_user, server.smtp_pass or '')
+            smtp.sendmail(server.smtp_user, [to_addr], msg.as_string())
+        finally:
+            smtp.quit()
 
     def _currency_for_country(self, country):
         return {'SA': 'SAR', 'AE': 'AED', 'EG': 'EGP', 'KW': 'KWD'}.get(country[:2].upper() if country else '', 'SAR')

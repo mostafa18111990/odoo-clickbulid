@@ -6,8 +6,8 @@
             <field name="name">SaaS: Welcome &amp; Credentials</field>
             <field name="model_id" ref="saas_tenant_manager.model_saas_tenant"/>
             <field name="subject">مرحباً بك في ClickBuild — بيانات الدخول لمساحة عملك</field>
-            <field name="email_from">${(object.env['saas.config']._get_config().from_email or 'no-reply@clickbulid.com')}</field>
-            <field name="email_to">${object.customer_email}</field>
+            <field name="email_from">{{ object.env['saas.config']._get_config().from_email or 'info@clickbulid.com' }}</field>
+            <field name="email_to">{{ object.customer_email }}</field>
             <field name="lang">ar_001</field>
             <field name="body_html" type="html">
 <div style="margin:0; padding:20px; background:#f5f3ff; font-family:Tahoma, sans-serif; direction:rtl;" dir="rtl">
@@ -41,7 +41,7 @@
                     </tr>
                     <tr>
                         <td style="padding:8px; font-weight:bold;">كلمة المرور:</td>
-                        <td style="padding:8px;"><code t-out="ctx.get('admin_password', '')"
+                        <td style="padding:8px;"><code t-out="object.admin_password or ctx.get('admin_password', '')"
                                                        style="background:#fff; padding:4px 8px; border-radius:4px;
                                                               border:1px solid #d4d4d8; font-size:14px;"/></td>
                     </tr>
