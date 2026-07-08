@@ -84,18 +84,41 @@ template_exists() {
     docker exec odoo_saas_postgres psql -U odoo -lqt 2>/dev/null \
         | cut -d'|' -f1 | tr -d ' ' | grep -qx "$TEMPLATE_DB"
 }
+
+# Warm-pool fast path: grab a pre-cloned DB by renaming it to the tenant
+# subdomain (instant) instead of cloning the template on the critical path.
+# Pool DBs (pool_*) are owned by 'odoo' with no connections, so the rename is
+# safe. Returns 0 on success; caller falls back to a normal clone on failure.
+grab_pool_db() {
+    local pooldb
+    pooldb=$(docker exec odoo_saas_postgres psql -U odoo -tAc \
+        "select datname from pg_database where datname like 'pool\_%' order by datname limit 1" 2>/dev/null | tr -d ' ')
+    [ -z "$pooldb" ] && return 1
+    docker exec odoo_saas_postgres psql -U odoo -v ON_ERROR_STOP=1 -c \
+        "ALTER DATABASE \"$pooldb\" RENAME TO \"$DB\"; ALTER DATABASE \"$DB\" OWNER TO $DB_OWNER;" >> "$LOG" 2>&1 || return 1
+    docker exec "$ODOO_CONTAINER" sh -c \
+        "rm -rf /var/lib/odoo/filestore/$DB; mv /var/lib/odoo/filestore/$pooldb /var/lib/odoo/filestore/$DB 2>/dev/null || cp -a /var/lib/odoo/filestore/$TEMPLATE_DB /var/lib/odoo/filestore/$DB" >> "$LOG" 2>&1
+    echo "$(date -Is) grabbed pool db $pooldb -> $DB" >> "$LOG"
+    return 0
+}
 if docker exec odoo_saas_postgres psql -U odoo -lqt 2>/dev/null \
         | cut -d'|' -f1 | tr -d ' ' | grep -qx "$DB"; then
     echo "$(date -Is) DB $DB already exists, skipping createdb" >> "$LOG"
 elif [ "$EDITION" != "enterprise" ] && [ "${COUNTRY:-SA}" = "SA" ] && template_exists; then
-    docker exec odoo_saas_postgres createdb -U odoo -T "$TEMPLATE_DB" -O "$DB_OWNER" "$DB" >> "$LOG" 2>&1
-    # The DB references attachments stored on disk under the template's
-    # filestore — clone that too or images/attachments 404 in the new tenant.
-    docker exec "$ODOO_CONTAINER" sh -c \
-        "rm -rf /var/lib/odoo/filestore/$DB && cp -a /var/lib/odoo/filestore/$TEMPLATE_DB /var/lib/odoo/filestore/$DB" >> "$LOG" 2>&1 \
-        || echo "$(date -Is) WARN: filestore clone failed for $DB" >> "$LOG"
-    CLONED=1
-    echo "$(date -Is) cloned DB $DB from $TEMPLATE_DB (with filestore)" >> "$LOG"
+    if grab_pool_db; then
+        CLONED=1
+        # Refill the pool in the background so the next signup is instant too.
+        ( bash /usr/local/bin/saas_warm_pool.sh >/dev/null 2>&1 & )
+    else
+        docker exec odoo_saas_postgres createdb -U odoo -T "$TEMPLATE_DB" -O "$DB_OWNER" "$DB" >> "$LOG" 2>&1
+        # The DB references attachments stored on disk under the template's
+        # filestore — clone that too or images/attachments 404 in the new tenant.
+        docker exec "$ODOO_CONTAINER" sh -c \
+            "rm -rf /var/lib/odoo/filestore/$DB && cp -a /var/lib/odoo/filestore/$TEMPLATE_DB /var/lib/odoo/filestore/$DB" >> "$LOG" 2>&1 \
+            || echo "$(date -Is) WARN: filestore clone failed for $DB" >> "$LOG"
+        CLONED=1
+        echo "$(date -Is) cloned DB $DB from $TEMPLATE_DB (with filestore)" >> "$LOG"
+    fi
 else
     docker exec odoo_saas_postgres createdb -U odoo -O "$DB_OWNER" "$DB" >> "$LOG" 2>&1
     echo "$(date -Is) created DB $DB" >> "$LOG"
