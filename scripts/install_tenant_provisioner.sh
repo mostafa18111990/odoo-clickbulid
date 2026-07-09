@@ -67,8 +67,13 @@ if ! echo "$SUB" | grep -qE '^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$'; then
     exit 3
 fi
 
-DB="$SUB"
-echo "$(date -Is) === provisioning $DB (edition=$EDITION, container=$ODOO_CONTAINER) ===" >> "$LOG"
+FINAL_DB="$SUB"
+# Provision under a temporary, non-servable name so no web request can load a
+# half-built registry while modules install (that caused "could not serialize
+# access due to concurrent update" crashes when the tenant URL was opened
+# mid-provisioning). Renamed to the real subdomain at the very end.
+DB="prov_${SUB}_$$"
+echo "$(date -Is) === provisioning $FINAL_DB as $DB (edition=$EDITION, container=$ODOO_CONTAINER) ===" >> "$LOG"
 
 # 1. Create the tenant DB — fast path clones the prebuilt template.
 # The template (built by build_tenant_template.sh) already contains the
@@ -235,6 +240,20 @@ with reg.cursor() as cr:
     print("admin configured:", admin.login, "/", company.name,
           "/", (country.name if country else "?"))
 ' >> "$LOG" 2>&1
+
+# 3b. Rename the fully-built DB to its real subdomain (instant). Until now it
+# had a non-servable name, so the module install could not be disturbed by a
+# web worker. Drop any stale leftover of the same subdomain from a previous
+# failed attempt first.
+if docker exec odoo_saas_postgres psql -U odoo -tAc "select 1 from pg_database where datname='$FINAL_DB'" 2>/dev/null | grep -qx 1; then
+    docker exec odoo_saas_postgres dropdb -U odoo --force --if-exists "$FINAL_DB" >> "$LOG" 2>&1
+    docker exec "$ODOO_CONTAINER" rm -rf "/var/lib/odoo/filestore/$FINAL_DB" >> "$LOG" 2>&1 || true
+fi
+docker exec odoo_saas_postgres psql -U odoo -v ON_ERROR_STOP=1 -c "ALTER DATABASE \"$DB\" RENAME TO \"$FINAL_DB\";" >> "$LOG" 2>&1 || {
+    echo "$(date -Is) FAIL: rename $DB -> $FINAL_DB" >> "$LOG"; exit 5; }
+docker exec "$ODOO_CONTAINER" sh -c "rm -rf /var/lib/odoo/filestore/$FINAL_DB; mv /var/lib/odoo/filestore/$DB /var/lib/odoo/filestore/$FINAL_DB 2>/dev/null || true" >> "$LOG" 2>&1
+DB="$FINAL_DB"
+echo "$(date -Is) renamed provisioning DB -> $FINAL_DB" >> "$LOG"
 
 # 4. Notify the master DB that provisioning succeeded.
 docker exec \
