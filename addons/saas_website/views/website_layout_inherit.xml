@@ -18,8 +18,12 @@
                                 <t t-else="">All-in-one cloud ERP that lets companies run accounting, sales,
                                 inventory and HR from a single place.</t>
                             </p>
-                            <a href="mailto:sales@clickbulid.com" class="cb-footer-contact o_force_ltr">
-                                <i class="fa fa-envelope"/> sales@clickbulid.com
+                            <a href="mailto:info@clickbulid.com" class="cb-footer-contact o_force_ltr">
+                                <i class="fa fa-envelope"/> info@clickbulid.com
+                            </a>
+                            <a href="https://wa.me/966599109021" target="_blank" rel="noopener"
+                               class="cb-footer-contact o_force_ltr d-block mt-2" style="color:#25D366;">
+                                <i class="fa fa-whatsapp"/> +966 59 910 9021
                             </a>
                         </div>
                         <div class="col-lg-2 col-md-4 col-6">
