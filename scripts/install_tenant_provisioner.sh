@@ -238,7 +238,7 @@ with reg.cursor() as cr:
         print("chart load skipped:", e)
     # Give the tenant admin the manager role of sector modules that hide
     # behind their own security groups, so the app is usable on first login.
-    SECTOR_ADMIN_GROUPS = ["trailer_inspection_saso.group_trailer_manager"]
+    SECTOR_ADMIN_GROUPS = ["trailer_inspection_saso.group_trailer_inspection_user", "trailer_inspection_saso.group_trailer_inspector", "trailer_inspection_saso.group_trailer_reviewer", "trailer_inspection_saso.group_trailer_manager"]
     gfld = "group_ids" if "group_ids" in admin._fields else "groups_id"
     for xmlid in SECTOR_ADMIN_GROUPS:
         grp = env.ref(xmlid, raise_if_not_found=False)
