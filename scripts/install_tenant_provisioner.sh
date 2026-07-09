@@ -236,6 +236,15 @@ with reg.cursor() as cr:
             tmpl.try_loading(ref, company=company, install_demo=False)
     except Exception as e:
         print("chart load skipped:", e)
+    # Give the tenant admin the manager role of sector modules that hide
+    # behind their own security groups, so the app is usable on first login.
+    SECTOR_ADMIN_GROUPS = ["trailer_inspection_saso.group_trailer_manager"]
+    gfld = "group_ids" if "group_ids" in admin._fields else "groups_id"
+    for xmlid in SECTOR_ADMIN_GROUPS:
+        grp = env.ref(xmlid, raise_if_not_found=False)
+        if grp:
+            admin.write({gfld: [(4, grp.id)]})
+            print("granted admin group:", xmlid)
     cr.commit()
     print("admin configured:", admin.login, "/", company.name,
           "/", (country.name if country else "?"))
