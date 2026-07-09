@@ -245,6 +245,11 @@ with reg.cursor() as cr:
         if grp:
             admin.write({gfld: [(4, grp.id)]})
             print("granted admin group:", xmlid)
+    # Give sector apps that ship without a web icon a recognizable tile
+    # (their root menu is otherwise an unlabeled icon in the apps grid).
+    troot = env.ref("trailer_inspection_saso.menu_trailer_root", raise_if_not_found=False)
+    if troot and not troot.web_icon:
+        troot.write({"web_icon": "fleet,static/description/icon.png"})
     cr.commit()
     print("admin configured:", admin.login, "/", company.name,
           "/", (country.name if country else "?"))
