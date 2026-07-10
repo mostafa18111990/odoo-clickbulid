@@ -46,6 +46,8 @@ RUN pip install --no-cache-dir --break-system-packages \
         phonenumbers \
         ofxparse \
         qifparse \
+        python-barcode \
+        paramiko \
         cryptography \
         firebase-admin \
         google-auth \

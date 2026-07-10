@@ -203,7 +203,7 @@ with reg.cursor() as cr:
     max_users = (os.environ.get("SAAS_MAX_USERS") or "0").strip()
     if max_users.isdigit() and int(max_users) > 0:
         env["ir.config_parameter"].sudo().set_param("saas.max_users", max_users)
-    # Odoo Enterprise subscription code — links the tenant to the partner's
+    # Odoo Enterprise subscription code — links the tenant to the partner
     # Odoo contract so Enterprise stays licensed and users are reported.
     ent_code = (os.environ.get("SAAS_ENTERPRISE_CODE") or "").strip()
     if ent_code:

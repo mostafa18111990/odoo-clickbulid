@@ -339,7 +339,12 @@ class ProvisioningBridgeService:
         country = (getattr(tenant, 'customer_country', None) or DEFAULT_COUNTRY).upper()
         if 'account' not in modules:
             modules.append('account')  # localization + accounting kit need it
-        for m in ACCOUNTING_MODULES + LOCALIZATION_MODULES.get(country, []):
+        # Full Accounting Kit is a Community backport of accounting reports; on
+        # Enterprise it clashes with the native account_reports (a m2m relation
+        # table name exceeds Postgres' 63-char limit) and Enterprise already
+        # ships full accounting — so install it for Community tenants only.
+        accounting = [] if edition == 'enterprise' else ACCOUNTING_MODULES
+        for m in accounting + LOCALIZATION_MODULES.get(country, []):
             if m not in modules:
                 modules.append(m)
         # Always install the tenant login helper — it pre-fills email on
@@ -351,6 +356,12 @@ class ProvisioningBridgeService:
         # inside the tenant (reads the saas.max_users param set below).
         if 'saas_user_limit' not in modules:
             modules.append('saas_user_limit')
+        # Enterprise safety net: drop Community accounting backports no matter
+        # where they came from (plan.allowed_modules, industry bundle…) — they
+        # clash with Enterprise's native account_reports.
+        if edition == 'enterprise':
+            _ee_conflicts = {'base_accounting_kit'}
+            modules = [m for m in modules if m not in _ee_conflicts]
         payload = {
             'subdomain': sub, 'tenant_id': tenant.id,
             'admin_email': tenant.customer_email,
