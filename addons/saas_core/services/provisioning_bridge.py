@@ -376,6 +376,11 @@ class ProvisioningBridgeService:
             # NEW — host sweeper sets the company's country + currency so the
             # localization's chart of accounts lands on the right company.
             'customer_country': country,
+            # Odoo partner Enterprise subscription code (saas_odoo_partner) —
+            # written into Enterprise tenants as database.enterprise_code so
+            # they stay licensed under the partner's Odoo contract.
+            'enterprise_code': (self.config.odoo_enterprise_code or '')
+            if edition == 'enterprise' and 'odoo_enterprise_code' in self.config._fields else '',
         }
         with open(req_path, 'w') as f:
             json.dump(payload, f, ensure_ascii=False)

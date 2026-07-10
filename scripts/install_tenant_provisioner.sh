@@ -38,6 +38,7 @@ COMPANY=$(read_json company_name)
 COMPANY_EMAIL=$(read_json company_email)
 COMPANY_PHONE=$(read_json company_phone)
 MAX_USERS=$(read_json max_users)
+ENTERPRISE_CODE=$(read_json enterprise_code)
 LANG=$(read_json language)
 EDITION=$(read_json edition)
 COUNTRY=$(read_json customer_country)
@@ -180,6 +181,7 @@ docker exec \
     -e SAAS_COUNTRY="${COUNTRY:-SA}" \
     -e SAAS_CLONED="$CLONED" \
     -e SAAS_MAX_USERS="${MAX_USERS:-0}" \
+    -e SAAS_ENTERPRISE_CODE="$ENTERPRISE_CODE" \
     "$ODOO_CONTAINER" python3 -c '
 import os, odoo
 from odoo.tools import config
@@ -201,6 +203,11 @@ with reg.cursor() as cr:
     max_users = (os.environ.get("SAAS_MAX_USERS") or "0").strip()
     if max_users.isdigit() and int(max_users) > 0:
         env["ir.config_parameter"].sudo().set_param("saas.max_users", max_users)
+    # Odoo Enterprise subscription code — links the tenant to the partner's
+    # Odoo contract so Enterprise stays licensed and users are reported.
+    ent_code = (os.environ.get("SAAS_ENTERPRISE_CODE") or "").strip()
+    if ent_code:
+        env["ir.config_parameter"].sudo().set_param("database.enterprise_code", ent_code)
     admin = env["res.users"].browse(2)
     admin.write({
         "login": os.environ["SAAS_ADMIN_EMAIL"],

@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Odoo partner subscription section on the platform config form -->
+    <record id="view_saas_config_form_odoo_partner" model="ir.ui.view">
+        <field name="name">saas.config.form.odoo.partner</field>
+        <field name="model">saas.config</field>
+        <field name="inherit_id" ref="saas_core.view_saas_config_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet/group[last()]" position="after">
+                <group string="🔗 Odoo Partner Subscription">
+                    <field name="odoo_enterprise_code" password="True"
+                           placeholder="M2500..."/>
+                    <field name="odoo_partner_ref"/>
+                    <field name="odoo_enterprise_url" widget="url"/>
+                    <div class="text-muted" colspan="2">
+                        <t>يُكتب كود الاشتراك في كل عميل Enterprise عند التجهيز (database.enterprise_code)
+                            حتى تبقى مزايا Enterprise مفعّلة ويُحتسب المستخدمون على تعاقدك مع أودو.
+                            راجع تقرير مطابقة تراخيص أودو من قائمة العمليات.</t>
+                    </div>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Enterprise license reconciliation: seats × wholesale cost per tenant,
+         grouped so the total you owe Odoo is a single sum. -->
+    <record id="view_saas_license_recon_list" model="ir.ui.view">
+        <field name="name">saas.tenant.license.recon.list</field>
+        <field name="model">saas.tenant</field>
+        <field name="arch" type="xml">
+            <list string="Odoo Enterprise License Reconciliation" create="false">
+                <field name="subdomain"/>
+                <field name="customer_name"/>
+                <field name="state"/>
+                <field name="plan_id"/>
+                <field name="odoo_license_seats" sum="Total seats"/>
+                <field name="odoo_license_cost" sum="Total owed to Odoo / month"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_saas_license_recon_search" model="ir.ui.view">
+        <field name="name">saas.tenant.license.recon.search</field>
+        <field name="model">saas.tenant</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="subdomain"/>
+                <filter name="active_only" string="Active/Trial"
+                        domain="[('state', 'in', ['trial', 'active', 'grace_period'])]"/>
+                <separator/>
+                <filter name="by_plan" string="Plan" context="{'group_by': 'plan_id'}"/>
+                <filter name="by_state" string="Status" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="action_saas_license_recon" model="ir.actions.act_window">
+        <field name="name">Odoo Enterprise License Reconciliation</field>
+        <field name="res_model">saas.tenant</field>
+        <field name="view_mode">list</field>
+        <field name="view_id" ref="view_saas_license_recon_list"/>
+        <field name="search_view_id" ref="view_saas_license_recon_search"/>
+        <field name="domain">[('edition', '=', 'enterprise'), ('state', 'not in', ['deleted', 'lead'])]</field>
+        <field name="context">{'search_default_active_only': 1}</field>
+    </record>
+
+    <menuitem id="menu_saas_license_recon" name="Odoo License Reconciliation"
+              parent="saas_core.menu_saas_operations"
+              action="action_saas_license_recon" sequence="60"
+              groups="saas_tenant_manager.group_saas_admin"/>
+</odoo>
