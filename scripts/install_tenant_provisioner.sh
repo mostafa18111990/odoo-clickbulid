@@ -62,6 +62,26 @@ esac
 MODULES_JSON=$(python3 -c "import json; d=json.load(open('$REQ')); print(','.join(d.get('modules', []) or ['base']))")
 INIT_MODULES="${MODULES_JSON:-base,web,mail}"
 
+# -- Enterprise: official Odoo modules only ----------------------------------
+# Enterprise tenants run under an Odoo Enterprise subscription. Install ONLY
+# official Odoo modules (Community core in the image + Enterprise apps under
+# /mnt/enterprise) plus our own platform glue (saas_*). Any external
+# third-party addon (OCA under /mnt/oca, Cybrosys under /mnt/cybrosys, other
+# vendor addons) is dropped here: it either clashes with an Enterprise native
+# or is not covered by the subscription. Community tenants are untouched.
+if [ "$EDITION" = "enterprise" ]; then
+    EE_OFFICIAL=$(docker exec "$ODOO_CONTAINER" sh -c 'ls /usr/lib/python3/dist-packages/odoo/addons /mnt/enterprise 2>/dev/null' | sort -u)
+    EE_KEPT=""; EE_DROPPED=""
+    for m in $(echo "$INIT_MODULES" | tr ',' ' '); do
+        case "$m" in
+            saas_*) EE_KEPT="$EE_KEPT,$m" ;;
+            *) if printf '%s\n' "$EE_OFFICIAL" | grep -qx "$m"; then EE_KEPT="$EE_KEPT,$m"; else EE_DROPPED="$EE_DROPPED $m"; fi ;;
+        esac
+    done
+    INIT_MODULES="${EE_KEPT#,}"
+    [ -n "$EE_DROPPED" ] && echo "$(date -Is) enterprise: dropped non-official (third-party) modules:$EE_DROPPED" >> "$LOG"
+fi
+
 # Validate subdomain: lowercase alnum + dash
 if ! echo "$SUB" | grep -qE '^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$'; then
     echo "$(date -Is) FAIL invalid subdomain: $SUB" >> "$LOG"

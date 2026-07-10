@@ -356,11 +356,17 @@ class ProvisioningBridgeService:
         # inside the tenant (reads the saas.max_users param set below).
         if 'saas_user_limit' not in modules:
             modules.append('saas_user_limit')
-        # Enterprise safety net: drop Community accounting backports no matter
-        # where they came from (plan.allowed_modules, industry bundle…) — they
-        # clash with Enterprise's native account_reports.
+        # Enterprise safety net: drop third-party/Community backports that clash
+        # with Enterprise natives, no matter where they came from
+        # (plan.allowed_modules, industry bundle…):
+        #   base_accounting_kit → collides with Enterprise account_reports
+        #   web_responsive      → incompatible with web_enterprise (hard error)
+        # This is an early drop for the two known hard-conflict modules; the
+        # host provisioner enforces the full rule (Enterprise installs official
+        # Odoo modules + our saas_* glue only — every other third-party addon,
+        # e.g. the Cybrosys medical suite, is filtered out there).
         if edition == 'enterprise':
-            _ee_conflicts = {'base_accounting_kit'}
+            _ee_conflicts = {'base_accounting_kit', 'web_responsive'}
             modules = [m for m in modules if m not in _ee_conflicts]
         payload = {
             'subdomain': sub, 'tenant_id': tenant.id,
