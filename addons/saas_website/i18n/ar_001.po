@@ -14,6 +14,21 @@ msgid "Features"
 msgstr "المميزات"
 
 #. module: saas_website
+#: model:website.menu,name:saas_website.menu_apps
+msgid "Applications"
+msgstr "التطبيقات"
+
+#. module: saas_website
+#: model:website.menu,name:saas_website.menu_industries
+msgid "Industries"
+msgstr "القطاعات"
+
+#. module: saas_website
+#: model:website.menu,name:saas_website.menu_services
+msgid "Services"
+msgstr "الخدمات"
+
+#. module: saas_website
 #: model:website.menu,name:saas_website.menu_pricing
 msgid "Pricing"
 msgstr "الأسعار"
