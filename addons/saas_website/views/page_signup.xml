@@ -3,11 +3,13 @@
     <template id="page_signup" name="Get Started">
         <t t-call="website.layout">
             <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/><t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+            <t t-set="additional_title" t-value="'ابدأ مع ClickBuild | إنشاء مساحة Odoo' if lang_is_ar else 'Get Started with ClickBuild | Create Your Odoo Workspace'"/>
+            <t t-set="meta_description" t-value="'اختر النسخة والبـاقة المناسبة وأنشئ طلب مساحة Odoo جديدة مع ClickBuild.' if lang_is_ar else 'Choose an edition and package to request a new Odoo workspace with ClickBuild.'"/>
             <section class="py-5" style="background:#f5f3ff; min-height:80vh;">
                 <div class="container py-4"><div class="row justify-content-center"><div class="col-lg-7">
                     <div class="card border-0 shadow"><div class="card-body p-4 p-md-5">
                         <div class="text-center mb-4">
-                            <h2 class="fw-bold"><t t-if="lang_is_ar">أنشئ حسابك المجاني</t><t t-else="">Create your free account</t></h2>
+                            <h1 class="fw-bold"><t t-if="lang_is_ar">أنشئ حسابك المجاني</t><t t-else="">Create your free account</t></h1>
                             <p class="text-muted">
                                 <t t-if="lang_is_ar">14 يوم تجريبي · بدون بطاقة ائتمان</t>
                                 <t t-else="">14-day trial · no credit card</t></p>

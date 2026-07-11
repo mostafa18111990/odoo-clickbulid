@@ -1062,3 +1062,10 @@ html.cb-has-reveal [data-cb-reveal].is-visible {
     }
     [data-cb-reveal] { opacity: 1; transform: none; }
 }
+
+/* Bootstrap's closed mobile offcanvas sits outside the viewport. Prevent it
+   from expanding the document canvas while preserving its slide-in behavior. */
+html, body {
+    max-width: 100%;
+    overflow-x: clip;
+}
