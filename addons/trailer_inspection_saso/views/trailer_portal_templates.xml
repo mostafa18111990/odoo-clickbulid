@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="portal_trailer_verification" name="Trailer Report Verification">
+        <t t-call="web.layout">
+            <main class="container py-5" style="max-width: 900px;">
+                <div t-if="valid" class="border rounded p-4 bg-white shadow-sm">
+                    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                        <div><h1 class="h3 mb-1">تقرير فحص معتمد</h1><p class="text-muted">Verified Trailer Inspection Report</p></div>
+                        <span class="badge text-bg-success fs-6">صالح / Verified</span>
+                    </div>
+                    <hr/>
+                    <div class="row g-3">
+                        <div class="col-md-6"><strong>رقم التقرير / Report</strong><div t-field="inspection.name"/></div>
+                        <div class="col-md-6"><strong>VIN</strong><div t-field="inspection.vin"/></div>
+                        <div class="col-md-6"><strong>العميل / Client</strong><div t-field="inspection.partner_id"/></div>
+                        <div class="col-md-6"><strong>تاريخ الفحص / Date</strong><div t-field="inspection.inspection_date"/></div>
+                        <div class="col-md-6"><strong>النتيجة / Result</strong><div t-field="inspection.overall_result"/></div>
+                        <div class="col-md-6"><strong>صالح حتى / Valid Until</strong><div t-field="inspection.report_valid_until"/></div>
+                    </div>
+                </div>
+                <div t-else="" class="alert alert-danger p-4"><h1 class="h4">تعذر التحقق من التقرير</h1><p class="mb-0">The report is invalid, unavailable, or has not been approved.</p></div>
+            </main>
+        </t>
+    </template>
+
+    <template id="portal_trailer_inspection_list" name="My Trailer Inspections">
+        <t t-call="web.layout"><main class="container py-5">
+            <h1 class="h3 mb-4">فحوصات المقطورات / Trailer Inspections</h1>
+            <div class="table-responsive"><table class="table table-hover align-middle"><thead><tr><th>Report</th><th>VIN</th><th>Date</th><th>Status</th><th>Result</th><th/></tr></thead><tbody>
+                <tr t-foreach="inspections" t-as="inspection"><td t-field="inspection.name"/><td t-field="inspection.vin"/><td t-field="inspection.inspection_date"/><td t-field="inspection.state"/><td t-field="inspection.overall_result"/><td><a t-att-href="'/my/trailer-inspections/%s' % inspection.id" class="btn btn-sm btn-outline-primary">View</a></td></tr>
+            </tbody></table></div>
+        </main></t>
+    </template>
+
+    <template id="portal_trailer_inspection_detail" name="Trailer Inspection Detail">
+        <t t-call="web.layout"><main class="container py-5" style="max-width: 1000px;">
+            <a href="/my/trailer-inspections" class="btn btn-link px-0 mb-3">Back</a>
+            <div class="d-flex justify-content-between flex-wrap"><div><h1 class="h3" t-field="inspection.name"/><p class="text-muted" t-field="inspection.vin"/></div><div><span class="badge text-bg-secondary" t-field="inspection.state"/></div></div>
+            <div class="row g-3 my-3"><div class="col-md-4"><strong>Date</strong><div t-field="inspection.inspection_date"/></div><div class="col-md-4"><strong>Result</strong><div t-field="inspection.overall_result"/></div><div class="col-md-4"><strong>Nonconformities</strong><div t-field="inspection.nonconformity_count"/></div></div>
+            <h2 class="h5 mt-4">Checklist</h2><div class="table-responsive"><table class="table table-sm"><thead><tr><th>Clause</th><th>Requirement</th><th>Result</th><th>Observation</th></tr></thead><tbody><tr t-foreach="inspection.line_ids" t-as="line"><td t-field="line.clause_ref"/><td t-field="line.requirement_name_ar"/><td t-field="line.result"/><td t-field="line.observation"/></tr></tbody></table></div>
+        </main></t>
+    </template>
+</odoo>

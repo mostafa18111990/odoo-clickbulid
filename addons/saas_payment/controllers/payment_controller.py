@@ -25,7 +25,7 @@ class SaasPaymentController(http.Controller):
                                          headers={'Content-Type': 'application/json'}, status=status)
         except Exception as e:
             _logger.error('Webhook processing error (%s): %s', gateway, e)
-            return request.make_response(json.dumps({'status': 'error', 'message': str(e)}),
+            return request.make_response(json.dumps({'status': 'error', 'message': 'Internal error'}),
                                          headers={'Content-Type': 'application/json'}, status=500)
 
     @http.route('/saas/payment/<string:gateway>/return', type='http', auth='none',
@@ -53,14 +53,22 @@ class SaasPaymentController(http.Controller):
             _logger.error('Payment return error: %s', e)
         return request.redirect(f'/my/saas?payment=pending&ref={tx_ref}')
 
-    @http.route('/saas/payment/<string:gateway>/cancel', type='http', auth='none',
+    @http.route('/saas/payment/<string:gateway>/cancel', type='http', auth='user',
                 methods=['GET'], csrf=False, website=True)
     def payment_cancel(self, gateway, **kwargs):
+        if gateway not in VALID_GATEWAYS or request.env.user._is_public():
+            return request.redirect('/web/login?redirect=/my/saas')
         tx_ref = kwargs.get('tx', '')
         try:
-            env = request.env(su=True)
-            tx = env['saas.payment.transaction'].search([
-                ('reference', '=', tx_ref), ('status', '=', 'pending')], limit=1)
+            tenant = getattr(request.env.user, 'saas_tenant_id', False)
+            if not tenant:
+                return request.redirect('/my/saas?payment=cancel_failed')
+            tx = request.env['saas.payment.transaction'].sudo().search([
+                ('reference', '=', tx_ref),
+                ('tenant_id', '=', tenant.id),
+                ('gateway_id.code', '=', gateway),
+                ('status', '=', 'pending'),
+            ], limit=1)
             if tx:
                 tx.status = 'cancelled'
         except Exception as e:

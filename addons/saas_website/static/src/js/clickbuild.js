@@ -4,6 +4,8 @@
 (function () {
     'use strict';
 
+    document.documentElement.classList.add('cb-has-reveal');
+
     // ---- Scroll reveal -----------------------------------------------------
     function revealAll(els) {
         els.forEach(function (e) { e.classList.add('is-visible'); });

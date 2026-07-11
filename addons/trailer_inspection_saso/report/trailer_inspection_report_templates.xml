@@ -1,0 +1,146 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="report_trailer_inspection_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.basic_layout">
+                    <div class="page trailer-report" style="font-family: Arial, 'DejaVu Sans', sans-serif; font-size: 10px; color: #1f2937;">
+                        <style>
+                            .trailer-report h2 { margin: 0; font-size: 19px; }
+                            .trailer-report h3 { margin: 3px 0 12px; font-size: 14px; color: #4b5563; }
+                            .trailer-report h4 { background: #714b67; color: white; padding: 6px 8px; margin: 12px 0 5px; font-size: 12px; }
+                            .trailer-report table { width: 100%; border-collapse: collapse; }
+                            .trailer-report th, .trailer-report td { border: 1px solid #9ca3af; padding: 4px 5px; vertical-align: top; }
+                            .trailer-report th { background: #f3f4f6; font-weight: 700; }
+                            .trailer-report thead { display: table-header-group; }
+                            .trailer-report tr { page-break-inside: avoid; }
+                            .trailer-report .label { width: 19%; font-weight: 700; background: #f9fafb; }
+                            .trailer-report .value { width: 31%; }
+                            .trailer-report .check { width: 6%; text-align: center; font-size: 13px; }
+                            .trailer-report .result-pass { color: #166534; font-weight: 700; }
+                            .trailer-report .result-fail { color: #b91c1c; font-weight: 700; }
+                            .trailer-report .photo-card { display: inline-block; width: 48%; margin: 0 1% 10px 0; border: 1px solid #9ca3af; vertical-align: top; page-break-inside: avoid; }
+                            .trailer-report .photo-frame { height: 205px; padding: 5px; text-align: center; background: #f9fafb; }
+                            .trailer-report .photo-frame img { max-width: 100%; max-height: 195px; width: auto; height: auto; }
+                            .trailer-report .photo-caption { min-height: 43px; padding: 5px 7px; border-top: 1px solid #9ca3af; }
+                            .trailer-report .photo-placeholder { display: inline-block; width: 48%; height: 235px; margin: 0 1% 10px 0; border: 1px dashed #9ca3af; text-align: center; color: #6b7280; padding-top: 100px; }
+                            .trailer-report .signature-box { display: inline-block; width: 48%; text-align: center; vertical-align: top; min-height: 120px; }
+                            .trailer-report .signature-box img { max-height: 65px; max-width: 180px; object-fit: contain; }
+                            .trailer-report .small { font-size: 8px; color: #6b7280; }
+                            .trailer-report .page-break { page-break-before: always; }
+                        </style>
+                        <div t-if="o.state != 'approved'" style="position:fixed; top:45%; left:25%; width:50%; text-align:center; font-size:54px; color:#d1d5db; transform:rotate(-30deg); z-index:-1;">مسودة / DRAFT</div>
+
+                        <div style="position: relative; min-height: 100px;">
+                            <div class="text-center" style="padding: 5px 105px;">
+                                <h2>تقرير فحص المقطورات ونصف المقطورات</h2>
+                                <h3>Trailer and Semi-Trailer Inspection Report</h3>
+                            </div>
+                            <div t-if="o.verification_qr" style="position:absolute; right:0; top:0; width:95px; text-align:center;">
+                                <img t-att-src="image_data_uri(o.verification_qr)" style="width:76px;height:76px;" alt="Report verification QR"/>
+                                <div class="small">امسح للتحقق / Scan to verify</div>
+                            </div>
+                        </div>
+
+                        <table>
+                            <tbody>
+                                <tr><td class="label">رقم التقرير<br/>Report No.</td><td class="value"><strong t-field="o.name"/></td><td class="label">تاريخ التقرير<br/>Report Date</td><td class="value"><span t-field="o.approved_on" t-options="{'widget':'date'}"/></td></tr>
+                                <tr><td class="label">اسم مركز الفحص<br/>Inspection Center</td><td class="value"><span t-field="o.company_id.name"/></td><td class="label">عنوان المركز<br/>Center Address</td><td class="value"><span t-field="o.company_id.partner_id" t-options="{'widget':'contact','fields':['address'],'no_marker':True}"/></td></tr>
+                                <tr><td class="label">اسم العميل<br/>Client Name</td><td class="value"><span t-field="o.partner_id.name"/></td><td class="label">موقع الفحص<br/>Inspection Location</td><td class="value"><span t-field="o.inspection_location"/></td></tr>
+                            </tbody>
+                        </table>
+
+                        <h4>بيانات المنتج / Product Identification</h4>
+                        <table>
+                            <tbody>
+                                <tr><td class="label">وصف المنتج<br/>Product Description</td><td class="value"><span t-field="o.product_description"/></td><td class="label">الفئة والنوع<br/>Category / Type</td><td class="value"><span t-field="o.category"/> - <span t-field="o.trailer_type"/></td></tr>
+                                <tr><td class="label">المصنع<br/>Manufacturer</td><td class="value"><span t-field="o.manufacturer_name"/></td><td class="label">بلد المنشأ<br/>Origin Country</td><td class="value"><span t-field="o.origin_country_id"/></td></tr>
+                                <tr><td class="label">العلامة التجارية<br/>Brand / Trademark</td><td class="value"><span t-field="o.brand_name"/></td><td class="label">الطراز<br/>Model</td><td class="value"><span t-field="o.model_name"/></td></tr>
+                                <tr><td class="label">تاريخ الصنع<br/>Manufacture Date</td><td class="value"><span t-field="o.manufacture_month"/> / <span t-field="o.manufacture_year"/></td><td class="label">رقم الهيكل<br/>VIN / Chassis No.</td><td class="value" style="font-size:13px; letter-spacing:1px;"><strong t-field="o.vin"/></td></tr>
+                                <tr><td class="label">الأبعاد (متر)<br/>Dimensions (m)</td><td class="value" colspan="3">الطول / L: <strong t-field="o.length_m"/> &#160; العرض / W: <strong t-field="o.width_m"/> &#160; الارتفاع / H: <strong t-field="o.height_m"/></td></tr>
+                                <tr><td class="label">الوزن الإجمالي<br/>Gross Weight</td><td class="value"><span t-field="o.gross_weight_kg"/> kg</td><td class="label">لوحة المطابقة<br/>Compliance Plate</td><td class="value"><span t-if="o.compliance_plate_present">نعم / Yes</span><span t-else="">لا / No</span></td></tr>
+                            </tbody>
+                        </table>
+
+                        <t t-if="o.axle_ids">
+                            <h4>المحاور والأوزان / Axles and Weights</h4>
+                            <table>
+                                <thead><tr><th>#</th><th>سعة المصنع (كجم)<br/>Manufacturer Capacity</th><th>سعة الإطارات (كجم)<br/>Tyre Capacity</th><th>الوزن المقاس (كجم)<br/>Measured Weight</th><th>ملاحظات<br/>Notes</th></tr></thead>
+                                <tbody><tr t-foreach="o.axle_ids" t-as="axle"><td class="text-center"><span t-field="axle.sequence"/></td><td><span t-field="axle.manufacturer_capacity_kg"/></td><td><span t-field="axle.tyre_capacity_kg"/></td><td><span t-field="axle.measured_weight_kg"/></td><td><span t-field="axle.notes"/></td></tr></tbody>
+                            </table>
+                        </t>
+
+                        <h4>الشهادات والملف الفني / Certificates and Technical File</h4>
+                        <table>
+                            <tbody>
+                                <tr><td class="label">WMI</td><td class="value"><span t-field="o.wmi_certificate_number"/></td><td class="label">شهادة المطابقة<br/>Conformity Certificate</td><td class="value"><span t-field="o.conformity_certificate_number"/></td></tr>
+                                <tr><td class="label">شهادة الحاجز<br/>Barrier Certificate</td><td class="value"><span t-field="o.barrier_certificate_number"/></td><td class="label">شهادة الإرسالية<br/>Shipment Certificate</td><td class="value"><span t-field="o.shipment_certificate_number"/></td></tr>
+                                <tr><td class="label">مرجع الملف الفني<br/>Technical File</td><td class="value"><span t-field="o.technical_file_reference"/></td><td class="label">مصدر VIN<br/>VIN Source</td><td class="value"><span t-field="o.vin_source"/><span t-if="o.vin_profile_id"> - <span t-field="o.vin_profile_id.name"/></span></td></tr>
+                            </tbody>
+                        </table>
+
+                        <h4>المراجع الفنية / Technical References</h4>
+                        <table><tbody><tr t-foreach="o.standard_ids" t-as="standard"><td style="width:22%;"><strong><span t-field="standard.code"/>:<span t-field="standard.edition"/></strong></td><td><span t-field="standard.title_ar"/><br/><span t-field="standard.title_en"/></td></tr></tbody></table>
+
+                        <h4>نتيجة الفحص / Inspection Result</h4>
+                        <table><tbody><tr><td class="label">تاريخ الفحص<br/>Inspection Date</td><td><span t-field="o.inspection_date"/></td><td class="label">نوع الفحص<br/>Inspection Type</td><td><span t-field="o.inspection_type"/></td><td class="label">النتيجة<br/>Result</td><td t-att-class="'result-pass' if o.overall_result == 'compliant' else 'result-fail'"><strong t-field="o.overall_result"/></td></tr></tbody></table>
+
+                        <h4>قائمة الفحص / Inspection Checklist</h4>
+                        <p class="small">توضع النتيجة بعد إكمال الفحص. يرجى تسجيل القياسات والملاحظات والأدلة ذات الصلة. / Record the result only after completing the inspection and document relevant measurements, observations and evidence.</p>
+                        <table style="font-size:8px;">
+                            <thead><tr><th style="width:7%;">البند<br/>Clause</th><th style="width:14%;">القسم<br/>Section</th><th style="width:39%;">الوصف والمتطلب<br/>Description / Requirement</th><th class="check">نعم<br/>Yes</th><th class="check">لا<br/>No</th><th class="check">لا ينطبق<br/>N/A</th><th style="width:22%;">الملاحظات والقياس<br/>Observation / Measurement</th></tr></thead>
+                            <tbody>
+                                <tr t-foreach="o.line_ids" t-as="line" t-att-style="'background:#fef2f2;' if line.result == 'no' else ''">
+                                    <td><strong t-field="line.clause_ref"/></td>
+                                    <td><span t-field="line.section_id.name_ar"/><br/><span t-field="line.section_id.name_en"/></td>
+                                    <td><strong t-field="line.requirement_name_ar"/><br/><span t-field="line.criterion_ar"/><br/><strong t-field="line.requirement_name_en"/><br/><span class="small" t-field="line.criterion_en"/></td>
+                                    <td class="check"><span t-if="line.result == 'yes'">✓</span></td>
+                                    <td class="check result-fail"><span t-if="line.result == 'no'">✓</span></td>
+                                    <td class="check"><span t-if="line.result == 'na'">✓</span></td>
+                                    <td><span t-field="line.observation"/><t t-if="line.response_type == 'numeric' and line.measurement_recorded"><br/><strong><span t-field="line.measured_value"/> <span t-field="line.unit"/></strong></t></td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <t t-if="o.nonconformity_ids">
+                            <h4>حالات عدم المطابقة والإجراءات التصحيحية / Nonconformities and Corrective Actions</h4>
+                            <table><thead><tr><th>الرقم<br/>No.</th><th>البند<br/>Clause</th><th>المخالفة<br/>Finding</th><th>الدرجة<br/>Severity</th><th>الإجراء التصحيحي<br/>Corrective Action</th><th>الحالة<br/>Status</th></tr></thead>
+                                <tbody><tr t-foreach="o.nonconformity_ids" t-as="nc"><td><span t-field="nc.name"/></td><td><span t-field="nc.line_id.clause_ref"/></td><td><span t-field="nc.finding"/></td><td><span t-field="nc.severity"/></td><td><span t-field="nc.corrective_action"/></td><td><span t-field="nc.state"/></td></tr></tbody>
+                            </table>
+                        </t>
+
+                        <div class="page-break"/>
+                        <h4>صور المقطورة وأدلة الفحص / Trailer Pictures and Inspection Evidence</h4>
+                        <t t-set="report_photos" t-value="o.photo_ids.filtered('include_in_report')"/>
+                        <t t-if="report_photos">
+                            <div>
+                                <div class="photo-card" t-foreach="report_photos" t-as="photo">
+                                    <div class="photo-frame"><img t-att-src="image_data_uri(photo.photo)" t-att-alt="photo.name"/></div>
+                                    <div class="photo-caption">
+                                        <strong><span t-field="photo.name"/></strong> - <span t-field="photo.photo_type"/>
+                                        <span t-if="photo.line_id"> - بند / Clause <span t-field="photo.line_id.clause_ref"/></span><br/>
+                                        <span t-field="photo.description"/><br/><span class="small" t-field="photo.taken_on"/>
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                        <t t-else="">
+                            <div class="photo-placeholder">مساحة صورة / Photo Space 1</div>
+                            <div class="photo-placeholder">مساحة صورة / Photo Space 2</div>
+                            <div class="photo-placeholder">مساحة صورة / Photo Space 3</div>
+                            <div class="photo-placeholder">مساحة صورة / Photo Space 4</div>
+                        </t>
+
+                        <h4>ملاحظات المفتش والاعتماد / Inspector Notes and Approval</h4>
+                        <table><tbody><tr><td style="height:80px;"><span t-field="o.inspector_notes"/></td></tr><tr><td><strong>ملاحظات المراجعة الفنية / Technical Review Notes:</strong><br/><span t-field="o.review_notes"/></td></tr></tbody></table>
+                        <div style="margin-top:20px;">
+                            <div class="signature-box"><strong>اسم المفتش / Inspector Name</strong><br/><span t-field="o.inspector_id"/><br/><img t-if="o.inspector_signature" t-att-src="image_data_uri(o.inspector_signature)"/><br/><span t-field="o.inspector_signed_on"/></div>
+                            <div class="signature-box"><strong>المراجع الفني / Technical Reviewer</strong><br/><span t-field="o.reviewer_id"/><br/><img t-if="o.reviewer_signature" t-att-src="image_data_uri(o.reviewer_signature)"/><br/><span t-field="o.reviewer_signed_on"/></div>
+                        </div>
+                        <div class="small text-center" style="border-top:1px solid #9ca3af; margin-top:10px; padding-top:6px;">هذا التقرير صالح فقط عند التحقق من رمز QR ولا يجوز تعديله بعد الاعتماد. / This report is valid only when verified through its QR code and must not be altered after approval.</div>
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+</odoo>

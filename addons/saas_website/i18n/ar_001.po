@@ -1,0 +1,29 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+#   * saas_website
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Language: ar_001\n"
+
+#. module: saas_website
+#: model:website.menu,name:saas_website.menu_features
+msgid "Features"
+msgstr "المميزات"
+
+#. module: saas_website
+#: model:website.menu,name:saas_website.menu_pricing
+msgid "Pricing"
+msgstr "الأسعار"
+
+#. module: saas_website
+#: model:website.menu,name:saas_website.menu_faq
+msgid "FAQ"
+msgstr "الأسئلة الشائعة"
+
+#. module: saas_website
+#: model:website.menu,name:saas_website.menu_contact
+msgid "Contact"
+msgstr "تواصل معنا"

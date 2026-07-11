@@ -1,0 +1,3384 @@
+# Translation of Odoo Server.
+# This file contains the translation of the following modules:
+# 	* trailer_inspection_saso
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Odoo Server 19.0-20260528\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-07-05 23:41+0000\n"
+"PO-Revision-Date: 2026-07-05 23:41+0000\n"
+"Last-Translator: \n"
+"Language-Team: Arabic \n"
+"Language: ar \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=6; plural=n==0?0:n==1?1:n==2?2:n%100>=3 && n%100<=10?3:n%100>=11 && n%100<=99?4:5;\n"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_vin.py:0
+msgid "%(label)s must contain exactly %(length)s permitted VIN characters."
+msgstr "يجب أن يحتوي %(label)s على %(length)s من خانات VIN المسموحة بالضبط."
+
+#. module: trailer_inspection_saso
+#: model:ir.actions.report,print_report_name:trailer_inspection_saso.action_report_trailer_inspection
+msgid "'Trailer Inspection - %s' % (object.name)"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "- بند / Clause"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_verification
+msgid "<span class=\"badge text-bg-success fs-6\">صالح / Verified</span>"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_inspection_detail
+msgid "<strong>Date</strong>"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_inspection_detail
+msgid "<strong>Nonconformities</strong>"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_inspection_detail
+msgid "<strong>Result</strong>"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_verification
+msgid "<strong>VIN</strong>"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "<strong>اسم المفتش / Inspector Name</strong><br/>"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_verification
+msgid "<strong>العميل / Client</strong>"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "<strong>المراجع الفني / Technical Reviewer</strong><br/>"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_verification
+msgid "<strong>النتيجة / Result</strong>"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_verification
+msgid "<strong>تاريخ الفحص / Date</strong>"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_verification
+msgid "<strong>رقم التقرير / Report</strong>"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_verification
+msgid "<strong>صالح حتى / Valid Until</strong>"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid ""
+"<strong>ملاحظات المراجعة الفنية / Technical Review Notes:</strong><br/>"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid ""
+"A VIN already exists. Clear it explicitly before generating another VIN."
+msgstr "يوجد VIN بالفعل. احذفه بوضوح قبل توليد VIN آخر."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "A nonconforming result requires an observation."
+msgstr "تتطلب النتيجة غير المطابقة تسجيل ملاحظة."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "A reinspection requires at least one nonconforming checklist item."
+msgstr "تتطلب إعادة الفحص وجود بند واحد غير مطابق على الأقل."
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Acceptance Criterion"
+msgstr "معيار القبول"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__access_token
+msgid "Access Token"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__message_needaction
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__message_needaction
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__message_needaction
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__message_needaction
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__message_needaction
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__message_needaction
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__message_needaction
+msgid "Action Needed"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_nonconformity__state__submitted
+msgid "Action Submitted"
+msgstr "تم إرسال الإجراء"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__active
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__active
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_section__active
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__active
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__active
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspector_authorization__state__active
+msgid "Active"
+msgstr "نشط"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__activity_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__activity_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__activity_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__activity_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__activity_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__activity_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__activity_ids
+msgid "Activities"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__activity_exception_decoration
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__activity_exception_decoration
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__activity_exception_decoration
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__activity_exception_decoration
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__activity_exception_decoration
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__activity_exception_decoration
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__activity_exception_decoration
+msgid "Activity Exception Decoration"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__activity_state
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__activity_state
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__activity_state
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__activity_state
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__activity_state
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__activity_state
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__activity_state
+msgid "Activity State"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__activity_type_icon
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__activity_type_icon
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__activity_type_icon
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__activity_type_icon
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__activity_type_icon
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__activity_type_icon
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__activity_type_icon
+msgid "Activity Type Icon"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid ""
+"An approved inspection is locked. Reset it through the controlled manager "
+"action first."
+msgstr "الفحص المعتمد مقفل. أعده أولًا من خلال إجراء المدير المضبوط."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_quality_complaint__complaint_type__appeal
+msgid "Appeal"
+msgstr "تظلم"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_requirement_form
+msgid "Applicability and Evidence"
+msgstr "نطاق التطبيق والأدلة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__standard_ids
+msgid "Applied Standards and Regulations"
+msgstr "المواصفات واللوائح المطبقة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__applies_o1
+msgid "Applies O1"
+msgstr "ينطبق على O1"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__applies_o2
+msgid "Applies O2"
+msgstr "ينطبق على O2"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__applies_o3
+msgid "Applies O3"
+msgstr "ينطبق على O3"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__applies_o4
+msgid "Applies O4"
+msgstr "ينطبق على O4"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_quality_document_form
+msgid "Approve"
+msgstr "اعتماد"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_vin_profile_form
+msgid "Approve Profile"
+msgstr "اعتماد الملف"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__state__approved
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_quality_document__state__approved
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_vin_profile__state__approved
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_vin_profile_form
+msgid "Approved"
+msgstr "معتمد"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__approved_on
+msgid "Approved On"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__criterion_ar
+msgid "Arabic Acceptance Criterion"
+msgstr "معيار القبول بالعربية"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__name_ar
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_section__name_ar
+msgid "Arabic Name"
+msgstr "الاسم بالعربية"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__title_ar
+msgid "Arabic Title"
+msgstr "العنوان بالعربية"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_vin_profile_form
+msgid "Archive"
+msgstr "أرشفة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_vin_profile__state__archived
+msgid "Archived"
+msgstr "مؤرشف"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Assign an independent technical reviewer before submission."
+msgstr "عين مراجعًا فنيًا مستقلًا قبل الإرسال."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__assigned_to
+msgid "Assigned To"
+msgstr "مسند إلى"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_vin_profile__low_volume_identifier
+msgid ""
+"Assigned manufacturer identifier used in VIS positions 3-5 for manufacturers"
+" producing fewer than 1000 vehicles of the type annually."
+msgstr "معرف المصنع المخصص المستخدم في خانات VIS من 3 إلى 5 للمصنع الذي ينتج أقل من 1000 مركبة من النوع سنويًا."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_quality.py:0
+msgid "Attach the controlled document before approval."
+msgstr "أرفق الوثيقة المضبوطة قبل الاعتماد."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Attach the required evidence before submission."
+msgstr "أرفق الأدلة المطلوبة قبل الإرسال."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__attachment
+msgid "Attachment"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__message_attachment_count
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__message_attachment_count
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__message_attachment_count
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__message_attachment_count
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__message_attachment_count
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__message_attachment_count
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__message_attachment_count
+msgid "Attachment Count"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__authority
+msgid "Authority"
+msgstr "الجهة"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_authorization_form
+msgid "Authorization Certificate"
+msgstr "شهادة التفويض"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__authorization_number
+msgid "Authorization Number"
+msgstr "رقم التفويض"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_authorization_form
+msgid "Authorized Categories"
+msgstr "الفئات المفوضة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__axle_ids
+msgid "Axle"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_photo__photo_type__axle
+msgid "Axle / Tyres"
+msgstr "المحور والإطارات"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Axle sequence must be greater than zero."
+msgstr "يجب أن يكون ترتيب المحور أكبر من صفر."
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Axles and Weights"
+msgstr "المحاور والأوزان"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_inspection_detail
+msgid "Back"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__barrier_certificate_number
+msgid "Barrier Certificate Number"
+msgstr "رقم شهادة الحاجز"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_equipment__equipment_type__brake
+msgid "Brake"
+msgstr "الفرامل"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_photo__photo_type__brake
+msgid "Braking System"
+msgstr "نظام الفرامل"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__brand_name
+msgid "Brand Name"
+msgstr "العلامة التجارية"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_import_form
+msgid ""
+"CSV/XLSX headers: partner_id, inspection_location, inspector_id, "
+"product_description, trailer_type, category, vin, manufacturer_name, "
+"model_name, gross_weight_kg"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__calibrated_on
+msgid "Calibrated On"
+msgstr "تاريخ المعايرة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__calibration_certificate
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_equipment_form
+msgid "Calibration Certificate"
+msgstr "شهادة المعايرة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__calibration_due_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment_use__calibration_due_date
+msgid "Calibration Due Date"
+msgstr "تاريخ استحقاق المعايرة"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_equipment_form
+msgid "Calibration Expired"
+msgstr "المعايرة منتهية"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__calibration_filename
+msgid "Calibration Filename"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__calibration_status
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment_use__calibration_status
+msgid "Calibration Status"
+msgstr "حالة المعايرة"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_equipment.py:0
+msgid "Calibration deadline: %s"
+msgstr "موعد استحقاق المعايرة: %s"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_import_form
+msgid "Cancel"
+msgstr "إلغاء"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__state__cancelled
+msgid "Cancelled"
+msgstr "ملغي"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_quality_complaint_form
+msgid "Case"
+msgstr "الحالة"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_requirement_form
+msgid "Categories"
+msgstr "الفئات"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__category
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_search
+msgid "Category"
+msgstr "الفئة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__certificate
+msgid "Certificate"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__certificate_filename
+msgid "Certificate Filename"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Certificates and Technical File"
+msgstr "الشهادات والملف الفني"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_inspection_detail
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Checklist"
+msgstr "قائمة الفحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__checklist_completed
+msgid "Checklist Completed"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Checklist Items"
+msgstr "بنود الفحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__checklist_progress
+msgid "Checklist Progress"
+msgstr "تقدم قائمة الفحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__checklist_total
+msgid "Checklist Total"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Checklist results exist. Clear them before regenerating the checklist."
+msgstr "توجد نتائج في قائمة الفحص. احذفها قبل إعادة إنشاء القائمة."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__clause_ref
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_inspection_detail
+msgid "Clause"
+msgstr "البند"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__clause_ref
+msgid "Clause Ref"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__partner_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__partner_id
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_search
+msgid "Client"
+msgstr "العميل"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_nonconformity_form
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_quality_complaint_form
+msgid "Close"
+msgstr "إغلاق"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_nonconformity__state__closed
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_quality_complaint__state__closed
+msgid "Closed"
+msgstr "مغلقة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__closed_on
+msgid "Closed On"
+msgstr "تاريخ الإغلاق"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_nonconformity_form
+msgid "Closure Evidence"
+msgstr "دليل الإغلاق"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__code
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__code
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_section__code
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__code
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__code
+msgid "Code"
+msgstr "الرمز"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_axle__tyre_capacity_kg
+msgid "Combined Tyre Capacity (kg)"
+msgstr "السعة الإجمالية للإطارات (كجم)"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__company_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__company_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__company_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__company_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__company_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__company_id
+msgid "Company"
+msgstr "الشركة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_quality_complaint__complaint_type__complaint
+msgid "Complaint"
+msgstr "شكوى"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__complaint_type
+msgid "Complaint Type"
+msgstr "نوع الطلب"
+
+#. module: trailer_inspection_saso
+#: model:ir.actions.act_window,name:trailer_inspection_saso.action_trailer_quality_complaint
+#: model:ir.ui.menu,name:trailer_inspection_saso.menu_trailer_complaints
+msgid "Complaints and Appeals"
+msgstr "الشكاوى والتظلمات"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Complete all checklist items before submission."
+msgstr "أكمل جميع بنود قائمة الفحص قبل الإرسال."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_photo__photo_type__plate
+msgid "Compliance Plate"
+msgstr "لوحة المطابقة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__compliance_plate_present
+msgid "Compliance Plate Present"
+msgstr "وجود لوحة المطابقة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__overall_result__compliant
+msgid "Compliant"
+msgstr "مطابق"
+
+#. module: trailer_inspection_saso
+#: model:ir.ui.menu,name:trailer_inspection_saso.menu_trailer_configuration
+msgid "Configuration"
+msgstr "الإعدادات"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_vin_profile__assignment_authority_confirmed
+msgid ""
+"Confirm that the organization is authorized by the manufacturer to assign "
+"VINs using this controlled profile."
+msgstr "تأكيد أن الجهة مخولة من المصنع بإسناد أرقام VIN باستخدام هذا الملف المضبوط."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_vin.py:0
+msgid "Confirm the authority to assign VINs before profile approval."
+msgstr "أكد صلاحية إسناد أرقام VIN قبل اعتماد الملف."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Confirm the impartiality and conflict-of-interest check first."
+msgstr "أكد فحص الحياد وتعارض المصالح أولًا."
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Conflict Check"
+msgstr "فحص تعارض المصالح"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__conformity_certificate_number
+msgid "Conformity Certificate Number"
+msgstr "رقم شهادة المطابقة"
+
+#. module: trailer_inspection_saso
+#: model:ir.ui.menu,name:trailer_inspection_saso.menu_trailer_control
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_requirement_form
+msgid "Control"
+msgstr "الرقابة"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_quality_document_form
+msgid "Controlled File"
+msgstr "الملف المضبوط"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_standard_form
+msgid "Controlled revision notes..."
+msgstr "ملاحظات الإصدار المضبوط..."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__corrective_action
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__corrective_action
+msgid "Corrective Action"
+msgstr "الإجراء التصحيحي"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__corrective_action_due
+msgid "Corrective Action Due"
+msgstr "موعد الإجراء التصحيحي"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__origin_country_id
+msgid "Country of Origin"
+msgstr "بلد المنشأ"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Create Reinspection"
+msgstr "إنشاء إعادة فحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__create_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_axle__create_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__create_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment_use__create_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_import__create_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__create_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__create_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_photo__create_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__create_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_section__create_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__create_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__create_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__create_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__create_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__create_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_sequence__create_uid
+msgid "Created by"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__create_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_axle__create_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__create_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment_use__create_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_import__create_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__create_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__create_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_photo__create_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__create_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_section__create_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__create_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__create_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__create_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__create_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__create_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_sequence__create_date
+msgid "Created on"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__criterion_ar
+msgid "Criterion Ar"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__criterion_en
+msgid "Criterion En"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_line__criticality__critical
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_line__nc_severity__critical
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_nonconformity__severity__critical
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_requirement__criticality__critical
+msgid "Critical"
+msgstr "حرجة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__criticality
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__criticality
+msgid "Criticality"
+msgstr "درجة الأهمية"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_standard__status__current
+msgid "Current"
+msgstr "حالي"
+
+#. module: trailer_inspection_saso
+#: model:ir.ui.menu,name:trailer_inspection_saso.menu_trailer_dashboard
+msgid "Dashboard"
+msgstr "لوحة المؤشرات"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_inspection_list
+msgid "Date"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_photo__description
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__description
+msgid "Description"
+msgstr "الوصف"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Digital Signatures"
+msgstr "التوقيعات الإلكترونية"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_equipment__equipment_type__dimension
+msgid "Dimension"
+msgstr "الأبعاد"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__display_name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_axle__display_name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__display_name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment_use__display_name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_import__display_name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__display_name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__display_name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_photo__display_name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__display_name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_section__display_name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__display_name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__display_name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__display_name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__display_name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__display_name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_sequence__display_name
+msgid "Display Name"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__document
+msgid "Document"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__document_filename
+msgid "Document Filename"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__document_type
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__document_type
+msgid "Document Type"
+msgstr "نوع الوثيقة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.constraint,message:trailer_inspection_saso.constraint_trailer_quality_document_code_revision_unique
+msgid "Document code and revision must be unique per company."
+msgstr "يجب ألا يتكرر رمز الوثيقة ومراجعتها داخل الشركة."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__trailer_type__double_trailer
+msgid "Double Trailer"
+msgstr "مقطورة مزدوجة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__state__draft
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_quality_document__state__draft
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_vin_profile__state__draft
+msgid "Draft"
+msgstr "مسودة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__due_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__due_date
+msgid "Due Date"
+msgstr "تاريخ الاستحقاق"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_equipment__calibration_status__due_soon
+msgid "Due Soon"
+msgstr "يستحق قريبًا"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__edition
+msgid "Edition"
+msgstr "الإصدار"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__effective_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__effective_date
+msgid "Effective Date"
+msgstr "تاريخ السريان"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_equipment__equipment_type__electrical
+msgid "Electrical"
+msgstr "كهربائي"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__criterion_en
+msgid "English Acceptance Criterion"
+msgstr "معيار القبول بالإنجليزية"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__name_en
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_section__name_en
+msgid "English Name"
+msgstr "الاسم بالإنجليزية"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__title_en
+msgid "English Title"
+msgstr "العنوان بالإنجليزية"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Enter or generate a valid VIN before starting the inspection."
+msgstr "أدخل أو ولّد VIN صحيحًا قبل بدء الفحص."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__vin_source__manual
+msgid "Entered Manually"
+msgstr "مدخل يدويًا"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment_use__equipment_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__equipment_id
+msgid "Equipment"
+msgstr "الجهاز"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__equipment_required
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__equipment_required
+msgid "Equipment Required"
+msgstr "جهاز القياس مطلوب"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__equipment_type
+msgid "Equipment Type"
+msgstr "نوع الجهاز"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__equipment_use_ids
+msgid "Equipment Use"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Equipment Used"
+msgstr "الأجهزة المستخدمة"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_equipment_form
+msgid "Equipment control notes..."
+msgstr "ملاحظات ضبط الجهاز..."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__evidence
+msgid "Evidence"
+msgstr "الدليل"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__evidence_attachment
+msgid "Evidence Attachment"
+msgstr "مرفق الدليل"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__evidence_filename
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__evidence_filename
+msgid "Evidence Filename"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__evidence_required
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__evidence_required
+msgid "Evidence Required"
+msgstr "الدليل مطلوب"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_equipment__calibration_status__expired
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspector_authorization__state__expired
+msgid "Expired"
+msgstr "منتهي"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Expired measuring equipment cannot be assigned."
+msgstr "لا يمكن إسناد جهاز قياس منتهي المعايرة."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Expired measuring equipment cannot be used."
+msgstr "لا يمكن استخدام جهاز قياس منتهي المعايرة."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__extraction_state__done
+msgid "Extracted"
+msgstr "تم الاستخراج"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__extraction_notes
+msgid "Extraction Notes"
+msgstr "ملاحظات الاستخراج"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__extraction_state
+msgid "Extraction State"
+msgstr "حالة الاستخراج"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__extraction_state__failed
+msgid "Failed"
+msgstr "فشل"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_import__file
+msgid "File"
+msgstr "الملف"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_import__filename
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_photo__filename
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__filename
+msgid "Filename"
+msgstr "اسم الملف"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__finding
+msgid "Finding"
+msgstr "نتيجة عدم المطابقة"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_nonconformity_form
+msgid "Finding and Corrective Action"
+msgstr "النتيجة والإجراء التصحيحي"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__message_follower_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__message_follower_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__message_follower_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__message_follower_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__message_follower_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__message_follower_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__message_follower_ids
+msgid "Followers"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__message_partner_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__message_partner_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__message_partner_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__message_partner_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__message_partner_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__message_partner_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__message_partner_ids
+msgid "Followers (Partners)"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection__activity_type_icon
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_equipment__activity_type_icon
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_nonconformity__activity_type_icon
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspector_authorization__activity_type_icon
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_complaint__activity_type_icon
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_document__activity_type_icon
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_vin_profile__activity_type_icon
+msgid "Font awesome icon e.g. fa-tasks"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_quality_document__document_type__form
+msgid "Form"
+msgstr "نموذج"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_photo__photo_type__front
+msgid "Front View"
+msgstr "منظر أمامي"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_standard__authority__gso
+msgid "GSO"
+msgstr "هيئة التقييس الخليجية"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Generate VIN"
+msgstr "توليد VIN"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__vin_source__generated
+msgid "Generated by System"
+msgstr "مولد بواسطة النظام"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__gross_weight_kg
+msgid "Gross Weight (kg)"
+msgstr "الوزن الإجمالي (كجم)"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_standard__document_type__guideline
+msgid "Guideline"
+msgstr "دليل إرشادي"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__has_message
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__has_message
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__has_message
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__has_message
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__has_message
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__has_message
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__has_message
+msgid "Has Message"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__height_m
+msgid "Height (m)"
+msgstr "الارتفاع (م)"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_axle__id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment_use__id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_import__id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_photo__id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_section__id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_sequence__id
+msgid "ID"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_standard__authority__iso
+msgid "ISO"
+msgstr "المنظمة الدولية للتقييس"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__activity_exception_icon
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__activity_exception_icon
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__activity_exception_icon
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__activity_exception_icon
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__activity_exception_icon
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__activity_exception_icon
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__activity_exception_icon
+msgid "Icon"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection__activity_exception_icon
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_equipment__activity_exception_icon
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_nonconformity__activity_exception_icon
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspector_authorization__activity_exception_icon
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_complaint__activity_exception_icon
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_document__activity_exception_icon
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_vin_profile__activity_exception_icon
+msgid "Icon to indicate an exception activity."
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection__message_needaction
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_equipment__message_needaction
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_nonconformity__message_needaction
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspector_authorization__message_needaction
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_complaint__message_needaction
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_document__message_needaction
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_vin_profile__message_needaction
+msgid "If checked, new messages require your attention."
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection__message_has_error
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_equipment__message_has_error
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_nonconformity__message_has_error
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspector_authorization__message_has_error
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_complaint__message_has_error
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_document__message_has_error
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_vin_profile__message_has_error
+msgid "If checked, some messages have a delivery error."
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__impartiality_notes
+msgid "Impartiality Notes"
+msgstr "ملاحظات الحياد"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__impartiality_confirmed
+msgid "Impartiality and Conflict Check Confirmed"
+msgstr "تم تأكيد الحياد وفحص تعارض المصالح"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Impartiality and Review"
+msgstr "الحياد والمراجعة"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_import_form
+msgid "Import"
+msgstr "استيراد"
+
+#. module: trailer_inspection_saso
+#: model:ir.actions.act_window,name:trailer_inspection_saso.action_trailer_inspection_import
+#: model:ir.ui.menu,name:trailer_inspection_saso.menu_trailer_import
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_import_form
+msgid "Import Inspections"
+msgstr "استيراد الفحوصات"
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_inspection_import
+msgid "Import Trailer Inspection Data"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__state__in_progress
+msgid "In Progress"
+msgstr "قيد الفحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_photo__include_in_report
+msgid "Include In Report"
+msgstr "إظهار في التقرير"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__overall_result__incomplete
+msgid "Incomplete"
+msgstr "غير مكتمل"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__inspection_type__initial
+msgid "Initial Inspection"
+msgstr "فحص أولي"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_axle__inspection_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment_use__inspection_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__inspection_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__inspection_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_photo__inspection_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__inspection_id
+msgid "Inspection"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_pivot
+msgid "Inspection Analysis"
+msgstr "تحليل الفحوصات"
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_quality_complaint
+msgid "Inspection Complaint or Appeal"
+msgstr "شكوى أو تظلم متعلق بالفحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.actions.act_window,name:trailer_inspection_saso.action_trailer_dashboard
+msgid "Inspection Dashboard"
+msgstr "لوحة مؤشرات الفحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__inspection_date
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_search
+msgid "Inspection Date"
+msgstr "تاريخ الفحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__inspection_location
+msgid "Inspection Location"
+msgstr "موقع الفحص"
+
+#. module: trailer_inspection_saso
+#: model:res.groups,name:trailer_inspection_saso.group_trailer_manager
+msgid "Inspection Manager"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_standard__document_type__inspection_method
+msgid "Inspection Method"
+msgstr "طريقة فحص"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Inspection Notes"
+msgstr "ملاحظات الفحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_quality_document
+msgid "Inspection Quality Document"
+msgstr "وثيقة جودة الفحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.actions.act_window,name:trailer_inspection_saso.action_trailer_requirement
+#: model:ir.ui.menu,name:trailer_inspection_saso.menu_trailer_requirements
+msgid "Inspection Requirements"
+msgstr "متطلبات الفحص"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_graph
+msgid "Inspection Results"
+msgstr "نتائج الفحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__inspection_type
+msgid "Inspection Type"
+msgstr "نوع الفحص"
+
+#. module: trailer_inspection_saso
+#: model:res.groups,name:trailer_inspection_saso.group_trailer_inspection_user
+msgid "Inspection User"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Inspection report %(report)s has been approved and locked."
+msgstr "تم اعتماد تقرير الفحص %(report)s وقفله."
+
+#. module: trailer_inspection_saso
+#: model:ir.ui.menu,name:trailer_inspection_saso.menu_trailer_inspections
+msgid "Inspections"
+msgstr "الفحوصات"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__inspector_id
+#: model:res.groups,name:trailer_inspection_saso.group_trailer_inspector
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_search
+msgid "Inspector"
+msgstr "المفتش"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__authorization_id
+msgid "Inspector Authorization"
+msgstr "تفويض المفتش"
+
+#. module: trailer_inspection_saso
+#: model:ir.actions.act_window,name:trailer_inspection_saso.action_trailer_authorization
+#: model:ir.ui.menu,name:trailer_inspection_saso.menu_trailer_authorizations
+msgid "Inspector Authorizations"
+msgstr "تفويضات المفتشين"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__inspector_notes
+msgid "Inspector Notes"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__inspector_signature
+msgid "Inspector Signature"
+msgstr "توقيع المفتش"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__inspector_signature_ip
+msgid "Inspector Signature Ip"
+msgstr "عنوان IP لتوقيع المفتش"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__inspector_signed_by
+msgid "Inspector Signed By"
+msgstr "وقع المفتش بواسطة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__inspector_signed_on
+msgid "Inspector Signed On"
+msgstr "تاريخ توقيع المفتش"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Inspector and reviewer signatures are required before approval."
+msgstr "توقيع المفتش والمراجع مطلوبان قبل الاعتماد."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid ""
+"Inspector signature is only allowed while the inspection is in progress."
+msgstr "يسمح بتوقيع المفتش فقط عندما يكون الفحص قيد التنفيذ."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_standard__authority__internal
+msgid "Internal Method"
+msgstr "طريقة داخلية"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_quality.py:0
+msgid "Invalid import row %(row)s: %(error)s"
+msgstr "صف الاستيراد %(row)s غير صحيح: %(error)s"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_quality_complaint__state__investigating
+msgid "Investigating"
+msgstr "قيد التحقيق"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__investigation
+msgid "Investigation"
+msgstr "التحقيق"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_quality.py:0
+msgid "Investigation and resolution are required."
+msgstr "التحقيق والمعالجة مطلوبان."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__message_is_follower
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__message_is_follower
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__message_is_follower
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__message_is_follower
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__message_is_follower
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__message_is_follower
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__message_is_follower
+msgid "Is Follower"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__write_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_axle__write_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__write_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment_use__write_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_import__write_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__write_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__write_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_photo__write_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__write_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_section__write_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__write_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__write_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__write_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__write_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__write_uid
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_sequence__write_uid
+msgid "Last Updated by"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__write_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_axle__write_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__write_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment_use__write_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_import__write_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__write_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__write_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_photo__write_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__write_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_section__write_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__write_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__write_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__write_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__write_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__write_date
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_sequence__write_date
+msgid "Last Updated on"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_photo__photo_type__left
+msgid "Left Side"
+msgstr "الجانب الأيسر"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__length_m
+msgid "Length (m)"
+msgstr "الطول (م)"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_equipment__equipment_type__lighting
+msgid "Lighting"
+msgstr "الإضاءة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__line_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__line_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_photo__line_id
+msgid "Line"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__locked
+msgid "Locked"
+msgstr "مقفل"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__low_volume_identifier
+msgid "Low-Volume Identifier"
+msgstr "معرف المصنع منخفض الإنتاج"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__low_volume
+msgid "Low-Volume Manufacturer"
+msgstr "مصنع منخفض الإنتاج"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_vin.py:0
+msgid ""
+"Low-volume identifier must contain exactly three permitted VIN characters."
+msgstr "يجب أن يحتوي معرف المصنع منخفض الإنتاج على ثلاث خانات VIN مسموحة بالضبط."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_line__criticality__major
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_line__nc_severity__major
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_nonconformity__severity__major
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_requirement__criticality__major
+msgid "Major"
+msgstr "جسيمة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__manufacture_month
+msgid "Manufacture Month"
+msgstr "شهر الصنع"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__manufacture_year
+msgid "Manufacture Year"
+msgstr "سنة الصنع"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Manufacture month must be between 1 and 12."
+msgstr "يجب أن يكون شهر الصنع بين 1 و12."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Manufacture year is outside the allowed range."
+msgstr "سنة الصنع خارج النطاق المسموح."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__manufacturer_id
+msgid "Manufacturer"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_axle__manufacturer_capacity_kg
+msgid "Manufacturer Capacity (kg)"
+msgstr "سعة المصنع (كجم)"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__manufacturer_name
+msgid "Manufacturer Name"
+msgstr "اسم المصنع"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_quality_document_form
+msgid "Mark Obsolete"
+msgstr "اعتبارها ملغاة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__maximum_value
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__maximum_value
+msgid "Maximum Value"
+msgstr "الحد الأقصى"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__measured_value
+msgid "Measured Value"
+msgstr "القيمة المقاسة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_axle__measured_weight_kg
+msgid "Measured Weight (kg)"
+msgstr "الوزن المقاس (كجم)"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__measurement_recorded
+msgid "Measurement Recorded"
+msgstr "تم تسجيل القياس"
+
+#. module: trailer_inspection_saso
+#: model:ir.actions.act_window,name:trailer_inspection_saso.action_trailer_equipment
+#: model:ir.ui.menu,name:trailer_inspection_saso.menu_trailer_equipment
+msgid "Measuring Equipment"
+msgstr "أجهزة القياس"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__message_has_error
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__message_has_error
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__message_has_error
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__message_has_error
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__message_has_error
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__message_has_error
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__message_has_error
+msgid "Message Delivery error"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__message_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__message_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__message_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__message_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__message_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__message_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__message_ids
+msgid "Messages"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__minimum_value
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__minimum_value
+msgid "Minimum Value"
+msgstr "الحد الأدنى"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_line__criticality__minor
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_line__nc_severity__minor
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_nonconformity__severity__minor
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_requirement__criticality__minor
+msgid "Minor"
+msgstr "طفيفة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__model_name
+msgid "Model Name"
+msgstr "اسم الطراز"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_sequence__model_year
+msgid "Model Year"
+msgstr "سنة الطراز"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_vin.py:0
+msgid ""
+"Model year must be between 2005 and 2038 according to the attached GSO 1780 "
+"table."
+msgstr "يجب أن تكون سنة الطراز بين 2005 و2038 وفق جدول GSO 1780 المرفق."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__my_activity_date_deadline
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__my_activity_date_deadline
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__my_activity_date_deadline
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__my_activity_date_deadline
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__my_activity_date_deadline
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__my_activity_date_deadline
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__my_activity_date_deadline
+msgid "My Activity Deadline"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_search
+msgid "My Inspections"
+msgstr "فحوصاتي"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_line__result__na
+msgid "N/A"
+msgstr "لا ينطبق"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_photo__name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_section__name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__name
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__name
+msgid "Name"
+msgstr "الاسم"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__nc_closed
+msgid "Nc Closed"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__nc_severity
+msgid "Nc Severity"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_quality_complaint__state__new
+msgid "New"
+msgstr "جديد"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__activity_date_deadline
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__activity_date_deadline
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__activity_date_deadline
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__activity_date_deadline
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__activity_date_deadline
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__activity_date_deadline
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__activity_date_deadline
+msgid "Next Activity Deadline"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__activity_summary
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__activity_summary
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__activity_summary
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__activity_summary
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__activity_summary
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__activity_summary
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__activity_summary
+msgid "Next Activity Summary"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__activity_type_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__activity_type_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__activity_type_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__activity_type_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__activity_type_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__activity_type_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__activity_type_id
+msgid "Next Activity Type"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__next_review_date
+msgid "Next Review Date"
+msgstr "تاريخ المراجعة التالية"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_sequence__next_number
+msgid "Next Serial Number"
+msgstr "الرقم التسلسلي التالي"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_line__result__no
+msgid "No"
+msgstr "لا"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__overall_result__non_compliant
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_search
+msgid "Non-Compliant"
+msgstr "غير مطابق"
+
+#. module: trailer_inspection_saso
+#: model:ir.actions.act_window,name:trailer_inspection_saso.action_trailer_nonconformity
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__nonconformity_ids
+#: model:ir.ui.menu,name:trailer_inspection_saso.menu_trailer_nonconformities
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Nonconformities"
+msgstr "حالات عدم المطابقة"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Nonconformity"
+msgstr "حالة عدم مطابقة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__nonconformity_count
+msgid "Nonconformity Count"
+msgstr "عدد حالات عدم المطابقة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_photo__photo_type__nonconformity
+msgid "Nonconformity Evidence"
+msgstr "دليل عدم المطابقة"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Nonconformity deadline: %s"
+msgstr "موعد استحقاق عدم المطابقة: %s"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__extraction_state__none
+msgid "Not Requested"
+msgstr "غير مطلوب"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_axle__notes
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__notes
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment_use__notes
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__notes
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__notes
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__notes
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__notes
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_standard_form
+msgid "Notes"
+msgstr "الملاحظات"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__message_needaction_counter
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__message_needaction_counter
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__message_needaction_counter
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__message_needaction_counter
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__message_needaction_counter
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__message_needaction_counter
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__message_needaction_counter
+msgid "Number of Actions"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__message_has_error_counter
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__message_has_error_counter
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__message_has_error_counter
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__message_has_error_counter
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__message_has_error_counter
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__message_has_error_counter
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__message_has_error_counter
+msgid "Number of errors"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection__message_needaction_counter
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_equipment__message_needaction_counter
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_nonconformity__message_needaction_counter
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspector_authorization__message_needaction_counter
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_complaint__message_needaction_counter
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_document__message_needaction_counter
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_vin_profile__message_needaction_counter
+msgid "Number of messages requiring action"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection__message_has_error_counter
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_equipment__message_has_error_counter
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_nonconformity__message_has_error_counter
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspector_authorization__message_has_error_counter
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_complaint__message_has_error_counter
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_document__message_has_error_counter
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_vin_profile__message_has_error_counter
+msgid "Number of messages with delivery error"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_requirement_form
+msgid "Numeric Limits"
+msgstr "الحدود الرقمية"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_line__response_type__numeric
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_requirement__response_type__numeric
+msgid "Numeric Measurement"
+msgstr "قياس رقمي"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__category__o1
+msgid "O1 - up to 0.75 t"
+msgstr "O1 - حتى 0.75 طن"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__category__o2
+msgid "O2 - over 0.75 t up to 3.5 t"
+msgstr "O2 - أكثر من 0.75 وحتى 3.5 طن"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__category__o3
+msgid "O3 - over 3.5 t up to 10 t"
+msgstr "O3 - أكثر من 3.5 وحتى 10 أطنان"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__category__o4
+msgid "O4 - over 10 t"
+msgstr "O4 - أكثر من 10 أطنان"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__observation
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_inspection_detail
+msgid "Observation"
+msgstr "الملاحظة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_quality_document__state__obsolete
+msgid "Obsolete"
+msgstr "ملغاة"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only draft or cancelled inspections can be deleted."
+msgstr "يمكن حذف الفحوصات المسودة أو الملغاة فقط."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only inspections under technical review can be approved."
+msgstr "لا يمكن الاعتماد إلا أثناء المراجعة الفنية."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.constraint,message:trailer_inspection_saso.constraint_trailer_vin_sequence_profile_year_unique
+msgid "Only one VIN sequence is allowed per profile and model year."
+msgstr "يسمح بتسلسل VIN واحد فقط لكل ملف وسنة طراز."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only the assigned inspector can sign this report."
+msgstr "يمكن للمفتش المسند إليه فقط توقيع هذا التقرير."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid ""
+"Only the assigned inspector or an inspection manager can start this "
+"inspection."
+msgstr "يمكن للمفتش المسند إليه أو مدير الفحص فقط بدء هذا الفحص."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid ""
+"Only the assigned inspector or an inspection manager can submit this "
+"inspection."
+msgstr "يمكن للمفتش المسند إليه أو مدير الفحص فقط إرسال هذا الفحص."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only the assigned technical reviewer can sign this report."
+msgstr "يمكن للمراجع الفني المسند إليه فقط توقيع هذا التقرير."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid ""
+"Only the assigned technical reviewer or an inspection manager can approve "
+"this inspection."
+msgstr "يمكن للمراجع الفني المسند إليه أو مدير الفحص فقط اعتماد هذا الفحص."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid ""
+"Only the assigned technical reviewer or an inspection manager can reject "
+"this inspection."
+msgstr "يمكن للمراجع الفني المسند إليه أو مدير الفحص فقط رفض هذا الفحص."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid ""
+"Only the assigned technical reviewer or an inspection manager can return "
+"this inspection."
+msgstr "يمكن للمراجع الفني المسند إليه أو مدير الفحص فقط إعادة هذا الفحص."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_nonconformity__state__open
+msgid "Open"
+msgstr "مفتوحة"
+
+#. module: trailer_inspection_saso
+#: model:ir.ui.menu,name:trailer_inspection_saso.menu_trailer_operations
+msgid "Operations"
+msgstr "العمليات"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__parent_inspection_id
+msgid "Original Inspection"
+msgstr "الفحص الأصلي"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_equipment__equipment_type__other
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_photo__photo_type__other
+msgid "Other"
+msgstr "أخرى"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__overall_result
+msgid "Overall Result"
+msgstr "النتيجة الإجمالية"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__owner_id
+msgid "Owner"
+msgstr "المالك"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__partner_id
+msgid "Partner"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__extraction_state__pending
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_line__result__pending
+msgid "Pending"
+msgstr "معلق"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__inspection_type__periodic
+msgid "Periodic Inspection"
+msgstr "فحص دوري"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__photo_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_photo__photo
+msgid "Photo"
+msgstr "الصورة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_photo__photo_type
+msgid "Photo Type"
+msgstr "نوع الصورة"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Photos and Evidence"
+msgstr "الصور والأدلة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__plant_code
+msgid "Plant Code"
+msgstr "رمز مصنع الإنتاج"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_quality_document__document_type__policy
+msgid "Policy"
+msgstr "سياسة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_quality_document__document_type__procedure
+msgid "Procedure"
+msgstr "إجراء"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__product_description
+msgid "Product Description"
+msgstr "وصف المنتج"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_sequence__profile_id
+msgid "Profile"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__approved_by
+msgid "Profile Approved By"
+msgstr "اعتمد الملف بواسطة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__approved_on
+msgid "Profile Approved On"
+msgstr "تاريخ اعتماد الملف"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__publication_date
+msgid "Publication Date"
+msgstr "تاريخ النشر"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment_use__purpose
+msgid "Purpose"
+msgstr "الغرض"
+
+#. module: trailer_inspection_saso
+#: model:ir.actions.act_window,name:trailer_inspection_saso.action_trailer_quality_document
+#: model:ir.ui.menu,name:trailer_inspection_saso.menu_trailer_quality_documents
+msgid "Quality Documents"
+msgstr "وثائق الجودة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_quality_document__document_type__record
+msgid "Quality Record"
+msgstr "سجل جودة"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Queue OCR"
+msgstr "إرسال للتعرف الضوئي"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_photo__photo_type__rear
+msgid "Rear View"
+msgstr "منظر خلفي"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__received_date
+msgid "Received Date"
+msgstr "تاريخ الاستلام"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Record every required numeric measurement before submission."
+msgstr "سجل جميع القياسات الرقمية المطلوبة قبل الإرسال."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Record the technical review notes before rejection."
+msgstr "سجل ملاحظات المراجعة الفنية قبل الرفض."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_standard__status__reference
+msgid "Reference Only"
+msgstr "مرجع فقط"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Regenerate Checklist"
+msgstr "إعادة إنشاء قائمة الفحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__inspection_type__registration
+msgid "Registration / Import Inspection"
+msgstr "فحص التسجيل أو الاستيراد"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__inspection_type__reinspection
+msgid "Reinspection"
+msgstr "إعادة فحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__reinspection_ids
+msgid "Reinspections"
+msgstr "إعادات الفحص"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Reject"
+msgstr "رفض"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__state__rejected
+msgid "Rejected"
+msgstr "مرفوض"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_inspection_list
+msgid "Report"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__report_valid_until
+msgid "Report Valid Until"
+msgstr "التقرير صالح حتى"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Report validity cannot end before the inspection date."
+msgstr "لا يمكن أن تنتهي صلاحية التقرير قبل تاريخ الفحص."
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "Report verification QR"
+msgstr "رمز QR للتحقق من التقرير"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__requirement_id
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_inspection_detail
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_requirement_form
+msgid "Requirement"
+msgstr "المتطلب"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__requirement_name_ar
+msgid "Requirement Name Ar"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__requirement_name_en
+msgid "Requirement Name En"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_vin.py:0
+msgid ""
+"Reset the approved VIN profile to draft before changing controlled fields."
+msgstr "أعد ملف VIN المعتمد إلى المسودة قبل تعديل الحقول المضبوطة."
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_vin_profile_form
+msgid "Reset to Draft"
+msgstr "إعادة إلى مسودة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__resolution
+msgid "Resolution"
+msgstr "المعالجة"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_quality_complaint_form
+msgid "Resolve"
+msgstr "معالجة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_quality_complaint__state__resolved
+msgid "Resolved"
+msgstr "تمت المعالجة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__response_type
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__response_type
+msgid "Response Type"
+msgstr "نوع الاستجابة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__activity_user_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__activity_user_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__activity_user_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__activity_user_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__activity_user_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__activity_user_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__activity_user_id
+msgid "Responsible User"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__result
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_inspection_detail
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_inspection_list
+msgid "Result"
+msgstr "النتيجة"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Return to Inspector"
+msgstr "إعادة إلى المفتش"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__review_notes
+msgid "Review Notes"
+msgstr "ملاحظات المراجعة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__reviewer_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__reviewer_id
+msgid "Reviewer"
+msgstr "المراجع"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__reviewer_signature
+msgid "Reviewer Signature"
+msgstr "توقيع المراجع"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__reviewer_signature_ip
+msgid "Reviewer Signature Ip"
+msgstr "عنوان IP لتوقيع المراجع"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__reviewer_signed_by
+msgid "Reviewer Signed By"
+msgstr "وقع المراجع بواسطة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__reviewer_signed_on
+msgid "Reviewer Signed On"
+msgstr "تاريخ توقيع المراجع"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Reviewer signature is only allowed during technical review."
+msgstr "يسمح بتوقيع المراجع فقط أثناء المراجعة الفنية."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__revision
+msgid "Revision"
+msgstr "المراجعة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_photo__photo_type__right
+msgid "Right Side"
+msgstr "الجانب الأيمن"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__root_cause
+msgid "Root Cause"
+msgstr "السبب الجذري"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Root cause and corrective action are required."
+msgstr "السبب الجذري والإجراء التصحيحي مطلوبان."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_standard__authority__saso
+msgid "SASO"
+msgstr "الهيئة السعودية للمواصفات والمقاييس والجودة"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Schedule"
+msgstr "جدولة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__state__scheduled
+msgid "Scheduled"
+msgstr "مجدول"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__scheduled_datetime
+msgid "Scheduled Datetime"
+msgstr "موعد الفحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__scope_o1
+msgid "Scope O1"
+msgstr "نطاق O1"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__scope_o2
+msgid "Scope O2"
+msgstr "نطاق O2"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__scope_o3
+msgid "Scope O3"
+msgstr "نطاق O3"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__scope_o4
+msgid "Scope O4"
+msgstr "نطاق O4"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__section_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__section_id
+msgid "Section"
+msgstr "القسم"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Select an approved VIN manufacturer profile first."
+msgstr "اختر أولًا ملف مصنع VIN معتمدًا."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Select calibrated equipment for all measurement requirements."
+msgstr "اختر جهازًا ذا معايرة سارية لجميع متطلبات القياس."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__trailer_type__semi_trailer
+msgid "Semi-Trailer"
+msgstr "نصف مقطورة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_axle__sequence
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__sequence
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_photo__sequence
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__sequence
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_section__sequence
+msgid "Sequence"
+msgstr "الترتيب"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__serial_number
+msgid "Serial Number"
+msgstr "الرقم التسلسلي"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Set the model/manufacture year before generating the VIN."
+msgstr "حدد سنة الطراز أو الصنع قبل توليد VIN."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Set the scheduled date and time first."
+msgstr "حدد تاريخ ووقت الموعد أولًا."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__severity
+msgid "Severity"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__shipment_certificate_number
+msgid "Shipment Certificate Number"
+msgstr "رقم شهادة الإرسالية"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Sign as Inspector"
+msgstr "توقيع المفتش"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Sign as Reviewer"
+msgstr "توقيع المراجع"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_standard_form
+msgid "Source Document"
+msgstr "وثيقة المصدر"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__source_file
+msgid "Source File"
+msgstr "الملف المصدر"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__source_filename
+msgid "Source Filename"
+msgstr "اسم الملف المصدر"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__source_url
+msgid "Source Url"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Source document queued for OCR extraction."
+msgstr "تم إرسال المستند للتعرف الضوئي على النصوص."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__standard_id
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__standard_id
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_standard__document_type__standard
+msgid "Standard"
+msgstr "مواصفة"
+
+#. module: trailer_inspection_saso
+#: model:ir.actions.act_window,name:trailer_inspection_saso.action_trailer_standard
+#: model:ir.ui.menu,name:trailer_inspection_saso.menu_trailer_standards
+msgid "Standards and Regulations"
+msgstr "المواصفات واللوائح"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Start Inspection"
+msgstr "بدء الفحص"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_quality_complaint_form
+msgid "Start Investigation"
+msgstr "بدء التحقيق"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__state
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__state
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__state
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__state
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__state
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__state
+msgid "State"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__status
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_inspection_list
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_search
+msgid "Status"
+msgstr "الحالة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection__activity_state
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_equipment__activity_state
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_nonconformity__activity_state
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspector_authorization__activity_state
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_complaint__activity_state
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_document__activity_state
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_vin_profile__activity_state
+msgid ""
+"Status based on activities\n"
+"Overdue: Due date is already passed\n"
+"Today: Activity date is today\n"
+"Planned: Future activities."
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_quality_document_form
+msgid "Submit"
+msgstr "إرسال"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_nonconformity_form
+msgid "Submit Action"
+msgstr "إرسال الإجراء"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Submit for Review"
+msgstr "إرسال للمراجعة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_standard__status__superseded
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_standard_form
+msgid "Superseded"
+msgstr "مستبدل"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_standard__superseded_by_id
+msgid "Superseded By"
+msgstr "استبدل بواسطة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspector_authorization__state__suspended
+msgid "Suspended"
+msgstr "موقوف"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_photo__taken_on
+msgid "Taken On"
+msgstr "تاريخ الالتقاط"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__technical_file_reference
+msgid "Technical File Reference"
+msgstr "مرجع الملف الفني"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_standard__document_type__technical_regulation
+msgid "Technical Regulation"
+msgstr "لائحة فنية"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__state__technical_review
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_search
+msgid "Technical Review"
+msgstr "المراجعة الفنية"
+
+#. module: trailer_inspection_saso
+#: model:res.groups,name:trailer_inspection_saso.group_trailer_reviewer
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Technical Reviewer"
+msgstr "المراجع الفني"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_line__response_type__text
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_requirement__response_type__text
+msgid "Text Evidence"
+msgstr "دليل نصي"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.constraint,message:trailer_inspection_saso.constraint_trailer_inspection_vin_unique
+msgid "The VIN must be unique."
+msgstr "يجب ألا يتكرر VIN."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_vin.py:0
+msgid "The VIN serial range for this profile and model year is exhausted."
+msgstr "تم استنفاد نطاق أرقام VIN لهذا الملف وسنة الطراز."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.constraint,message:trailer_inspection_saso.constraint_trailer_vin_profile_profile_unique
+msgid "The WMI, VDS and plant-code combination must be unique per company."
+msgstr "يجب ألا تتكرر تركيبة WMI وVDS ورمز مصنع الإنتاج داخل الشركة."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "The assigned inspector has no valid authorization for this category."
+msgstr "المفتش المسند إليه لا يملك تفويضًا ساريًا لهذه الفئة."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "The checklist can only be regenerated in draft state."
+msgstr "لا يمكن إعادة إنشاء قائمة الفحص إلا في حالة المسودة."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_quality.py:0
+msgid "The document reviewer must be independent from its owner."
+msgstr "يجب أن يكون مراجع الوثيقة مستقلًا عن مالكها."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.constraint,message:trailer_inspection_saso.constraint_trailer_inspection_equipment_code_company_unique
+msgid "The equipment code must be unique per company."
+msgstr "يجب ألا يتكرر رمز الجهاز داخل الشركة."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_vin.py:0
+msgid ""
+"The last low-volume identifier character must be numeric so the final four "
+"VIN characters remain numeric."
+msgstr "يجب أن تكون الخانة الأخيرة من معرف الإنتاج المنخفض رقمًا حتى تظل آخر أربع خانات من VIN رقمية."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_vin.py:0
+msgid "The next VIN serial number must be greater than zero."
+msgstr "يجب أن يكون الرقم التسلسلي التالي لـVIN أكبر من صفر."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "The report cannot be approved while a critical nonconformity remains."
+msgstr "لا يمكن اعتماد التقرير مع وجود حالة عدم مطابقة حرجة."
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_verification
+msgid "The report is invalid, unavailable, or has not been approved."
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.constraint,message:trailer_inspection_saso.constraint_trailer_inspection_access_token_unique
+msgid "The report verification token must be unique."
+msgstr "يجب ألا تتكرر شفرة التحقق من التقرير."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.constraint,message:trailer_inspection_saso.constraint_trailer_inspection_requirement_code_unique
+msgid "The requirement code must be unique."
+msgstr "يجب ألا يتكرر رمز المتطلب."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.constraint,message:trailer_inspection_saso.constraint_trailer_inspection_section_code_unique
+msgid "The section code must be unique."
+msgstr "يجب ألا يتكرر رمز القسم."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.constraint,message:trailer_inspection_saso.constraint_trailer_inspection_standard_code_edition_unique
+msgid "The standard code and edition must be unique."
+msgstr "يجب ألا يتكرر رمز المواصفة وإصدارها."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "The technical reviewer must be independent from the inspector."
+msgstr "يجب أن يكون المراجع الفني مستقلًا عن المفتش."
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid ""
+"This replaces the empty checklist using the current controlled requirements."
+" Continue?"
+msgstr "سيتم استبدال قائمة الفحص الفارغة بالمتطلبات المضبوطة الحالية. هل تريد المتابعة؟"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_standard_form
+msgid "Titles"
+msgstr "العناوين"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__trailer_type__trailer
+msgid "Trailer"
+msgstr "مقطورة"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Trailer Data"
+msgstr "بيانات المقطورة"
+
+#. module: trailer_inspection_saso
+#: model:ir.module.category,name:trailer_inspection_saso.module_category_trailer_inspection
+#: model:ir.ui.menu,name:trailer_inspection_saso.menu_trailer_root
+msgid "Trailer Inspection"
+msgstr "فحص المقطورات"
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_inspection_axle
+msgid "Trailer Inspection Axle"
+msgstr "محور المقطورة المفحوصة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_inspection_line
+msgid "Trailer Inspection Checklist Line"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_inspection_equipment_use
+msgid "Trailer Inspection Equipment Use"
+msgstr "استخدام جهاز قياس الفحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_inspection_equipment
+msgid "Trailer Inspection Measuring Equipment"
+msgstr "أجهزة قياس فحص المقطورات"
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_inspection_nonconformity
+msgid "Trailer Inspection Nonconformity"
+msgstr "حالة عدم مطابقة لفحص مقطورة"
+
+#. module: trailer_inspection_saso
+#: model:res.groups.privilege,name:trailer_inspection_saso.privilege_trailer_operations
+msgid "Trailer Inspection Operations"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_inspection_photo
+msgid "Trailer Inspection Photo"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.actions.report,name:trailer_inspection_saso.action_report_trailer_inspection
+msgid "Trailer Inspection Report"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_inspection_requirement
+msgid "Trailer Inspection Requirement"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_inspection_section
+msgid "Trailer Inspection Requirement Section"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_inspection_standard
+msgid "Trailer Inspection Standard or Regulation"
+msgstr "مواصفة أو لائحة فحص المقطورات"
+
+#. module: trailer_inspection_saso
+#: model:res.groups.privilege,name:trailer_inspection_saso.privilege_trailer_review
+msgid "Trailer Inspection Technical Review"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.actions.server,name:trailer_inspection_saso.ir_cron_trailer_calibration_deadlines_ir_actions_server
+msgid "Trailer Inspection: Calibration Deadlines"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.actions.server,name:trailer_inspection_saso.ir_cron_trailer_nc_deadlines_ir_actions_server
+msgid "Trailer Inspection: Nonconformity Deadlines"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.actions.act_window,name:trailer_inspection_saso.action_trailer_inspection
+msgid "Trailer Inspections"
+msgstr "فحوصات المقطورات"
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_inspector_authorization
+msgid "Trailer Inspector Authorization"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__trailer_type
+msgid "Trailer Type"
+msgstr "نوع المقطورة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_vin_profile
+msgid "Trailer VIN Manufacturer Profile"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_vin_sequence
+msgid "Trailer VIN Production Sequence"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_inspection
+msgid "Trailer and Semi-Trailer Inspection"
+msgstr "فحص المقطورات ونصف المقطورات"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "Trailer and Semi-Trailer Inspection Report"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection__activity_exception_decoration
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_equipment__activity_exception_decoration
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_nonconformity__activity_exception_decoration
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspector_authorization__activity_exception_decoration
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_complaint__activity_exception_decoration
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_document__activity_exception_decoration
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_vin_profile__activity_exception_decoration
+msgid "Type of the exception activity on record."
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_quality_document__state__review
+msgid "Under Review"
+msgstr "تحت المراجعة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_line__unit
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_requirement__unit
+msgid "Unit"
+msgstr "الوحدة"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_quality.py:0
+msgid "Upload a UTF-8 CSV or XLSX file."
+msgstr "ارفع ملف CSV بترميز UTF-8 أو ملف XLSX."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Upload the inspector signature first."
+msgstr "ارفع توقيع المفتش أولًا."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Upload the reviewer signature first."
+msgstr "ارفع توقيع المراجع أولًا."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Upload the source document first."
+msgstr "ارفع المستند المصدر أولًا."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__user_id
+msgid "User"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_vin.py:0
+msgid "VDS"
+msgstr "قسم وصف المركبة VDS"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_inspection_list
+msgid "VIN"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_photo__photo_type__vin
+msgid "VIN / Chassis"
+msgstr "رقم الهيكل VIN"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__vin
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__vin
+msgid "VIN / Chassis Number"
+msgstr "رقم الهيكل VIN"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__assignment_authority_confirmed
+msgid "VIN Assignment Authority Confirmed"
+msgstr "تم تأكيد صلاحية إسناد VIN"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__vin_generated_by
+msgid "VIN Generated By"
+msgstr "تم توليد VIN بواسطة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__vin_generated_on
+msgid "VIN Generated On"
+msgstr "تاريخ توليد VIN"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__vin_profile_id
+msgid "VIN Manufacturer Profile"
+msgstr "ملف مصنع VIN"
+
+#. module: trailer_inspection_saso
+#: model:ir.actions.act_window,name:trailer_inspection_saso.action_trailer_vin_profile
+#: model:ir.ui.menu,name:trailer_inspection_saso.menu_trailer_vin_profiles
+msgid "VIN Manufacturer Profiles"
+msgstr "ملفات مصنعي VIN"
+
+#. module: trailer_inspection_saso
+#: model:ir.actions.act_window,name:trailer_inspection_saso.action_trailer_vin_sequence
+#: model:ir.ui.menu,name:trailer_inspection_saso.menu_trailer_vin_sequences
+msgid "VIN Production Sequences"
+msgstr "تسلسلات إنتاج VIN"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__vin_source
+msgid "VIN Source"
+msgstr "مصدر VIN"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "VIN can only be generated while the inspection is in draft state."
+msgstr "لا يمكن توليد VIN إلا عندما يكون الفحص في حالة المسودة."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "VIN check digit in position 9 is invalid according to GSO 1780."
+msgstr "خانة التحقق في الموضع التاسع من VIN غير صحيحة وفق GSO 1780."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_vin.py:0
+msgid "VIN generation requires an approved manufacturer profile."
+msgstr "يتطلب توليد VIN ملف مصنع معتمدًا."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid ""
+"VIN must contain exactly 17 uppercase letters/digits and cannot contain I, "
+"O, or Q."
+msgstr "يجب أن يتكون VIN من 17 حرفًا أو رقمًا بالضبط، دون I أو O أو Q."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_equipment__calibration_status__valid
+msgid "Valid"
+msgstr "ساري"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__valid_from
+msgid "Valid From"
+msgstr "ساري من"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__valid_to
+msgid "Valid To"
+msgstr "ساري حتى"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__vds
+msgid "Vehicle Descriptor Section (VDS)"
+msgstr "قسم وصف المركبة (VDS)"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Verification"
+msgstr "التحقق"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__verification_url
+msgid "Verification Url"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_nonconformity__state__verified
+msgid "Verified"
+msgstr "تم التحقق"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__verified_by
+msgid "Verified By"
+msgstr "تحقق بواسطة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__verified_on
+msgid "Verified On"
+msgstr "تاريخ التحقق"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_verification
+msgid "Verified Trailer Inspection Report"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_nonconformity_form
+msgid "Verify"
+msgstr "تحقق"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Verify the corrective action before closure."
+msgstr "تحقق من الإجراء التصحيحي قبل الإغلاق."
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_inspection_list
+msgid "View"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_vin.py:0
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "WMI"
+msgstr "معرف المصنع WMI"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_vin_profile_form
+msgid "WMI Authorization"
+msgstr "اعتماد WMI"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__wmi_certificate_number
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__wmi_certificate_number
+msgid "WMI Certificate Number"
+msgstr "رقم شهادة WMI"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_vin.py:0
+msgid ""
+"WMI certificate number and attachment are required before profile approval."
+msgstr "رقم شهادة WMI ومرفق الشهادة مطلوبان قبل اعتماد الملف."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Waiting for a configured OCR provider."
+msgstr "في انتظار إعداد مزود التعرف الضوئي على النصوص."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__website_message_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__website_message_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_nonconformity__website_message_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspector_authorization__website_message_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_complaint__website_message_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_quality_document__website_message_ids
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__website_message_ids
+msgid "Website Messages"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection__website_message_ids
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_equipment__website_message_ids
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_nonconformity__website_message_ids
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspector_authorization__website_message_ids
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_complaint__website_message_ids
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_quality_document__website_message_ids
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_vin_profile__website_message_ids
+msgid "Website communication history"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_equipment__equipment_type__weight
+msgid "Weight"
+msgstr "الوزن"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__width_m
+msgid "Width (m)"
+msgstr "العرض (م)"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__wmi_certificate
+msgid "Wmi Certificate"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__wmi_certificate_filename
+msgid "Wmi Certificate Filename"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_quality_document__document_type__work_instruction
+msgid "Work Instruction"
+msgstr "تعليمات عمل"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_vin_profile__wmi
+msgid "World Manufacturer Identifier (WMI)"
+msgstr "معرف المصنع العالمي (WMI)"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_line__result__yes
+msgid "Yes"
+msgstr "نعم"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_line__response_type__choice
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection_requirement__response_type__choice
+msgid "Yes / No / N/A"
+msgstr "نعم / لا / لا ينطبق"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "kg"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_vin.py:0
+msgid "plant code"
+msgstr "رمز مصنع الإنتاج"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "اسم العميل<br/>Client Name"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "اسم مركز الفحص<br/>Inspection Center"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "الأبعاد (متر)<br/>Dimensions (m)"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "الإجراء التصحيحي<br/>Corrective Action"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "الارتفاع / H:"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "البند<br/>Clause"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "الحالة<br/>Status"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "الدرجة<br/>Severity"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "الرقم<br/>No."
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "الشهادات والملف الفني / Certificates and Technical File"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "الطراز<br/>Model"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "الطول / L:"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "العرض / W:"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "العلامة التجارية<br/>Brand / Trademark"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "الفئة والنوع<br/>Category / Type"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "القسم<br/>Section"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "المحاور والأوزان / Axles and Weights"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "المخالفة<br/>Finding"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "المراجع الفنية / Technical References"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "المصنع<br/>Manufacturer"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "الملاحظات والقياس<br/>Observation / Measurement"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "النتيجة<br/>Result"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "الوزن الإجمالي<br/>Gross Weight"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "الوزن المقاس (كجم)<br/>Measured Weight"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "الوصف والمتطلب<br/>Description / Requirement"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "امسح للتحقق / Scan to verify"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "بلد المنشأ<br/>Origin Country"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "بيانات المنتج / Product Identification"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "تاريخ التقرير<br/>Report Date"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "تاريخ الصنع<br/>Manufacture Date"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "تاريخ الفحص<br/>Inspection Date"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_verification
+msgid "تعذر التحقق من التقرير"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "تقرير فحص المقطورات ونصف المقطورات"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_verification
+msgid "تقرير فحص معتمد"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid ""
+"توضع النتيجة بعد إكمال الفحص. يرجى تسجيل القياسات والملاحظات والأدلة ذات "
+"الصلة. / Record the result only after completing the inspection and document"
+" relevant measurements, observations and evidence."
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid ""
+"حالات عدم المطابقة والإجراءات التصحيحية / Nonconformities and Corrective "
+"Actions"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "رقم التقرير<br/>Report No."
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "رقم الهيكل<br/>VIN / Chassis No."
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "سعة الإطارات (كجم)<br/>Tyre Capacity"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "سعة المصنع (كجم)<br/>Manufacturer Capacity"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "شهادة الإرسالية<br/>Shipment Certificate"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "شهادة الحاجز<br/>Barrier Certificate"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "شهادة المطابقة<br/>Conformity Certificate"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "صور المقطورة وأدلة الفحص / Trailer Pictures and Inspection Evidence"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "عنوان المركز<br/>Center Address"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.portal_trailer_inspection_list
+msgid "فحوصات المقطورات / Trailer Inspections"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "قائمة الفحص / Inspection Checklist"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "لا / No"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "لا ينطبق<br/>N/A"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "لا<br/>No"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "لوحة المطابقة<br/>Compliance Plate"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "مرجع الملف الفني<br/>Technical File"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "مساحة صورة / Photo Space 1"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "مساحة صورة / Photo Space 2"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "مساحة صورة / Photo Space 3"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "مساحة صورة / Photo Space 4"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "مسودة / DRAFT"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "مصدر VIN<br/>VIN Source"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "ملاحظات المفتش والاعتماد / Inspector Notes and Approval"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "ملاحظات<br/>Notes"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "موقع الفحص<br/>Inspection Location"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "نتيجة الفحص / Inspection Result"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "نعم / Yes"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "نعم<br/>Yes"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "نوع الفحص<br/>Inspection Type"
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid ""
+"هذا التقرير صالح فقط عند التحقق من رمز QR ولا يجوز تعديله بعد الاعتماد. / "
+"This report is valid only when verified through its QR code and must not be "
+"altered after approval."
+msgstr ""
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
+msgid "وصف المنتج<br/>Product Description"
+msgstr ""

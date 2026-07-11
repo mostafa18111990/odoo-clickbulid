@@ -9,7 +9,7 @@
                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
                     <div class="input-group">
                         <input type="text" name="name" class="form-control" placeholder="Token name"/>
-                        <input type="text" name="scopes" class="form-control" placeholder="read,write" value="read"/>
+                        <input type="hidden" name="scopes" value="read"/>
                         <button type="submit" class="btn btn-primary">Generate</button>
                     </div>
                 </form>
@@ -45,9 +45,9 @@
                 <div class="alert alert-warning">
                     <strong>Save this token now.</strong> You won't be able to view it again.
                 </div>
-                <pre class="bg-light p-3"><t t-out="token.plain_token_once"/></pre>
+                <pre class="bg-light p-3"><t t-out="plain_token"/></pre>
                 <p>Use it in your requests as:</p>
-                <pre>Authorization: Bearer <t t-out="token.plain_token_once"/></pre>
+                <pre>Authorization: Bearer <t t-out="plain_token"/></pre>
                 <a href="/my/saas/api-tokens" class="btn btn-primary">Back to tokens</a>
             </div>
         </t>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_trailer_inspection_search" model="ir.ui.view">
+        <field name="name">trailer.inspection.search</field><field name="model">trailer.inspection</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/><field name="vin"/><field name="partner_id"/><field name="inspector_id"/>
+                <filter name="my_inspections" string="My Inspections" domain="[('inspector_id', '=', uid)]"/>
+                <filter name="review_queue" string="Technical Review" domain="[('state', '=', 'technical_review')]"/>
+                <filter name="non_compliant" string="Non-Compliant" domain="[('overall_result', '=', 'non_compliant')]"/>
+                <separator/><filter name="inspection_date" string="Inspection Date" date="inspection_date"/>
+                <separator/>
+                <filter name="group_state" string="Status" context="{'group_by':'state'}"/>
+                <filter name="group_category" string="Category" context="{'group_by':'category'}"/>
+                <filter name="group_inspector" string="Inspector" context="{'group_by':'inspector_id'}"/>
+                <filter name="group_client" string="Client" context="{'group_by':'partner_id'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_trailer_inspection_list" model="ir.ui.view">
+        <field name="name">trailer.inspection.list</field><field name="model">trailer.inspection</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'approved'" decoration-danger="state == 'rejected' or overall_result == 'non_compliant'" decoration-muted="state == 'cancelled'">
+                <field name="name"/><field name="inspection_date"/><field name="partner_id"/><field name="vin"/><field name="trailer_type"/><field name="category"/>
+                <field name="inspector_id"/><field name="checklist_progress" widget="progressbar"/><field name="nonconformity_count"/>
+                <field name="overall_result" widget="badge"/><field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_trailer_inspection_form" model="ir.ui.view">
+        <field name="name">trailer.inspection.form</field><field name="model">trailer.inspection</field>
+        <field name="arch" type="xml">
+            <form>
+                <header>
+                    <button name="action_schedule" type="object" string="Schedule" class="btn-primary" invisible="state != 'draft'" groups="trailer_inspection_saso.group_trailer_inspector"/>
+                    <button name="action_generate_vin" type="object" string="Generate VIN" class="btn-secondary" invisible="state != 'draft' or vin" groups="trailer_inspection_saso.group_trailer_inspector"/>
+                    <button name="action_start" type="object" string="Start Inspection" class="btn-primary" invisible="state not in ('draft','scheduled')" groups="trailer_inspection_saso.group_trailer_inspector"/>
+                    <button name="action_submit" type="object" string="Submit for Review" class="btn-primary" invisible="state != 'in_progress'" groups="trailer_inspection_saso.group_trailer_inspector"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary" invisible="state != 'technical_review'" groups="trailer_inspection_saso.group_trailer_reviewer"/>
+                    <button name="action_return_to_inspector" type="object" string="Return to Inspector" invisible="state != 'technical_review'" groups="trailer_inspection_saso.group_trailer_reviewer"/>
+                    <button name="action_reject" type="object" string="Reject" invisible="state != 'technical_review'" groups="trailer_inspection_saso.group_trailer_reviewer"/>
+                    <button name="action_create_reinspection" type="object" string="Create Reinspection" invisible="state not in ('approved','rejected') or nonconformity_count == 0" groups="trailer_inspection_saso.group_trailer_inspector"/>
+                    <button name="action_prepare_checklist" type="object" string="Regenerate Checklist" invisible="state != 'draft'" groups="trailer_inspection_saso.group_trailer_manager" confirm="This replaces the empty checklist using the current controlled requirements. Continue?"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state in ('approved','cancelled')" groups="trailer_inspection_saso.group_trailer_manager"/>
+                    <button name="action_reset_draft" type="object" string="Reset to Draft" invisible="state not in ('rejected','cancelled')" groups="trailer_inspection_saso.group_trailer_manager"/>
+                    <field name="state" widget="statusbar" statusbar_visible="draft,scheduled,in_progress,technical_review,approved"/>
+                </header>
+                <sheet>
+                    <widget name="web_ribbon" title="Non-Compliant" bg_color="text-bg-danger" invisible="overall_result != 'non_compliant'"/>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" icon="fa-check-square-o" type="object" name="action_prepare_checklist" invisible="state != 'draft'" groups="trailer_inspection_saso.group_trailer_manager"><field name="checklist_total" widget="statinfo" string="Checklist Items"/></button>
+                    </div>
+                    <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+                    <group>
+                        <group><field name="partner_id" readonly="state not in ('draft','scheduled')"/><field name="inspection_type"/><field name="parent_inspection_id" invisible="inspection_type != 'reinspection'"/><field name="inspection_date" readonly="state not in ('draft','scheduled')"/><field name="scheduled_datetime"/><field name="inspection_location"/><field name="company_id" groups="base.group_multi_company"/></group>
+                        <group><field name="inspector_id"/><field name="reviewer_id"/><field name="authorization_id" readonly="1"/><field name="overall_result" widget="badge" readonly="1"/><field name="checklist_progress" widget="progressbar"/><field name="nonconformity_count"/></group>
+                    </group>
+                    <notebook>
+                        <page string="Trailer Data">
+                            <group>
+                                <group><field name="product_description"/><field name="trailer_type"/><field name="category"/><field name="vin_profile_id" domain="[('state','=','approved'),('company_id','=',company_id)]" options="{'no_create': True}"/><field name="vin"/><field name="vin_source" readonly="1"/><field name="vin_generated_by" readonly="1" invisible="vin_source != 'generated'"/><field name="vin_generated_on" readonly="1" invisible="vin_source != 'generated'"/><field name="manufacturer_name"/><field name="brand_name"/><field name="model_name"/></group>
+                                <group><field name="origin_country_id"/><field name="manufacture_year"/><field name="manufacture_month"/><field name="length_m"/><field name="width_m"/><field name="height_m"/><field name="gross_weight_kg"/><field name="compliance_plate_present"/></group>
+                            </group>
+                            <group string="Certificates and Technical File"><field name="wmi_certificate_number"/><field name="conformity_certificate_number"/><field name="barrier_certificate_number"/><field name="shipment_certificate_number"/><field name="technical_file_reference"/><field name="source_filename" invisible="1"/><field name="source_file" filename="source_filename"/><button name="action_queue_document_extraction" type="object" string="Queue OCR" class="btn-secondary" invisible="not source_file or extraction_state == 'pending'"/><field name="extraction_state"/><field name="extraction_notes" invisible="extraction_state == 'none'"/></group>
+                            <field name="standard_ids" widget="many2many_tags" options="{'no_create': True}"/>
+                        </page>
+                        <page string="Checklist">
+                            <field name="line_ids" readonly="state not in ('draft','in_progress')">
+                                <list editable="bottom" decoration-danger="result == 'no'" decoration-success="result == 'yes'" decoration-muted="result == 'na'">
+                                    <field name="sequence" column_invisible="True"/><field name="section_id" readonly="1"/><field name="clause_ref" readonly="1"/>
+                                    <field name="requirement_name_ar" string="Requirement" readonly="1"/><field name="criticality" widget="badge" readonly="1"/>
+                                    <field name="result"/><field name="measured_value" invisible="response_type != 'numeric'"/><field name="measurement_recorded" column_invisible="True"/><field name="unit" readonly="1" invisible="response_type != 'numeric'"/>
+                                    <field name="observation"/><field name="equipment_id" invisible="not equipment_required" domain="[('calibration_status','!=','expired')]"/>
+                                    <field name="evidence_filename" column_invisible="True"/><field name="evidence_attachment" filename="evidence_filename" invisible="not evidence_required"/>
+                                    <field name="nc_severity" invisible="result != 'no'"/><field name="response_type" column_invisible="True"/><field name="equipment_required" column_invisible="True"/><field name="evidence_required" column_invisible="True"/>
+                                </list>
+                                <form><sheet>
+                                    <group><group><field name="section_id" readonly="1"/><field name="standard_id" readonly="1"/><field name="clause_ref" readonly="1"/><field name="criticality" readonly="1"/></group><group><field name="result"/><field name="measured_value" invisible="response_type != 'numeric'"/><field name="unit" invisible="response_type != 'numeric'" readonly="1"/><field name="equipment_id" invisible="not equipment_required"/></group></group>
+                                    <group string="Acceptance Criterion"><field name="criterion_ar" readonly="1"/><field name="criterion_en" readonly="1"/></group>
+                                    <field name="observation"/><group invisible="result != 'no'" string="Nonconformity"><field name="nc_severity"/><field name="corrective_action"/><field name="corrective_action_due"/><field name="nc_closed"/></group>
+                                    <group invisible="not evidence_required"><field name="evidence_filename" invisible="1"/><field name="evidence_attachment" filename="evidence_filename"/></group>
+                                    <field name="measurement_recorded" invisible="1"/><field name="response_type" invisible="1"/><field name="equipment_required" invisible="1"/><field name="evidence_required" invisible="1"/>
+                                </sheet></form>
+                            </field>
+                        </page>
+                        <page string="Axles and Weights"><field name="axle_ids"><list editable="bottom"><field name="sequence"/><field name="manufacturer_capacity_kg"/><field name="tyre_capacity_kg"/><field name="measured_weight_kg"/><field name="notes"/></list></field></page>
+                        <page string="Photos and Evidence"><field name="photo_ids"><list editable="bottom"><field name="sequence" widget="handle"/><field name="name"/><field name="photo_type"/><field name="line_id"/><field name="photo" widget="image"/><field name="taken_on"/><field name="description"/><field name="include_in_report"/></list></field></page>
+                        <page string="Equipment Used"><field name="equipment_use_ids"><list editable="bottom"><field name="equipment_id" domain="[('calibration_status','!=','expired')]"/><field name="purpose"/><field name="calibration_due_date" readonly="1"/><field name="calibration_status" widget="badge" readonly="1"/><field name="notes"/></list></field></page>
+                        <page string="Nonconformities"><field name="nonconformity_ids" readonly="1"><list decoration-danger="severity == 'critical' and state != 'closed'"><field name="name"/><field name="line_id"/><field name="severity" widget="badge"/><field name="finding"/><field name="due_date"/><field name="state" widget="badge"/></list></field></page>
+                        <page string="Impartiality and Review">
+                            <group><group string="Conflict Check"><field name="impartiality_confirmed"/><field name="impartiality_notes"/></group><group string="Technical Review"><field name="reviewer_id"/><field name="approved_on" readonly="1"/><field name="review_notes"/></group></group>
+                            <group string="Digital Signatures">
+                                <group string="Inspector"><field name="inspector_signature" widget="image"/><button name="action_sign_inspector" type="object" string="Sign as Inspector" class="btn-secondary" invisible="state != 'in_progress' or inspector_signed_on"/><field name="inspector_signed_by" readonly="1"/><field name="inspector_signed_on" readonly="1"/><field name="inspector_signature_ip" readonly="1"/></group>
+                                <group string="Technical Reviewer"><field name="reviewer_signature" widget="image"/><button name="action_sign_reviewer" type="object" string="Sign as Reviewer" class="btn-secondary" invisible="state != 'technical_review' or reviewer_signed_on"/><field name="reviewer_signed_by" readonly="1"/><field name="reviewer_signed_on" readonly="1"/><field name="reviewer_signature_ip" readonly="1"/></group>
+                            </group>
+                            <group string="Verification"><field name="report_valid_until"/><field name="verification_url" widget="url" readonly="1"/><field name="locked" readonly="1"/></group>
+                            <group string="Inspection Notes"><field name="inspector_notes"/></group>
+                        </page>
+                    </notebook>
+                </sheet><chatter/>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_trailer_inspection" model="ir.actions.act_window">
+        <field name="name">Trailer Inspections</field><field name="res_model">trailer.inspection</field><field name="view_mode">list,form</field><field name="search_view_id" ref="view_trailer_inspection_search"/>
+        <field name="context">{'search_default_my_inspections': 1}</field>
+    </record>
+</odoo>

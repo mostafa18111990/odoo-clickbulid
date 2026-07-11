@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="action_report_trailer_inspection" model="ir.actions.report">
+        <field name="name">Trailer Inspection Report</field>
+        <field name="model">trailer.inspection</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">trailer_inspection_saso.report_trailer_inspection_document</field>
+        <field name="report_file">trailer_inspection_saso.report_trailer_inspection_document</field>
+        <field name="binding_model_id" ref="model_trailer_inspection"/>
+        <field name="binding_type">report</field>
+        <field name="paperformat_id" ref="paperformat_trailer_inspection"/>
+        <field name="print_report_name">'Trailer Inspection - %s' % (object.name)</field>
+    </record>
+</odoo>

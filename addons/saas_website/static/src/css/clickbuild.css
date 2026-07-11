@@ -1,9 +1,7 @@
 /* ============================================================
-   ClickBuild — Design System 2026 v2
+   ClickBuild — Design System 2026 v2.1
    Odoo-inspired purple palette · modern · bilingual AR/EN
    ============================================================ */
-
-@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@400;500;600;700;800;900&display=swap');
 
 /* ─── Design Tokens ─── */
 :root {
@@ -60,6 +58,7 @@
     --cb-shadow-lg:      0 24px 64px rgba(14,11,28,0.2);
     --cb-shadow-purple:  0 8px 32px rgba(123,63,200,0.35);
     --cb-shadow-card:    0 2px 12px rgba(123,63,200,0.08);
+    --cb-release-token:  "20260626b";
 }
 
 /* ─── Base ─── */
@@ -284,7 +283,9 @@ header .btn_cta {
     transition: transform 0.6s ease;
 }
 .cb-slide-image { object-fit: cover; }
+[dir="rtl"] .cb-slide-image,
 [dir="rtl"] .cb-odoo-window { transform: perspective(1200px) rotateY(4deg); }
+.cb-slide-image:hover,
 .cb-odoo-window:hover { transform: perspective(1200px) rotateY(0deg); }
 
 .cb-window-bar {
@@ -962,12 +963,20 @@ header .btn_cta {
    visible after 1.5s regardless of JS, so the page can never stay white. */
 @keyframes cbRevealFailsafe { to { opacity: 1; transform: none; } }
 [data-cb-reveal] {
+    opacity: 1;
+    transform: none;
+}
+html.cb-has-reveal [data-cb-reveal] {
     opacity: 0;
     transform: translateY(20px);
     transition: opacity 0.6s ease, transform 0.6s ease;
     animation: cbRevealFailsafe 0.4s ease 1.5s forwards;
 }
-[data-cb-reveal].is-visible { opacity: 1; transform: translateY(0); animation: none; }
+html.cb-has-reveal [data-cb-reveal].is-visible {
+    opacity: 1;
+    transform: translateY(0);
+    animation: none;
+}
 
 /* ════════════════════════════════════════
    RESPONSIVE
@@ -983,6 +992,7 @@ header .btn_cta {
     .cb-slide-grid { grid-template-columns: 1fr; gap: 2.5rem; padding-block: 4rem 5.5rem; }
     .cb-slide-copy { max-width: 700px; }
     .cb-product-visual { width: min(680px,100%); margin-inline: auto; }
+    .cb-slide-image, [dir="rtl"] .cb-slide-image,
     .cb-odoo-window, [dir="rtl"] .cb-odoo-window { transform: none; }
     .cb-marketing-carousel .carousel-control-prev,
     .cb-marketing-carousel .carousel-control-next { display: none; }

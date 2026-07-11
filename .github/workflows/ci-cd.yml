@@ -201,11 +201,11 @@ jobs:
             --include='saas_*/***' --exclude='*' \
             addons/ prod:/opt/odoo-saas/addons/
 
-      - name: Update leaf module (cascades to all dependents)
+      - name: Update modules (core + website + leaf cascade)
         run: |
           ssh prod "docker exec odoo_saas_app odoo \
             --config=/etc/odoo/odoo.conf \
-            -d $PROD_DB -u saas_monitoring \
+            -d $PROD_DB -u saas_core,saas_website,saas_monitoring \
             --no-http --stop-after-init 2>&1 | tail -50"
 
       - name: Restart Odoo workers

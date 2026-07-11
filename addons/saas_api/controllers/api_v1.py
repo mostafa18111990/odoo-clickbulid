@@ -14,7 +14,15 @@ def _json_response(data, status=200):
 
 class SaasApiV1(http.Controller):
 
-    def _authenticate(self):
+    @staticmethod
+    def _is_platform_admin(token):
+        return bool(
+            token
+            and token.user_id
+            and token.user_id.has_group('saas_core.group_saas_super_admin')
+        )
+
+    def _authenticate(self, required_scope='read'):
         from odoo.addons.saas_api.services.token_service import TokenService
         from odoo.addons.saas_api.services.rate_limit_service import RateLimitService
         auth = request.httprequest.headers.get('Authorization') or \
@@ -22,6 +30,10 @@ class SaasApiV1(http.Controller):
         token = TokenService(request.env(su=True)).validate_token(auth)
         if not token:
             return None, _json_response({'error': 'unauthorized'}, 401)
+        if required_scope and not token.has_scope(required_scope):
+            return None, _json_response({'error': 'insufficient_scope'}, 403)
+        if not token.tenant_id and not self._is_platform_admin(token):
+            return None, _json_response({'error': 'tenant_scope_required'}, 403)
         if not RateLimitService(request.env(su=True)).check(token):
             return None, _json_response({'error': 'rate_limit_exceeded'}, 429)
         TokenService(request.env(su=True)).touch(
@@ -45,9 +57,9 @@ class SaasApiV1(http.Controller):
         except Exception:
             _logger.exception('API log failure')
 
-    def _handle(self, endpoint, handler):
+    def _handle(self, endpoint, handler, required_scope='read'):
         t0 = time.time()
-        token, err = self._authenticate()
+        token, err = self._authenticate(required_scope=required_scope)
         if err:
             self._log(None, endpoint, err.status_code,
                       int((time.time() - t0) * 1000),
@@ -61,7 +73,7 @@ class SaasApiV1(http.Controller):
         except Exception as e:
             _logger.exception('API handler error')
             self._log(token, endpoint, 500, int((time.time() - t0) * 1000), error=str(e))
-            return _json_response({'error': 'internal_error', 'message': str(e)}, 500)
+            return _json_response({'error': 'internal_error'}, 500)
 
     @http.route('/api/v1/me', type='http', auth='none', csrf=False, methods=['GET'])
     def me(self, **kw):
@@ -83,6 +95,8 @@ class SaasApiV1(http.Controller):
             if token.tenant_id:
                 tenants = token.tenant_id
             else:
+                if not self._is_platform_admin(token):
+                    return _json_response({'error': 'forbidden'}, 403)
                 tenants = request.env['saas.tenant'].sudo().search([], limit=100)
             return _json_response({'data': [{
                 'id': t.id, 'name': t.name, 'subdomain': t.subdomain,
@@ -95,6 +109,8 @@ class SaasApiV1(http.Controller):
     def get_tenant(self, tenant_id, **kw):
         def handler(token):
             if token.tenant_id and token.tenant_id.id != tenant_id:
+                return _json_response({'error': 'forbidden'}, 403)
+            if not token.tenant_id and not self._is_platform_admin(token):
                 return _json_response({'error': 'forbidden'}, 403)
             t = request.env['saas.tenant'].sudo().browse(tenant_id)
             if not t.exists():
@@ -113,6 +129,8 @@ class SaasApiV1(http.Controller):
             domain = []
             if token.tenant_id:
                 domain.append(('tenant_id', '=', token.tenant_id.id))
+            elif not self._is_platform_admin(token):
+                return _json_response({'error': 'forbidden'}, 403)
             subs = request.env['saas.subscription'].sudo().search(domain, limit=100)
             return _json_response({'data': [{
                 'id': s.id, 'tenant_id': s.tenant_id.id if s.tenant_id else None,
@@ -128,6 +146,8 @@ class SaasApiV1(http.Controller):
             domain = []
             if token.tenant_id:
                 domain.append(('tenant_id', '=', token.tenant_id.id))
+            elif not self._is_platform_admin(token):
+                return _json_response({'error': 'forbidden'}, 403)
             invoices = request.env['saas.invoice'].sudo().search(domain, limit=100)
             return _json_response({'data': [{
                 'id': i.id, 'name': i.name, 'amount_total': i.amount_total,

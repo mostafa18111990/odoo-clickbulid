@@ -5,7 +5,7 @@
     'summary': 'Token-based REST API for the platform',
     'author': 'ClickBuild',
     'website': 'https://clickbuild.com',
-    'depends': ['saas_reporting'],
+    'depends': ['saas_reporting', 'saas_portal'],
     'data': [
         'security/ir.model.access.csv',
         'data/saas_api_cron.xml',

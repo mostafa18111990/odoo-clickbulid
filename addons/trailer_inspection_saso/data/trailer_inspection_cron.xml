@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="ir_cron_trailer_calibration_deadlines" model="ir.cron">
+        <field name="name">Trailer Inspection: Calibration Deadlines</field>
+        <field name="model_id" ref="model_trailer_inspection_equipment"/>
+        <field name="state">code</field><field name="code">model._cron_deadline_alerts()</field>
+        <field name="interval_number">1</field><field name="interval_type">days</field><field name="active">True</field>
+    </record>
+    <record id="ir_cron_trailer_nc_deadlines" model="ir.cron">
+        <field name="name">Trailer Inspection: Nonconformity Deadlines</field>
+        <field name="model_id" ref="model_trailer_inspection_nonconformity"/>
+        <field name="state">code</field><field name="code">model._cron_deadline_alerts()</field>
+        <field name="interval_number">1</field><field name="interval_type">days</field><field name="active">True</field>
+    </record>
+</odoo>
