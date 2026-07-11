@@ -33,8 +33,12 @@ class EmailChannel:
             notif.mark_failed(str(e))
 
     def _get_from_address(self):
+        # From must equal the authenticated SMTP mailbox — the provider
+        # (Hostinger) rejects any other sender address (553).
         config = self.env['saas.config'].sudo()._get_config()
-        return f'{config.platform_name} <noreply@{config.platform_domain}>'
+        server = self.env['ir.mail_server'].sudo().search([], order='sequence', limit=1)
+        sender = server.smtp_user if server and server.smtp_user else f'noreply@{config.platform_domain}'
+        return f'{config.platform_name} <{sender}>'
 
     def _wrap_html(self, body, cta_url, cta_label):
         cta_html = ''
