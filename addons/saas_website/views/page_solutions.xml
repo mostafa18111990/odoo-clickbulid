@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="page_catalog" name="ClickBuild Solutions Catalog">
+        <t t-call="website.layout">
+            <t t-set="lang_is_ar" t-value="(request.env.lang or 'ar_001') in ('ar_001', 'ar')"/>
+            <t t-set="is_apps" t-value="catalog_kind == 'apps'"/>
+            <t t-set="additional_title" t-value="('تطبيقات Odoo للشركات في السعودية' if is_apps else 'حلول Odoo للقطاعات في السعودية') if lang_is_ar else ('Odoo Business Applications' if is_apps else 'Odoo Industry Solutions')"/>
+            <t t-set="meta_description" t-value="('اكتشف تطبيقات Odoo التي تساعد على ربط المحاسبة والمبيعات والمخزون والعمليات ضمن تنفيذ يناسب شركتك.' if is_apps else 'اكتشف كيف تربط ClickBuild تطبيقات Odoo لتلبية عمليات القطاعات المختلفة مع توضيح ما هو قياسي وما يحتاج إلى تخصيص.') if lang_is_ar else ('Explore connected Odoo applications for finance, sales, inventory, and operations.' if is_apps else 'Explore implementation-focused Odoo solutions for different industries.')"/>
+            <main t-att-dir="'rtl' if lang_is_ar else 'ltr'">
+                <section class="cb-hero py-5" style="background:var(--cb-grad-hero);">
+                    <div class="container text-center py-5">
+                        <span class="badge rounded-pill bg-light text-dark mb-3">
+                            <t t-if="lang_is_ar">حلول أعمال مترابطة</t><t t-else="">Connected business solutions</t>
+                        </span>
+                        <h1 class="text-white fw-bold display-5">
+                            <t t-if="is_apps"><t t-if="lang_is_ar">تطبيقات Odoo لإدارة أعمالك من منصة واحدة</t><t t-else="">Odoo apps for connected operations</t></t>
+                            <t t-else=""><t t-if="lang_is_ar">حلول مرنة لطبيعة كل قطاع</t><t t-else="">Flexible solutions for every industry</t></t>
+                        </h1>
+                        <p class="text-white-50 lead mx-auto" style="max-width:760px;">
+                            <t t-if="is_apps and lang_is_ar">ابدأ بالتطبيقات التي تعالج أولوياتك، ثم وسّع المنظومة مع نمو العمليات.</t>
+                            <t t-elif="is_apps">Start with the apps that address today's priorities, then expand as operations grow.</t>
+                            <t t-elif="lang_is_ar">نربط الوظائف القياسية في Odoo ونحدد بوضوح أي تطوير إضافي يحتاجه نشاطك.</t>
+                            <t t-else="">We connect standard Odoo capabilities and clearly scope any required customization.</t>
+                        </p>
+                    </div>
+                </section>
+                <section class="py-5">
+                    <div class="container">
+                        <div class="row g-4">
+                            <div class="col-lg-4 col-md-6" t-foreach="items" t-as="item">
+                                <article class="card h-100 border-0 shadow-sm rounded-4 p-4">
+                                    <div class="d-flex align-items-center gap-3 mb-3">
+                                        <span class="rounded-3 d-inline-flex align-items-center justify-content-center" style="width:48px;height:48px;background:#f2ecfb;color:#6d28d9;">
+                                            <i t-att-class="'fa ' + ('fa-th-large' if is_apps else 'fa-building')"/>
+                                        </span>
+                                        <h2 class="h4 mb-0" t-esc="item['title_ar'] if lang_is_ar else item['title_en']"/>
+                                    </div>
+                                    <p class="text-muted" t-if="is_apps" t-esc="item['summary_ar'] if lang_is_ar else item['summary_en']"/>
+                                    <p class="text-muted" t-else="">
+                                        <t t-if="lang_is_ar">حل عملي يربط العمليات الأساسية ويُهيأ وفق نطاق التنفيذ المتفق عليه.</t>
+                                        <t t-else="">A practical solution connecting core workflows within an agreed implementation scope.</t>
+                                    </p>
+                                    <a class="fw-bold text-decoration-none mt-auto" t-att-href="('/apps/' if is_apps else '/industries/') + item['slug']">
+                                        <t t-if="lang_is_ar">استكشف الحل</t><t t-else="">Explore solution</t>
+                                        <i t-att-class="'fa ' + ('fa-arrow-left' if lang_is_ar else 'fa-arrow-right')"/>
+                                    </a>
+                                </article>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+                <t t-call="saas_website.solution_cta"/>
+            </main>
+        </t>
+    </template>
+
+    <template id="page_solution_detail" name="ClickBuild Solution Detail">
+        <t t-call="website.layout">
+            <t t-set="lang_is_ar" t-value="(request.env.lang or 'ar_001') in ('ar_001', 'ar')"/>
+            <t t-set="is_app" t-value="item['kind'] == 'app'"/>
+            <t t-set="display_title" t-value="item['title_ar'] if lang_is_ar else item['title_en']"/>
+            <t t-set="additional_title" t-value="display_title + (' | تنفيذ Odoo من ClickBuild' if lang_is_ar else ' | Odoo implementation by ClickBuild')"/>
+            <t t-set="meta_description" t-value="item.get('summary_ar') if lang_is_ar and is_app else (item.get('summary_en') if is_app else ('حل Odoo لقطاع ' + item['title_ar']))"/>
+            <main t-att-dir="'rtl' if lang_is_ar else 'ltr'">
+                <section class="cb-hero py-5" style="background:var(--cb-grad-hero);">
+                    <div class="container py-5">
+                        <nav aria-label="breadcrumb" class="mb-4">
+                            <a class="text-white-50" t-att-href="'/apps' if is_app else '/industries'">
+                                <t t-if="is_app and lang_is_ar">التطبيقات</t><t t-elif="is_app">Apps</t>
+                                <t t-elif="lang_is_ar">القطاعات</t><t t-else="">Industries</t>
+                            </a>
+                        </nav>
+                        <h1 class="text-white display-4 fw-bold" t-esc="display_title"/>
+                        <p class="text-white-50 lead" style="max-width:760px;" t-if="is_app" t-esc="item['summary_ar'] if lang_is_ar else item['summary_en']"/>
+                        <p class="text-white-50 lead" style="max-width:760px;" t-else="">
+                            <t t-if="lang_is_ar">اربط فرقك وبياناتك ضمن مسار عمل يناسب واقع القطاع وأولويات المنشأة.</t>
+                            <t t-else="">Connect teams and data in workflows shaped around the industry's operating priorities.</t>
+                        </p>
+                        <div class="d-flex gap-3 flex-wrap mt-4">
+                            <a href="/contact?type=consultation" class="btn btn-primary btn-lg"><t t-if="lang_is_ar">اطلب عرضًا توضيحيًا</t><t t-else="">Request a demo</t></a>
+                            <a href="/contact?type=quote" class="btn btn-outline-light btn-lg"><t t-if="lang_is_ar">تحدث مع مستشار</t><t t-else="">Talk to a consultant</t></a>
+                        </div>
+                    </div>
+                </section>
+                <section class="py-5"><div class="container"><div class="row g-4">
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
+                            <h2 class="h3"><t t-if="is_app and lang_is_ar">ما الذي يمكنك إدارته؟</t><t t-elif="is_app">Core capabilities</t><t t-elif="lang_is_ar">تحديات القطاع</t><t t-else="">Industry challenges</t></h2>
+                            <ul class="mt-3">
+                                <li class="mb-3" t-foreach="item['capabilities'] if is_app else item['challenges']" t-as="line"><i class="fa fa-check-circle text-success me-2"/><t t-esc="line"/></li>
+                            </ul>
+                        </div>
+                    </div>
+                    <div class="col-lg-6">
+                        <div class="card border-0 shadow-sm rounded-4 h-100 p-4">
+                            <h2 class="h3"><t t-if="is_app and lang_is_ar">الأثر على التشغيل</t><t t-elif="is_app">Operational outcomes</t><t t-elif="lang_is_ar">العمليات المترابطة</t><t t-else="">Connected operations</t></h2>
+                            <ul class="mt-3">
+                                <li class="mb-3" t-foreach="item['outcomes'] if is_app else item['operations']" t-as="line"><i class="fa fa-arrow-circle-left text-primary me-2"/><t t-esc="line"/></li>
+                            </ul>
+                        </div>
+                    </div>
+                </div></div></section>
+                <section class="py-5 bg-light"><div class="container">
+                    <h2 class="text-center mb-4"><t t-if="lang_is_ar">من التحليل إلى التشغيل</t><t t-else="">From discovery to operation</t></h2>
+                    <div class="row g-3 text-center">
+                        <div class="col-md" t-foreach="['اكتشاف الاحتياج', 'تحليل العمليات', 'الإعداد والتجربة', 'التدريب والإطلاق', 'الدعم والتحسين']" t-as="step"><div class="bg-white rounded-4 p-3 h-100 shadow-sm"><strong t-esc="step"/></div></div>
+                    </div>
+                    <p class="small text-muted text-center mt-4" t-if="not is_app">قد تغطي تطبيقات Odoo القياسية جزءًا كبيرًا من السيناريو، وأي تخصيص إضافي يُحدد بعد التحليل ولا يُعرض كوظيفة جاهزة.</p>
+                </div></section>
+                <t t-call="saas_website.solution_cta"/>
+            </main>
+        </t>
+    </template>
+
+    <template id="page_services" name="ClickBuild Services">
+        <t t-call="website.layout">
+            <t t-set="lang_is_ar" t-value="(request.env.lang or 'ar_001') in ('ar_001', 'ar')"/>
+            <t t-set="additional_title" t-value="'خدمات تنفيذ وتطوير Odoo في السعودية | ClickBuild'"/>
+            <t t-set="meta_description" t-value="'خدمات تحليل الأعمال وتهيئة وتخصيص ونقل بيانات وتكامل وتدريب ودعم Odoo للشركات في السعودية.'"/>
+            <main t-att-dir="'rtl' if lang_is_ar else 'ltr'">
+                <section class="cb-hero py-5" style="background:var(--cb-grad-hero);"><div class="container text-center py-5">
+                    <h1 class="text-white display-5 fw-bold"><t t-if="lang_is_ar">خدمات Odoo من الاحتياج إلى التحسين المستمر</t><t t-else="">Odoo services from discovery to continuous improvement</t></h1>
+                    <p class="text-white-50 lead mx-auto" style="max-width:760px;"><t t-if="lang_is_ar">تنفيذ واضح المراحل يحافظ على استمرارية العمل ويضع البيانات والمستخدمين في قلب المشروع.</t><t t-else="">A structured implementation approach centered on operations, data, and users.</t></p>
+                </div></section>
+                <section class="py-5"><div class="container"><div class="row g-4">
+                    <div class="col-lg-4 col-md-6" t-foreach="services" t-as="service"><article class="card border-0 shadow-sm rounded-4 h-100 p-4"><h2 class="h4" t-esc="service[0]"/><p class="text-muted" t-esc="service[1]"/><a href="/contact?type=service" class="mt-auto fw-bold text-decoration-none">ابدأ تحليل احتياجك <i class="fa fa-arrow-left"/></a></article></div>
+                </div></div></section>
+                <t t-call="saas_website.solution_cta"/>
+            </main>
+        </t>
+    </template>
+
+    <template id="solution_cta" name="Solution CTA">
+        <section class="cb-v2-final"><div class="container"><div class="cb-v2-final-inner">
+            <div><span>ClickBuild</span><h2><t t-if="lang_is_ar">اكتشف الحل المناسب لطبيعة عملك</t><t t-else="">Find the right solution for your operations</t></h2></div>
+            <div class="cb-v2-final-actions"><a href="/contact?type=consultation" class="btn btn-primary btn-lg"><t t-if="lang_is_ar">تحدث مع مستشار</t><t t-else="">Talk to a consultant</t></a><a href="/contact?type=quote" class="btn btn-outline-light btn-lg"><t t-if="lang_is_ar">احصل على عرض سعر</t><t t-else="">Get a quote</t></a></div>
+        </div></div></section>
+    </template>
+</odoo>

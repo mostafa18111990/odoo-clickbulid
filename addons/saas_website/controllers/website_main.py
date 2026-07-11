@@ -1,6 +1,7 @@
 from odoo import http
 from odoo.http import request
 from odoo.addons.saas_website.services.error_handler import ErrorHandler, HealthCheck, PlatformError
+from .content_catalog import APPLICATIONS, INDUSTRIES, SERVICES
 
 
 class SaasWebsiteMain(http.Controller):
@@ -50,7 +51,35 @@ class SaasWebsiteMain(http.Controller):
 
     @http.route('/features', type='http', auth='public', website=True, sitemap=True)
     def features(self, **kw):
-        return request.render('saas_website.page_features', {})
+        return request.render('saas_website.page_features', {'applications': list(APPLICATIONS.values())})
+
+    @http.route('/apps', type='http', auth='public', website=True, sitemap=True)
+    def apps(self, **kw):
+        return request.render('saas_website.page_catalog', {
+            'catalog_kind': 'apps', 'items': list(APPLICATIONS.values())})
+
+    @http.route('/apps/<string:slug>', type='http', auth='public', website=True, sitemap=True)
+    def app_detail(self, slug, **kw):
+        item = APPLICATIONS.get(slug)
+        if not item:
+            return request.not_found()
+        return request.render('saas_website.page_solution_detail', {'item': item})
+
+    @http.route('/industries', type='http', auth='public', website=True, sitemap=True)
+    def industries(self, **kw):
+        return request.render('saas_website.page_catalog', {
+            'catalog_kind': 'industries', 'items': list(INDUSTRIES.values())})
+
+    @http.route('/industries/<string:slug>', type='http', auth='public', website=True, sitemap=True)
+    def industry_detail(self, slug, **kw):
+        item = INDUSTRIES.get(slug)
+        if not item:
+            return request.not_found()
+        return request.render('saas_website.page_solution_detail', {'item': item})
+
+    @http.route('/services', type='http', auth='public', website=True, sitemap=True)
+    def services(self, **kw):
+        return request.render('saas_website.page_services', {'services': SERVICES})
 
     @http.route('/pricing', type='http', auth='public', website=True, sitemap=True)
     def pricing(self, **kw):
@@ -62,15 +91,21 @@ class SaasWebsiteMain(http.Controller):
 
     @http.route('/contact', type='http', auth='public', website=True, sitemap=True)
     def contact(self, **kw):
-        return request.render('saas_website.page_contact', {'submitted': kw.get('submitted')})
+        return request.render('saas_website.page_contact', {
+            'submitted': kw.get('submitted'), 'form_error': kw.get('error')})
 
     @http.route('/contact/submit', type='http', auth='public', website=True, methods=['POST'], csrf=True)
     def contact_submit(self, **post):
         from odoo.addons.saas_website.services.signup_service import SignupService
-        SignupService(request.env).capture_lead({
+        if not (post.get('name') and post.get('email') and post.get('message')):
+            return request.redirect('/contact?error=required')
+        result = SignupService(request.env).capture_lead({
             'name': post.get('name'), 'email': post.get('email'), 'phone': post.get('phone'),
-            'company': post.get('company'), 'message': post.get('message'), 'source': 'contact_form'})
-        return request.redirect('/contact?submitted=1')
+            'company': post.get('company'), 'industry': post.get('industry'),
+            'expected_users': post.get('expected_users'),
+            'requested_service': post.get('requested_service') or post.get('inquiry_type'),
+            'message': post.get('message'), 'source': 'contact_form'})
+        return request.redirect('/contact?submitted=1' if result.get('success') else '/contact?error=save')
 
     @http.route('/newsletter/subscribe', type='json', auth='public', csrf=False)
     def newsletter_subscribe(self, email=None, **kw):

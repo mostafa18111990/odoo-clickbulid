@@ -20,6 +20,7 @@
         'views/page_home.xml',
         'views/page_pricing.xml',
         'views/page_features.xml',
+        'views/page_solutions.xml',
         'views/page_contact.xml',
         'views/page_faq.xml',
         'views/page_signup.xml',

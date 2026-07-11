@@ -4,6 +4,8 @@
         <t t-call="website.layout">
             <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>
             <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+            <t t-set="additional_title" t-value="'باقات ClickBuild وخيارات Odoo | الأسعار' if lang_is_ar else 'ClickBuild Packages and Odoo Options | Pricing'"/>
+            <t t-set="meta_description" t-value="'قارن باقات ClickBuild وافهم رسوم الاستضافة والتنفيذ والدعم، مع توضيح أن تراخيص Odoo تخضع للشروط الرسمية السارية.' if lang_is_ar else 'Compare ClickBuild packages and understand hosting, implementation, and support fees alongside applicable Odoo licensing terms.'"/>
 
             <!-- ===== HEADER ===== -->
             <section class="cb-hero py-5" style="background:var(--cb-grad-hero); position:relative; overflow:hidden;">
@@ -18,8 +20,8 @@
                         <t t-else="">Simple, fair pricing</t>
                     </h1>
                     <p style="color:rgba(255,255,255,0.78);font-size:1.08rem;max-width:640px;margin:0 auto 2rem;">
-                        <t t-if="lang_is_ar">كل الخطط تشمل تجربة مجانية 14 يوماً، نسخاً احتياطياً يومياً، ودعماً بالعربية والإنجليزية. غيّر خطتك أو ألغها في أي وقت.</t>
-                        <t t-else="">Every plan includes a 14-day free trial, daily backups, and bilingual support. Change or cancel anytime.</t>
+                        <t t-if="lang_is_ar">قارن رسوم باقات ClickBuild وما تشمله من تشغيل ودعم. أي تراخيص خارجية تُوضح في عرض السعر قبل التعاقد.</t>
+                        <t t-else="">Compare ClickBuild package fees and included services. Any external licensing is identified in the quotation before contracting.</t>
                     </p>
                     <div class="d-flex justify-content-center gap-3 flex-wrap mb-4">
                         <div class="cb-billing-toggle">
@@ -29,14 +31,14 @@
                             <button type="button" data-billing="yearly">
                                 <t t-if="lang_is_ar">سنوي</t><t t-else="">Yearly</t>
                                 <span class="save-badge" style="margin-inline-start:0.4rem;padding:0.1rem 0.5rem;background:var(--cb-gold);color:#000;border-radius:100px;font-size:0.7rem;font-weight:800;">
-                                    <t t-if="lang_is_ar">وفّر 15%</t><t t-else="">save 15%</t>
+                                    <t t-if="lang_is_ar">شهران دون رسوم</t><t t-else="">2 months included</t>
                                 </span>
                             </button>
                         </div>
                     </div>
                     <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;color:rgba(255,255,255,0.55);font-size:0.82rem;">
                         <span><i class="fa fa-check-circle" style="color:var(--cb-teal);margin-inline-end:0.4rem;"/><t t-if="lang_is_ar">بدون بطاقة ائتمان</t><t t-else="">No credit card</t></span>
-                        <span><i class="fa fa-check-circle" style="color:var(--cb-teal);margin-inline-end:0.4rem;"/><t t-if="lang_is_ar">إلغاء مجاني في أي وقت</t><t t-else="">Cancel anytime free</t></span>
+                        <span><i class="fa fa-check-circle" style="color:var(--cb-teal);margin-inline-end:0.4rem;"/><t t-if="lang_is_ar">شروط واضحة قبل التعاقد</t><t t-else="">Clear terms before contracting</t></span>
                         <span><i class="fa fa-check-circle" style="color:var(--cb-teal);margin-inline-end:0.4rem;"/><t t-if="lang_is_ar">دعم باللغة العربية</t><t t-else="">Arabic support</t></span>
                     </div>
                 </div>
@@ -61,8 +63,8 @@
                         </button>
                     </div>
                     <p class="text-muted small mt-2 mb-0">
-                        <t t-if="lang_is_ar">جميع الباقات تشمل: ZATCA، نسخ احتياطي يومي، عربي/إنجليزي، دعم فني.</t>
-                        <t t-else="">All plans include: ZATCA, daily backups, Arabic/English, support.</t>
+                        <t t-if="lang_is_ar">هذه أسعار خدمات ClickBuild المعروضة في المنصة. تخضع رسوم تراخيص Odoo Enterprise، إن انطبقت، للأسعار والشروط الرسمية السارية وقت التعاقد. يوضح عرض السعر نطاق التنفيذ والتخصيص والتدريب والدعم والضريبة.</t>
+                        <t t-else="">These are ClickBuild service prices shown on the platform. Applicable Odoo Enterprise licensing follows Odoo's official terms and prices at contract time. The quotation defines implementation, customization, training, support, and tax treatment.</t>
                     </p>
                 </div>
             </section>
@@ -183,15 +185,15 @@
                         <div class="cb-feature-icon"><i class="fa fa-refresh"/></div>
                         <h6 class="fw-bold"><t t-if="lang_is_ar">نسخ احتياطي</t><t t-else="">Backups</t></h6>
                         <p class="small text-muted mb-0">
-                            <t t-if="lang_is_ar">نسخة يومية تلقائية محفوظة 7 أيام</t>
-                            <t t-else="">Automatic daily backups, kept for 7 days</t></p>
+                            <t t-if="lang_is_ar">نسخ احتياطية وفق سياسة الباقة واتفاقية الخدمة</t>
+                            <t t-else="">Backups according to the package and service policy</t></p>
                     </div>
                     <div class="col-md-3 col-6">
                         <div class="cb-feature-icon"><i class="fa fa-headset"/></div>
-                        <h6 class="fw-bold"><t t-if="lang_is_ar">دعم 24/7</t><t t-else="">24/7 support</t></h6>
+                        <h6 class="fw-bold"><t t-if="lang_is_ar">دعم باللغة العربية</t><t t-else="">Arabic-language support</t></h6>
                         <p class="small text-muted mb-0">
-                            <t t-if="lang_is_ar">فريق دعم بالعربية على مدار الساعة</t>
-                            <t t-else="">Bilingual support around the clock</t></p>
+                            <t t-if="lang_is_ar">وفق نطاق وساعات الخدمة المحددة في الباقة</t>
+                            <t t-else="">According to the package's defined service scope and hours</t></p>
                     </div>
                     <div class="col-md-3 col-6">
                         <div class="cb-feature-icon"><i class="fa fa-times-circle"/></div>
@@ -392,8 +394,8 @@
                                 <t t-else="">Is my data safe with you?</t></button></h2>
                             <div id="pf5" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
                                 <div class="accordion-body text-muted">
-                                    <t t-if="lang_is_ar">نعم. كل عميل في قاعدة بيانات معزولة، تشفير TLS أثناء النقل و AES-256 للتخزين، ونسخ احتياطية يومية محفوظة 7 أيام.</t>
-                                    <t t-else="">Yes. Each customer lives in an isolated database, with TLS in transit and AES-256 at rest, plus daily backups kept for 7 days.</t></div>
+                                    <t t-if="lang_is_ar">تُفصل بيانات كل عميل في قاعدة مستقلة، وتُطبق ضوابط النقل والنسخ الاحتياطي وفق إعدادات البيئة واتفاقية الخدمة.</t>
+                                    <t t-else="">Each customer's data is isolated in a separate database, with transport and backup controls applied according to the environment and service agreement.</t></div>
                             </div>
                         </div>
                     </div>
@@ -406,7 +408,7 @@
                     <div class="cb-v2-final-inner" data-cb-reveal="1">
                         <div>
                             <span><t t-if="lang_is_ar">ابدأ اليوم</t><t t-else="">Start Today</t></span>
-                            <h2><t t-if="lang_is_ar">انضم لأكثر من 500 شركة تثق بـ ClickBuild</t><t t-else="">Join 500+ businesses running on ClickBuild</t></h2>
+                            <h2><t t-if="lang_is_ar">اختر نقطة بداية تناسب عمليات شركتك</t><t t-else="">Choose a starting point that fits your operations</t></h2>
                         </div>
                         <div class="cb-v2-final-actions">
                             <a href="/get-started" class="btn btn-primary btn-lg">

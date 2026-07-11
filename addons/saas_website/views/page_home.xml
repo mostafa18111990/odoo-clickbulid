@@ -4,6 +4,8 @@
         <t t-call="website.layout">
             <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>
             <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+            <t t-set="additional_title" t-value="'تنفيذ Odoo للشركات في السعودية | ClickBuild' if lang_is_ar else 'Odoo Implementation for Saudi Businesses | ClickBuild'"/>
+            <t t-set="meta_description" t-value="'تساعد ClickBuild الشركات على تحليل وتهيئة وتخصيص Odoo لربط المحاسبة والمبيعات والمخزون والمشاريع ضمن منصة متكاملة.' if lang_is_ar else 'ClickBuild helps businesses analyze, configure, and extend Odoo across finance, sales, inventory, and projects.'"/>
 
             <main class="cb-home-v2" t-att-dir="'rtl' if lang_is_ar else 'ltr'">
 
@@ -64,8 +66,8 @@
                                                     <t t-else="">No credit card</t>
                                                 </span>
                                                 <span><i class="fa fa-check-circle"/>
-                                                    <t t-if="lang_is_ar">دعم محلي 24/7</t>
-                                                    <t t-else="">Local 24/7 support</t>
+                                                    <t t-if="lang_is_ar">دعم باللغة العربية</t>
+                                                    <t t-else="">Arabic-language support</t>
                                                 </span>
                                             </div>
                                         </div>
@@ -116,7 +118,7 @@
                                                         <div t-if="banner.visual_style == 'enterprise'" class="cb-ui-table">
                                                             <span>Sales workflow <b>Active</b></span>
                                                             <span>Approvals <b>12</b></span>
-                                                            <span>Helpdesk <b>24/7</b></span>
+                                                            <span>Helpdesk <b>Ready</b></span>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -144,17 +146,17 @@
                     <div class="container">
                         <div class="cb-stats-grid">
                             <div class="cb-stat-item">
-                                <strong>+500</strong>
+                                <strong>Odoo 19</strong>
                                 <span>
-                                    <t t-if="lang_is_ar">عميل يستخدم المنصة</t>
-                                    <t t-else="">Businesses Launched</t>
+                                    <t t-if="lang_is_ar">أحدث إصدار مدعوم</t>
+                                    <t t-else="">Current supported release</t>
                                 </span>
                             </div>
                             <div class="cb-stat-item">
-                                <strong>99.9%</strong>
+                                <strong>2</strong>
                                 <span>
-                                    <t t-if="lang_is_ar">معدل التشغيل المستمر</t>
-                                    <t t-else="">Uptime Guarantee</t>
+                                    <t t-if="lang_is_ar">خيارا Community وEnterprise</t>
+                                    <t t-else="">Community &amp; Enterprise options</t>
                                 </span>
                             </div>
                             <div class="cb-stat-item">
@@ -165,10 +167,10 @@
                                 </span>
                             </div>
                             <div class="cb-stat-item">
-                                <strong>24/7</strong>
+                                <strong>AR / EN</strong>
                                 <span>
-                                    <t t-if="lang_is_ar">دعم فني محلي</t>
-                                    <t t-else="">Local Technical Support</t>
+                                    <t t-if="lang_is_ar">واجهة عربية وإنجليزية</t>
+                                    <t t-else="">Arabic &amp; English interface</t>
                                 </span>
                             </div>
                         </div>
@@ -227,7 +229,7 @@
                                 <i class="fa fa-calculator"/>
                                 <div>
                                     <h3><t t-if="lang_is_ar">المحاسبة والفوترة</t><t t-else="">Accounting &amp; Invoicing</t></h3>
-                                    <p><t t-if="lang_is_ar">قيود وتقارير وفواتير إلكترونية في دورة مالية مترابطة ومتوافقة مع ZATCA.</t><t t-else="">Journal entries, reports and e-invoicing in one connected flow — ZATCA compliant.</t></p>
+                                    <p><t t-if="lang_is_ar">قيود وتقارير وفواتير إلكترونية في دورة مالية مترابطة، مع تهيئة المتطلبات السعودية عند توفر التكاملات اللازمة.</t><t t-else="">Journal entries, reports, and e-invoicing in one connected flow, configured for applicable Saudi requirements when required integrations are available.</t></p>
                                 </div>
                             </article>
                             <article class="cb-v2-app" data-cb-reveal="1">
@@ -337,35 +339,35 @@
                             <h2><t t-if="lang_is_ar">مساحة عمل مُصمَّمة لطبيعة نشاطك</t><t t-else="">A workspace shaped around your business</t></h2>
                         </div>
                         <div class="cb-v2-industry-grid" data-cb-reveal="1">
-                            <a href="/get-started?industry=retail">
+                            <a href="/industries/retail">
                                 <i class="fa fa-shopping-cart"/>
                                 <span><t t-if="lang_is_ar">التجزئة</t><t t-else="">Retail</t></span>
                             </a>
-                            <a href="/get-started?industry=restaurant">
+                            <a href="/industries/restaurants-cafes">
                                 <i class="fa fa-cutlery"/>
                                 <span><t t-if="lang_is_ar">المطاعم</t><t t-else="">Restaurants</t></span>
                             </a>
-                            <a href="/get-started?industry=ecommerce">
+                            <a href="/industries/ecommerce">
                                 <i class="fa fa-shopping-basket"/>
                                 <span><t t-if="lang_is_ar">التجارة الإلكترونية</t><t t-else="">E-commerce</t></span>
                             </a>
-                            <a href="/get-started?industry=construction">
+                            <a href="/industries/construction">
                                 <i class="fa fa-building"/>
                                 <span><t t-if="lang_is_ar">المقاولات</t><t t-else="">Construction</t></span>
                             </a>
-                            <a href="/get-started?industry=manufacturing">
+                            <a href="/industries/manufacturing">
                                 <i class="fa fa-industry"/>
                                 <span><t t-if="lang_is_ar">التصنيع</t><t t-else="">Manufacturing</t></span>
                             </a>
-                            <a href="/get-started?industry=services">
+                            <a href="/industries/professional-services">
                                 <i class="fa fa-briefcase"/>
                                 <span><t t-if="lang_is_ar">الخدمات المهنية</t><t t-else="">Services</t></span>
                             </a>
-                            <a href="/get-started?industry=healthcare">
+                            <a href="/industries">
                                 <i class="fa fa-heartbeat"/>
                                 <span><t t-if="lang_is_ar">الرعاية الصحية</t><t t-else="">Healthcare</t></span>
                             </a>
-                            <a href="/get-started?industry=logistics">
+                            <a href="/industries/trading-distribution">
                                 <i class="fa fa-truck"/>
                                 <span><t t-if="lang_is_ar">اللوجستيات</t><t t-else="">Logistics</t></span>
                             </a>
@@ -480,53 +482,53 @@
                     </div>
                 </section>
 
-                <!-- ════ TESTIMONIALS ════ -->
+                <!-- ════ IMPLEMENTATION PRINCIPLES ════ -->
                 <section class="cb-v2-testimonials">
                     <div class="container">
                         <div class="cb-v2-section-head" data-cb-reveal="1">
-                            <span><t t-if="lang_is_ar">آراء العملاء</t><t t-else="">What Our Clients Say</t></span>
-                            <h2><t t-if="lang_is_ar">شركات تثق بنا وتنمو معنا</t><t t-else="">Businesses that trust and grow with us</t></h2>
+                            <span><t t-if="lang_is_ar">منهجية التنفيذ</t><t t-else="">Implementation approach</t></span>
+                            <h2><t t-if="lang_is_ar">قرارات واضحة قبل كتابة أي تخصيص</t><t t-else="">Clear decisions before custom development</t></h2>
                         </div>
                         <div class="cb-testimonial-grid" data-cb-reveal="1">
                             <div class="cb-testimonial-card">
-                                <div class="cb-testimonial-stars">★★★★★</div>
+                                <div class="cb-testimonial-stars"><i class="fa fa-search"/></div>
                                 <blockquote>
-                                    <t t-if="lang_is_ar">ClickBuild غيّر طريقة إدارتنا للمبيعات والمخزون بشكل جذري. الدعم العربي ممتاز والفريق متجاوب دائماً.</t>
-                                    <t t-else="">"ClickBuild transformed how we manage sales and inventory. The Arabic support is excellent and the team is always responsive."</t>
+                                    <t t-if="lang_is_ar">نبدأ بفهم العمليات الحالية ونقاط التعثر والنتائج التي تريد قياسها.</t>
+                                    <t t-else="">We begin with current workflows, operational pain points, and measurable goals.</t>
                                 </blockquote>
                                 <div class="cb-testimonial-author">
-                                    <div class="cb-testimonial-avatar">أ</div>
+                                    <div class="cb-testimonial-avatar">1</div>
                                     <div>
-                                        <strong><t t-if="lang_is_ar">أحمد الغامدي</t><t t-else="">Ahmed Al-Ghamdi</t></strong>
-                                        <span><t t-if="lang_is_ar">مدير عام، شركة التقنية للتجزئة</t><t t-else="">CEO, Tech Retail Co.</t></span>
+                                        <strong><t t-if="lang_is_ar">تحليل الاحتياج</t><t t-else="">Discovery</t></strong>
+                                        <span><t t-if="lang_is_ar">نطاق وأولويات متفق عليها</t><t t-else="">Agreed scope and priorities</t></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="cb-testimonial-card">
-                                <div class="cb-testimonial-stars">★★★★★</div>
+                                <div class="cb-testimonial-stars"><i class="fa fa-cogs"/></div>
                                 <blockquote>
-                                    <t t-if="lang_is_ar">إعداد المنصة كان سريعاً جداً. خلال 24 ساعة كانت المحاسبة والمبيعات تعمل بالكامل. أنصح به بشدة.</t>
-                                    <t t-else="">"Setup was incredibly fast. Within 24 hours, accounting and sales were fully operational. Highly recommended."</t>
+                                    <t t-if="lang_is_ar">نستخدم الوظائف القياسية أولًا، ونقترح التخصيص فقط عندما توجد فجوة تشغيلية حقيقية.</t>
+                                    <t t-else="">We prioritize standard capabilities and customize only for a clear operational gap.</t>
                                 </blockquote>
                                 <div class="cb-testimonial-author">
-                                    <div class="cb-testimonial-avatar" style="background: linear-gradient(135deg, #14B8A6, #0D9488);">س</div>
+                                    <div class="cb-testimonial-avatar" style="background: linear-gradient(135deg, #14B8A6, #0D9488);">2</div>
                                     <div>
-                                        <strong><t t-if="lang_is_ar">سارة المطيري</t><t t-else="">Sara Al-Mutairi</t></strong>
-                                        <span><t t-if="lang_is_ar">مديرة مالية، مجموعة المطاعم الذهبية</t><t t-else="">CFO, Golden Restaurants Group</t></span>
+                                        <strong><t t-if="lang_is_ar">تهيئة وتجربة</t><t t-else="">Configure and validate</t></strong>
+                                        <span><t t-if="lang_is_ar">اختبار قبل الانتقال</t><t t-else="">Test before transition</t></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="cb-testimonial-card">
-                                <div class="cb-testimonial-stars">★★★★★</div>
+                                <div class="cb-testimonial-stars"><i class="fa fa-users"/></div>
                                 <blockquote>
-                                    <t t-if="lang_is_ar">Enterprise plan وفّر لنا أدوات احترافية لإدارة فريق من 80 شخص. التحديثات التلقائية ميزة رائعة.</t>
-                                    <t t-else="">"The Enterprise plan gave us professional tools to manage a team of 80. Automatic updates are a game-changer."</t>
+                                    <t t-if="lang_is_ar">ندرب المستخدمين حسب أدوارهم، ثم نتابع الاستخدام والتحسين بعد الإطلاق.</t>
+                                    <t t-else="">We train users by role, then support adoption and improvement after launch.</t>
                                 </blockquote>
                                 <div class="cb-testimonial-author">
-                                    <div class="cb-testimonial-avatar" style="background: linear-gradient(135deg, #F59E0B, #B45309);">م</div>
+                                    <div class="cb-testimonial-avatar" style="background: linear-gradient(135deg, #F59E0B, #B45309);">3</div>
                                     <div>
-                                        <strong><t t-if="lang_is_ar">محمد العتيبي</t><t t-else="">Mohammed Al-Otaibi</t></strong>
-                                        <span><t t-if="lang_is_ar">مدير تشغيل، شركة المقاولات الوطنية</t><t t-else="">COO, National Construction Co.</t></span>
+                                        <strong><t t-if="lang_is_ar">إطلاق وتحسين</t><t t-else="">Launch and improve</t></strong>
+                                        <span><t t-if="lang_is_ar">دعم مرحلي ومؤشرات واضحة</t><t t-else="">Phased support and clear measures</t></span>
                                     </div>
                                 </div>
                             </div>
@@ -628,8 +630,8 @@
                                     </h3>
                                     <div id="cbFaqFour" class="accordion-collapse collapse" data-bs-parent="#homeFaqV2">
                                         <div class="accordion-body">
-                                            <t t-if="lang_is_ar">نعم. فريق الدعم يتحدث العربية بطلاقة ويفهم بيئة الأعمال المحلية. نحن هنا لمساعدتك على مدار الساعة.</t>
-                                            <t t-else="">Yes. Our support team speaks Arabic fluently and understands the local business environment. We're here 24/7.</t>
+                                            <t t-if="lang_is_ar">نعم. تتوفر خدمة ودعم باللغة العربية وفق نطاق وساعات الباقة أو اتفاقية الخدمة المتفق عليها.</t>
+                                            <t t-else="">Yes. Arabic-language service is available according to the selected package or agreed service terms.</t>
                                         </div>
                                     </div>
                                 </div>

@@ -169,74 +169,36 @@
                         <!-- SLA -->
                         <t t-elif="page == 'sla'">
                             <div t-if="lang_is_ar">
-                                <h2 class="h5 fw-bold mt-4">1. نسبة التوفر المضمونة</h2>
-                                <p>نضمن توفر المنصة بنسبة <strong>99.9%</strong> شهرياً (ما يعادل أقل من 44 دقيقة توقف شهرياً)، باستثناء أوقات الصيانة المجدولة.</p>
+                                <h2 class="h5 fw-bold mt-4">1. توفر الخدمة</h2>
+                                <p>تُحدد أهداف توفر الخدمة والاستثناءات وطرق القياس في اتفاقية الخدمة الخاصة بالعميل والبـاقة المتعاقد عليها.</p>
 
                                 <h2 class="h5 fw-bold mt-4">2. الصيانة المجدولة</h2>
-                                <p>تُجرى أعمال الصيانة في أوقات الذروة المنخفضة (عادةً بين 2 صباحاً و4 صباحاً بتوقيت الرياض) مع إشعار مسبق 24 ساعة.</p>
+                                <p>تُخطط أعمال الصيانة بما يقلل أثرها على التشغيل، ويكون الإشعار بحسب طبيعة الصيانة وشروط اتفاقية الخدمة.</p>
 
                                 <h2 class="h5 fw-bold mt-4">3. وقت الاستجابة للدعم</h2>
-                                <table class="table table-bordered mt-3">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>الخطة</th>
-                                            <th>وقت الاستجابة</th>
-                                            <th>ساعات الدعم</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td>Starter</td><td>خلال 24 ساعة</td><td>أيام العمل</td></tr>
-                                        <tr><td>Growth</td><td>خلال 8 ساعات</td><td>أيام العمل</td></tr>
-                                        <tr><td>Professional</td><td>خلال 4 ساعات</td><td>24/7</td></tr>
-                                        <tr><td>Enterprise</td><td>خلال ساعة</td><td>24/7</td></tr>
-                                    </tbody>
-                                </table>
+                                <p>تختلف أوقات الاستجابة وساعات التغطية حسب الباقة وشدة الطلب، وتثبت القيم الملزمة في عرض السعر أو اتفاقية الخدمة.</p>
 
                                 <h2 class="h5 fw-bold mt-4">4. التعويض</h2>
-                                <p>في حال عدم تحقق نسبة التوفر المضمونة، يحق للعميل الحصول على خصم على الفاتورة الشهرية التالية وفق الجدول التالي:</p>
-                                <ul>
-                                    <li>99.0% - 99.9%: خصم 10%</li>
-                                    <li>95.0% - 99.0%: خصم 25%</li>
-                                    <li>أقل من 95%: خصم 50%</li>
-                                </ul>
+                                <p>تخضع أي تعويضات أو أرصدة خدمة للشروط المكتوبة في اتفاقية العميل، ولا ينشئ هذا الملخص التزاماً إضافياً خارجها.</p>
 
                                 <h2 class="h5 fw-bold mt-4">5. النسخ الاحتياطية</h2>
-                                <p>نُجري نسخاً احتياطية يومية لجميع بيانات العملاء ونحتفظ بها لمدة 7 أيام. يمكن استعادة البيانات خلال 4 ساعات من الطلب.</p>
+                                <p>يُحدد تكرار النسخ وفترة الاحتفاظ وأهداف الاستعادة وفق الباقة وسياسة النسخ المتفق عليها.</p>
                             </div>
                             <div t-else="">
-                                <h2 class="h5 fw-bold mt-4">1. Uptime Guarantee</h2>
-                                <p>We guarantee <strong>99.9% monthly uptime</strong> (less than 44 minutes of downtime per month), excluding scheduled maintenance windows.</p>
+                                <h2 class="h5 fw-bold mt-4">1. Service Availability</h2>
+                                <p>Availability objectives, exclusions, and measurement methods are defined in the customer's applicable service agreement and package.</p>
 
                                 <h2 class="h5 fw-bold mt-4">2. Scheduled Maintenance</h2>
-                                <p>Maintenance is performed during low-traffic hours (typically 2am–4am Riyadh time) with 24-hour advance notice.</p>
+                                <p>Maintenance is planned to reduce operational impact, with notice based on its nature and the applicable service terms.</p>
 
                                 <h2 class="h5 fw-bold mt-4">3. Support Response Times</h2>
-                                <table class="table table-bordered mt-3">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Plan</th>
-                                            <th>Response Time</th>
-                                            <th>Support Hours</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        <tr><td>Starter</td><td>Within 24 hours</td><td>Business days</td></tr>
-                                        <tr><td>Growth</td><td>Within 8 hours</td><td>Business days</td></tr>
-                                        <tr><td>Professional</td><td>Within 4 hours</td><td>24/7</td></tr>
-                                        <tr><td>Enterprise</td><td>Within 1 hour</td><td>24/7</td></tr>
-                                    </tbody>
-                                </table>
+                                <p>Response targets and coverage hours vary by package and request severity. Binding values are stated in the quotation or service agreement.</p>
 
                                 <h2 class="h5 fw-bold mt-4">4. Service Credits</h2>
-                                <p>If uptime falls below the guarantee, customers are entitled to credits on the next monthly invoice:</p>
-                                <ul>
-                                    <li>99.0% – 99.9%: 10% credit</li>
-                                    <li>95.0% – 99.0%: 25% credit</li>
-                                    <li>Below 95%: 50% credit</li>
-                                </ul>
+                                <p>Any service credits or remedies are governed by the customer's written agreement; this summary creates no additional obligation.</p>
 
                                 <h2 class="h5 fw-bold mt-4">5. Backups</h2>
-                                <p>We perform daily backups of all customer data and retain them for 7 days. Data can be restored within 4 hours of request.</p>
+                                <p>Backup frequency, retention, and recovery objectives are defined by the selected package and agreed backup policy.</p>
                             </div>
                         </t>
 

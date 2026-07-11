@@ -2,7 +2,9 @@
 <odoo>
     <template id="page_about" name="About ClickBuild">
         <t t-set="lang_code" t-value="request.env.lang or 'ar_001'"/>
-        <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+            <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+            <t t-set="additional_title" t-value="'عن ClickBuild | تنفيذ Odoo في السعودية' if lang_is_ar else 'About ClickBuild | Odoo Implementation in Saudi Arabia'"/>
+            <t t-set="meta_description" t-value="'تعرف على منهج ClickBuild في تحليل وتنفيذ وتخصيص وتدريب ودعم حلول Odoo للشركات.' if lang_is_ar else 'Learn how ClickBuild approaches Odoo analysis, implementation, customization, training, and support.'"/>
         <t t-call="website.layout">
             <t t-set="title"><t t-if="lang_is_ar">عن ClickBuild</t><t t-else="">About ClickBuild</t></t>
             <div class="container py-5">
@@ -33,12 +35,12 @@
                             <t t-if="lang_is_ar">
                                 نؤمن بأن كل شركة — بغض النظر عن حجمها — تستحق وصولاً سهلاً
                                 لأفضل أدوات إدارة الأعمال. نقدم Odoo بشكل مُدار بالكامل مع
-                                دعم متوافق مع ZATCA وفاتورة إلكترونية، بدون تعقيدات تقنية.
+                                إعداداً منظماً للفوترة الإلكترونية وفق المتطلبات والتكاملات المتاحة، بدون تعقيدات غير ضرورية.
                             </t>
                             <t t-else="">
                                 We believe every business — regardless of size — deserves easy access
                                 to world-class ERP tools. We deliver fully managed Odoo with
-                                built-in ZATCA compliance and e-invoicing, with zero technical complexity.
+                                structured e-invoicing configuration based on applicable requirements and integrations.
                             </t>
                         </p>
 
@@ -49,10 +51,10 @@
                             <div class="col-md-6">
                                 <div class="p-3 border rounded-3 h-100">
                                     <i class="fa fa-shield text-primary mb-2 d-block" style="font-size:1.5rem;"/>
-                                    <strong><t t-if="lang_is_ar">متوافق مع ZATCA</t><t t-else="">ZATCA Compliant</t></strong>
+                                    <strong><t t-if="lang_is_ar">تهيئة الفوترة الإلكترونية</t><t t-else="">E-invoicing configuration</t></strong>
                                     <p class="mb-0 text-muted small mt-1">
-                                        <t t-if="lang_is_ar">فاتورة إلكترونية معتمدة من هيئة الزكاة والضريبة</t>
-                                        <t t-else="">Approved e-invoicing for Saudi tax authority</t>
+                                        <t t-if="lang_is_ar">تهيئة لدعم المتطلبات السعودية عند توفر الإعدادات والتكاملات اللازمة</t>
+                                        <t t-else="">Configured to support Saudi requirements when the required setup and integrations are available</t>
                                     </p>
                                 </div>
                             </div>

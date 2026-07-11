@@ -191,6 +191,9 @@ class SignupService:
             lead = self.env['saas.website.lead'].sudo().create({
                 'name': data.get('name', 'Anonymous'), 'email': data.get('email', ''),
                 'phone': data.get('phone', ''), 'company': data.get('company', ''),
+                'industry': data.get('industry', ''),
+                'expected_users': data.get('expected_users', ''),
+                'requested_service': data.get('requested_service', ''),
                 'message': data.get('message', ''), 'source': data.get('source', 'contact_form'),
                 'country': data.get('country', ''), 'language': data.get('language', 'ar'),
                 'newsletter_opt_in': data.get('newsletter', False)})

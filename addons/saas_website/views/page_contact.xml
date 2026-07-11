@@ -4,6 +4,8 @@
         <t t-call="website.layout">
             <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>
             <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+            <t t-set="additional_title" t-value="'تحدث مع مستشار Odoo | ClickBuild' if lang_is_ar else 'Talk to an Odoo Consultant | ClickBuild'"/>
+            <t t-set="meta_description" t-value="'أرسل احتياج شركتك للحصول على استشارة أو عرض توضيحي أو نطاق تنفيذ Odoo مناسب.' if lang_is_ar else 'Share your business needs for an Odoo consultation, demonstration, or implementation scope.'"/>
 
             <!-- HERO -->
             <section class="cb-hero py-5" style="background:var(--cb-grad-hero);position:relative;overflow:hidden;">
@@ -109,6 +111,12 @@
                                         </strong>
                                     </div>
                                 </t>
+                                <t t-if="form_error">
+                                    <div class="alert alert-danger" role="alert">
+                                        <strong><t t-if="lang_is_ar">تعذر إرسال الطلب.</t><t t-else="">We could not send your request.</t></strong>
+                                        <span><t t-if="lang_is_ar"> تحقّق من الحقول المطلوبة وحاول مرة أخرى، أو تواصل معنا مباشرة.</t><t t-else=""> Check the required fields and try again, or contact us directly.</t></span>
+                                    </div>
+                                </t>
 
                                 <form method="post" action="/contact/submit">
                                     <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -148,6 +156,29 @@
                                                    style="border-radius:8px;border:1.5px solid var(--cb-line);padding:0.7rem 0.9rem;"
                                                    t-att-placeholder="'+966 5X XXX XXXX' if lang_is_ar else '+966 5X XXX XXXX'"/>
                                         </div>
+                                        <div class="col-md-6">
+                                            <label style="font-weight:600;color:var(--cb-ink);font-size:0.88rem;margin-bottom:0.4rem;display:block;">
+                                                <t t-if="lang_is_ar">القطاع</t><t t-else="">Industry</t>
+                                            </label>
+                                            <select name="industry" class="form-select">
+                                                <option value=""><t t-if="lang_is_ar">اختر القطاع</t><t t-else="">Select industry</t></option>
+                                                <option value="construction"><t t-if="lang_is_ar">المقاولات</t><t t-else="">Construction</t></option>
+                                                <option value="trading"><t t-if="lang_is_ar">التجارة والتوزيع</t><t t-else="">Trading &amp; distribution</t></option>
+                                                <option value="retail"><t t-if="lang_is_ar">التجزئة</t><t t-else="">Retail</t></option>
+                                                <option value="manufacturing"><t t-if="lang_is_ar">التصنيع</t><t t-else="">Manufacturing</t></option>
+                                                <option value="services"><t t-if="lang_is_ar">الخدمات</t><t t-else="">Services</t></option>
+                                                <option value="other"><t t-if="lang_is_ar">قطاع آخر</t><t t-else="">Other</t></option>
+                                            </select>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label style="font-weight:600;color:var(--cb-ink);font-size:0.88rem;margin-bottom:0.4rem;display:block;">
+                                                <t t-if="lang_is_ar">عدد المستخدمين المتوقع</t><t t-else="">Expected users</t>
+                                            </label>
+                                            <select name="expected_users" class="form-select">
+                                                <option value=""><t t-if="lang_is_ar">اختر النطاق</t><t t-else="">Select range</t></option>
+                                                <option value="1-5">1–5</option><option value="6-20">6–20</option><option value="21-50">21–50</option><option value="51+">51+</option>
+                                            </select>
+                                        </div>
                                         <div class="col-12">
                                             <label style="font-weight:600;color:var(--cb-ink);font-size:0.88rem;margin-bottom:0.4rem;display:block;">
                                                 <t t-if="lang_is_ar">نوع الطلب</t><t t-else="">Request type</t>
@@ -169,6 +200,18 @@
                                                 <option value="support">
                                                     <t t-if="lang_is_ar">دعم فني</t><t t-else="">Technical support</t>
                                                 </option>
+                                            </select>
+                                        </div>
+                                        <div class="col-12">
+                                            <label style="font-weight:600;color:var(--cb-ink);font-size:0.88rem;margin-bottom:0.4rem;display:block;">
+                                                <t t-if="lang_is_ar">الخدمة المطلوبة</t><t t-else="">Requested service</t>
+                                            </label>
+                                            <select name="requested_service" class="form-select">
+                                                <option value="implementation"><t t-if="lang_is_ar">تطبيق وتهيئة Odoo</t><t t-else="">Odoo implementation</t></option>
+                                                <option value="consulting"><t t-if="lang_is_ar">استشارة وتحليل أعمال</t><t t-else="">Consulting and analysis</t></option>
+                                                <option value="customization"><t t-if="lang_is_ar">تطوير أو تخصيص</t><t t-else="">Development or customization</t></option>
+                                                <option value="migration"><t t-if="lang_is_ar">نقل بيانات أو ترقية</t><t t-else="">Migration or upgrade</t></option>
+                                                <option value="support"><t t-if="lang_is_ar">دعم وتحسين</t><t t-else="">Support and improvement</t></option>
                                             </select>
                                         </div>
                                         <div class="col-12">

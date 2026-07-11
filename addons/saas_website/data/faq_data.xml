@@ -33,7 +33,7 @@
         </record>
         <record id="faq_6" model="saas.website.faq">
             <field name="question">هل يوجد دعم باللغة العربية؟</field>
-            <field name="answer">نعم، فريق الدعم متاح 24/7 بالعربية والإنجليزية.</field>
+            <field name="answer">تتوفر خدمة ودعم باللغة العربية والإنجليزية وفق نطاق وساعات الباقة أو اتفاقية الخدمة.</field>
             <field name="faq_category">general</field>
             <field name="sequence">60</field>
         </record>
