@@ -21,7 +21,7 @@
         </record>
         <record id="faq_4" model="saas.website.faq">
             <field name="question">هل بياناتي آمنة؟</field>
-            <field name="answer">نعم، كل عميل لديه قاعدة بيانات منفصلة مع نسخ احتياطي يومي وتشفير كامل.</field>
+            <field name="answer">تُفصل بيانات كل عميل في قاعدة مستقلة، وتُطبق ضوابط النقل والنسخ الاحتياطي وفق إعدادات البيئة واتفاقية الخدمة.</field>
             <field name="faq_category">security</field>
             <field name="sequence">40</field>
         </record>

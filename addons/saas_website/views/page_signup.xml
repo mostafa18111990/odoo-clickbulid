@@ -293,11 +293,11 @@
                     <div class="card border-0 shadow p-4"><div class="card-body text-start" t-att-dir="'rtl' if lang_is_ar else 'ltr'">
                         <div class="mb-4 text-center" style="font-size:4rem; color:#16a34a;"><i class="fa fa-check-circle"/></div>
                         <h2 class="fw-bold mb-3 text-center">
-                            <t t-if="lang_is_ar">تم إنشاء حسابك! 🎉</t>
-                            <t t-else="">Your account is ready! 🎉</t></h2>
+                            <t t-if="lang_is_ar">تم استلام طلب إنشاء مساحتك</t>
+                            <t t-else="">Your workspace request was received</t></h2>
                         <p class="lead text-muted mb-4 text-center">
-                            <t t-if="lang_is_ar">مساحة العمل جاهزة خلال دقيقتين على الأكثر.</t>
-                            <t t-else="">Your workspace will be ready within 2 minutes.</t></p>
+                            <t t-if="lang_is_ar">بدأ تجهيز مساحة العمل، وقد تستغرق العملية عدة دقائق بحسب التطبيقات المطلوبة.</t>
+                            <t t-else="">Workspace preparation has started and may take several minutes depending on the requested apps.</t></p>
 
                         <t t-if="admin_password">
                             <div class="alert alert-warning border-warning">
@@ -330,8 +330,8 @@
                             <div id="saas_status_box" class="alert alert-info mb-3">
                                 <i class="fa fa-spinner fa-spin me-2"/>
                                 <span id="saas_status_text">
-                                    <t t-if="lang_is_ar">جاري تجهيز مساحة العمل... (قد يستغرق دقيقتين)</t>
-                                    <t t-else="">Preparing your workspace... (up to 2 minutes)</t></span>
+                                    <t t-if="lang_is_ar">جاري تجهيز مساحة العمل... قد تستغرق العملية عدة دقائق</t>
+                                    <t t-else="">Preparing your workspace... this may take several minutes</t></span>
                                 <div class="small mt-2" style="opacity:0.85;">
                                     <t t-if="lang_is_ar">1) إنشاء قاعدة البيانات &#8226; 2) تثبيت Odoo والمحاسبة &#8226; 3) إصدار شهادة SSL</t>
                                     <t t-else="">1) Database created &#8226; 2) Odoo + accounting installed &#8226; 3) SSL certificate issued</t>

@@ -20,8 +20,8 @@
                         <t t-else="">Talk to the ClickBuild Team</t>
                     </h1>
                     <p style="color:rgba(255,255,255,0.75);font-size:1.05rem;max-width:580px;margin:0 auto;">
-                        <t t-if="lang_is_ar">سواء كنت تريد تجربة مجانية، عرض سعر، أو مجرد استفسار — فريقنا يرد خلال ساعات.</t>
-                        <t t-else="">Whether you want a free trial, a quote, or just have questions — our team responds within hours.</t>
+                        <t t-if="lang_is_ar">سواء كنت تريد عرضاً توضيحياً أو عرض سعر أو استشارة، أرسل احتياجك وسيتواصل معك الفريق.</t>
+                        <t t-else="">Whether you need a demo, quotation, or consultation, share your needs and our team will follow up.</t>
                     </p>
                 </div>
             </section>
@@ -83,10 +83,10 @@
                             <div style="background:var(--cb-primary-lt);border-radius:var(--cb-radius-lg);padding:1.2rem 1.4rem;border:1px solid rgba(123,63,200,0.15);">
                                 <i class="fa fa-bolt" style="color:var(--cb-primary);margin-inline-end:0.5rem;"/>
                                 <strong style="color:var(--cb-primary-dk);">
-                                    <t t-if="lang_is_ar">وقت الرد: أقل من ساعتين</t><t t-else="">Response time: under 2 hours</t>
+                                    <t t-if="lang_is_ar">متابعة الطلبات خلال أوقات العمل</t><t t-else="">Requests are followed up during business hours</t>
                                 </strong>
                                 <p style="color:var(--cb-muted);font-size:0.82rem;margin-top:0.3rem;margin-bottom:0;">
-                                    <t t-if="lang_is_ar">خلال ساعات العمل الرسمية</t><t t-else="">During business hours</t>
+                                    <t t-if="lang_is_ar">وتخضع طلبات الدعم لاتفاقية الخدمة</t><t t-else="">Support requests follow the applicable service agreement</t>
                                 </p>
                             </div>
                         </div>
