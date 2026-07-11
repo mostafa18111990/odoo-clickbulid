@@ -92,7 +92,7 @@
                                                     <div class="cb-ui-content">
                                                         <div class="cb-ui-heading">
                                                             <div>
-                                                                <small>Workspace</small>
+                                                                <small>Business Platform</small>
                                                                 <strong t-if="banner.visual_style == 'enterprise'">Enterprise</strong>
                                                                 <strong t-elif="banner.visual_style == 'industries'">Industry Apps</strong>
                                                                 <strong t-else="">Business Overview</strong>
@@ -185,7 +185,7 @@
                                 <i class="fa fa-language"/>
                                 <div>
                                     <strong><t t-if="lang_is_ar">عربي وإنجليزي</t><t t-else="">Arabic and English</t></strong>
-                                    <small><t t-if="lang_is_ar">تجربة ثنائية اللغة كاملة</t><t t-else="">Full bilingual workspace</t></small>
+                                    <small><t t-if="lang_is_ar">تجربة ثنائية اللغة كاملة</t><t t-else="">Full bilingual business platform</t></small>
                                 </div>
                             </div>
                             <div class="cb-v2-trust-item">
@@ -220,8 +220,8 @@
                             <span><t t-if="lang_is_ar">المنصة</t><t t-else="">The Platform</t></span>
                             <h2><t t-if="lang_is_ar">كل عملياتك تعمل معاً في مكان واحد</t><t t-else="">Every operation, working together</t></h2>
                             <p>
-                                <t t-if="lang_is_ar">توقف عن التنقل بين أنظمة منفصلة. حافظ على فريقك وبياناتك وقراراتك في مساحة واحدة متكاملة.</t>
-                                <t t-else="">Stop switching between disconnected tools. Keep your team, data and decisions in one unified workspace.</t>
+                                <t t-if="lang_is_ar">توقف عن التنقل بين أنظمة منفصلة. اجمع فريقك وبياناتك وقراراتك في منصة أعمال متكاملة.</t>
+                                <t t-else="">Stop switching between disconnected tools. Keep your team, data and decisions in one connected business platform.</t>
                             </p>
                         </div>
                         <div class="cb-v2-app-grid">
@@ -290,8 +290,8 @@
                                     <t t-else="">From signup to your first transaction in 3 simple steps</t>
                                 </h2>
                                 <p>
-                                    <t t-if="lang_is_ar">اختر باقتك وقطاعك، أنشئ مساحة العمل، ثم ابدأ ببياناتك الحالية أو بإعداد جديد كلياً.</t>
-                                    <t t-else="">Choose your plan and industry, create your workspace, then start with existing data or a fresh setup.</t>
+                                    <t t-if="lang_is_ar">اختر باقتك وقطاعك، أنشئ منصة الأعمال، ثم ابدأ ببياناتك الحالية أو بإعداد جديد كلياً.</t>
+                                    <t t-else="">Choose your plan and industry, create your business platform, then start with existing data or a fresh setup.</t>
                                 </p>
                                 <div class="d-flex flex-wrap gap-3 mt-4">
                                     <a href="/get-started" class="btn btn-primary btn-lg">
@@ -315,7 +315,7 @@
                                 <li>
                                     <b>02</b>
                                     <div>
-                                        <strong><t t-if="lang_is_ar">جهّز مساحة العمل</t><t t-else="">Set Up Your Workspace</t></strong>
+                                        <strong><t t-if="lang_is_ar">جهّز منصة أعمالك</t><t t-else="">Set Up Your Business Platform</t></strong>
                                         <span><t t-if="lang_is_ar">الشركة والمستخدمين والبيانات الأولية</t><t t-else="">Your company, users and initial data</t></span>
                                     </div>
                                 </li>
@@ -336,7 +336,7 @@
                     <div class="container">
                         <div class="cb-v2-section-head" data-cb-reveal="1">
                             <span><t t-if="lang_is_ar">حلول حسب القطاع</t><t t-else="">Industry Solutions</t></span>
-                            <h2><t t-if="lang_is_ar">مساحة عمل مُصمَّمة لطبيعة نشاطك</t><t t-else="">A workspace shaped around your business</t></h2>
+                            <h2><t t-if="lang_is_ar">منصة أعمال مُصمَّمة لطبيعة نشاطك</t><t t-else="">A business platform shaped around your operations</t></h2>
                         </div>
                         <div class="cb-v2-industry-grid" data-cb-reveal="1">
                             <a href="/industries/retail">
@@ -585,8 +585,8 @@
                                     </h3>
                                     <div id="cbFaqOne" class="accordion-collapse collapse show" data-bs-parent="#homeFaqV2">
                                         <div class="accordion-body">
-                                            <t t-if="lang_is_ar">لا. يمكنك إنشاء مساحة العمل وتجربة المنصة لمدة 14 يوماً بالكامل دون بطاقة ائتمان أو أي التزام مالي.</t>
-                                            <t t-else="">No. You can create a workspace and try the full platform for 14 days — no credit card, no commitment.</t>
+                                            <t t-if="lang_is_ar">لا. يمكنك إنشاء منصة أعمالك وتجربة المنصة لمدة 14 يوماً بالكامل دون بطاقة ائتمان أو أي التزام مالي.</t>
+                                            <t t-else="">No. You can create your business platform and try it for 14 days — no credit card, no commitment.</t>
                                         </div>
                                     </div>
                                 </div>
@@ -647,8 +647,8 @@
                             <div>
                                 <span><t t-if="lang_is_ar">ابدأ اليوم</t><t t-else="">Start Today</t></span>
                                 <h2>
-                                    <t t-if="lang_is_ar">مساحة عملك الجديدة جاهزة خلال دقائق</t>
-                                    <t t-else="">Your new workspace is ready in minutes</t>
+                                    <t t-if="lang_is_ar">ابدأ تجهيز منصة أعمالك الجديدة اليوم</t>
+                                    <t t-else="">Start building your new business platform today</t>
                                 </h2>
                             </div>
                             <div class="cb-v2-final-actions">

@@ -5,7 +5,7 @@
         <record id="email_template_signup_welcome" model="mail.template">
             <field name="name">SaaS: Welcome &amp; Credentials</field>
             <field name="model_id" ref="saas_tenant_manager.model_saas_tenant"/>
-            <field name="subject">مرحباً بك في ClickBuild — بيانات الدخول لمساحة عملك</field>
+            <field name="subject">مرحباً بك في ClickBuild — بيانات الدخول لمنصة أعمالك</field>
             <field name="email_from">{{ object.env['saas.config']._get_config().from_email or 'info@clickbulid.com' }}</field>
             <field name="email_to">{{ object.customer_email }}</field>
             <field name="lang">ar_001</field>
@@ -15,12 +15,12 @@
                 box-shadow:0 2px 8px rgba(0,0,0,0.06);">
         <div style="background:#5b21b6; color:white; padding:30px; text-align:center;">
             <h1 style="margin:0; font-size:28px;">🎉 مرحباً بك في ClickBuild</h1>
-            <p style="margin:8px 0 0; opacity:0.9;">مساحة العمل جاهزة!</p>
+            <p style="margin:8px 0 0; opacity:0.9;">منصة أعمالك جاهزة!</p>
         </div>
 
         <div style="padding:30px;">
             <p style="font-size:16px;">عزيزي <strong t-out="object.customer_name or 'العميل'"/>،</p>
-            <p>تم إنشاء مساحة العمل الخاصة بـ <strong t-out="object.company_name or object.name"/>
+            <p>تم إنشاء منصة الأعمال الخاصة بـ <strong t-out="object.company_name or object.name"/>
                بنجاح. فيما يلي بيانات الدخول. <strong style="color:#dc2626;">احفظها في مكان آمن.</strong></p>
 
             <div style="background:#fef3c7; border:1px solid #fde68a; padding:18px;

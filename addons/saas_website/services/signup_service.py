@@ -112,7 +112,7 @@ class SignupService:
                     'url': f'https://{subdomain}.{config.platform_domain}',
                     'admin_email': email,
                     'admin_password_one_time': admin_password,
-                    'message': _('Your workspace is being created! Check your email.'),
+                    'message': _('Your business platform is being created! Check your email.'),
                     'redirect': f'/get-started/success?tenant={subdomain}'}
         except (ValidationError, UserError) as e:
             return {'success': False, 'errors': [str(e)]}

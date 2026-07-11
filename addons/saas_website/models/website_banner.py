@@ -23,7 +23,7 @@ class SaasWebsiteBanner(models.Model):
     visual_style = fields.Selection(
         [
             ('operations', 'Business operations'),
-            ('enterprise', 'Enterprise workspace'),
+            ('enterprise', 'Enterprise platform'),
             ('industries', 'Industry applications'),
         ],
         required=True,

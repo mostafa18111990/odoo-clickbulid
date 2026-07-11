@@ -3,8 +3,8 @@
     <template id="page_signup" name="Get Started">
         <t t-call="website.layout">
             <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/><t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
-            <t t-set="additional_title" t-value="'ابدأ مع ClickBuild | إنشاء مساحة Odoo' if lang_is_ar else 'Get Started with ClickBuild | Create Your Odoo Workspace'"/>
-            <t t-set="meta_description" t-value="'اختر النسخة والبـاقة المناسبة وأنشئ طلب مساحة Odoo جديدة مع ClickBuild.' if lang_is_ar else 'Choose an edition and package to request a new Odoo workspace with ClickBuild.'"/>
+            <t t-set="additional_title" t-value="'ابدأ مع ClickBuild | إنشاء منصة أعمال Odoo' if lang_is_ar else 'Get Started with ClickBuild | Create Your Odoo Business Platform'"/>
+            <t t-set="meta_description" t-value="'اختر النسخة والبـاقة المناسبة وأنشئ طلب منصة أعمال Odoo جديدة مع ClickBuild.' if lang_is_ar else 'Choose an edition and package to request a new Odoo business platform with ClickBuild.'"/>
             <section class="py-5" style="background:#f5f3ff; min-height:80vh;">
                 <div class="container py-4"><div class="row justify-content-center"><div class="col-lg-7">
                     <div class="card border-0 shadow"><div class="card-body p-4 p-md-5">
@@ -115,7 +115,7 @@
                                      style="background:#f5f3ff; color:#6d28d9; font-size:1.1rem;"></div>
                             </div>
                             <div class="mb-3"><label class="form-label fw-bold">
-                                <t t-if="lang_is_ar">اسم مساحة العمل</t><t t-else="">Workspace name</t></label>
+                                <t t-if="lang_is_ar">اسم منصة الأعمال</t><t t-else="">Business platform name</t></label>
                                 <div class="input-group">
                                     <input type="text" name="subdomain" id="subdomainInput" class="form-control"
                                            placeholder="my-company" required="required"/>
@@ -193,7 +193,7 @@
                                 </select></div>
                             <input type="hidden" name="coupon_code" t-att-value="coupon"/>
                             <button type="submit" class="btn btn-primary btn-lg w-100">
-                                <t t-if="lang_is_ar">🚀 إنشاء مساحة العمل</t><t t-else="">🚀 Create workspace</t></button>
+                                <t t-if="lang_is_ar">🚀 إنشاء منصة الأعمال</t><t t-else="">🚀 Create business platform</t></button>
                             <script type="text/javascript">
                                 (function() {
                                     var cards = document.querySelectorAll('.signup-edition-card');
@@ -293,11 +293,11 @@
                     <div class="card border-0 shadow p-4"><div class="card-body text-start" t-att-dir="'rtl' if lang_is_ar else 'ltr'">
                         <div class="mb-4 text-center" style="font-size:4rem; color:#16a34a;"><i class="fa fa-check-circle"/></div>
                         <h2 class="fw-bold mb-3 text-center">
-                            <t t-if="lang_is_ar">تم استلام طلب إنشاء مساحتك</t>
-                            <t t-else="">Your workspace request was received</t></h2>
+                            <t t-if="lang_is_ar">تم استلام طلب إنشاء منصة أعمالك</t>
+                            <t t-else="">Your business platform request was received</t></h2>
                         <p class="lead text-muted mb-4 text-center">
-                            <t t-if="lang_is_ar">بدأ تجهيز مساحة العمل، وقد تستغرق العملية عدة دقائق بحسب التطبيقات المطلوبة.</t>
-                            <t t-else="">Workspace preparation has started and may take several minutes depending on the requested apps.</t></p>
+                            <t t-if="lang_is_ar">بدأ تجهيز منصة الأعمال، وقد تستغرق العملية عدة دقائق بحسب التطبيقات المطلوبة.</t>
+                            <t t-else="">Business platform preparation has started and may take several minutes depending on the requested apps.</t></p>
 
                         <t t-if="admin_password">
                             <div class="alert alert-warning border-warning">
@@ -330,8 +330,8 @@
                             <div id="saas_status_box" class="alert alert-info mb-3">
                                 <i class="fa fa-spinner fa-spin me-2"/>
                                 <span id="saas_status_text">
-                                    <t t-if="lang_is_ar">جاري تجهيز مساحة العمل... قد تستغرق العملية عدة دقائق</t>
-                                    <t t-else="">Preparing your workspace... this may take several minutes</t></span>
+                                    <t t-if="lang_is_ar">جاري تجهيز منصة الأعمال... قد تستغرق العملية عدة دقائق</t>
+                                    <t t-else="">Preparing your business platform... this may take several minutes</t></span>
                                 <div class="small mt-2" style="opacity:0.85;">
                                     <t t-if="lang_is_ar">1) إنشاء قاعدة البيانات &#8226; 2) تثبيت Odoo والمحاسبة &#8226; 3) إصدار شهادة SSL</t>
                                     <t t-else="">1) Database created &#8226; 2) Odoo + accounting installed &#8226; 3) SSL certificate issued</t>
@@ -347,8 +347,8 @@
                                class="btn btn-primary btn-lg disabled"
                                style="pointer-events:none; opacity:0.5;">
                                 <i class="fa fa-sign-in-alt me-2"/>
-                                <t t-if="lang_is_ar">تسجيل الدخول إلى مساحة العمل</t>
-                                <t t-else="">Log in to your workspace</t>
+                                <t t-if="lang_is_ar">تسجيل الدخول إلى منصة أعمالك</t>
+                                <t t-else="">Log in to your business platform</t>
                             </a>
                             <p id="saas_pwd_copied_hint" class="small text-success mt-2" style="display:none;">
                                 <i class="fa fa-clipboard me-1"/>
@@ -391,13 +391,13 @@
                                 var tries = 0;
                                 var maxTries = 60;
                                 var msg = lang_is_ar ? {
-                                    ready: 'مساحة العمل جاهزة! يمكنك تسجيل الدخول الآن.',
+                                    ready: 'منصة أعمالك جاهزة! يمكنك تسجيل الدخول الآن.',
                                     cert_error: 'تعذّر إصدار الشهادة، نُعيد المحاولة...',
                                     after_cert: 'الشهادة تم إصدارها، جاري تفعيل HTTPS...',
                                     after_db: 'قاعدة البيانات جاهزة، جاري إصدار شهادة SSL...',
                                     timeout: 'استغرق التجهيز وقتاً غير معتاد. حدّث الصفحة وحاول الدخول.'
                                 } : {
-                                    ready: 'Your workspace is ready! You can log in now.',
+                                    ready: 'Your business platform is ready! You can log in now.',
                                     cert_error: 'Certificate issuance failed — retrying...',
                                     after_cert: 'Certificate issued, activating HTTPS...',
                                     after_db: 'Database ready, issuing SSL certificate...',

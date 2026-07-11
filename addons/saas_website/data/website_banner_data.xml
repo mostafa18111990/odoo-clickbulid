@@ -7,8 +7,8 @@
         <field name="eyebrow_ar">منصة Odoo السحابية</field>
         <field name="title">Your entire business. One connected platform.</field>
         <field name="title_ar">أعمالك بالكامل في منصة واحدة مترابطة</field>
-        <field name="subtitle">Run accounting, sales, inventory, HR and operations with a workspace built for Saudi companies.</field>
-        <field name="subtitle_ar">أدر المحاسبة والمبيعات والمخزون والموارد البشرية والعمليات ضمن مساحة عمل مصممة للشركات السعودية.</field>
+        <field name="subtitle">Run accounting, sales, inventory, HR and operations with a business platform built for Saudi companies.</field>
+        <field name="subtitle_ar">أدر المحاسبة والمبيعات والمخزون والموارد البشرية والعمليات ضمن منصة أعمال مصممة للشركات السعودية.</field>
         <field name="visual_style">operations</field>
         <field name="image_path">/saas_website/static/src/img/hero-calculator-papers.jpg</field>
         <field name="cta_label">Request a demo</field>
