@@ -241,4 +241,27 @@
             </xpath>
         </field>
     </record>
+
+    <!-- Operational columns on the tenant list: admins asked to see access
+         details and seat counts without opening every tenant individually. -->
+    <record id="view_saas_tenant_list_access_details" model="ir.ui.view">
+        <field name="name">saas.tenant.list.access.details</field>
+        <field name="model">saas.tenant</field>
+        <field name="inherit_id" ref="saas_tenant_manager.view_saas_tenant_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='subdomain']" position="after">
+                <field name="admin_login" string="اسم المستخدم"/>
+                <field name="admin_password" string="كلمة المرور"
+                       widget="CopyClipboardChar"/>
+                <field name="user_count" string="المقاعد المشتراة"/>
+                <field name="users_count" string="المستخدمون الفعليون"/>
+                <field name="trial_ends_at" string="تاريخ الانتهاء"/>
+                <button name="action_extend_trial" type="object"
+                        string="تمديد 7 أيام" icon="fa-clock-o"
+                        groups="saas_tenant_manager.group_saas_admin"
+                        invisible="state not in ('trial', 'suspended')"
+                        confirm="سيتم تمديد العميل 7 أيام. متابعة؟"/>
+            </xpath>
+        </field>
+    </record>
 </odoo>

@@ -5,6 +5,10 @@
     <record id="view_saas_license_recon_list" model="ir.ui.view">
         <field name="name">saas.tenant.license.recon.list</field>
         <field name="model">saas.tenant</field>
+        <!-- This specialized list is selected explicitly by its own action.
+             Keep it behind the generic tenant list so it never becomes the
+             default view for the main Tenants action. -->
+        <field name="priority">99</field>
         <field name="arch" type="xml">
             <list string="Odoo Enterprise License Reconciliation" create="false">
                 <field name="subdomain"/>
