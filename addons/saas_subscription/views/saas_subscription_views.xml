@@ -145,7 +145,33 @@
                     <field name="subscription_count" widget="statinfo" string="الاشتراكات"/>
                 </button>
             </xpath>
-            <xpath expr="//notebook" position="inside">
+            <xpath expr="//field[@name='admin_password']/.." position="after">
+                <group string="بيانات إدارة العميل">
+                    <group string="الدخول إلى منصة العميل">
+                        <field name="tenant_url" widget="url"/>
+                        <field name="admin_login" string="اسم المستخدم"/>
+                        <field name="admin_password" string="كلمة المرور"
+                               widget="CopyClipboardChar"/>
+                    </group>
+                    <group string="المستخدمون والتمديد">
+                        <field name="user_count" string="عدد المستخدمين المشترى"
+                               help="إذا كانت القيمة صفراً يتم استخدام الحد المحدد في الباقة."/>
+                        <field name="trial_ends_at" string="تاريخ انتهاء/قفل العميل"/>
+                        <field name="trial_days_left" string="الأيام المتبقية" readonly="1"/>
+                        <field name="sub_next_renewal" string="موعد التجديد" readonly="1"/>
+                        <button name="action_extend_trial" type="object"
+                                string="تمديد العميل 7 أيام"
+                                class="btn btn-info"
+                                groups="saas_tenant_manager.group_saas_admin"
+                                invisible="state not in ('trial', 'suspended')"
+                                confirm="سيتم تمديد العميل 7 أيام. متابعة؟"/>
+                        <button name="action_view_subscriptions" type="object"
+                                string="فتح سجل الاشتراكات"
+                                class="btn btn-secondary"/>
+                    </group>
+                </group>
+            </xpath>
+            <xpath expr="//notebook/page[1]" position="before">
                 <page string="بيانات الدخول والاشتراك" name="tenant_access_subscription">
                     <group string="بيانات دخول منصة العميل">
                         <group>
@@ -168,6 +194,7 @@
                             <field name="plan_id"/>
                             <field name="billing_cycle"/>
                             <field name="sub_total_amount" readonly="1"/>
+                            <field name="user_count" string="عدد المستخدمين المشترى"/>
                         </group>
                         <group>
                             <field name="trial_started_at" readonly="1"/>
