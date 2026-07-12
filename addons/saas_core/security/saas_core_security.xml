@@ -4,7 +4,10 @@
 
         <record id="group_saas_super_admin" model="res.groups">
             <field name="name">SaaS Super Admin</field>
-            <field name="implied_ids" eval="[(4, ref('saas_tenant_manager.group_saas_admin'))]"/>
+            <field name="implied_ids" eval="[
+                (4, ref('saas_tenant_manager.group_saas_admin')),
+                (4, ref('saas_tenant_manager.group_saas_manager')),
+            ]"/>
             <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
         </record>
 
