@@ -70,6 +70,7 @@ class SaasWebsiteSignup(http.Controller):
 
         req_dir = '/mnt/cert-requests'
         provision_done = os.path.exists(os.path.join(req_dir, f'{sub}.provision.done'))
+        provision_error = os.path.exists(os.path.join(req_dir, f'{sub}.provision.error'))
         cert_done = os.path.exists(os.path.join(req_dir, f'{sub}.done'))
         cert_error = os.path.exists(os.path.join(req_dir, f'{sub}.error'))
 
@@ -102,6 +103,7 @@ class SaasWebsiteSignup(http.Controller):
         return {
             'ready': bool(provision_done and cert_done and record_ready and https_ok),
             'provision_done': provision_done,
+            'provision_error': provision_error,
             'cert_done': cert_done,
             'cert_error': cert_error,
             'state': tenant_rec.state if tenant_rec else None,
