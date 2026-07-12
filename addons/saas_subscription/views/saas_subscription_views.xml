@@ -129,4 +129,89 @@
         <field name="search_view_id" ref="view_saas_subscription_search"/>
         <field name="context">{'search_default_filter_current': 1}</field>
     </record>
+
+    <!-- Keep the operational data an administrator needs on the tenant itself.
+         The values already live on saas.tenant / saas.subscription; this view
+         makes them visible together so a platform admin does not have to hunt
+         through separate menus. -->
+    <record id="view_saas_tenant_form_subscription_details" model="ir.ui.view">
+        <field name="name">saas.tenant.form.subscription.details</field>
+        <field name="model">saas.tenant</field>
+        <field name="inherit_id" ref="saas_tenant_manager.view_saas_tenant_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@name='button_box']" position="inside">
+                <button class="oe_stat_button" type="object"
+                        name="action_view_subscriptions" icon="fa-refresh">
+                    <field name="subscription_count" widget="statinfo" string="الاشتراكات"/>
+                </button>
+            </xpath>
+            <xpath expr="//notebook" position="inside">
+                <page string="بيانات الدخول والاشتراك" name="tenant_access_subscription">
+                    <group string="بيانات دخول منصة العميل">
+                        <group>
+                            <field name="tenant_url" widget="url"/>
+                            <field name="admin_login"/>
+                            <field name="admin_password" widget="CopyClipboardChar"/>
+                        </group>
+                        <group>
+                            <field name="customer_name"/>
+                            <field name="customer_email"/>
+                            <field name="phone"/>
+                            <field name="company_name"/>
+                        </group>
+                    </group>
+
+                    <group string="الفترة والاشتراك الحالي">
+                        <group>
+                            <field name="current_subscription_id"/>
+                            <field name="sub_status" widget="badge" readonly="1"/>
+                            <field name="plan_id"/>
+                            <field name="billing_cycle"/>
+                            <field name="sub_total_amount" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="trial_started_at" readonly="1"/>
+                            <field name="trial_ends_at"/>
+                            <field name="trial_days_left" readonly="1"/>
+                            <field name="sub_next_renewal" readonly="1"/>
+                            <field name="sub_days_to_renewal" readonly="1"/>
+                            <field name="next_billing_date"/>
+                            <field name="last_payment_date" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <div class="d-flex gap-2 mb-3">
+                        <button name="action_extend_trial" type="object"
+                                string="تمديد التجربة 7 أيام"
+                                class="btn btn-info"
+                                groups="saas_tenant_manager.group_saas_admin"
+                                invisible="state not in ('trial', 'suspended')"
+                                confirm="سيتم تمديد فترة التجربة 7 أيام. متابعة؟"/>
+                        <button name="action_view_subscriptions" type="object"
+                                string="فتح سجل الاشتراكات"
+                                class="btn btn-secondary"/>
+                    </div>
+
+                    <field name="subscription_ids" readonly="1">
+                        <list decoration-success="status == 'active'"
+                              decoration-warning="status in ('trial', 'past_due')"
+                              decoration-danger="status in ('cancelled', 'expired')">
+                            <field name="plan_id"/>
+                            <field name="status" widget="badge"/>
+                            <field name="billing_cycle"/>
+                            <field name="trial_start"/>
+                            <field name="trial_end"/>
+                            <field name="current_period_start"/>
+                            <field name="current_period_end"/>
+                            <field name="next_renewal_date"/>
+                            <field name="last_payment_date"/>
+                            <field name="total_amount"/>
+                            <field name="currency"/>
+                            <field name="is_current"/>
+                        </list>
+                    </field>
+                </page>
+            </xpath>
+        </field>
+    </record>
 </odoo>
