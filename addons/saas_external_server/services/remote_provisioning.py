@@ -13,6 +13,7 @@ ACCOUNTING_MODULES = ['base_accounting_kit']
 LOCALIZATION_MODULES = {
     'SA': ['l10n_sa', 'l10n_sa_edi'], 'AE': ['l10n_ae'], 'EG': ['l10n_eg'],
 }
+AUTO_INSTALL_EXCLUDED_MODULES = {'trailer_inspection_saso'}
 
 
 class RemoteProvisioningService:
@@ -43,7 +44,7 @@ class RemoteProvisioningService:
         # De-dup, keep order.
         seen, out = set(), []
         for m in modules:
-            if m and m not in seen:
+            if m and m not in AUTO_INSTALL_EXCLUDED_MODULES and m not in seen:
                 seen.add(m)
                 out.append(m)
         return out

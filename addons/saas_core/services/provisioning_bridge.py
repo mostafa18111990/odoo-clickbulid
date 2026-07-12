@@ -32,6 +32,10 @@ LOCALIZATION_MODULES = {
 ACCOUNTING_MODULES = ['base_accounting_kit']
 DEFAULT_COUNTRY = 'SA'  # Platform is Saudi-first; fall back to SA if unknown.
 
+# Optional vertical products must be installed explicitly by an administrator,
+# never as part of the generic tenant bootstrap.
+AUTO_INSTALL_EXCLUDED_MODULES = {'trailer_inspection_saso'}
+
 # ── Industry app bundles ───────────────────────────────────────────────────────
 # The sector the customer picks at signup (homepage cards → ?industry=… →
 # signup form) selects which Odoo apps are pre-installed so the workspace is
@@ -167,6 +171,9 @@ class ProvisioningBridgeService:
         for m in INDUSTRY_MODULES.get(industry or '', []):
             if m not in allowed_modules:
                 allowed_modules.append(m)
+        allowed_modules = [
+            m for m in allowed_modules if m not in AUTO_INSTALL_EXCLUDED_MODULES
+        ]
         return {'subdomain': tenant.subdomain, 'modules': allowed_modules, 'language': 'ar',
                 'odoo_version': '19', 'saas_tenant_id': tenant.id,
                 'customer_email': tenant.customer_email,
