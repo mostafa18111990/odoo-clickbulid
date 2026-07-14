@@ -942,6 +942,21 @@ header .btn_cta {
     transition: all 0.2s;
 }
 .cb-billing-toggle button.active { color: #fff; background: var(--cb-grad-purple); }
+.cb-tier-pricing + section { display: none; }
+.cb-tier-card { max-width: 850px; padding: clamp(1.25rem, 4vw, 2.5rem); background:#fff; border:1px solid var(--cb-line); border-radius:var(--cb-radius-lg); box-shadow:var(--cb-shadow-card); }
+.cb-tier-controls { display:grid; grid-template-columns:1fr 180px 1fr; gap:1rem; align-items:end; }
+.cb-tier-choice { display:flex; padding:4px; gap:4px; background:var(--cb-surface); border:1px solid var(--cb-line); border-radius:10px; }
+.cb-tier-choice button { flex:1; border:0; border-radius:7px; padding:.7rem .8rem; color:var(--cb-muted); background:transparent; font-weight:700; }
+.cb-tier-choice button.active { color:#fff; background:var(--cb-grad-purple); }
+.cb-tier-users label { display:block; margin-bottom:.35rem; text-align:center; font-weight:700; }
+.cb-tier-summary { border:1px solid var(--cb-line); border-radius:12px; overflow:hidden; }
+.cb-tier-summary > div { display:flex; justify-content:space-between; gap:1rem; padding:.8rem 1rem; border-bottom:1px solid var(--cb-line); }
+.cb-tier-summary > div:last-child { border-bottom:0; }
+.cb-tier-summary .cb-tier-total { color:#fff; background:var(--cb-grad-purple); font-size:1.15rem; }
+.cb-tier-total small { font-size:.75rem; opacity:.85; }
+.cb-tier-legal { color:var(--cb-muted); font-size:.82rem; }
+.cb-tier-legal p { margin-bottom:.45rem; }
+@media (max-width: 767px) { .cb-tier-controls { grid-template-columns:1fr; } .cb-tier-choice { flex-wrap:wrap; } .cb-tier-summary > div { align-items:center; } }
 .cb-step .step-num {
     width: 50px; height: 50px; display: grid; place-items: center;
     margin: 0 auto 1rem; border-radius: 12px;

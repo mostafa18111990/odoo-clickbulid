@@ -83,7 +83,7 @@ class SaasWebsiteMain(http.Controller):
 
     @http.route('/pricing', type='http', auth='public', website=True, sitemap=True)
     def pricing(self, **kw):
-        return request.render('saas_website.page_pricing', {'plans': request.env['website'].get_saas_plans()})
+        return request.render('saas_website.page_pricing_v3', {'plans': request.env['website'].get_saas_plans()})
 
     @http.route('/faq', type='http', auth='public', website=True, sitemap=True)
     def faq(self, **kw):

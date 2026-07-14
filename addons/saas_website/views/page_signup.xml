@@ -22,7 +22,9 @@
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
 
                             <!-- Edition switch (visual) — pre-selects based on chosen plan -->
-                            <t t-set="default_ed" t-value="(selected_plan.edition if selected_plan else 'community') or 'community'"/>
+                            <t t-set="default_ed" t-value="selected_edition or ((selected_plan.edition if selected_plan else 'community') or 'community')"/>
+                            <input type="hidden" name="edition" id="signupEdition" t-att-value="default_ed"/>
+                            <input type="hidden" name="billing_cycle" id="signupBilling" t-att-value="selected_billing_cycle or 'monthly'"/>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">
                                     <t t-if="lang_is_ar">اختر الإصدار</t><t t-else="">Choose edition</t></label>
@@ -61,6 +63,7 @@
                                     <optgroup label="Community" class="signup-plan-group" data-edition="community">
                                         <t t-foreach="grouped['community']" t-as="plan">
                                             <option t-att-value="plan.id"
+                                                    t-att-data-code="plan.code.lower()"
                                                     t-att-data-edition="plan.edition or 'community'"
                                                     t-att-data-pricing-mode="plan.pricing_mode or 'flat'"
                                                     t-att-data-price-per-user="'%.2f' % (plan.price_per_user or 0)"
@@ -81,6 +84,7 @@
                                     <optgroup label="Enterprise" class="signup-plan-group" data-edition="enterprise">
                                         <t t-foreach="grouped['enterprise']" t-as="plan">
                                             <option t-att-value="plan.id"
+                                                    t-att-data-code="plan.code.lower()"
                                                     t-att-data-edition="plan.edition"
                                                     t-att-data-pricing-mode="plan.pricing_mode or 'flat'"
                                                     t-att-data-price-per-user="'%.2f' % (plan.price_per_user or 0)"
@@ -108,11 +112,22 @@
                                 <div class="input-group">
                                     <button type="button" class="btn btn-outline-secondary" id="seatMinus">−</button>
                                     <input type="number" name="user_count" id="userCountInput"
-                                           class="form-control text-center fw-bold" min="1" max="500" value="3"/>
+                                           class="form-control text-center fw-bold" min="1" max="500"
+                                           t-att-value="selected_user_count or '1'"/>
                                     <button type="button" class="btn btn-outline-secondary" id="seatPlus">+</button>
                                 </div>
                                 <div class="mt-2 p-2 rounded text-center fw-bold" id="seatPriceBox"
                                      style="background:#f5f3ff; color:#6d28d9; font-size:1.1rem;"></div>
+                            </div>
+                            <div class="cb-billing-toggle mb-3" style="display:flex;">
+                                <button type="button" data-signup-billing="monthly"
+                                        t-attf-class="flex-fill #{'active' if (selected_billing_cycle or 'monthly') == 'monthly' else ''}">
+                                    <t t-if="lang_is_ar">شهري</t><t t-else="">Monthly</t>
+                                </button>
+                                <button type="button" data-signup-billing="yearly"
+                                        t-attf-class="flex-fill #{'active' if selected_billing_cycle == 'yearly' else ''}">
+                                    <t t-if="lang_is_ar">سنوي — وفّر 15%</t><t t-else="">Yearly — Save 15%</t>
+                                </button>
                             </div>
                             <div class="mb-3"><label class="form-label fw-bold">
                                 <t t-if="lang_is_ar">اسم منصة الأعمال</t><t t-else="">Business platform name</t></label>

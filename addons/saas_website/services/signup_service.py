@@ -75,12 +75,12 @@ class SignupService:
             user_count = max(0, min(int(data.get('user_count') or 0), 500))
         except (TypeError, ValueError):
             user_count = 0
-        plan_id = int(data['plan_id']) if data.get('plan_id') else None
-        if not plan_id:
-            plan = self.env['saas.plan'].sudo().search([('active', '=', True)], order='monthly_price asc', limit=1)
-            plan_id = plan.id if plan else None
-        else:
-            plan = self.env['saas.plan'].sudo().browse(plan_id)
+        edition = data.get('edition') if data.get('edition') in ('community', 'enterprise') else None
+        billing_cycle = data.get('billing_cycle') if data.get('billing_cycle') in ('monthly', 'yearly') else 'monthly'
+        submitted_plan = self.env['saas.plan'].sudo().browse(int(data['plan_id'])).exists() if data.get('plan_id') else None
+        edition = edition or (submitted_plan.edition if submitted_plan else 'community')
+        plan = self.env['saas.plan'].tier_plan_for(edition, user_count or 1)
+        plan_id = plan.id if plan else None
         if not plan_id:
             return {'success': False, 'errors': [_('No plans available.')]}
         from odoo.addons.saas_core.services.tenant_service import TenantService
@@ -102,7 +102,7 @@ class SignupService:
             if 'saas.subscription' in self.env:
                 from odoo.addons.saas_subscription.services.subscription_service import SubscriptionService
                 currency = self._currency_for_country(country)
-                SubscriptionService(self.env(su=True)).create_trial(tenant, plan, 'monthly', currency)
+                SubscriptionService(self.env(su=True)).create_trial(tenant, plan, billing_cycle, currency)
             self._link_website_lead(email, tenant)
             # Send the welcome email with credentials (best-effort —
             # never block signup if SMTP isn't configured).

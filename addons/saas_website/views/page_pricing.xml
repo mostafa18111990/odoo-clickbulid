@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="page_pricing" name="Pricing">
+    <template id="page_pricing_v3" name="Pricing Calculator">
         <t t-call="website.layout">
             <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>
             <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
@@ -31,7 +31,7 @@
                             <button type="button" data-billing="yearly">
                                 <t t-if="lang_is_ar">سنوي</t><t t-else="">Yearly</t>
                                 <span class="save-badge" style="margin-inline-start:0.4rem;padding:0.1rem 0.5rem;background:var(--cb-gold);color:#000;border-radius:100px;font-size:0.7rem;font-weight:800;">
-                                    <t t-if="lang_is_ar">شهران دون رسوم</t><t t-else="">2 months included</t>
+                                    <t t-if="lang_is_ar">وفّر 15%</t><t t-else="">Save 15%</t>
                                 </span>
                             </button>
                         </div>
@@ -70,7 +70,47 @@
             </section>
 
             <!-- ===== PRICING CARDS ===== -->
-            <section class="py-5" style="margin-top:-1rem;"><div class="container">
+            <section class="cb-tier-pricing py-5" id="pricing-calculator">
+                <div class="container"><div class="cb-tier-card mx-auto" data-tier-calculator="1">
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold"><t t-if="lang_is_ar">احسب اشتراك منصة أعمالك</t><t t-else="">Calculate your business platform subscription</t></h2>
+                        <p class="text-muted mb-0"><t t-if="lang_is_ar">اختر إصدار Odoo وعدد المستخدمين ودورة الدفع، وسيتحدث السعر فورًا.</t><t t-else="">Choose the Odoo edition, user count, and billing cycle for an instant quote.</t></p>
+                    </div>
+                    <div class="cb-tier-controls">
+                        <div class="cb-tier-choice" role="group" aria-label="Odoo edition">
+                            <button type="button" class="active" data-tier-edition="community">Odoo Community</button>
+                            <button type="button" data-tier-edition="enterprise">Odoo Enterprise</button>
+                        </div>
+                        <div class="cb-tier-users">
+                            <label for="pricingUserCount"><t t-if="lang_is_ar">عدد المستخدمين</t><t t-else="">Number of users</t></label>
+                            <div class="input-group">
+                                <button type="button" class="btn btn-outline-secondary" data-tier-minus="1">−</button>
+                                <input id="pricingUserCount" type="number" class="form-control text-center" min="1" max="500" value="1"/>
+                                <button type="button" class="btn btn-outline-secondary" data-tier-plus="1">+</button>
+                            </div>
+                        </div>
+                        <div class="cb-tier-choice" role="group" aria-label="Billing cycle">
+                            <button type="button" class="active" data-tier-cycle="monthly"><t t-if="lang_is_ar">شهري</t><t t-else="">Monthly</t></button>
+                            <button type="button" data-tier-cycle="yearly"><t t-if="lang_is_ar">سنوي</t><t t-else="">Yearly</t> <span class="save-badge"><t t-if="lang_is_ar">وفّر 15%</t><t t-else="">Save 15%</t></span></button>
+                        </div>
+                    </div>
+                    <div class="cb-tier-summary mt-4">
+                        <div><span><t t-if="lang_is_ar">سعر المستخدم</t><t t-else="">Price per user</t></span><strong><b data-tier-unit="1">299</b> <t t-if="lang_is_ar">ريال/شهر</t><t t-else="">SAR/month</t></strong></div>
+                        <div><span><t t-if="lang_is_ar">الإجمالي الشهري</t><t t-else="">Monthly total</t></span><strong><b data-tier-monthly="1">299</b> <t t-if="lang_is_ar">ريال</t><t t-else="">SAR</t></strong></div>
+                        <div data-tier-annual-row="1" hidden="hidden"><span><t t-if="lang_is_ar">السعر السنوي قبل الخصم</t><t t-else="">Annual price before discount</t></span><strong class="text-decoration-line-through"><b data-tier-annual-before="1">3588</b> <t t-if="lang_is_ar">ريال</t><t t-else="">SAR</t></strong></div>
+                        <div data-tier-annual-row="1" hidden="hidden"><span><t t-if="lang_is_ar">قيمة التوفير</t><t t-else="">You save</t></span><strong class="text-success"><b data-tier-saving="1">538.20</b> <t t-if="lang_is_ar">ريال</t><t t-else="">SAR</t></strong></div>
+                        <div class="cb-tier-total"><span><t t-if="lang_is_ar">الإجمالي</t><t t-else="">Total</t></span><strong><b data-tier-total="1">299</b> <t t-if="lang_is_ar">ريال</t><t t-else="">SAR</t> <small data-tier-period="1"><t t-if="lang_is_ar">شهريًا</t><t t-else="">monthly</t></small></strong></div>
+                    </div>
+                    <p class="text-center text-success fw-bold mt-3" data-tier-discount-note="1" hidden="hidden"><t t-if="lang_is_ar">خصم 15% عند الدفع السنوي</t><t t-else="">15% discount with annual billing</t></p>
+                    <a class="btn btn-primary btn-lg w-100 mt-3" data-tier-cta="1" href="/get-started?edition=community&amp;users=1&amp;billing=monthly"><t t-if="lang_is_ar">طلب الاشتراك</t><t t-else="">Request subscription</t></a>
+                    <div class="cb-tier-legal mt-4">
+                        <p><t t-if="lang_is_ar">Odoo Community بلا رسوم ترخيص من Odoo؛ قيمة الاشتراك مقابل الاستضافة والإدارة الفنية والنسخ الاحتياطي والدعم المشمول.</t><t t-else="">Odoo Community has no Odoo license fee; the subscription covers included hosting, technical management, backups, and support.</t></p>
+                        <p><t t-if="lang_is_ar">تتضمن أسعار Enterprise إتاحة Odoo Enterprise عبر اشتراك الشريك، ولا تضاف رسوم ترخيص منفصلة إلا إذا نص عرض السعر على خلاف ذلك.</t><t t-else="">Enterprise prices include access through the partner subscription; no separate license fee is added unless the quotation states otherwise.</t></p>
+                        <p><t t-if="lang_is_ar">الأسعار لا تشمل ضريبة القيمة المضافة. رسوم الإعداد والتهيئة والتنفيذ تُحدد بصورة منفصلة وفقًا لمتطلبات المشروع.</t><t t-else="">Prices exclude VAT. Setup, configuration, and implementation are quoted separately according to project requirements.</t></p>
+                    </div>
+                </div></div>
+            </section>
+            <section class="py-5" style="display:none; margin-top:-1rem;"><div class="container">
                 <div class="row g-4 justify-content-center align-items-stretch">
                     <t t-foreach="plans" t-as="plan">
                         <t t-set="is_per_user" t-value="plan.pricing_mode == 'per_user' and plan.price_per_user > 0"/>
@@ -206,7 +246,7 @@
             </div></section>
 
             <!-- ===== COMPARISON TABLE ===== -->
-            <section class="py-5 bg-light"><div class="container">
+            <section class="py-5 bg-light" style="display:none;"><div class="container">
                 <div class="text-center mb-5" data-cb-reveal="1">
                     <h2 class="display-5 mb-2">
                         <t t-if="lang_is_ar">مقارنة كاملة بين الخطط</t>

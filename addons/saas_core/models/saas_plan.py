@@ -1,6 +1,16 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
+ANNUAL_DISCOUNT_RATE = 0.15
+TIER_PRICING = {
+    'community': {1: 299.0, 2: 249.0, 3: 199.0},
+    'enterprise': {1: 399.0, 2: 349.0, 3: 299.0},
+}
+TIER_PLAN_CODES = {
+    'community': {1: 'starter', 2: 'business', 3: 'enterprise'},
+    'enterprise': {1: 'starter_ee', 2: 'business_ee', 3: 'enterprise_ee'},
+}
+
 
 class SaasPlan(models.Model):
     _name = 'saas.plan'
@@ -74,6 +84,33 @@ class SaasPlan(models.Model):
         self.ensure_one()
         return self.yearly_price if self.yearly_price > 0 else self.yearly_price_computed
 
+    @api.model
+    def tiered_quote(self, edition, user_count, cycle='monthly'):
+        edition = edition if edition in TIER_PRICING else 'community'
+        seats = max(1, min(int(user_count or 1), 500))
+        tier = 1 if seats == 1 else 2 if seats == 2 else 3
+        unit_price = TIER_PRICING[edition][tier]
+        monthly_total = round(seats * unit_price, 2)
+        annual_before_discount = round(monthly_total * 12, 2)
+        discount_amount = round(annual_before_discount * ANNUAL_DISCOUNT_RATE, 2)
+        annual_total = round(annual_before_discount - discount_amount, 2)
+        normalized_cycle = cycle if cycle in ('monthly', 'yearly') else 'monthly'
+        return {
+            'edition': edition, 'users': seats, 'tier': tier,
+            'unit_price': unit_price, 'monthly_total': monthly_total,
+            'annual_before_discount': annual_before_discount,
+            'discount_rate': ANNUAL_DISCOUNT_RATE, 'discount_pct': 15.0,
+            'discount_amount': discount_amount, 'annual_total': annual_total,
+            'cycle': normalized_cycle,
+            'total': annual_total if normalized_cycle == 'yearly' else monthly_total,
+        }
+
+    @api.model
+    def tier_plan_for(self, edition, user_count):
+        quote = self.tiered_quote(edition, user_count)
+        code = TIER_PLAN_CODES[quote['edition']][quote['tier']]
+        return self.sudo().search([('code', '=ilike', code), ('active', '=', True)], limit=1)
+
     def price_for_users(self, user_count, cycle='monthly'):
         """Price for the given seat count under this plan's pricing mode.
 
@@ -82,10 +119,14 @@ class SaasPlan(models.Model):
         flat: the classic plan price, seats ignored.
         """
         self.ensure_one()
+        if self.code and self.code.lower() in {
+                'starter', 'business', 'enterprise',
+                'starter_ee', 'business_ee', 'enterprise_ee'}:
+            return self.tiered_quote(self.edition, user_count, cycle)['total']
         if self.pricing_mode == 'per_user' and self.price_per_user > 0:
             seats = max(1, int(user_count or 1))
             monthly = round(seats * self.price_per_user, 2)
-            return round(monthly * 10, 2) if cycle == 'yearly' else monthly
+            return round(monthly * 12 * (1 - ANNUAL_DISCOUNT_RATE), 2) if cycle == 'yearly' else monthly
         return self.get_effective_yearly_price() if cycle == 'yearly' else self.monthly_price
 
     def calculate_bill(self, billing_cycle, extra_users=0, extra_gb=0):

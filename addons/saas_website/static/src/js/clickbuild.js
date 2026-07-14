@@ -73,14 +73,84 @@
         }
     }
 
+    function initTierPricing() {
+        var root = document.querySelector('[data-tier-calculator]');
+        if (!root) return;
+        var users = root.querySelector('#pricingUserCount');
+        var edition = 'community';
+        var cycle = 'monthly';
+        function format(value) {
+            return Number(value).toLocaleString(document.documentElement.lang.indexOf('ar') === 0 ? 'ar-SA' : 'en-US', {
+                minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
+                maximumFractionDigits: 2
+            });
+        }
+        function update() {
+            var count = Math.max(1, Math.min(500, parseInt(users.value || '1', 10)));
+            users.value = count;
+            var tier = count === 1 ? 1 : (count === 2 ? 2 : 3);
+            var rates = edition === 'enterprise' ? {1: 399, 2: 349, 3: 299} : {1: 299, 2: 249, 3: 199};
+            var unit = rates[tier];
+            var monthly = count * unit;
+            var annualBefore = monthly * 12;
+            var saving = annualBefore * 0.15;
+            var annual = annualBefore - saving;
+            root.querySelector('[data-tier-unit]').textContent = format(unit);
+            root.querySelector('[data-tier-monthly]').textContent = format(monthly);
+            root.querySelector('[data-tier-annual-before]').textContent = format(annualBefore);
+            root.querySelector('[data-tier-saving]').textContent = format(saving);
+            root.querySelector('[data-tier-total]').textContent = format(cycle === 'yearly' ? annual : monthly);
+            root.querySelector('[data-tier-period]').textContent = cycle === 'yearly' ? (document.documentElement.lang.indexOf('ar') === 0 ? 'سنويًا' : 'yearly') : (document.documentElement.lang.indexOf('ar') === 0 ? 'شهريًا' : 'monthly');
+            root.querySelectorAll('[data-tier-annual-row], [data-tier-discount-note]').forEach(function(el) { el.hidden = cycle !== 'yearly'; });
+            root.querySelector('[data-tier-cta]').href = '/get-started?edition=' + edition + '&users=' + count + '&billing=' + cycle;
+        }
+        root.querySelectorAll('[data-tier-edition]').forEach(function(btn) { btn.addEventListener('click', function() { edition = btn.dataset.tierEdition; root.querySelectorAll('[data-tier-edition]').forEach(function(b) { b.classList.toggle('active', b === btn); }); update(); }); });
+        root.querySelectorAll('[data-tier-cycle]').forEach(function(btn) { btn.addEventListener('click', function() { cycle = btn.dataset.tierCycle; root.querySelectorAll('[data-tier-cycle]').forEach(function(b) { b.classList.toggle('active', b === btn); }); update(); }); });
+        root.querySelector('[data-tier-minus]').addEventListener('click', function() { users.value = Math.max(1, parseInt(users.value || '1', 10) - 1); update(); });
+        root.querySelector('[data-tier-plus]').addEventListener('click', function() { users.value = Math.min(500, parseInt(users.value || '1', 10) + 1); update(); });
+        users.addEventListener('input', update);
+        update();
+    }
+
+    function initSignupTierPricing() {
+        var form = document.getElementById('signupForm');
+        if (!form) return;
+        var users = document.getElementById('userCountInput');
+        var editionInput = document.getElementById('signupEdition');
+        var cycleInput = document.getElementById('signupBilling');
+        var select = document.getElementById('plan_id_select');
+        var box = document.getElementById('seatPriceBox');
+        function update() {
+            var count = Math.max(1, Math.min(500, parseInt(users.value || '1', 10)));
+            users.value = count;
+            var tier = count === 1 ? 1 : (count === 2 ? 2 : 3);
+            var enterprise = editionInput.value === 'enterprise';
+            var rates = enterprise ? {1:399,2:349,3:299} : {1:299,2:249,3:199};
+            var codes = enterprise ? {1:'starter_ee',2:'business_ee',3:'enterprise_ee'} : {1:'starter',2:'business',3:'enterprise'};
+            Array.from(select.options).forEach(function(opt) { if ((opt.dataset.code || '').toLowerCase() === codes[tier]) opt.selected = true; });
+            var monthly = count * rates[tier];
+            var total = cycleInput.value === 'yearly' ? monthly * 12 * 0.85 : monthly;
+            box.textContent = total.toLocaleString(undefined, {maximumFractionDigits:2}) + ' SAR / ' + (cycleInput.value === 'yearly' ? 'year' : 'month');
+        }
+        form.querySelectorAll('.signup-edition-card').forEach(function(card) { card.addEventListener('click', function() { editionInput.value = card.dataset.edition; setTimeout(update, 0); }); });
+        form.querySelectorAll('[data-signup-billing]').forEach(function(btn) { btn.addEventListener('click', function() { cycleInput.value = btn.dataset.signupBilling; form.querySelectorAll('[data-signup-billing]').forEach(function(b) { b.classList.toggle('active', b === btn); }); update(); }); });
+        users.addEventListener('input', function() { setTimeout(update, 0); });
+        form.addEventListener('submit', update);
+        setTimeout(update, 0);
+    }
+
     // ---- Boot --------------------------------------------------------------
     if (document.readyState === 'loading') {
         document.addEventListener('DOMContentLoaded', function () {
             initReveal();
             initBillingToggle();
+            initTierPricing();
+            initSignupTierPricing();
         });
     } else {
         initReveal();
         initBillingToggle();
+        initTierPricing();
+        initSignupTierPricing();
     }
 })();
