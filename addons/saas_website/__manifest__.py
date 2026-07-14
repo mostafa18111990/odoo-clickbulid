@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Website',
-    'version': '19.0.1.1.0',
+    'version': '19.0.1.1.1',
     'category': 'SaaS',
     'summary': 'Public marketing website for ClickBuild SaaS platform',
     'author': 'ClickBuild',
@@ -36,6 +36,7 @@
         'web.assets_frontend': [
             'saas_website/static/src/css/clickbuild.css',
             'saas_website/static/src/js/clickbuild.js',
+            'saas_website/static/src/js/pricing_signup_cachebuster.js',
         ],
     },
     'installable': True,
