@@ -136,7 +136,12 @@
         form.querySelectorAll('[data-signup-billing]').forEach(function(btn) { btn.addEventListener('click', function() { cycleInput.value = btn.dataset.signupBilling; form.querySelectorAll('[data-signup-billing]').forEach(function(b) { b.classList.toggle('active', b === btn); }); update(); }); });
         users.addEventListener('input', function() { setTimeout(update, 0); });
         form.addEventListener('submit', update);
-        setTimeout(update, 0);
+        // The inline signup compatibility script may calculate the legacy
+        // monthly summary after DOMContentLoaded. Re-apply the canonical quote
+        // once the page is fully loaded so a preselected yearly cycle is shown
+        // correctly without requiring another click.
+        window.addEventListener('load', update, { once: true });
+        setTimeout(update, 250);
     }
 
     // ---- Boot --------------------------------------------------------------
