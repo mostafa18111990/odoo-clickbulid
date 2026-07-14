@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="page_signup" name="Get Started">
+    <template id="page_signup_v2" name="Get Started">
         <t t-call="website.layout">
             <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/><t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
             <t t-set="additional_title" t-value="'ابدأ مع ClickBuild | إنشاء منصة أعمال Odoo' if lang_is_ar else 'Get Started with ClickBuild | Create Your Odoo Business Platform'"/>
@@ -256,25 +256,31 @@
                                     var isAr = document.documentElement.lang &amp;&amp; document.documentElement.lang.indexOf('ar') === 0;
                                     function fmt(n) { return Number(n).toLocaleString(isAr ? 'ar-SA' : 'en-US'); }
                                     function updatePrice() {
-                                        var opt = sel.selectedOptions[0];
-                                        if (!opt || !seatInput || !priceBox) return;
-                                        var maxU = parseInt(opt.dataset.maxUsers || '0', 10);
-                                        var seats = Math.max(1, parseInt(seatInput.value || '1', 10));
-                                        if (maxU &gt; 0 &amp;&amp; seats &gt; maxU) { seats = maxU; }
+                                        if (!seatInput || !priceBox) return;
+                                        var seats = Math.max(1, Math.min(500, parseInt(seatInput.value || '1', 10)));
                                         seatInput.value = seats;
-                                        if (maxU &gt; 0) seatInput.max = maxU;
-                                        if ((opt.dataset.pricingMode || 'flat') === 'per_user') {
-                                            var ppu = parseFloat(opt.dataset.pricePerUser || '0');
-                                            var total = Math.round(seats * ppu * 100) / 100;
-                                            priceBox.textContent = isAr
-                                                ? ('الإجمالي: ' + fmt(total) + ' ريال/شهرياً (' + fmt(seats) + ' مستخدم × ' + fmt(ppu) + ' ريال)')
-                                                : ('Total: ' + fmt(total) + ' SAR/month (' + fmt(seats) + ' users × ' + fmt(ppu) + ' SAR)');
-                                        } else {
-                                            var flat = parseFloat(opt.dataset.flatPrice || '0');
-                                            priceBox.textContent = isAr
-                                                ? ('الباقة: ' + fmt(flat) + ' ريال/شهرياً — حتى ' + fmt(maxU || seats) + ' مستخدم')
-                                                : ('Plan: ' + fmt(flat) + ' SAR/month — up to ' + fmt(maxU || seats) + ' users');
-                                        }
+                                        var edition = document.getElementById('signupEdition').value || 'community';
+                                        var cycle = document.getElementById('signupBilling').value || 'monthly';
+                                        var tier = seats === 1 ? 1 : (seats === 2 ? 2 : 3);
+                                        var rates = edition === 'enterprise'
+                                            ? {1: 399, 2: 349, 3: 299}
+                                            : {1: 299, 2: 249, 3: 199};
+                                        var codes = edition === 'enterprise'
+                                            ? {1: 'starter_ee', 2: 'business_ee', 3: 'enterprise_ee'}
+                                            : {1: 'starter', 2: 'business', 3: 'enterprise'};
+                                        Array.from(sel.options).forEach(function (option) {
+                                            if ((option.dataset.code || '').toLowerCase() === codes[tier]) {
+                                                option.selected = true;
+                                            }
+                                        });
+                                        var unit = rates[tier];
+                                        var monthly = seats * unit;
+                                        var total = cycle === 'yearly' ? monthly * 12 * 0.85 : monthly;
+                                        priceBox.textContent = isAr
+                                            ? ('الإجمالي: ' + fmt(total) + ' ريال/' + (cycle === 'yearly' ? 'سنة' : 'شهر')
+                                                + ' (' + fmt(seats) + ' مستخدم × ' + fmt(unit) + ' ريال)')
+                                            : ('Total: ' + fmt(total) + ' SAR/' + (cycle === 'yearly' ? 'year' : 'month')
+                                                + ' (' + fmt(seats) + ' users × ' + fmt(unit) + ' SAR)');
                                     }
                                     if (seatInput) {
                                         seatInput.addEventListener('input', updatePrice);

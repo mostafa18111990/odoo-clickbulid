@@ -40,7 +40,7 @@ class SaasWebsiteSignup(http.Controller):
         # Sector pre-selected from the homepage industry cards (?industry=retail).
         industries = dict(request.env['saas.tenant'].sudo()._fields['industry'].selection)
         selected_industry = kw.get('industry') if kw.get('industry') in industries else ''
-        return request.render('saas_website.page_signup',
+        return request.render('saas_website.page_signup_v2',
                               {'plans': plans, 'selected_plan': selected_plan,
                                'coupon': kw.get('coupon', ''),
                                'selected_industry': selected_industry,
@@ -126,7 +126,7 @@ class SaasWebsiteSignup(http.Controller):
                                              request.httprequest.remote_addr).split(',')[0].strip()
         platform_domain = request.env['saas.config'].sudo()._get_config().platform_domain
         if not self._check_rate_limit(ip):
-            return request.render('saas_website.page_signup', {
+            return request.render('saas_website.page_signup_v2', {
                 'plans': request.env['website'].get_saas_plans(),
                 'platform_domain': platform_domain,
                 'errors': [_('Too many attempts. Please try again in a few minutes.')], 'form_data': post})
@@ -148,7 +148,7 @@ class SaasWebsiteSignup(http.Controller):
                 'subdomain': result.get('subdomain'),
             }
             return request.redirect(result.get('redirect', '/get-started/success'))
-        return request.render('saas_website.page_signup', {
+        return request.render('saas_website.page_signup_v2', {
             'plans': request.env['website'].get_saas_plans(),
             'platform_domain': platform_domain,
             'errors': result.get('errors', []), 'form_data': post})
