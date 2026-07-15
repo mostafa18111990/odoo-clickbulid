@@ -25,3 +25,12 @@ class TestTenantMetrics(TransactionCase):
 
     def test_purchased_seats_drive_portal_limit(self):
         self.assertEqual(self.tenant.effective_max_users(), 4)
+
+    def test_host_metrics_status_is_not_downgraded_by_odoo_cron(self):
+        self.tenant.write({
+            'metrics_sync_status': 'ok',
+            'backup_sync_status': 'ok',
+        })
+        self.assertTrue(self.tenant._host_metrics_are_current())
+        self.tenant.backup_sync_status = 'missing'
+        self.assertFalse(self.tenant._host_metrics_are_current())

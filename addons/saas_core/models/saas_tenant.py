@@ -143,6 +143,13 @@ class SaasTenant(models.Model):
             return ''
         return db_name
 
+    def _host_metrics_are_current(self):
+        self.ensure_one()
+        return (
+            self.metrics_sync_status == 'ok'
+            and self.backup_sync_status in ('ok', 'stale')
+        )
+
     @staticmethod
     def _directory_size_bytes(path):
         total = 0
@@ -186,12 +193,14 @@ class SaasTenant(models.Model):
                     )
                     users_count = int(tenant_cr.fetchone()[0] or 0)
 
+                host_metrics_are_current = tenant._host_metrics_are_current()
                 values = {
                     'disk_usage_mb': round(database_bytes / 1048576.0, 2),
                     'users_count': users_count,
                     'metrics_synced_at': fields.Datetime.now(),
-                    'metrics_sync_status': 'partial',
-                    'metrics_sync_error': 'Awaiting host storage and backup synchronization.',
+                    'metrics_sync_status': 'ok' if host_metrics_are_current else 'partial',
+                    'metrics_sync_error': False if host_metrics_are_current else (
+                        'Awaiting host storage and backup synchronization.'),
                 }
                 filestore_path = os.path.join(
                     config.get('data_dir', '/var/lib/odoo'), 'filestore', db_name)
