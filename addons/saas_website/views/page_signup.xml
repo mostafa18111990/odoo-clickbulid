@@ -364,7 +364,7 @@
                                  email already filled in via URL hash. Password gets copied to clipboard
                                  automatically right before the new tab opens, so the user just pastes. -->
                             <a id="saas_login_btn"
-                               t-att-href="(tenant_url or '') + '/web/login#login=' + (admin_email or '')"
+                               t-att-href="(tenant_url or ('https://' + subdomain + '.' + (platform_domain or 'odoo.clickbulid.com'))) + '/web/login#login=' + (admin_email or '')"
                                t-att-data-password="admin_password"
                                target="_blank"
                                class="btn btn-primary btn-lg disabled"
