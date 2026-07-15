@@ -14,8 +14,8 @@ class PortalService:
         sub = tenant.current_subscription_id
         plan = tenant.plan_id
         users_used = tenant.users_count or 0
-        users_max = plan.max_users if plan and plan.max_users > 0 else 0
-        storage_used_mb = tenant.disk_usage_mb or 0
+        users_max = tenant.effective_max_users()
+        storage_used_mb = tenant.total_storage_mb or tenant.disk_usage_mb or 0
         storage_max_mb = plan.max_storage_mb if plan else 0
         recent_invoices = self.env['saas.invoice'].search([('tenant_id', '=', tenant.id)],
                                                           order='invoice_date desc', limit=5)
@@ -132,6 +132,6 @@ class PortalService:
     def get_usage_data(self, tenant):
         plan = tenant.plan_id
         return {'users': {'used': tenant.users_count or 0,
-                          'max': plan.max_users if plan and plan.max_users > 0 else 'Unlimited'},
-                'storage': {'used_gb': round((tenant.disk_usage_mb or 0) / 1024, 2),
+                          'max': tenant.effective_max_users() or 'Unlimited'},
+                'storage': {'used_gb': round((tenant.total_storage_mb or tenant.disk_usage_mb or 0) / 1024, 2),
                             'max_gb': round((plan.max_storage_mb or 0) / 1024, 2) if plan else 0}}

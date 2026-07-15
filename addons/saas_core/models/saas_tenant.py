@@ -1,7 +1,10 @@
-from odoo import models, fields, api, _
+from odoo import models, fields, api, _, sql_db
 from odoo.exceptions import UserError
+from odoo.tools import config
 from datetime import timedelta
 import logging
+import os
+import re
 
 _logger = logging.getLogger(__name__)
 
@@ -108,6 +111,20 @@ class SaasTenant(models.Model):
     user_count = fields.Integer(string='Purchased Users (Seats)', default=0)
     seat_monthly_cost = fields.Float(string='Monthly Cost (SAR)',
                                      compute='_compute_seat_monthly_cost', digits=(10, 2))
+    filestore_usage_mb = fields.Float(string='Filestore (MB)', readonly=True, digits=(12, 2))
+    total_storage_mb = fields.Float(string='Total Storage (MB)', readonly=True, digits=(12, 2))
+    metrics_synced_at = fields.Datetime(string='Metrics Synced At', readonly=True)
+    metrics_sync_status = fields.Selection([
+        ('ok', 'Synced'),
+        ('partial', 'Partially Synced'),
+        ('error', 'Sync Error'),
+    ], string='Metrics Status', readonly=True, default='partial')
+    metrics_sync_error = fields.Char(string='Metrics Sync Error', readonly=True)
+    backup_sync_status = fields.Selection([
+        ('ok', 'Current'),
+        ('stale', 'Stale'),
+        ('missing', 'Missing'),
+    ], string='Backup Status', readonly=True, default='missing')
 
     @api.depends('user_count', 'plan_id', 'plan_id.pricing_mode',
                  'plan_id.price_per_user', 'plan_id.monthly_price')
@@ -118,6 +135,107 @@ class SaasTenant(models.Model):
     def effective_max_users(self):
         self.ensure_one()
         return self.user_count or (self.plan_id.max_users if self.plan_id else 0) or 0
+
+    def _metrics_database_name(self):
+        self.ensure_one()
+        db_name = (self.api_instance_id or self.db_name or '').strip()
+        if not re.fullmatch(r'[a-zA-Z0-9_]+', db_name):
+            return ''
+        return db_name
+
+    @staticmethod
+    def _directory_size_bytes(path):
+        total = 0
+        for root, _dirs, filenames in os.walk(path):
+            for filename in filenames:
+                try:
+                    total += os.path.getsize(os.path.join(root, filename))
+                except OSError:
+                    continue
+        return total
+
+    def _sync_core_metrics(self):
+        """Synchronize DB size and internal-user count from the tenant DB.
+
+        The host-level synchronizer supplements this with Community/Enterprise
+        filestore sizes and backup timestamps because those paths live in
+        separate Docker volumes that are not both mounted in this container.
+        """
+        for tenant in self:
+            db_name = tenant._metrics_database_name()
+            if not db_name:
+                tenant.write({
+                    'metrics_synced_at': fields.Datetime.now(),
+                    'metrics_sync_status': 'error',
+                    'metrics_sync_error': 'Tenant database identifier is missing or invalid.',
+                })
+                continue
+            try:
+                self.env.cr.execute(
+                    "SELECT pg_database_size(%s) FROM pg_database WHERE datname = %s",
+                    (db_name, db_name),
+                )
+                row = self.env.cr.fetchone()
+                if not row:
+                    raise ValueError('Tenant database does not exist.')
+                database_bytes = int(row[0] or 0)
+                with sql_db.db_connect(db_name).cursor() as tenant_cr:
+                    tenant_cr.execute(
+                        "SELECT count(*) FROM res_users "
+                        "WHERE active IS TRUE AND COALESCE(share, FALSE) IS FALSE"
+                    )
+                    users_count = int(tenant_cr.fetchone()[0] or 0)
+
+                values = {
+                    'disk_usage_mb': round(database_bytes / 1048576.0, 2),
+                    'users_count': users_count,
+                    'metrics_synced_at': fields.Datetime.now(),
+                    'metrics_sync_status': 'partial',
+                    'metrics_sync_error': 'Awaiting host storage and backup synchronization.',
+                }
+                filestore_path = os.path.join(
+                    config.get('data_dir', '/var/lib/odoo'), 'filestore', db_name)
+                if os.path.isdir(filestore_path):
+                    filestore_bytes = self._directory_size_bytes(filestore_path)
+                    values.update({
+                        'filestore_usage_mb': round(filestore_bytes / 1048576.0, 2),
+                        'total_storage_mb': round(
+                            (database_bytes + filestore_bytes) / 1048576.0, 2),
+                    })
+                tenant.write(values)
+            except Exception as exc:
+                _logger.warning('Tenant metrics sync failed for %s: %s', tenant.subdomain, exc)
+                tenant.write({
+                    'metrics_synced_at': fields.Datetime.now(),
+                    'metrics_sync_status': 'error',
+                    'metrics_sync_error': str(exc)[:240],
+                })
+        return True
+
+    def action_update_stats(self):
+        self._sync_core_metrics()
+        if len(self) == 1:
+            status = dict(self._fields['metrics_sync_status'].selection).get(
+                self.metrics_sync_status, self.metrics_sync_status)
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Tenant Metrics'),
+                    'message': _('Metrics refresh finished: %s', status),
+                    'type': 'success' if self.metrics_sync_status != 'error' else 'warning',
+                    'sticky': False,
+                },
+            }
+        return True
+
+    @api.model
+    def cron_sync_tenant_metrics(self):
+        tenants = self.search([
+            ('state', 'in', ('trial', 'pending_payment', 'active', 'grace_period', 'suspended')),
+            ('api_instance_id', '!=', False),
+        ])
+        tenants._sync_core_metrics()
 
     trial_days_left = fields.Integer(string='Trial Days Left', compute='_compute_trial_days_left')
     # When the platform will auto-purge a suspended tenant (suspended_at +

@@ -62,6 +62,23 @@
                         invisible="state == 'deleted'"
                         confirm="⚠️ سيتم حذف قاعدة بيانات العميل وملفاته ودومينه نهائياً ولا يمكن تشغيلها مرة أخرى (تُحفظ نسخة احتياطية أخيرة في /opt/backups/deleted). هل أنت متأكد؟ — This PERMANENTLY destroys the tenant database, files, domain and SSL cert. A final backup is kept in /opt/backups/deleted. Continue?"/>
             </xpath>
+            <xpath expr="//button[@name='action_update_stats']" position="attributes">
+                <attribute name="invisible">not api_instance_id</attribute>
+            </xpath>
+            <xpath expr="//field[@name='disk_usage_mb']/../.." position="attributes">
+                <attribute name="invisible">not api_instance_id</attribute>
+            </xpath>
+            <xpath expr="//field[@name='disk_usage_mb']" position="after">
+                <field name="filestore_usage_mb" readonly="1"/>
+                <field name="total_storage_mb" readonly="1"/>
+            </xpath>
+            <xpath expr="//field[@name='last_backup']" position="after">
+                <field name="backup_sync_status" widget="badge" readonly="1"/>
+                <field name="metrics_synced_at" readonly="1"/>
+                <field name="metrics_sync_status" widget="badge" readonly="1"/>
+                <field name="metrics_sync_error" readonly="1"
+                       groups="saas_tenant_manager.group_saas_admin"/>
+            </xpath>
             <!-- Lock-date control: the trial end date drives when the
                  lifecycle engine physically stops the tenant, so editing it
                  here = full admin control over the lock date. -->
@@ -86,6 +103,19 @@
                         <field name="seat_monthly_cost" readonly="1"/>
                     </group>
                 </group>
+            </xpath>
+        </field>
+    </record>
+    <record id="view_saas_tenant_list_metrics" model="ir.ui.view">
+        <field name="name">saas.tenant.list.metrics</field>
+        <field name="model">saas.tenant</field>
+        <field name="inherit_id" ref="saas_tenant_manager.view_saas_tenant_list"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='disk_usage_mb']" position="after">
+                <field name="filestore_usage_mb" string="Filestore (MB)" optional="hide"/>
+                <field name="total_storage_mb" string="Total (MB)" optional="show"/>
+                <field name="backup_sync_status" string="Backup" widget="badge" optional="show"/>
+                <field name="metrics_synced_at" string="Last Sync" optional="hide"/>
             </xpath>
         </field>
     </record>

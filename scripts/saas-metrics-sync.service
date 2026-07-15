@@ -1,0 +1,11 @@
+[Unit]
+Description=ClickBuild SaaS tenant metrics synchronization
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/saas-sync-tenant-metrics.sh
+TimeoutStartSec=300
+User=root
+
