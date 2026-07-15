@@ -18,7 +18,7 @@
                         <div class="carousel-indicators">
                             <button t-foreach="banners" t-as="indicator" type="button"
                                     data-bs-target="#cbMarketingCarousel"
-                                    t-att-data-bs-slide-to="indicator_index"
+                                    t-att-data-bs-slide-to="'%s' % indicator_index"
                                     t-att-class="'active' if indicator_first else ''"
                                     t-att-aria-current="'true' if indicator_first else None"
                                     t-att-aria-label="'Slide %s' % (indicator_index + 1)"/>
