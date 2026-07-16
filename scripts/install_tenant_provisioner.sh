@@ -41,6 +41,7 @@ MAX_USERS=$(read_json max_users)
 ENTERPRISE_CODE=$(read_json enterprise_code)
 LANG=$(read_json language)
 EDITION=$(read_json edition)
+PLAN_CODE=$(read_json plan_code)
 COUNTRY=$(read_json customer_country)
 # Pick the right container + Postgres role based on edition. Community
 # tenants run on odoo_saas_app (db_user odoo_community); Enterprise tenants
@@ -105,11 +106,45 @@ echo "$(date -Is) === provisioning $FINAL_DB as $DB (edition=$EDITION, container
 #     countries need their own chart of accounts → classic full init)
 #   - the template database actually exists
 TEMPLATE_DB=tpl_community_core
+POOL_REGEX='^pool_([0-9a-f]{8}|ce_[0-9a-f]{8})$'
+if [ "$EDITION" = "enterprise" ]; then
+    case "$PLAN_CODE" in
+        starter_ee)    TEMPLATE_DB=tpl_enterprise_starter;  POOL_REGEX='^pool_ee_starter_[0-9a-f]{8}$' ;;
+        business_ee)   TEMPLATE_DB=tpl_enterprise_business; POOL_REGEX='^pool_ee_business_[0-9a-f]{8}$' ;;
+        enterprise_ee) TEMPLATE_DB=tpl_enterprise_full;     POOL_REGEX='^pool_ee_full_[0-9a-f]{8}$' ;;
+        *)             TEMPLATE_DB=tpl_enterprise_starter;  POOL_REGEX='^pool_ee_starter_[0-9a-f]{8}$' ;;
+    esac
+fi
 CLONED=0
-template_exists() {
-    docker exec odoo_saas_postgres psql -U odoo -lqt 2>/dev/null \
-        | cut -d'|' -f1 | tr -d ' ' | grep -qx "$TEMPLATE_DB"
+db_exists() {
+    local db="$1"
+    docker exec odoo_saas_postgres psql -At -U odoo -d postgres -c \
+        "select 1 from pg_database where datname='$db'" 2>/dev/null | grep -qx 1
 }
+template_exists() { db_exists "$TEMPLATE_DB"; }
+
+# Exact Enterprise cache: the first request for a plan+industry module set
+# installs its delta from the tier template, then stores a clean pre-customer
+# snapshot. Every matching request after that clones the exact snapshot and
+# skips module installation. The tier template OID is part of the key, so a
+# template rebuild automatically invalidates older caches without a risky
+# in-place migration.
+CACHE_DB=""
+CACHE_HIT=0
+if [ "$EDITION" = "enterprise" ] && [ "${COUNTRY:-SA}" = "SA" ] && db_exists "$TEMPLATE_DB"; then
+    TEMPLATE_OID=$(docker exec odoo_saas_postgres psql -At -U odoo -d postgres -c \
+        "select oid from pg_database where datname='$TEMPLATE_DB'")
+    NORMALIZED_MODULES=$(printf '%s' "$INIT_MODULES" | tr ',' '\n' | sed '/^$/d' | sort -u | paste -sd, -)
+    CACHE_KEY=$(printf '%s' "$TEMPLATE_DB|$TEMPLATE_OID|${COUNTRY:-SA}|$NORMALIZED_MODULES" \
+        | sha256sum | cut -c1-16)
+    CACHE_DB="tpl_ee_cache_$CACHE_KEY"
+    if db_exists "$CACHE_DB"; then
+        TEMPLATE_DB="$CACHE_DB"
+        POOL_REGEX='a^'
+        CACHE_HIT=1
+        echo "$(date -Is) enterprise cache hit: $CACHE_DB" >>"$LOG"
+    fi
+fi
 
 # Warm-pool fast path: grab a pre-cloned DB by renaming it to the tenant
 # subdomain (instant) instead of cloning the template on the critical path.
@@ -118,7 +153,7 @@ template_exists() {
 grab_pool_db() {
     local pooldb
     pooldb=$(docker exec odoo_saas_postgres psql -U odoo -tAc \
-        "select datname from pg_database where datname like 'pool\_%' order by datname limit 1" 2>/dev/null | tr -d ' ')
+        "select datname from pg_database where datname ~ '$POOL_REGEX' order by datname limit 1" 2>/dev/null | tr -d ' ')
     [ -z "$pooldb" ] && return 1
     docker exec odoo_saas_postgres psql -U odoo -v ON_ERROR_STOP=1 -c \
         "ALTER DATABASE \"$pooldb\" RENAME TO \"$DB\"; ALTER DATABASE \"$DB\" OWNER TO $DB_OWNER;" >> "$LOG" 2>&1 || return 1
@@ -130,7 +165,7 @@ grab_pool_db() {
 if docker exec odoo_saas_postgres psql -U odoo -lqt 2>/dev/null \
         | cut -d'|' -f1 | tr -d ' ' | grep -qx "$DB"; then
     echo "$(date -Is) DB $DB already exists, skipping createdb" >> "$LOG"
-elif [ "$EDITION" != "enterprise" ] && [ "${COUNTRY:-SA}" = "SA" ] && template_exists; then
+elif [ "${COUNTRY:-SA}" = "SA" ] && template_exists; then
     if grab_pool_db; then
         CLONED=1
         # Refill the pool in the background so the next signup is instant too.
@@ -153,6 +188,32 @@ fi
 # 2. Install modules.
 # Fast path: only the delta between the requested set and what the template
 # already ships. Classic path: the full requested set from scratch.
+run_odoo_install() {
+    local modules="$1"
+    local load_language="${2:-0}"
+    local attempt=1 attempt_log
+    attempt_log=$(mktemp)
+    while [ "$attempt" -le 3 ]; do
+        local args=(--config=/etc/odoo/odoo.conf -d "$DB" -i "$modules"
+                    --without-demo=all --no-http --stop-after-init)
+        [ "$load_language" = "1" ] && args+=(--load-language=ar_001)
+        if docker exec "$ODOO_CONTAINER" odoo "${args[@]}" >"$attempt_log" 2>&1; then
+            cat "$attempt_log" >>"$LOG"
+            rm -f "$attempt_log"
+            return 0
+        fi
+        cat "$attempt_log" >>"$LOG"
+        if grep -q "could not serialize access due to concurrent update" "$attempt_log" && [ "$attempt" -lt 3 ]; then
+            echo "$(date -Is) retry: transient PostgreSQL serialization conflict for $DB (attempt $attempt/3)" >>"$LOG"
+            sleep $((attempt * 2))
+            attempt=$((attempt + 1))
+            continue
+        fi
+        rm -f "$attempt_log"
+        return 1
+    done
+}
+
 if [ "$CLONED" = "1" ]; then
     INSTALLED=$(docker exec odoo_saas_postgres psql -U odoo -d "$DB" -tAc \
         "select string_agg(name, ',') from ir_module_module where state in ('installed','to install','to upgrade')")
@@ -161,12 +222,7 @@ requested = [m.strip() for m in '''$INIT_MODULES'''.split(',') if m.strip()]
 installed = set('''$INSTALLED'''.split(','))
 print(','.join([m for m in requested if m not in installed]))")
     if [ -n "$MISSING" ]; then
-        docker exec "$ODOO_CONTAINER" odoo \
-            --config=/etc/odoo/odoo.conf \
-            -d "$DB" \
-            -i "$MISSING" \
-            --without-demo=all \
-            --no-http --stop-after-init >> "$LOG" 2>&1 || {
+        run_odoo_install "$MISSING" || {
                 echo "$(date -Is) FAIL: delta install failed for $DB (modules: $MISSING)" >> "$LOG"
                 exit 4
             }
@@ -174,14 +230,25 @@ print(','.join([m for m in requested if m not in installed]))")
     else
         echo "$(date -Is) initialized $DB (template covered all modules)" >> "$LOG"
     fi
+
+    # Cache only a real delta and do it before tenant credentials, UUID,
+    # company details or Enterprise code are written. A concurrent request may
+    # win the same cache name; that is safe and should not fail provisioning.
+    if [ "$EDITION" = "enterprise" ] && [ "$CACHE_HIT" = "0" ] \
+            && [ -n "$CACHE_DB" ] && [ -n "$MISSING" ] && ! db_exists "$CACHE_DB"; then
+        if docker exec odoo_saas_postgres createdb -U odoo -T "$DB" -O odoo "$CACHE_DB" >>"$LOG" 2>&1; then
+            docker exec "$ODOO_CONTAINER" sh -c \
+                "rm -rf /var/lib/odoo/filestore/$CACHE_DB && cp -a /var/lib/odoo/filestore/$DB /var/lib/odoo/filestore/$CACHE_DB" \
+                >>"$LOG" 2>&1 || true
+            echo "$(date -Is) enterprise cache created: $CACHE_DB" >>"$LOG"
+        elif db_exists "$CACHE_DB"; then
+            echo "$(date -Is) enterprise cache created by concurrent request: $CACHE_DB" >>"$LOG"
+        else
+            echo "$(date -Is) WARN: enterprise cache creation failed: $CACHE_DB" >>"$LOG"
+        fi
+    fi
 else
-    docker exec "$ODOO_CONTAINER" odoo \
-        --config=/etc/odoo/odoo.conf \
-        -d "$DB" \
-        -i "$INIT_MODULES" \
-        --without-demo=all \
-        --load-language=ar_001 \
-        --no-http --stop-after-init >> "$LOG" 2>&1 || {
+    run_odoo_install "$INIT_MODULES" 1 || {
             echo "$(date -Is) FAIL: odoo init failed for $DB (container=$ODOO_CONTAINER)" >> "$LOG"
             exit 4
         }
@@ -290,9 +357,24 @@ if docker exec odoo_saas_postgres psql -U odoo -tAc "select 1 from pg_database w
     docker exec odoo_saas_postgres dropdb -U odoo --force --if-exists "$FINAL_DB" >> "$LOG" 2>&1
     docker exec "$ODOO_CONTAINER" rm -rf "/var/lib/odoo/filestore/$FINAL_DB" >> "$LOG" 2>&1 || true
 fi
-docker exec odoo_saas_postgres psql -U odoo -v ON_ERROR_STOP=1 -c "ALTER DATABASE \"$DB\" RENAME TO \"$FINAL_DB\";" >> "$LOG" 2>&1 || {
-    echo "$(date -Is) FAIL: rename $DB -> $FINAL_DB" >> "$LOG"; exit 5; }
+
+# Freeze the temporary DB before rename. The Enterprise web connection pool
+# can otherwise discover it between initialization and ALTER DATABASE.
+docker exec odoo_saas_postgres psql -U odoo -d postgres -v ON_ERROR_STOP=1 \
+    -c "ALTER DATABASE \"$DB\" WITH ALLOW_CONNECTIONS false;" >>"$LOG" 2>&1
+docker exec odoo_saas_postgres psql -U odoo -d postgres -v ON_ERROR_STOP=1 \
+    -c "select pg_terminate_backend(pid) from pg_stat_activity where datname='$DB' and pid <> pg_backend_pid();" \
+    >>"$LOG" 2>&1
+docker exec odoo_saas_postgres psql -U odoo -d postgres -v ON_ERROR_STOP=1 \
+    -c "ALTER DATABASE \"$DB\" RENAME TO \"$FINAL_DB\";" >>"$LOG" 2>&1 || {
+        docker exec odoo_saas_postgres psql -U odoo -d postgres \
+            -c "ALTER DATABASE \"$DB\" WITH ALLOW_CONNECTIONS true;" >>"$LOG" 2>&1 || true
+        echo "$(date -Is) FAIL: rename $DB -> $FINAL_DB" >>"$LOG"
+        exit 5
+    }
 docker exec "$ODOO_CONTAINER" sh -c "rm -rf /var/lib/odoo/filestore/$FINAL_DB; mv /var/lib/odoo/filestore/$DB /var/lib/odoo/filestore/$FINAL_DB 2>/dev/null || true" >> "$LOG" 2>&1
+docker exec odoo_saas_postgres psql -U odoo -d postgres -v ON_ERROR_STOP=1 \
+    -c "ALTER DATABASE \"$FINAL_DB\" WITH ALLOW_CONNECTIONS true;" >>"$LOG" 2>&1
 DB="$FINAL_DB"
 echo "$(date -Is) renamed provisioning DB -> $FINAL_DB" >> "$LOG"
 
