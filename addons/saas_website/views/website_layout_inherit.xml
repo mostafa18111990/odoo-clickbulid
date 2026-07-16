@@ -85,29 +85,11 @@
     <template id="header_contact_details_inherit" name="ClickBuild Header Contact"
               inherit_id="website.header_text_element">
         <xpath expr="(//a[starts-with(@href, 'tel:+1 555-555-5556')])[3]"
-               position="replace">
-            <a href="mailto:sales@clickbulid.com" class="nav-link o_nav-link_secondary p-2">
-                <i class="fa fa-1x fa-fw fa-envelope me-1"/>
-                <span class="o_force_ltr"><small>sales@clickbulid.com</small></span>
-            </a>
-        </xpath>
+               position="replace"/>
         <xpath expr="(//a[starts-with(@href, 'tel:+1 555-555-5556')])[2]"
-               position="replace">
-            <a href="mailto:sales@clickbulid.com"
-               class="nav-link o_nav-link_secondary p-2 o_navlink_background_hover d-flex align-items-center h-100 text-reset">
-                <i class="fa fa-1x fa-fw fa-envelope me-1"/>
-                <span class="o_force_ltr"><small>sales@clickbulid.com</small></span>
-            </a>
-        </xpath>
+               position="replace"/>
         <xpath expr="(//a[starts-with(@href, 'tel:+1 555-555-5556')])[1]"
-               position="replace">
-            <a href="mailto:sales@clickbulid.com" class="nav-link o_nav-link_secondary">
-                <small>
-                    <i class="fa fa-1x fa-fw fa-envelope me-1"/>
-                    <span class="o_force_ltr">sales@clickbulid.com</span>
-                </small>
-            </a>
-        </xpath>
+               position="replace"/>
     </template>
 
     <template id="header_cta_inherit" name="ClickBuild Header CTA"
