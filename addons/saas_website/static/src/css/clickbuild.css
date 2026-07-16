@@ -148,6 +148,11 @@ header .navbar-brand img { max-height: 40px; width: auto; }
     color: var(--cb-primary) !important;
     background: var(--cb-primary-lt);
 }
+/* Contact already has a prominent desktop/mobile CTA. Hide only the duplicate
+   website-menu link so Pricing and FAQ have room before Odoo creates overflow. */
+header .navbar-nav a[href="/contact"]:not(.btn_cta) {
+    display: none !important;
+}
 header .btn_cta {
     background: var(--cb-grad-purple) !important;
     border-color: transparent !important;

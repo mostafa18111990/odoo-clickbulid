@@ -79,7 +79,6 @@
                     <span class="badge ms-1" style="background:#fbbf24; color:#1f2937; font-size:0.6rem;">NEW</span>
                 </a>
             </li>
-            <t t-call="saas_website.lang_switcher_widget"/>
         </xpath>
     </template>
 
