@@ -2,107 +2,209 @@
 <odoo>
     <template id="page_about" name="About ClickBuild">
         <t t-set="lang_code" t-value="request.env.lang or 'ar_001'"/>
-            <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
-            <t t-set="additional_title" t-value="'عن ClickBuild | تنفيذ Odoo في السعودية' if lang_is_ar else 'About ClickBuild | Odoo Implementation in Saudi Arabia'"/>
-            <t t-set="meta_description" t-value="'تعرف على منهج ClickBuild في تحليل وتنفيذ وتخصيص وتدريب ودعم حلول Odoo للشركات.' if lang_is_ar else 'Learn how ClickBuild approaches Odoo analysis, implementation, customization, training, and support.'"/>
+        <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+        <t t-set="additional_title" t-value="'من نحن | كليك بيلد لتقنية المعلومات' if lang_is_ar else 'About ClickBuild | Odoo Implementation in Saudi Arabia'"/>
+        <t t-set="meta_description" t-value="'شركة كليك بيلد لتقنية المعلومات: خبرة تتجاوز 10 سنوات في تحليل وتنفيذ وتخصيص ودعم حلول أودو للمنشآت في السعودية.' if lang_is_ar else 'ClickBuild brings more than 10 years of experience in Odoo analysis, implementation, customization, training, and support.'"/>
         <t t-call="website.layout">
-            <t t-set="title"><t t-if="lang_is_ar">عن ClickBuild</t><t t-else="">About ClickBuild</t></t>
-            <div class="container py-5">
-                <div class="row justify-content-center">
-                    <div class="col-lg-8">
-                        <h1 class="display-5 fw-bold mb-4">
-                            <t t-if="lang_is_ar">عن <span class="text-primary">ClickBuild</span></t>
-                            <t t-else="">About <span class="text-primary">ClickBuild</span></t>
-                        </h1>
+            <t t-set="title"><t t-if="lang_is_ar">من نحن</t><t t-else="">About Us</t></t>
 
-                        <p class="lead mb-4">
-                            <t t-if="lang_is_ar">
-                                ClickBuild منصة SaaS سحابية متكاملة مبنية على Odoo 19،
-                                تُمكّن الشركات في المملكة العربية السعودية ومنطقة الشرق الأوسط
-                                من إدارة جميع عملياتها من مكان واحد.
-                            </t>
-                            <t t-else="">
-                                ClickBuild is a fully managed SaaS platform built on Odoo 19,
-                                empowering businesses across Saudi Arabia and the Middle East
-                                to run all their operations from a single place.
-                            </t>
-                        </p>
-
-                        <h2 class="h4 fw-bold mt-5 mb-3">
-                            <t t-if="lang_is_ar">مهمتنا</t><t t-else="">Our Mission</t>
-                        </h2>
-                        <p>
-                            <t t-if="lang_is_ar">
-                                نؤمن بأن كل شركة — بغض النظر عن حجمها — تستحق وصولاً سهلاً
-                                لأفضل أدوات إدارة الأعمال. نقدم Odoo بشكل مُدار بالكامل مع
-                                إعداداً منظماً للفوترة الإلكترونية وفق المتطلبات والتكاملات المتاحة، بدون تعقيدات غير ضرورية.
-                            </t>
-                            <t t-else="">
-                                We believe every business — regardless of size — deserves easy access
-                                to world-class ERP tools. We deliver fully managed Odoo with
-                                structured e-invoicing configuration based on applicable requirements and integrations.
-                            </t>
-                        </p>
-
-                        <h2 class="h4 fw-bold mt-5 mb-3">
-                            <t t-if="lang_is_ar">ما يميّزنا</t><t t-else="">What Sets Us Apart</t>
-                        </h2>
-                        <div class="row g-3 mb-4">
-                            <div class="col-md-6">
-                                <div class="p-3 border rounded-3 h-100">
-                                    <i class="fa fa-shield text-primary mb-2 d-block" style="font-size:1.5rem;"/>
-                                    <strong><t t-if="lang_is_ar">تهيئة الفوترة الإلكترونية</t><t t-else="">E-invoicing configuration</t></strong>
-                                    <p class="mb-0 text-muted small mt-1">
-                                        <t t-if="lang_is_ar">تهيئة لدعم المتطلبات السعودية عند توفر الإعدادات والتكاملات اللازمة</t>
-                                        <t t-else="">Configured to support Saudi requirements when the required setup and integrations are available</t>
-                                    </p>
+            <main class="cb-about-page">
+                <section class="cb-about-hero">
+                    <div class="container position-relative">
+                        <div class="row align-items-center g-5">
+                            <div class="col-lg-8">
+                                <span class="cb-about-eyebrow">
+                                    <i class="fa fa-building me-2"/>
+                                    <t t-if="lang_is_ar">شركة كليك بيلد لتقنية المعلومات</t>
+                                    <t t-else="">ClickBuild Information Technology</t>
+                                </span>
+                                <h1><t t-if="lang_is_ar">من نحن</t><t t-else="">About Us</t></h1>
+                                <p class="lead mb-0">
+                                    <t t-if="lang_is_ar">نحوّل إجراءات العمل التقليدية إلى منظومة رقمية مترابطة وسهلة الإدارة باستخدام حلول أودو المتكاملة.</t>
+                                    <t t-else="">We turn traditional business processes into connected, manageable digital operations using integrated Odoo solutions.</t>
+                                </p>
+                            </div>
+                            <div class="col-lg-4">
+                                <div class="cb-about-experience">
+                                    <strong>+10</strong>
+                                    <span><t t-if="lang_is_ar">سنوات من الخبرة في أنظمة إدارة المؤسسات</t><t t-else="">Years of ERP experience</t></span>
                                 </div>
                             </div>
-                            <div class="col-md-6">
-                                <div class="p-3 border rounded-3 h-100">
-                                    <i class="fa fa-language text-primary mb-2 d-block" style="font-size:1.5rem;"/>
-                                    <strong><t t-if="lang_is_ar">ثنائي اللغة</t><t t-else="">Bilingual</t></strong>
-                                    <p class="mb-0 text-muted small mt-1">
-                                        <t t-if="lang_is_ar">واجهة كاملة بالعربية والإنجليزية</t>
-                                        <t t-else="">Full Arabic and English interface</t>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="p-3 border rounded-3 h-100">
-                                    <i class="fa fa-cloud text-primary mb-2 d-block" style="font-size:1.5rem;"/>
-                                    <strong><t t-if="lang_is_ar">مُدار بالكامل</t><t t-else="">Fully Managed</t></strong>
-                                    <p class="mb-0 text-muted small mt-1">
-                                        <t t-if="lang_is_ar">نحن نتولى الخوادم، النسخ الاحتياطية، والتحديثات</t>
-                                        <t t-else="">We handle servers, backups, and updates</t>
-                                    </p>
-                                </div>
-                            </div>
-                            <div class="col-md-6">
-                                <div class="p-3 border rounded-3 h-100">
-                                    <i class="fa fa-headphones text-primary mb-2 d-block" style="font-size:1.5rem;"/>
-                                    <strong><t t-if="lang_is_ar">دعم متخصص</t><t t-else="">Expert Support</t></strong>
-                                    <p class="mb-0 text-muted small mt-1">
-                                        <t t-if="lang_is_ar">فريق دعم متخصص في Odoo باللغة العربية</t>
-                                        <t t-else="">Dedicated Odoo support team in Arabic</t>
-                                    </p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="text-center mt-5">
-                            <a href="/get-started" class="btn btn-primary btn-lg px-5">
-                                <t t-if="lang_is_ar">ابدأ تجربتك المجانية</t>
-                                <t t-else="">Start your free trial</t>
-                            </a>
-                            <a href="/contact" class="btn btn-outline-secondary btn-lg px-5 ms-3">
-                                <t t-if="lang_is_ar">تواصل معنا</t>
-                                <t t-else="">Contact us</t>
-                            </a>
                         </div>
                     </div>
-                </div>
-            </div>
+                </section>
+
+                <t t-if="lang_is_ar">
+                    <section class="cb-about-section">
+                        <div class="container">
+                            <div class="cb-about-intro">
+                                <p>في شركة كليك بيلد لتقنية المعلومات نساعد الشركات والمؤسسات على إدارة أعمالها بكفاءة أكبر من خلال تقديم حلول متكاملة باستخدام نظام أودو Odoo. نمتلك خبرة تتجاوز 10 سنوات في تطوير وتنفيذ أنظمة إدارة المؤسسات وتحويل الإجراءات التقليدية إلى عمليات رقمية مترابطة وسهلة الإدارة.</p>
+                                <p>نؤمن بأن نجاح نظام ERP لا يعتمد فقط على تثبيت البرامج، بل يبدأ بفهم طبيعة نشاط العميل، وتحليل احتياجاته، وتحديد التحديات التي تواجه فريقه. لذلك نقدم حلولاً مصممة بما يتناسب مع حجم كل منشأة وقطاعها وأهدافها المستقبلية.</p>
+                                <p class="mb-0">هدفنا هو تمكين عملائنا من إدارة جميع عملياتهم من خلال منصة واحدة تجمع بين سهولة الاستخدام، ومرونة التخصيص، وإمكانية التوسع مع نمو الأعمال.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="cb-about-section cb-about-soft">
+                        <div class="container">
+                            <div class="cb-about-heading">
+                                <span>خدمات متكاملة</span>
+                                <h2>ماذا نقدم؟</h2>
+                                <p>نغطي جميع مراحل مشروع أودو، من التحليل الأولي حتى التشغيل والدعم المستمر.</p>
+                            </div>
+                            <div class="cb-about-list-grid">
+                                <div><i class="fa fa-search"/><span>دراسة وتحليل احتياجات المنشأة.</span></div>
+                                <div><i class="fa fa-th-large"/><span>اختيار تطبيقات أودو المناسبة للنشاط.</span></div>
+                                <div><i class="fa fa-cogs"/><span>إعداد النظام وتخصيصه وفقاً لدورة العمل.</span></div>
+                                <div><i class="fa fa-database"/><span>نقل البيانات من الأنظمة السابقة إلى أودو.</span></div>
+                                <div><i class="fa fa-sitemap"/><span>ربط الإدارات والفروع ضمن نظام موحد.</span></div>
+                                <div><i class="fa fa-line-chart"/><span>تطوير التقارير ولوحات متابعة الأداء.</span></div>
+                                <div><i class="fa fa-graduation-cap"/><span>تدريب الموظفين والمستخدمين على النظام.</span></div>
+                                <div><i class="fa fa-headphones"/><span>تقديم الدعم الفني والصيانة المستمرة.</span></div>
+                                <div><i class="fa fa-code"/><span>تطوير خصائص وإضافات مخصصة عند الحاجة.</span></div>
+                                <div><i class="fa fa-refresh"/><span>تحسين وتطوير أنظمة أودو القائمة.</span></div>
+                                <div><i class="fa fa-plug"/><span>التكامل مع الأنظمة والمنصات الخارجية.</span></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="cb-about-section">
+                        <div class="container">
+                            <div class="cb-about-heading">
+                                <span>منصة موحدة</span>
+                                <h2>حلول متكاملة لإدارة أعمالك</h2>
+                                <p>نساعدك على إدارة مختلف أقسام منشأتك من خلال تطبيقات أودو المترابطة.</p>
+                            </div>
+                            <div class="cb-about-solution-grid">
+                                <div><i class="fa fa-calculator"/>المحاسبة والمالية</div>
+                                <div><i class="fa fa-handshake-o"/>المبيعات وإدارة علاقات العملاء CRM</div>
+                                <div><i class="fa fa-shopping-cart"/>المشتريات وإدارة الموردين</div>
+                                <div><i class="fa fa-cubes"/>المخزون والمستودعات</div>
+                                <div><i class="fa fa-users"/>الموارد البشرية والرواتب</div>
+                                <div><i class="fa fa-credit-card"/>نقاط البيع وإدارة الفروع</div>
+                                <div><i class="fa fa-globe"/>التجارة الإلكترونية والمواقع</div>
+                                <div><i class="fa fa-tasks"/>المشاريع والمهام</div>
+                                <div><i class="fa fa-wrench"/>الصيانة وإدارة الأصول</div>
+                                <div><i class="fa fa-industry"/>التصنيع والتخطيط</div>
+                                <div><i class="fa fa-comments"/>خدمة العملاء والدعم الفني</div>
+                                <div><i class="fa fa-bar-chart"/>التقارير ومؤشرات الأداء</div>
+                            </div>
+                            <div class="cb-about-note">
+                                <i class="fa fa-database"/>
+                                <p>تعمل جميع هذه التطبيقات ضمن قاعدة بيانات موحدة، مما يساعد على تقليل تكرار البيانات والأخطاء، وتسريع الإجراءات، ومنح الإدارة رؤية واضحة ومباشرة لأداء المنشأة.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="cb-about-section cb-about-dark">
+                        <div class="container">
+                            <div class="cb-about-heading cb-about-heading-light">
+                                <span>شريكك التقني</span>
+                                <h2>لماذا شركة كليك بيلد لتقنية المعلومات؟</h2>
+                            </div>
+                            <div class="cb-about-reason-grid">
+                                <article><i class="fa fa-trophy"/><h3>خبرة عملية تتجاوز 10 سنوات</h3><p>نمتلك خبرة واسعة في تطوير وتنفيذ أنظمة إدارة الأعمال، ونوظفها لتقديم حلول عملية تناسب الاحتياجات الحقيقية لكل منشأة.</p></article>
+                                <article><i class="fa fa-sliders"/><h3>حلول مصممة حسب احتياجاتك</h3><p>لا نقدم نظاماً موحداً للجميع؛ بل ندرس دورة العمل ونحدد التطبيقات والتخصيصات المناسبة لتحقيق أفضل استفادة.</p></article>
+                                <article><i class="fa fa-map-marker"/><h3>فهم متطلبات السوق السعودي</h3><p>نراعي اللغة العربية، وضريبة القيمة المضافة، والفوترة الإلكترونية، ومتطلبات الإدارة والتقارير المحلية.</p></article>
+                                <article><i class="fa fa-rocket"/><h3>تنفيذ متكامل من البداية إلى التشغيل</h3><p>نتولى التحليل والإعداد ونقل البيانات والتدريب والاختبار وصولاً إلى الإطلاق الفعلي.</p></article>
+                                <article><i class="fa fa-life-ring"/><h3>دعم وتطوير مستمر</h3><p>تستمر علاقتنا بعد التشغيل من خلال الدعم الفني ومعالجة الملاحظات وتطوير الحلول مع نمو أعمالك.</p></article>
+                                <article><i class="fa fa-expand"/><h3>نظام قابل للتوسع</h3><p>ابدأ بالتطبيقات الأساسية، ثم أضف الأقسام والمستخدمين والفروع كلما تطورت احتياجاتك.</p></article>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="cb-about-section">
+                        <div class="container">
+                            <div class="cb-about-heading">
+                                <span>من الفكرة إلى التشغيل</span>
+                                <h2>منهجية عملنا</h2>
+                                <p>نتبع خطوات واضحة لضمان تنفيذ مشروع أودو بكفاءة.</p>
+                            </div>
+                            <ol class="cb-about-process">
+                                <li><b>1</b><div><h3>فهم احتياجاتك</h3><p>نتعرف على نشاطك وأهدافك والتحديات التي تواجهك.</p></div></li>
+                                <li><b>2</b><div><h3>تحليل العمليات</h3><p>ندرس دورة العمل الحالية ونحدد فرص التحسين والأتمتة.</p></div></li>
+                                <li><b>3</b><div><h3>تصميم الحل</h3><p>نحدد التطبيقات والتخصيصات والتكاملات المطلوبة.</p></div></li>
+                                <li><b>4</b><div><h3>الإعداد والتنفيذ</h3><p>نجهز النظام ونعد الصلاحيات وسير العمليات والتقارير.</p></div></li>
+                                <li><b>5</b><div><h3>نقل البيانات والاختبار</h3><p>ننقل البيانات المطلوبة ونجري اختبارات شاملة قبل الإطلاق.</p></div></li>
+                                <li><b>6</b><div><h3>التدريب والتشغيل</h3><p>ندرب المستخدمين ونساعدهم على بدء العمل الفعلي.</p></div></li>
+                                <li><b>7</b><div><h3>الدعم والتحسين</h3><p>نتابع أداء النظام وننفذ التحسينات المطلوبة بعد التشغيل.</p></div></li>
+                            </ol>
+                        </div>
+                    </section>
+
+                    <section class="cb-about-section cb-about-soft">
+                        <div class="container">
+                            <div class="cb-about-heading">
+                                <span>خبرة متعددة القطاعات</span>
+                                <h2>القطاعات التي نخدمها</h2>
+                            </div>
+                            <div class="cb-about-sectors">
+                                <span>الشركات التجارية</span><span>المقاولات والتطوير العقاري</span>
+                                <span>العيادات والمراكز الطبية</span><span>متاجر التجزئة ونقاط البيع</span>
+                                <span>التجارة الإلكترونية</span><span>المصانع والمنشآت الصناعية</span>
+                                <span>شركات الخدمات والصيانة</span><span>المطاعم والمقاهي</span>
+                                <span>شركات التوزيع والجملة</span><span>المؤسسات الصغيرة والمتوسطة</span>
+                                <span>الشركات متعددة الفروع</span>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="cb-about-section">
+                        <div class="container">
+                            <div class="cb-about-vision-grid">
+                                <article><i class="fa fa-eye"/><h2>رؤيتنا</h2><p>أن نكون الشريك التقني الموثوق للمنشآت التي تسعى إلى تطوير أعمالها وتحقيق التحول الرقمي من خلال حلول إدارية مرنة ومتكاملة.</p></article>
+                                <article><i class="fa fa-bullseye"/><h2>رسالتنا</h2><p>تقديم حلول أودو عملية وفعّالة تساعد المؤسسات على توحيد عملياتها، وتحسين كفاءتها، وتقليل تكاليفها، والاستفادة من بياناتها لاتخاذ قرارات أفضل.</p></article>
+                            </div>
+                            <div class="cb-about-heading mt-5"><span>ما نلتزم به</span><h2>قيمنا</h2></div>
+                            <div class="cb-about-values">
+                                <div><b>الاحترافية</b><span>الالتزام بأعلى معايير الجودة في التنفيذ.</span></div>
+                                <div><b>الشفافية</b><span>تقديم حلول واضحة وتكاليف محددة.</span></div>
+                                <div><b>المرونة</b><span>تصميم النظام بما يناسب طبيعة كل عميل.</span></div>
+                                <div><b>الالتزام</b><span>احترام الوقت ومتطلبات المشروع.</span></div>
+                                <div><b>الابتكار</b><span>توظيف التقنية لتبسيط العمليات وحل التحديات.</span></div>
+                                <div><b>الشراكة</b><span>بناء علاقات طويلة الأمد مع عملائنا.</span></div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="cb-about-promise">
+                        <div class="container text-center">
+                            <span>وعدنا لك</span>
+                            <h2>لا نقدم لك برنامجاً فقط، بل نبني منظومة إدارية متكاملة</h2>
+                            <p>نساعدك على تنظيم أعمالك، ورفع كفاءة فريقك، ومتابعة أداء منشأتك، والاستعداد للنمو بثقة.</p>
+                            <p class="fw-bold">ابدأ اليوم رحلة التحول الرقمي لأعمالك مع شركة كليك بيلد لتقنية المعلومات، واحصل على نظام أودو مصمم وفق احتياجات منشأتك.</p>
+                            <div class="d-flex flex-wrap justify-content-center gap-3 mt-4">
+                                <a href="/contact" class="btn btn-primary btn-lg px-5">تواصل معنا</a>
+                                <a href="/get-started" class="btn btn-outline-light btn-lg px-5">ابدأ الآن</a>
+                            </div>
+                        </div>
+                    </section>
+                </t>
+
+                <t t-else="">
+                    <section class="cb-about-section">
+                        <div class="container">
+                            <div class="cb-about-intro">
+                                <p>ClickBuild helps companies manage their operations more efficiently through integrated Odoo solutions. With more than 10 years of ERP experience, we turn traditional processes into connected, manageable digital workflows.</p>
+                                <p>Successful ERP starts with understanding the client’s business, challenges, team, and growth plans. We design each implementation around the organization’s actual operating model.</p>
+                                <p class="mb-0">Our goal is to give every client one flexible, user-friendly platform that can scale with the business.</p>
+                            </div>
+                            <div class="cb-about-vision-grid mt-5">
+                                <article><i class="fa fa-eye"/><h2>Our Vision</h2><p>To be the trusted technology partner for organizations pursuing digital transformation through flexible and integrated management solutions.</p></article>
+                                <article><i class="fa fa-bullseye"/><h2>Our Mission</h2><p>To deliver practical Odoo solutions that unify operations, improve efficiency, reduce costs, and turn data into better decisions.</p></article>
+                            </div>
+                        </div>
+                    </section>
+                    <section class="cb-about-promise">
+                        <div class="container text-center">
+                            <span>Our promise</span>
+                            <h2>More than software: a complete management foundation</h2>
+                            <p>Start your digital transformation with an Odoo solution designed around your organization.</p>
+                            <a href="/contact" class="btn btn-primary btn-lg px-5 mt-3">Contact Us</a>
+                        </div>
+                    </section>
+                </t>
+            </main>
         </t>
     </template>
 </odoo>
