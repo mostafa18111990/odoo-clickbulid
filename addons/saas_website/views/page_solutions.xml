@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="page_catalog" name="ClickBuild Solutions Catalog">
+    <template id="page_catalog" name="شركة كليك بيلد لتقنية المعلومات Solutions Catalog">
         <t t-call="website.layout">
             <t t-set="lang_is_ar" t-value="(request.env.lang or 'ar_001') in ('ar_001', 'ar')"/>
             <t t-set="is_apps" t-value="catalog_kind == 'apps'"/>
             <t t-set="additional_title" t-value="('تطبيقات Odoo للشركات في السعودية' if is_apps else 'حلول Odoo للقطاعات في السعودية') if lang_is_ar else ('Odoo Business Applications' if is_apps else 'Odoo Industry Solutions')"/>
-            <t t-set="meta_description" t-value="('اكتشف تطبيقات Odoo التي تساعد على ربط المحاسبة والمبيعات والمخزون والعمليات ضمن تنفيذ يناسب شركتك.' if is_apps else 'اكتشف كيف تربط ClickBuild تطبيقات Odoo لتلبية عمليات القطاعات المختلفة مع توضيح ما هو قياسي وما يحتاج إلى تخصيص.') if lang_is_ar else ('Explore connected Odoo applications for finance, sales, inventory, and operations.' if is_apps else 'Explore implementation-focused Odoo solutions for different industries.')"/>
+            <t t-set="meta_description" t-value="('اكتشف تطبيقات Odoo التي تساعد على ربط المحاسبة والمبيعات والمخزون والعمليات ضمن تنفيذ يناسب شركتك.' if is_apps else 'اكتشف كيف تربط شركة كليك بيلد لتقنية المعلومات تطبيقات Odoo لتلبية عمليات القطاعات المختلفة مع توضيح ما هو قياسي وما يحتاج إلى تخصيص.') if lang_is_ar else ('Explore connected Odoo applications for finance, sales, inventory, and operations.' if is_apps else 'Explore implementation-focused Odoo solutions for different industries.')"/>
             <main t-att-dir="'rtl' if lang_is_ar else 'ltr'">
                 <section class="cb-hero py-5" style="background:var(--cb-grad-hero);">
                     <div class="container text-center py-5">
@@ -54,12 +54,12 @@
         </t>
     </template>
 
-    <template id="page_solution_detail" name="ClickBuild Solution Detail">
+    <template id="page_solution_detail" name="شركة كليك بيلد لتقنية المعلومات Solution Detail">
         <t t-call="website.layout">
             <t t-set="lang_is_ar" t-value="(request.env.lang or 'ar_001') in ('ar_001', 'ar')"/>
             <t t-set="is_app" t-value="item['kind'] == 'app'"/>
             <t t-set="display_title" t-value="item['title_ar'] if lang_is_ar else item['title_en']"/>
-            <t t-set="additional_title" t-value="display_title + (' | تنفيذ Odoo من ClickBuild' if lang_is_ar else ' | Odoo implementation by ClickBuild')"/>
+            <t t-set="additional_title" t-value="display_title + (' | تنفيذ Odoo' if lang_is_ar else ' | Odoo implementation')"/>
             <t t-set="meta_description" t-value="item.get('summary_ar') if lang_is_ar and is_app else (item.get('summary_en') if is_app else ('حل Odoo لقطاع ' + item['title_ar']))"/>
             <main t-att-dir="'rtl' if lang_is_ar else 'ltr'">
                 <section class="cb-hero py-5" style="background:var(--cb-grad-hero);">
@@ -112,10 +112,10 @@
         </t>
     </template>
 
-    <template id="page_services" name="ClickBuild Services">
+    <template id="page_services" name="شركة كليك بيلد لتقنية المعلومات Services">
         <t t-call="website.layout">
             <t t-set="lang_is_ar" t-value="(request.env.lang or 'ar_001') in ('ar_001', 'ar')"/>
-            <t t-set="additional_title" t-value="'خدمات تنفيذ وتطوير Odoo في السعودية | ClickBuild'"/>
+            <t t-set="additional_title" t-value="'خدمات تنفيذ وتطوير Odoo في السعودية'"/>
             <t t-set="meta_description" t-value="'خدمات تحليل الأعمال وتهيئة وتخصيص ونقل بيانات وتكامل وتدريب ودعم Odoo للشركات في السعودية.'"/>
             <main t-att-dir="'rtl' if lang_is_ar else 'ltr'">
                 <section class="cb-hero py-5" style="background:var(--cb-grad-hero);"><div class="container text-center py-5">
@@ -132,7 +132,7 @@
 
     <template id="solution_cta" name="Solution CTA">
         <section class="cb-v2-final"><div class="container"><div class="cb-v2-final-inner">
-            <div><span>ClickBuild</span><h2><t t-if="lang_is_ar">اكتشف الحل المناسب لطبيعة عملك</t><t t-else="">Find the right solution for your operations</t></h2></div>
+            <div><span><t t-if="lang_is_ar">شركة كليك بيلد لتقنية المعلومات</t><t t-else="">Click Build Information Technology Company</t></span><h2><t t-if="lang_is_ar">اكتشف الحل المناسب لطبيعة عملك</t><t t-else="">Find the right solution for your operations</t></h2></div>
             <div class="cb-v2-final-actions"><a href="/contact?type=consultation" class="btn btn-primary btn-lg"><t t-if="lang_is_ar">تحدث مع مستشار</t><t t-else="">Talk to a consultant</t></a><a href="/contact?type=quote" class="btn btn-outline-light btn-lg"><t t-if="lang_is_ar">احصل على عرض سعر</t><t t-else="">Get a quote</t></a></div>
         </div></div></section>
     </template>

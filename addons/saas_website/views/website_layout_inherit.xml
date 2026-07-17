@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <!-- Branded ClickBuild footer — bilingual EN/AR. -->
-    <template id="layout_footer_inherit" name="ClickBuild Footer"
+    <!-- Branded شركة كليك بيلد لتقنية المعلومات footer — bilingual EN/AR. -->
+    <template id="layout_footer_inherit" name="شركة كليك بيلد لتقنية المعلومات Footer"
               inherit_id="website.layout">
         <xpath expr="//footer" position="replace">
             <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/><t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
@@ -10,7 +10,8 @@
                     <div class="row g-4">
                         <div class="col-lg-4 col-md-12">
                             <div class="brand-logo">
-                                Click<span class="accent">Build</span>
+                                <t t-if="lang_is_ar">شركة كليك بيلد لتقنية المعلومات</t>
+                                <t t-else="">Click Build Information Technology Company</t>
                             </div>
                             <p class="mb-3" style="opacity:0.85;">
                                 <t t-if="lang_is_ar">منصة ERP سحابية متكاملة تساعد الشركات على إدارة محاسبتها،
@@ -38,7 +39,7 @@
                         <div class="col-lg-2 col-md-4 col-6">
                             <h5><t t-if="lang_is_ar">الشركة</t><t t-else="">Company</t></h5>
                             <ul>
-                                <li><a href="/about"><t t-if="lang_is_ar">عن ClickBuild</t><t t-else="">About</t></a></li>
+                                <li><a href="/about"><t t-if="lang_is_ar">عن شركة كليك بيلد لتقنية المعلومات</t><t t-else="">About</t></a></li>
                                 <li><a href="/services"><t t-if="lang_is_ar">خدماتنا</t><t t-else="">Services</t></a></li>
                                 <li><a href="/contact"><t t-if="lang_is_ar">تواصل معنا</t><t t-else="">Contact</t></a></li>
                             </ul>
@@ -64,7 +65,8 @@
                     <div class="bottom-bar d-flex flex-wrap justify-content-between align-items-center">
                         <div>© <span id="cb-year"/>
                             <script>document.getElementById('cb-year').textContent = new Date().getFullYear();</script>
-                            ClickBuild.
+                            <t t-if="lang_is_ar">شركة كليك بيلد لتقنية المعلومات.</t>
+                            <t t-else="">Click Build Information Technology Company.</t>
                             <t t-if="lang_is_ar"> جميع الحقوق محفوظة.</t>
                             <t t-else=""> All rights reserved.</t>
                         </div>
@@ -82,7 +84,7 @@
         </xpath>
     </template>
 
-    <template id="header_contact_details_inherit" name="ClickBuild Header Contact"
+    <template id="header_contact_details_inherit" name="شركة كليك بيلد لتقنية المعلومات Header Contact"
               inherit_id="website.header_text_element">
         <xpath expr="(//a[starts-with(@href, 'tel:+1 555-555-5556')])[3]"
                position="replace"/>
@@ -92,7 +94,7 @@
                position="replace"/>
     </template>
 
-    <template id="header_cta_inherit" name="ClickBuild Header CTA"
+    <template id="header_cta_inherit" name="شركة كليك بيلد لتقنية المعلومات Header CTA"
               inherit_id="website.header_call_to_action">
         <xpath expr="//a[contains(@class, 'btn_cta')]" position="attributes">
             <attribute name="href">/contact</attribute>

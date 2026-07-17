@@ -4,8 +4,8 @@
         <t t-call="website.layout">
             <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>
             <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
-            <t t-set="additional_title" t-value="'باقات ClickBuild وخيارات Odoo | الأسعار' if lang_is_ar else 'ClickBuild Packages and Odoo Options | Pricing'"/>
-            <t t-set="meta_description" t-value="'قارن باقات ClickBuild وافهم رسوم الاستضافة والتنفيذ والدعم، مع توضيح أن تراخيص Odoo تخضع للشروط الرسمية السارية.' if lang_is_ar else 'Compare ClickBuild packages and understand hosting, implementation, and support fees alongside applicable Odoo licensing terms.'"/>
+            <t t-set="additional_title" t-value="'باقات Odoo وخياراتها | الأسعار' if lang_is_ar else 'Odoo Packages and Options | Pricing'"/>
+            <t t-set="meta_description" t-value="'قارن باقات شركة كليك بيلد لتقنية المعلومات وافهم رسوم الاستضافة والتنفيذ والدعم، مع توضيح أن تراخيص Odoo تخضع للشروط الرسمية السارية.' if lang_is_ar else 'Compare Click Build Information Technology Company packages and understand hosting, implementation, and support fees alongside applicable Odoo licensing terms.'"/>
 
             <!-- ===== HEADER ===== -->
             <section class="cb-hero py-5" style="background:var(--cb-grad-hero); position:relative; overflow:hidden;">
@@ -20,8 +20,8 @@
                         <t t-else="">Simple, fair pricing</t>
                     </h1>
                     <p style="color:rgba(255,255,255,0.78);font-size:1.08rem;max-width:640px;margin:0 auto 2rem;">
-                        <t t-if="lang_is_ar">قارن رسوم باقات ClickBuild وما تشمله من تشغيل ودعم. أي تراخيص خارجية تُوضح في عرض السعر قبل التعاقد.</t>
-                        <t t-else="">Compare ClickBuild package fees and included services. Any external licensing is identified in the quotation before contracting.</t>
+                        <t t-if="lang_is_ar">قارن رسوم باقات شركة كليك بيلد لتقنية المعلومات وما تشمله من تشغيل ودعم. أي تراخيص خارجية تُوضح في عرض السعر قبل التعاقد.</t>
+                        <t t-else="">Compare Click Build Information Technology Company package fees and included services. Any external licensing is identified in the quotation before contracting.</t>
                     </p>
                     <div class="d-flex justify-content-center gap-3 flex-wrap mb-4">
                         <div class="cb-billing-toggle">
@@ -63,8 +63,8 @@
                         </button>
                     </div>
                     <p class="text-muted small mt-2 mb-0">
-                        <t t-if="lang_is_ar">هذه أسعار خدمات ClickBuild المعروضة في المنصة. تخضع رسوم تراخيص Odoo Enterprise، إن انطبقت، للأسعار والشروط الرسمية السارية وقت التعاقد. يوضح عرض السعر نطاق التنفيذ والتخصيص والتدريب والدعم والضريبة.</t>
-                        <t t-else="">These are ClickBuild service prices shown on the platform. Applicable Odoo Enterprise licensing follows Odoo's official terms and prices at contract time. The quotation defines implementation, customization, training, support, and tax treatment.</t>
+                        <t t-if="lang_is_ar">هذه أسعار خدمات شركة كليك بيلد لتقنية المعلومات المعروضة في المنصة. تخضع رسوم تراخيص Odoo Enterprise، إن انطبقت، للأسعار والشروط الرسمية السارية وقت التعاقد. يوضح عرض السعر نطاق التنفيذ والتخصيص والتدريب والدعم والضريبة.</t>
+                        <t t-else="">These are Click Build Information Technology Company service prices shown on the platform. Applicable Odoo Enterprise licensing follows Odoo's official terms and prices at contract time. The quotation defines implementation, customization, training, support, and tax treatment.</t>
                     </p>
                 </div>
             </section>

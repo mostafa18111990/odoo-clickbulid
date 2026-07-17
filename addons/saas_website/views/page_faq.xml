@@ -4,8 +4,8 @@
         <t t-call="website.layout">
             <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>
             <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
-            <t t-set="additional_title" t-value="'الأسئلة الشائعة عن Odoo وخدمات ClickBuild' if lang_is_ar else 'Odoo and ClickBuild Frequently Asked Questions'"/>
-            <t t-set="meta_description" t-value="'إجابات واضحة عن تطبيق Odoo والباقات والتجربة والدعم والبيانات وخطوات البدء مع ClickBuild.' if lang_is_ar else 'Clear answers about Odoo implementation, packages, trials, support, data, and getting started with ClickBuild.'"/>
+            <t t-set="additional_title" t-value="'الأسئلة الشائعة عن Odoo وخدماتنا' if lang_is_ar else 'Odoo Services Frequently Asked Questions'"/>
+            <t t-set="meta_description" t-value="'إجابات واضحة عن تطبيق Odoo والباقات والتجربة والدعم والبيانات وخطوات البدء مع شركة كليك بيلد لتقنية المعلومات.' if lang_is_ar else 'Clear answers about Odoo implementation, packages, trials, support, data, and getting started with Click Build Information Technology Company.'"/>
             <section class="py-5"><div class="container py-4">
                 <div class="text-center mb-5">
                     <h1 class="display-5 fw-bold">

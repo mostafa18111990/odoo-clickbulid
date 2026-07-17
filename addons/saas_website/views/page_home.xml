@@ -4,8 +4,8 @@
         <t t-call="website.layout">
             <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>
             <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
-            <t t-set="additional_title" t-value="'تنفيذ Odoo للشركات في السعودية | ClickBuild' if lang_is_ar else 'Odoo Implementation for Saudi Businesses | ClickBuild'"/>
-            <t t-set="meta_description" t-value="'تساعد ClickBuild الشركات على تحليل وتهيئة وتخصيص Odoo لربط المحاسبة والمبيعات والمخزون والمشاريع ضمن منصة متكاملة.' if lang_is_ar else 'ClickBuild helps businesses analyze, configure, and extend Odoo across finance, sales, inventory, and projects.'"/>
+            <t t-set="additional_title" t-value="'تنفيذ Odoo للشركات في السعودية' if lang_is_ar else 'Odoo Implementation for Saudi Businesses'"/>
+            <t t-set="meta_description" t-value="'تساعد شركة كليك بيلد لتقنية المعلومات الشركات على تحليل وتهيئة وتخصيص Odoo لربط المحاسبة والمبيعات والمخزون والمشاريع ضمن منصة متكاملة.' if lang_is_ar else 'Click Build Information Technology Company helps businesses analyze, configure, and extend Odoo across finance, sales, inventory, and projects.'"/>
 
             <main class="cb-home-v2" t-att-dir="'rtl' if lang_is_ar else 'ltr'">
 
@@ -29,7 +29,7 @@
                                 <div class="cb-slide" t-att-data-visual="banner.visual_style">
                                     <div class="container cb-slide-grid">
                                         <div class="cb-slide-copy">
-                                            <span class="cb-slide-brand">ClickBuild</span>
+                                            <span class="cb-slide-brand"><t t-if="lang_is_ar">شركة كليك بيلد لتقنية المعلومات</t><t t-else="">Click Build Information Technology Company</t></span>
                                             <span class="cb-slide-eyebrow">
                                                 <t t-esc="banner.eyebrow_ar if lang_is_ar else banner.eyebrow"/>
                                             </span>
@@ -79,7 +79,7 @@
                                             <div t-else="" class="cb-odoo-window">
                                                 <div class="cb-window-bar">
                                                     <span/><span/><span/>
-                                                    <b>ClickBuild ERP</b>
+                                                    <b><t t-if="lang_is_ar">شركة كليك بيلد لتقنية المعلومات</t><t t-else="">Click Build Information Technology Company</t> ERP</b>
                                                 </div>
                                                 <div class="cb-window-body">
                                                     <aside>
@@ -391,7 +391,7 @@
                     <div class="container">
                         <div class="cb-v2-enterprise-inner" data-cb-reveal="1">
                             <div>
-                                <span>ClickBuild Enterprise</span>
+                                <span><t t-if="lang_is_ar">شركة كليك بيلد لتقنية المعلومات</t><t t-else="">Click Build Information Technology Company</t> Enterprise</span>
                                 <h2>
                                     <t t-if="lang_is_ar">قدرات أوسع للفرق والعمليات الأكثر تعقيداً</t>
                                     <t t-else="">Advanced capabilities for larger teams and complex operations</t>

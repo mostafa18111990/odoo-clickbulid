@@ -4,7 +4,7 @@
         <t t-call="website.layout">
             <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>
             <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
-            <t t-set="additional_title" t-value="'تطبيقات ومزايا Odoo 19 | ClickBuild' if lang_is_ar else 'Odoo 19 Applications and Capabilities | ClickBuild'"/>
+            <t t-set="additional_title" t-value="'تطبيقات ومزايا Odoo 19' if lang_is_ar else 'Odoo 19 Applications and Capabilities'"/>
             <t t-set="meta_description" t-value="'نظرة عملية على تطبيقات Odoo للمحاسبة والمبيعات والمخزون والموارد البشرية والتصنيع وكيفية ربطها داخل شركتك.' if lang_is_ar else 'A practical overview of connected Odoo applications for finance, sales, inventory, HR, and manufacturing.'"/>
 
             <!-- HEADER -->

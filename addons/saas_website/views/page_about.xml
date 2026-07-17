@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="page_about" name="About ClickBuild">
+    <template id="page_about" name="About شركة كليك بيلد لتقنية المعلومات">
         <t t-set="lang_code" t-value="request.env.lang or 'ar_001'"/>
         <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
-        <t t-set="additional_title" t-value="'من نحن | كليك بيلد لتقنية المعلومات' if lang_is_ar else 'About ClickBuild | Odoo Implementation in Saudi Arabia'"/>
-        <t t-set="meta_description" t-value="'شركة كليك بيلد لتقنية المعلومات: خبرة تتجاوز 10 سنوات في تحليل وتنفيذ وتخصيص ودعم حلول أودو للمنشآت في السعودية.' if lang_is_ar else 'ClickBuild brings more than 10 years of experience in Odoo analysis, implementation, customization, training, and support.'"/>
+        <t t-set="additional_title" t-value="'من نحن' if lang_is_ar else 'About Us | Odoo Implementation in Saudi Arabia'"/>
+        <t t-set="meta_description" t-value="'شركة كليك بيلد لتقنية المعلومات: خبرة تتجاوز 10 سنوات في تحليل وتنفيذ وتخصيص ودعم حلول أودو للمنشآت في السعودية.' if lang_is_ar else 'Click Build Information Technology Company brings more than 10 years of experience in Odoo analysis, implementation, customization, training, and support.'"/>
         <t t-call="website.layout">
             <t t-set="title"><t t-if="lang_is_ar">من نحن</t><t t-else="">About Us</t></t>
 
@@ -16,7 +16,7 @@
                                 <span class="cb-about-eyebrow">
                                     <i class="fa fa-building me-2"/>
                                     <t t-if="lang_is_ar">شركة كليك بيلد لتقنية المعلومات</t>
-                                    <t t-else="">ClickBuild Information Technology</t>
+                                    <t t-else="">Click Build Information Technology Company</t>
                                 </span>
                                 <h1><t t-if="lang_is_ar">من نحن</t><t t-else="">About Us</t></h1>
                                 <p class="lead mb-0">
@@ -185,7 +185,7 @@
                     <section class="cb-about-section">
                         <div class="container">
                             <div class="cb-about-intro">
-                                <p>ClickBuild helps companies manage their operations more efficiently through integrated Odoo solutions. With more than 10 years of ERP experience, we turn traditional processes into connected, manageable digital workflows.</p>
+                                <p>Click Build Information Technology Company helps companies manage their operations more efficiently through integrated Odoo solutions. With more than 10 years of ERP experience, we turn traditional processes into connected, manageable digital workflows.</p>
                                 <p>Successful ERP starts with understanding the client’s business, challenges, team, and growth plans. We design each implementation around the organization’s actual operating model.</p>
                                 <p class="mb-0">Our goal is to give every client one flexible, user-friendly platform that can scale with the business.</p>
                             </div>

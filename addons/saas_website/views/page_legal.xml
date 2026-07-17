@@ -46,10 +46,10 @@
                         <t t-if="page == 'terms'">
                             <div t-if="lang_is_ar">
                                 <h2 class="h5 fw-bold mt-4">1. قبول الشروط</h2>
-                                <p>باستخدامك لمنصة ClickBuild، فإنك توافق على الالتزام بهذه الشروط والأحكام. إذا كنت لا توافق على هذه الشروط، يُرجى عدم استخدام الخدمة.</p>
+                                <p>باستخدامك لمنصة شركة كليك بيلد لتقنية المعلومات، فإنك توافق على الالتزام بهذه الشروط والأحكام. إذا كنت لا توافق على هذه الشروط، يُرجى عدم استخدام الخدمة.</p>
 
                                 <h2 class="h5 fw-bold mt-4">2. وصف الخدمة</h2>
-                                <p>ClickBuild توفر منصة ERP سحابية مبنية على Odoo 19، تشمل إدارة المحاسبة، المبيعات، المخزون، الموارد البشرية، وغيرها. تُقدَّم الخدمة بشكل اشتراك شهري أو سنوي.</p>
+                                <p>شركة كليك بيلد لتقنية المعلومات توفر منصة ERP سحابية مبنية على Odoo 19، تشمل إدارة المحاسبة، المبيعات، المخزون، الموارد البشرية، وغيرها. تُقدَّم الخدمة بشكل اشتراك شهري أو سنوي.</p>
 
                                 <h2 class="h5 fw-bold mt-4">3. حساب المستخدم</h2>
                                 <p>أنت مسؤول عن الحفاظ على سرية بيانات تسجيل الدخول الخاصة بك. يجب إبلاغنا فوراً عن أي استخدام غير مصرح به لحسابك.</p>
@@ -65,10 +65,10 @@
                             </div>
                             <div t-else="">
                                 <h2 class="h5 fw-bold mt-4">1. Acceptance of Terms</h2>
-                                <p>By using ClickBuild, you agree to be bound by these Terms of Service. If you do not agree, please do not use the service.</p>
+                                <p>By using Click Build Information Technology Company, you agree to be bound by these Terms of Service. If you do not agree, please do not use the service.</p>
 
                                 <h2 class="h5 fw-bold mt-4">2. Service Description</h2>
-                                <p>ClickBuild provides a cloud ERP platform built on Odoo 19, including accounting, sales, inventory, HR, and more. The service is offered on a monthly or annual subscription basis.</p>
+                                <p>Click Build Information Technology Company provides a cloud ERP platform built on Odoo 19, including accounting, sales, inventory, HR, and more. The service is offered on a monthly or annual subscription basis.</p>
 
                                 <h2 class="h5 fw-bold mt-4">3. User Account</h2>
                                 <p>You are responsible for maintaining the confidentiality of your login credentials. You must notify us immediately of any unauthorized use of your account.</p>
@@ -130,9 +130,9 @@
                         <t t-elif="page == 'dpa'">
                             <div t-if="lang_is_ar">
                                 <h2 class="h5 fw-bold mt-4">1. نطاق الاتفاقية</h2>
-                                <p>تحكم هذه الاتفاقية معالجة البيانات الشخصية التي يقوم بها ClickBuild بصفته معالجاً للبيانات نيابةً عن العميل بصفته مسؤولاً عن البيانات.</p>
+                                <p>تحكم هذه الاتفاقية معالجة البيانات الشخصية التي يقوم بها شركة كليك بيلد لتقنية المعلومات بصفته معالجاً للبيانات نيابةً عن العميل بصفته مسؤولاً عن البيانات.</p>
 
-                                <h2 class="h5 fw-bold mt-4">2. التزامات ClickBuild</h2>
+                                <h2 class="h5 fw-bold mt-4">2. التزامات شركة كليك بيلد لتقنية المعلومات</h2>
                                 <ul>
                                     <li>معالجة البيانات وفق تعليمات العميل فقط</li>
                                     <li>تطبيق تدابير أمنية تقنية وتنظيمية مناسبة</li>
@@ -144,13 +144,13 @@
                                 <p>قد نستخدم مزودي خدمات موثوقين (خوادم، بريد إلكتروني) لتقديم الخدمة. يُبلَّغ العملاء بأي تغييرات مسبقاً.</p>
 
                                 <h2 class="h5 fw-bold mt-4">4. الامتثال</h2>
-                                <p>يلتزم ClickBuild بمتطلبات حماية البيانات وفق نظام حماية البيانات الشخصية السعودي (PDPL).</p>
+                                <p>يلتزم شركة كليك بيلد لتقنية المعلومات بمتطلبات حماية البيانات وفق نظام حماية البيانات الشخصية السعودي (PDPL).</p>
                             </div>
                             <div t-else="">
                                 <h2 class="h5 fw-bold mt-4">1. Scope</h2>
-                                <p>This DPA governs the processing of personal data by ClickBuild as data processor on behalf of the customer as data controller.</p>
+                                <p>This DPA governs the processing of personal data by Click Build Information Technology Company as data processor on behalf of the customer as data controller.</p>
 
-                                <h2 class="h5 fw-bold mt-4">2. ClickBuild Obligations</h2>
+                                <h2 class="h5 fw-bold mt-4">2. Click Build Information Technology Company Obligations</h2>
                                 <ul>
                                     <li>Process data only per customer instructions</li>
                                     <li>Implement appropriate technical and organizational security measures</li>
@@ -162,7 +162,7 @@
                                 <p>We may use trusted service providers (servers, email) to deliver the service. Customers are notified in advance of any changes.</p>
 
                                 <h2 class="h5 fw-bold mt-4">4. Compliance</h2>
-                                <p>ClickBuild complies with data protection requirements under the Saudi Personal Data Protection Law (PDPL).</p>
+                                <p>Click Build Information Technology Company complies with data protection requirements under the Saudi Personal Data Protection Law (PDPL).</p>
                             </div>
                         </t>
 

@@ -4,7 +4,7 @@
         <t t-call="website.layout">
             <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>
             <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
-            <t t-set="additional_title" t-value="'تحدث مع مستشار Odoo | ClickBuild' if lang_is_ar else 'Talk to an Odoo Consultant | ClickBuild'"/>
+            <t t-set="additional_title" t-value="'تحدث مع مستشار Odoo' if lang_is_ar else 'Talk to an Odoo Consultant'"/>
             <t t-set="meta_description" t-value="'أرسل احتياج شركتك للحصول على استشارة أو عرض توضيحي أو نطاق تنفيذ Odoo مناسب.' if lang_is_ar else 'Share your business needs for an Odoo consultation, demonstration, or implementation scope.'"/>
 
             <!-- HERO -->
@@ -16,8 +16,8 @@
                         <t t-if="lang_is_ar">نحن هنا لمساعدتك</t><t t-else="">We're here to help</t>
                     </span>
                     <h1 style="color:#fff;font-size:3rem;font-weight:900;line-height:1.2;margin-bottom:0.8rem;">
-                        <t t-if="lang_is_ar">تواصل مع فريق ClickBuild</t>
-                        <t t-else="">Talk to the ClickBuild Team</t>
+                        <t t-if="lang_is_ar">تواصل مع فريق شركة كليك بيلد لتقنية المعلومات</t>
+                        <t t-else="">Talk to the Click Build Information Technology Company Team</t>
                     </h1>
                     <p style="color:rgba(255,255,255,0.75);font-size:1.05rem;max-width:580px;margin:0 auto;">
                         <t t-if="lang_is_ar">سواء كنت تريد عرضاً توضيحياً أو عرض سعر أو استشارة، أرسل احتياجك وسيتواصل معك الفريق.</t>
@@ -247,8 +247,8 @@
                     <div class="cb-v2-cta-band-inner" data-cb-reveal="1">
                         <div>
                             <h3>
-                                <t t-if="lang_is_ar">مستعد للبدء؟ جرّب ClickBuild مجاناً لمدة 14 يوماً.</t>
-                                <t t-else="">Ready to start? Try ClickBuild free for 14 days.</t>
+                                <t t-if="lang_is_ar">مستعد للبدء؟ جرّب شركة كليك بيلد لتقنية المعلومات مجاناً لمدة 14 يوماً.</t>
+                                <t t-else="">Ready to start? Try Click Build Information Technology Company free for 14 days.</t>
                             </h3>
                         </div>
                         <div class="cb-cta-actions">

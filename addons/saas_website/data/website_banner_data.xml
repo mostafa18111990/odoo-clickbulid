@@ -22,8 +22,8 @@
     <record id="banner_enterprise" model="saas.website.banner">
         <field name="name">Enterprise</field>
         <field name="sequence">20</field>
-        <field name="eyebrow">ClickBuild Enterprise</field>
-        <field name="eyebrow_ar">ClickBuild Enterprise</field>
+        <field name="eyebrow">Click Build Information Technology Company Enterprise</field>
+        <field name="eyebrow_ar">شركة كليك بيلد لتقنية المعلومات Enterprise</field>
         <field name="title">More control for growing teams.</field>
         <field name="title_ar">تحكم أكبر للفرق سريعة النمو</field>
         <field name="subtitle">Advanced apps, Studio, Helpdesk and the flexibility to shape Odoo around your operation.</field>
