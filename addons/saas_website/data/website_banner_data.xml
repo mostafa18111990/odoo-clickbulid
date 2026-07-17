@@ -29,6 +29,7 @@
         <field name="subtitle">Advanced apps, Studio, Helpdesk and the flexibility to shape Odoo around your operation.</field>
         <field name="subtitle_ar">تطبيقات متقدمة وStudio وHelpdesk ومرونة أكبر لتشكيل Odoo وفق عمليات شركتك.</field>
         <field name="visual_style">enterprise</field>
+        <field name="image_path">/saas_website/static/src/img/hero-enterprise-team.jpg</field>
         <field name="cta_label">View Enterprise</field>
         <field name="cta_label_ar">عرض Enterprise</field>
         <field name="cta_url">/pricing#enterprise</field>
@@ -47,6 +48,7 @@
         <field name="subtitle">Combine standard Odoo apps and clearly scoped customization for retail, construction, manufacturing, services, and more.</field>
         <field name="subtitle_ar">اجمع تطبيقات Odoo القياسية مع تخصيص محدد النطاق للتجزئة والمقاولات والتصنيع والخدمات وغيرها.</field>
         <field name="visual_style">industries</field>
+        <field name="image_path">/saas_website/static/src/img/hero-industry-solutions-team.png</field>
         <field name="cta_label">Choose your industry</field>
         <field name="cta_label_ar">اختر قطاعك</field>
         <field name="cta_url">/industries</field>
