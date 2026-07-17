@@ -14,10 +14,14 @@ SUBDOMAIN_RE = re.compile(r'^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$')
 
 # ── Localization auto-install per signup country ──────────────────────────────
 # When a customer picks a country at signup we install that country's official
-# Odoo localization (chart of accounts + taxes) plus, where it exists, the
-# e-invoicing module. Saudi tenants get ZATCA / Fatoora e-invoicing.
+# Odoo localization (chart of accounts + taxes).
+# NOTE: l10n_sa_edi (ZATCA phase-2) is intentionally NOT pre-installed — it
+# blocks posting ALL customer invoices until full Fatoora onboarding (15-digit
+# VAT, CSR/private key, journal OTP linking) is completed, which a fresh tenant
+# cannot have. l10n_sa alone provides the phase-1 QR on invoices. Phase-2 is
+# activated per tenant on request as an onboarding service.
 LOCALIZATION_MODULES = {
-    'SA': ['l10n_sa', 'l10n_sa_edi'],          # Saudi Arabia + ZATCA e-invoice
+    'SA': ['l10n_sa'],                         # Saudi Arabia (phase-1 QR)
     'AE': ['l10n_ae'],
     'EG': ['l10n_eg'],
     'KW': ['l10n_gcc_invoice'],

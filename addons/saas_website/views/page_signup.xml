@@ -167,7 +167,6 @@
                                         ('construction', 'مقاولات وإنشاءات', 'Construction'),
                                         ('manufacturing', 'تصنيع', 'Manufacturing'),
                                         ('services', 'خدمات مهنية', 'Professional Services'),
-                                        ('healthcare', 'رعاية صحية وعيادات', 'Healthcare &amp; Clinics'),
                                         ('education', 'تعليم وتدريب', 'Education &amp; Training'),
                                         ('real_estate', 'عقارات', 'Real Estate'),
                                         ('logistics', 'نقل ولوجستيات', 'Logistics &amp; Transport'),
