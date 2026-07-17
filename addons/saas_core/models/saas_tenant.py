@@ -169,6 +169,10 @@ class SaasTenant(models.Model):
         separate Docker volumes that are not both mounted in this container.
         """
         for tenant in self:
+            if (tenant.edition or 'community') == 'enterprise':
+                # This container's PG role cannot read enterprise-owned tenant
+                # DBs; the host-level synchronizer (superuser) covers them.
+                continue
             db_name = tenant._metrics_database_name()
             if not db_name:
                 tenant.write({
