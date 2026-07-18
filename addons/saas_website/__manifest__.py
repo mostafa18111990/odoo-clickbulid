@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Website',
-    'version': '19.0.1.1.8',
+    'version': '19.0.1.1.9',
     'category': 'SaaS',
     'summary': 'Public marketing website for ClickBuild SaaS platform',
     'author': 'ClickBuild',
