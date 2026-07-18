@@ -5,8 +5,18 @@
          which can retain an http scheme behind multi-layer reverse proxies. -->
     <template id="layout_https_seo_inherit" name="HTTPS SEO URLs"
               inherit_id="website.layout">
+        <xpath expr="//meta[@t-att-content='meta_content']" position="attributes">
+            <attribute name="t-if">property != 'og:url'</attribute>
+        </xpath>
         <xpath expr="//meta[@t-att-content='opengraph_meta[property]']" position="attributes">
-            <attribute name="t-att-content">website._get_canonical_url() if property == 'og:url' else opengraph_meta[property]</attribute>
+            <attribute name="t-if">property != 'og:url'</attribute>
+        </xpath>
+        <xpath expr="//link[@rel='canonical']" position="before">
+            <meta property="og:url" t-att-content="website._get_canonical_url()"/>
+        </xpath>
+        <xpath expr="//t[@t-if='request.is_frontend_multilang and website._is_canonical_url() and len(frontend_languages) &gt; 1']"
+               position="attributes">
+            <attribute name="t-if">request.is_frontend_multilang and len(frontend_languages) &gt; 1</attribute>
         </xpath>
     </template>
     <!-- Branded شركة كليك بيلد لتقنية المعلومات footer — bilingual EN/AR. -->
