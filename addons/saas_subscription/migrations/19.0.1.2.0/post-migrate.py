@@ -11,8 +11,6 @@ def migrate(cr, version):
         subscription.write({
             'billing_cycle': 'yearly',
             'base_amount': annual_amount,
-            'discount_amount': 0.0,
-            'discount_pct': 0.0,
         })
     env['saas.tenant'].search([('billing_cycle', '=', 'monthly')]).write({
         'billing_cycle': 'yearly',
