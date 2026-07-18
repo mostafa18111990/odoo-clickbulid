@@ -414,6 +414,62 @@
                     </div>
                 </section>
 
+                <!-- ════ CUSTOMER SUCCESS ════ -->
+                <section class="cb-v2-section cb-v2-success" id="customer-success">
+                    <div class="container">
+                        <div class="cb-v2-section-head" data-cb-reveal="1">
+                            <span><t t-if="lang_is_ar">نتائج من أرض الواقع</t><t t-else="">Results in practice</t></span>
+                            <h2><t t-if="lang_is_ar">قصص نجاح عملائنا</t><t t-else="">Customer Success Stories</t></h2>
+                            <p>
+                                <t t-if="lang_is_ar">نتائج تشغيلية تحققت من خلال توحيد البيانات والإجراءات داخل منصة أعمال واحدة.</t>
+                                <t t-else="">Operational results achieved by bringing data and workflows into one business platform.</t>
+                            </p>
+                        </div>
+                        <article class="cb-success-case" data-cb-reveal="1">
+                            <div class="cb-success-case-head">
+                                <div class="cb-success-case-icon"><i class="fa fa-building"/></div>
+                                <div>
+                                    <span class="cb-success-label"><t t-if="lang_is_ar">دراسة حالة</t><t t-else="">Case study</t></span>
+                                    <h3><t t-if="lang_is_ar">شركة خدمات متعددة الفروع</t><t t-else="">Multi-branch services company</t></h3>
+                                    <p><i class="fa fa-map-marker"/> <t t-if="lang_is_ar">المملكة العربية السعودية — اسم العميل محفوظ وفق اتفاقية السرية</t><t t-else="">Saudi Arabia — customer name withheld under confidentiality agreement</t></p>
+                                </div>
+                            </div>
+                            <div class="cb-success-metrics">
+                                <div class="cb-success-metric">
+                                    <strong>60%</strong>
+                                    <span><t t-if="lang_is_ar">خفض وقت إعداد التقارير</t><t t-else="">less time spent preparing reports</t></span>
+                                </div>
+                                <div class="cb-success-metric">
+                                    <strong>3</strong>
+                                    <span><t t-if="lang_is_ar">فروع مرتبطة في نظام موحد</t><t t-else="">branches connected in one system</t></span>
+                                </div>
+                                <div class="cb-success-metric">
+                                    <strong>1</strong>
+                                    <span><t t-if="lang_is_ar">قاعدة بيانات مركزية للعمليات</t><t t-else="">central database for operations</t></span>
+                                </div>
+                            </div>
+                            <div class="cb-success-journey">
+                                <div>
+                                    <span><t t-if="lang_is_ar">قبل التنفيذ</t><t t-else="">Before</t></span>
+                                    <p><t t-if="lang_is_ar">بيانات موزعة بين الفروع وتقارير يدوية تستغرق وقتًا طويلًا.</t><t t-else="">Data was scattered across branches and manual reporting took significant time.</t></p>
+                                </div>
+                                <i t-attf-class="fa #{'fa-arrow-left' if lang_is_ar else 'fa-arrow-right'}"/>
+                                <div>
+                                    <span><t t-if="lang_is_ar">بعد التنفيذ</t><t t-else="">After</t></span>
+                                    <p><t t-if="lang_is_ar">متابعة مركزية وتقارير أسرع ورؤية موحدة لأداء الفروع.</t><t t-else="">Central monitoring, faster reporting, and one view of branch performance.</t></p>
+                                </div>
+                            </div>
+                            <div class="cb-success-action">
+                                <p><t t-if="lang_is_ar">هل تريد تحقيق نتائج مماثلة في منشأتك؟</t><t t-else="">Want to achieve similar results in your organization?</t></p>
+                                <a href="/contact" class="btn btn-primary">
+                                    <t t-if="lang_is_ar">ناقش مشروعك معنا</t><t t-else="">Discuss Your Project</t>
+                                    <i t-attf-class="fa #{'fa-arrow-left' if lang_is_ar else 'fa-arrow-right'}"/>
+                                </a>
+                            </div>
+                        </article>
+                    </div>
+                </section>
+
                 <!-- ════ IMPLEMENTATION PRINCIPLES ════ -->
                 <section class="cb-v2-testimonials">
                     <div class="container">
