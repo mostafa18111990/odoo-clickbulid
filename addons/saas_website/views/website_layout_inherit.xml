@@ -1,5 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
+    <!-- Keep the share URL aligned with Odoo's canonical HTTPS URL. Odoo's
+         default Open Graph metadata derives og:url from the inbound request,
+         which can retain an http scheme behind multi-layer reverse proxies. -->
+    <template id="layout_https_seo_inherit" name="HTTPS SEO URLs"
+              inherit_id="website.layout">
+        <xpath expr="//meta[@t-att-content='opengraph_meta[property]']" position="attributes">
+            <attribute name="t-att-content">website._get_canonical_url() if property == 'og:url' else opengraph_meta[property]</attribute>
+        </xpath>
+    </template>
     <!-- Branded شركة كليك بيلد لتقنية المعلومات footer — bilingual EN/AR. -->
     <template id="layout_footer_inherit" name="شركة كليك بيلد لتقنية المعلومات Footer"
               inherit_id="website.layout">
