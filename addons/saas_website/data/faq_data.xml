@@ -27,7 +27,7 @@
         </record>
         <record id="faq_5" model="saas.website.faq">
             <field name="question">ما هي طرق الدفع المتاحة؟</field>
-            <field name="answer">تتوفر حاليًا خدمة السداد عن طريق التحويل البنكي وفق بيانات الفاتورة. ستُضاف وسائل الدفع الإلكتروني المخصصة للسوق السعودي بعد تفعيلها رسميًا على المنصة.</field>
+            <field name="answer">نقبل Visa وMastercard وApple Pay، بالإضافة إلى التحويل البنكي وفق بيانات الفاتورة.</field>
             <field name="faq_category">billing</field>
             <field name="sequence">50</field>
         </record>

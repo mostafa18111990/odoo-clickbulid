@@ -398,8 +398,8 @@
                                 <t t-else="">What payment methods do you accept?</t></button></h2>
                             <div id="pf3" class="accordion-collapse collapse" data-bs-parent="#pricingFaq">
                                 <div class="accordion-body text-muted">
-                                    <t t-if="lang_is_ar">تتوفر حاليًا خدمة السداد عن طريق التحويل البنكي وفق بيانات الفاتورة. ستظهر وسائل الدفع الإلكتروني بعد تفعيلها رسميًا على المنصة.</t>
-                                    <t t-else="">Payment is currently available by bank transfer using the invoice details. Electronic payment methods will be shown after they are officially enabled on the platform.</t></div>
+                                    <t t-if="lang_is_ar">نقبل Visa وMastercard وApple Pay، بالإضافة إلى التحويل البنكي وفق بيانات الفاتورة.</t>
+                                    <t t-else="">We accept Visa, Mastercard, Apple Pay, and bank transfers using the invoice details.</t></div>
                             </div>
                         </div>
                         <div class="accordion-item shadow-sm">
