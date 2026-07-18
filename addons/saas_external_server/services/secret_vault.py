@@ -5,6 +5,8 @@ from odoo.exceptions import UserError
 
 
 MASTER_KEY_ENV = 'SAAS_EXTERNAL_SERVER_MASTER_KEY'
+MASTER_KEY_FILE_ENV = 'SAAS_EXTERNAL_SERVER_MASTER_KEY_FILE'
+DEFAULT_MASTER_KEY_FILE = '/run/secrets/saas_external_server_master_key'
 TOKEN_PREFIX = 'fernet:v1:'
 
 
@@ -17,11 +19,21 @@ class ExternalServerSecretVault:
             from cryptography.fernet import Fernet
         except ImportError as exc:
             raise UserError(_('The cryptography Python package is required.')) from exc
-        key = (os.environ.get(MASTER_KEY_ENV) or '').strip().encode('ascii', 'ignore')
+        key_text = (os.environ.get(MASTER_KEY_ENV) or '').strip()
+        key_file = (os.environ.get(MASTER_KEY_FILE_ENV) or DEFAULT_MASTER_KEY_FILE).strip()
+        if not key_text and key_file:
+            try:
+                with open(key_file, 'r', encoding='ascii') as handle:
+                    key_text = handle.read().strip()
+            except FileNotFoundError:
+                pass
+            except OSError as exc:
+                raise UserError(_('Unable to read the external-server master-key file.')) from exc
+        key = key_text.encode('ascii', 'ignore')
         if not key:
             raise UserError(_(
                 'External-server credential encryption is not configured. '
-                'Set %s in the Odoo container environment.', MASTER_KEY_ENV))
+                'Set %s or mount the protected master-key file.', MASTER_KEY_ENV))
         try:
             return Fernet(key)
         except Exception as exc:

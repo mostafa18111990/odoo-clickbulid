@@ -69,4 +69,7 @@
               parent="saas_core.menu_saas_operations"
               action="action_remote_customer_wizard" sequence="41"
               groups="saas_core.group_saas_super_admin"/>
+    <record id="menu_remote_customer_wizard" model="ir.ui.menu">
+        <field name="group_ids" eval="[(6, 0, [ref('saas_core.group_saas_super_admin')])]"/>
+    </record>
 </odoo>
