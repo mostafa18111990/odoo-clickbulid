@@ -1,7 +1,9 @@
+import base64
 import logging
 import re
 import secrets
 import shlex
+import socket
 
 from odoo.exceptions import UserError
 
@@ -67,6 +69,22 @@ class RemoteProvisioningService:
         sub = (tenant.subdomain or '').strip().lower()
         if not SUBDOMAIN_RE.match(sub):
             raise UserError(f'Invalid subdomain: {sub!r}')
+        if server.state != 'online':
+            raise UserError(f'External server {server.name!r} is not online.')
+        if server.tenant_count > server.max_tenants:
+            raise UserError(
+                f'External server {server.name!r} has reached its tenant capacity.')
+
+        fqdn = f'{sub}.{server.base_domain}'
+        try:
+            resolved = socket.gethostbyname(fqdn)
+            target = socket.gethostbyname(server.host)
+        except OSError as exc:
+            raise UserError(
+                f'DNS for {fqdn} is not ready. Point it to the dedicated server first.') from exc
+        if resolved != target:
+            raise UserError(
+                f'DNS for {fqdn} resolves to {resolved}, but the server resolves to {target}.')
 
         admin_password = secrets.token_urlsafe(16)
         modules = self._modules_for(tenant)
@@ -107,6 +125,7 @@ class RemoteProvisioningService:
 
         # Enforce the purchased seat count inside the remote tenant DB.
         self._set_remote_seats(server, sub, tenant.effective_max_users())
+        self._configure_tenant_route(server, sub)
 
         _logger.info('Remote provision done for %s on %s', sub, server.name)
         tenant.sudo().with_context(bypass_fsm=True).write({
@@ -118,6 +137,68 @@ class RemoteProvisioningService:
         return {'status': 'provisioned', 'subdomain': sub,
                 'admin_password_one_time': admin_password,
                 'url': f'https://{sub}.{server.base_domain}'}
+
+    def _configure_tenant_route(self, server, sub):
+        """Create HTTP challenge route, issue TLS, then activate HTTPS proxy."""
+        fqdn = f'{sub}.{server.base_domain}'
+        root = server.ROOT
+        http_conf = f'''server {{
+    listen 80;
+    server_name {fqdn};
+    location /.well-known/acme-challenge/ {{ root /var/www/certbot; }}
+    location / {{ proxy_pass http://{server.odoo_container}:8069; proxy_set_header Host $host; proxy_set_header X-Forwarded-Proto $scheme; proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for; proxy_set_header X-Real-IP $remote_addr; }}
+}}
+'''
+        http_b64 = base64.b64encode(http_conf.encode()).decode()
+        conf_path = f'{root}/nginx-tenants/{sub}.conf'
+        server.run_ssh(
+            f'echo {shlex.quote(http_b64)} | base64 -d > {shlex.quote(conf_path)} && '
+            f'docker exec {shlex.quote(server.nginx_container)} nginx -t && '
+            f'docker exec {shlex.quote(server.nginx_container)} nginx -s reload')
+        email = server.letsencrypt_email or 'sales@clickbuild.com'
+        server.run_ssh(
+            'command -v certbot >/dev/null 2>&1 || '
+            '(apt-get update -qq && DEBIAN_FRONTEND=noninteractive apt-get install -y -qq certbot); '
+            f'certbot certonly --webroot -w {shlex.quote(root + "/certbot/www")} '
+            f'-d {shlex.quote(fqdn)} --email {shlex.quote(email)} '
+            '--agree-tos --non-interactive --keep-until-expiring')
+        https_conf = f'''server {{
+    listen 80;
+    server_name {fqdn};
+    location /.well-known/acme-challenge/ {{ root /var/www/certbot; }}
+    location / {{ return 301 https://$host$request_uri; }}
+}}
+server {{
+    listen 443 ssl http2;
+    server_name {fqdn};
+    ssl_certificate /etc/letsencrypt/live/{fqdn}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/{fqdn}/privkey.pem;
+    ssl_protocols TLSv1.2 TLSv1.3;
+    client_max_body_size 200m;
+    proxy_read_timeout 720s;
+    proxy_connect_timeout 720s;
+    proxy_send_timeout 720s;
+    location /websocket {{
+        proxy_pass http://{server.odoo_container}:8072;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+        proxy_set_header Host $host;
+    }}
+    location / {{
+        proxy_pass http://{server.odoo_container}:8069;
+        proxy_set_header Host $host;
+        proxy_set_header X-Forwarded-Proto https;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Real-IP $remote_addr;
+    }}
+}}
+'''
+        https_b64 = base64.b64encode(https_conf.encode()).decode()
+        server.run_ssh(
+            f'echo {shlex.quote(https_b64)} | base64 -d > {shlex.quote(conf_path)} && '
+            f'docker exec {shlex.quote(server.nginx_container)} nginx -t && '
+            f'docker exec {shlex.quote(server.nginx_container)} nginx -s reload')
 
     def _suspended_conf(self, server, sub):
         """The nginx server block that replaces a suspended tenant's proxy
@@ -226,6 +307,12 @@ class RemoteProvisioningService:
             raise_on_error=False)
         server.run_ssh(
             f'docker exec {server.odoo_container} rm -rf /var/lib/odoo/filestore/{shlex.quote(sub)}',
+            raise_on_error=False)
+        server.run_ssh(
+            f'rm -f {server.ROOT}/nginx-tenants/{shlex.quote(sub)}.conf '
+            f'{server.ROOT}/nginx-tenants/{shlex.quote(sub)}.conf.live-orig && '
+            f'docker exec {server.nginx_container} nginx -t && '
+            f'docker exec {server.nginx_container} nginx -s reload',
             raise_on_error=False)
         _logger.info('Remote delete done for %s on %s', sub, server.name)
         return {'status': 'deleted', 'subdomain': sub}

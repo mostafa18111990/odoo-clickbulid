@@ -1,5 +1,9 @@
+import base64
+import hashlib
 import io
 import logging
+import re
+import socket
 
 from odoo import _, api, fields, models
 from odoo.exceptions import UserError
@@ -7,6 +11,27 @@ from odoo.exceptions import UserError
 _logger = logging.getLogger(__name__)
 
 SSH_TIMEOUT = 20
+
+
+def _host_key_fingerprint(key):
+    digest = hashlib.sha256(key.asbytes()).digest()
+    return 'SHA256:' + base64.b64encode(digest).decode('ascii').rstrip('=')
+
+
+class _PinnedFingerprintPolicy:
+    """Paramiko policy that accepts only the fingerprint pinned by an admin."""
+
+    def __init__(self, expected):
+        self.expected = expected
+
+    def missing_host_key(self, client, hostname, key):
+        import paramiko
+        actual = _host_key_fingerprint(key)
+        if not self.expected or actual != self.expected:
+            raise paramiko.SSHException(
+                f'SSH host key mismatch for {hostname}: expected '
+                f'{self.expected or "<not pinned>"}, received {actual}')
+        client.get_host_keys().add(hostname, key.get_name(), key)
 
 
 class SaasExternalServer(models.Model):
@@ -24,12 +49,23 @@ class SaasExternalServer(models.Model):
     auth_method = fields.Selection(
         [('key', 'Private Key'), ('password', 'Password')],
         string='Auth Method', default='key', required=True)
-    ssh_private_key = fields.Text(
-        string='SSH Private Key',
-        help='PEM/OpenSSH private key used to log into the server. Stored '
-             'encrypted-at-rest is recommended; visible only to SaaS admins.')
-    ssh_key_passphrase = fields.Char(string='Key Passphrase')
-    ssh_password = fields.Char(string='SSH Password')
+    ssh_private_key_encrypted = fields.Text(
+        string='Encrypted SSH Private Key', copy=False,
+        groups='saas_core.group_saas_super_admin')
+    ssh_key_passphrase_encrypted = fields.Char(
+        string='Encrypted Key Passphrase', copy=False,
+        groups='saas_core.group_saas_super_admin')
+    ssh_password_encrypted = fields.Char(
+        string='Encrypted SSH Password', copy=False,
+        groups='saas_core.group_saas_super_admin')
+    credential_status = fields.Char(
+        string='Credentials', compute='_compute_credential_status')
+    ssh_host_key_fingerprint = fields.Char(
+        string='Pinned SSH Fingerprint', readonly=True, copy=False,
+        groups='saas_core.group_saas_super_admin')
+    ssh_host_key_type = fields.Char(
+        string='SSH Host Key Type', readonly=True, copy=False,
+        groups='saas_core.group_saas_super_admin')
 
     # ── Remote stack layout (must mirror the ClickBuild docker stack) ───────
     odoo_container = fields.Char(string='Odoo Container', default='odoo_saas_app', required=True)
@@ -40,6 +76,27 @@ class SaasExternalServer(models.Model):
     base_domain = fields.Char(
         string='Tenant Base Domain', default='odoo.clickbulid.com',
         help='Subdomains are built as <sub>.<base_domain> on this server.')
+    letsencrypt_email = fields.Char(string="Let's Encrypt Email", default='sales@clickbuild.com')
+
+    # Administrative ownership and service controls. These fields are never
+    # exposed by portal/website views and the whole model is Super Admin-only.
+    server_owner = fields.Selection(
+        [('customer', 'Customer-owned'), ('company', 'Company-owned')],
+        string='Server Owner', default='customer', required=True)
+    customer_id = fields.Many2one('res.partner', string='Customer', ondelete='restrict')
+    service_start_date = fields.Date(string='Service Start')
+    service_end_date = fields.Date(string='Service End')
+    support_level = fields.Selection(
+        [('standard', 'Standard'), ('priority', 'Priority'), ('managed', 'Fully Managed')],
+        string='Support Level', default='managed', required=True)
+    billing_responsibility = fields.Selection(
+        [('customer', 'Customer'), ('company', 'Company')],
+        string='Server & Domain Billing', default='customer', required=True)
+    backup_location = fields.Char(string='Off-server Backup Location')
+    backup_retention_days = fields.Integer(string='Backup Retention (days)', default=14)
+    max_tenants = fields.Integer(
+        string='Maximum Tenants', default=1, required=True,
+        help='Keep this at 1 for a dedicated customer server.')
 
     # ── Status ──────────────────────────────────────────────────────────────
     state = fields.Selection(
@@ -49,13 +106,99 @@ class SaasExternalServer(models.Model):
     last_check = fields.Datetime(string='Last Checked', readonly=True, copy=False)
     last_error = fields.Text(string='Last Error', readonly=True, copy=False)
     docker_info = fields.Text(string='Detected Containers', readonly=True, copy=False)
+    operating_system = fields.Char(string='Operating System', readonly=True, copy=False)
+    docker_version = fields.Char(string='Docker Version', readonly=True, copy=False)
+    cpu_cores = fields.Integer(string='CPU Cores', readonly=True, copy=False)
+    memory_total_mb = fields.Integer(string='Memory (MB)', readonly=True, copy=False)
+    disk_total_gb = fields.Float(string='Disk Total (GB)', readonly=True, copy=False)
+    disk_free_gb = fields.Float(string='Disk Free (GB)', readonly=True, copy=False)
+    disk_used_percent = fields.Float(string='Disk Used %', readonly=True, copy=False)
+    dns_status = fields.Selection(
+        [('unchecked', 'Not Checked'), ('valid', 'Valid'), ('warning', 'Needs Attention')],
+        string='DNS Status', default='unchecked', readonly=True, copy=False)
+    readiness_summary = fields.Text(string='Readiness Summary', readonly=True, copy=False)
 
     tenant_ids = fields.One2many('saas.tenant', 'external_server_id', string='Tenants')
     tenant_count = fields.Integer(compute='_compute_tenant_count', string='Tenants')
+    available_slots = fields.Integer(compute='_compute_tenant_count', string='Available Slots')
 
     def _compute_tenant_count(self):
         for rec in self:
             rec.tenant_count = len(rec.tenant_ids.filtered(lambda t: t.state != 'deleted'))
+            rec.available_slots = max((rec.max_tenants or 0) - rec.tenant_count, 0)
+
+    def _compute_credential_status(self):
+        for rec in self:
+            configured = (rec.ssh_private_key_encrypted if rec.auth_method == 'key'
+                          else rec.ssh_password_encrypted)
+            rec.credential_status = _('Encrypted and configured') if configured else _('Not configured')
+
+    def _check_super_admin(self):
+        if not self.env.user.has_group('saas_core.group_saas_super_admin'):
+            raise UserError(_('Only SaaS Super Admins may manage external servers.'))
+
+    def _audit(self, action, description, severity='info', old_values=None, new_values=None):
+        self.ensure_one()
+        self.env['saas.audit.log'].log_action(
+            model=self._name, record_id=self.id, action=action,
+            description=description, severity=severity,
+            old_values=old_values, new_values=new_values)
+
+    def _set_credentials(self, auth_method, private_key=None, passphrase=None, password=None):
+        self.ensure_one()
+        self._check_super_admin()
+        from odoo.addons.saas_external_server.services.secret_vault import ExternalServerSecretVault
+        vals = {
+            'auth_method': auth_method,
+            'ssh_private_key_encrypted': False,
+            'ssh_key_passphrase_encrypted': False,
+            'ssh_password_encrypted': False,
+        }
+        if auth_method == 'key':
+            vals.update({
+                'ssh_private_key_encrypted': ExternalServerSecretVault.encrypt(private_key),
+                'ssh_key_passphrase_encrypted': ExternalServerSecretVault.encrypt(passphrase),
+            })
+        else:
+            vals['ssh_password_encrypted'] = ExternalServerSecretVault.encrypt(password)
+        self.write(vals)
+        self._audit('security', f'Credentials securely updated for external server {self.name}.')
+
+    def action_open_credentials(self):
+        self.ensure_one()
+        self._check_super_admin()
+        return {
+            'type': 'ir.actions.act_window',
+            'res_model': 'saas.server.credentials.wizard',
+            'view_mode': 'form', 'target': 'new',
+            'context': {'default_server_id': self.id, 'default_auth_method': self.auth_method},
+        }
+
+    @api.constrains('max_tenants', 'backup_retention_days')
+    def _check_positive_limits(self):
+        for rec in self:
+            if rec.max_tenants < 1:
+                raise UserError(_('Maximum tenants must be at least 1.'))
+            if rec.backup_retention_days < 1:
+                raise UserError(_('Backup retention must be at least 1 day.'))
+
+    @api.constrains(
+        'odoo_container', 'postgres_container', 'nginx_container',
+        'postgres_user', 'db_owner', 'base_domain')
+    def _check_safe_infrastructure_names(self):
+        container_re = re.compile(r'^[A-Za-z0-9][A-Za-z0-9_.-]{0,127}$')
+        db_identifier_re = re.compile(r'^[A-Za-z_][A-Za-z0-9_]{0,62}$')
+        domain_re = re.compile(
+            r'^(?=.{1,253}$)(?:[A-Za-z0-9](?:[A-Za-z0-9-]{0,61}[A-Za-z0-9])?\.)+[A-Za-z]{2,63}$')
+        for rec in self:
+            for value in (rec.odoo_container, rec.postgres_container, rec.nginx_container):
+                if not container_re.match(value or ''):
+                    raise UserError(_('Invalid Docker container name: %s', value))
+            for value in (rec.postgres_user, rec.db_owner):
+                if not db_identifier_re.match(value or ''):
+                    raise UserError(_('Invalid PostgreSQL identifier: %s', value))
+            if not domain_re.match((rec.base_domain or '').strip()):
+                raise UserError(_('Enter a valid tenant base domain.'))
 
     # ── SSH plumbing ────────────────────────────────────────────────────────
     def _ssh_client(self):
@@ -65,26 +208,90 @@ class SaasExternalServer(models.Model):
             import paramiko
         except ImportError:
             raise UserError(_('paramiko is not installed in this Odoo image.'))
+        if not self.ssh_host_key_fingerprint:
+            raise UserError(_(
+                'The SSH host key is not pinned. Scan and verify the fingerprint first.'))
+        from odoo.addons.saas_external_server.services.secret_vault import ExternalServerSecretVault
         client = paramiko.SSHClient()
-        client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
+        client.set_missing_host_key_policy(
+            _PinnedFingerprintPolicy(self.ssh_host_key_fingerprint))
         kwargs = {'hostname': self.host, 'port': self.ssh_port,
                   'username': self.ssh_user, 'timeout': SSH_TIMEOUT,
                   'banner_timeout': SSH_TIMEOUT, 'auth_timeout': SSH_TIMEOUT}
         if self.auth_method == 'key':
-            if not self.ssh_private_key:
+            if not self.ssh_private_key_encrypted:
                 raise UserError(_('No SSH private key set for %s.', self.name))
-            pkey = self._load_key(self.ssh_private_key, self.ssh_key_passphrase)
+            private_key = ExternalServerSecretVault.decrypt(self.ssh_private_key_encrypted)
+            passphrase = ExternalServerSecretVault.decrypt(self.ssh_key_passphrase_encrypted)
+            pkey = self._load_key(private_key, passphrase)
             kwargs['pkey'] = pkey
             kwargs['look_for_keys'] = False
             kwargs['allow_agent'] = False
         else:
-            if not self.ssh_password:
+            if not self.ssh_password_encrypted:
                 raise UserError(_('No SSH password set for %s.', self.name))
-            kwargs['password'] = self.ssh_password
+            kwargs['password'] = ExternalServerSecretVault.decrypt(self.ssh_password_encrypted)
             kwargs['look_for_keys'] = False
             kwargs['allow_agent'] = False
         client.connect(**kwargs)
         return client
+
+    def action_scan_host_key(self):
+        """Pin the first SSH fingerprint or verify an already pinned one."""
+        self.ensure_one()
+        self._check_super_admin()
+        try:
+            import paramiko
+        except ImportError as exc:
+            raise UserError(_('paramiko is not installed in this Odoo image.')) from exc
+        transport = None
+        sock = None
+        try:
+            sock = socket.create_connection((self.host, self.ssh_port), timeout=SSH_TIMEOUT)
+            transport = paramiko.Transport(sock)
+            transport.start_client(timeout=SSH_TIMEOUT)
+            key = transport.get_remote_server_key()
+            fingerprint = _host_key_fingerprint(key)
+            key_type = key.get_name()
+        except Exception as exc:
+            raise UserError(_('Unable to read the SSH host key: %s', str(exc)[:300])) from exc
+        finally:
+            if transport:
+                transport.close()
+            elif sock:
+                sock.close()
+        if self.ssh_host_key_fingerprint and self.ssh_host_key_fingerprint != fingerprint:
+            expected = self.ssh_host_key_fingerprint
+            self.write({
+                'state': 'error',
+                'last_check': fields.Datetime.now(),
+                'last_error': _(
+                    'SSH host key mismatch. Expected %(expected)s, received %(actual)s.',
+                    expected=expected, actual=fingerprint),
+            })
+            self._audit(
+                'security', f'SSH host key mismatch detected for {self.name}.',
+                severity='critical',
+                old_values={'fingerprint': expected},
+                new_values={'fingerprint': fingerprint})
+            return self._notify('danger', _(
+                'SECURITY WARNING: the server fingerprint changed. Expected %(expected)s, '
+                'received %(actual)s. Do not continue until the server owner confirms it.',
+                expected=expected, actual=fingerprint))
+        first_pin = not self.ssh_host_key_fingerprint
+        self.write({
+            'ssh_host_key_fingerprint': fingerprint,
+            'ssh_host_key_type': key_type,
+            'state': 'draft' if first_pin else self.state,
+        })
+        self._audit(
+            'security', f'SSH host key {"pinned" if first_pin else "verified"} for {self.name}.',
+            severity='warning' if first_pin else 'info',
+            new_values={'fingerprint': fingerprint, 'key_type': key_type})
+        return self._notify(
+            'warning' if first_pin else 'success',
+            _('Fingerprint %(fingerprint)s was %(action)s. Verify it with the server provider.',
+              fingerprint=fingerprint, action=_('pinned') if first_pin else _('verified')))
 
     @staticmethod
     def _load_key(key_text, passphrase=None):
@@ -202,6 +409,7 @@ echo BOOTSTRAP_INFRA_OK'''
         """One click: install docker + the full Odoo stack + platform addons
         on a bare server over SSH, then verify. Idempotent — safe to re-run."""
         self.ensure_one()
+        self._check_super_admin()
         import tarfile, io as _io, os as _os
         try:
             client = self._ssh_client()
@@ -240,6 +448,8 @@ echo BOOTSTRAP_INFRA_OK'''
         # 3. Re-check to flip status to online.
         self.action_test_connection()
         if self.state == 'online':
+            self.action_install_backup_job()
+            self._audit('provision', f'Odoo stack installed or reconciled on {self.name}.')
             return self._notify('success', _('✅ Stack installed and server is online. '
                                              'You can now provision tenants here.'))
         return self._notify('warning', _('Stack installed but the health check did not pass — '
@@ -249,35 +459,144 @@ echo BOOTSTRAP_INFRA_OK'''
         return {'type': 'ir.actions.client', 'tag': 'display_notification',
                 'params': {'type': typ, 'message': msg, 'sticky': typ != 'success'}}
 
+    def action_install_backup_job(self):
+        """Install an idempotent daily database + filestore backup job."""
+        self.ensure_one()
+        self._check_super_admin()
+        import shlex
+        destination = (self.backup_location or '/opt/backups/daily').strip()
+        if not destination.startswith('/') or any(ch in destination for ch in ('\n', '\r', '\x00')):
+            raise UserError(_('Backup location must be an absolute server path.'))
+        script = f'''#!/bin/sh
+set -eu
+DEST={shlex.quote(destination)}
+STAMP=$(date -u +%Y%m%d_%H%M%S)
+mkdir -p "$DEST"
+for DB in $(docker exec {self.postgres_container} psql -U {self.postgres_user} -d postgres -At -c "select datname from pg_database where datallowconn and not datistemplate and datname <> 'postgres'"); do
+  docker exec {self.postgres_container} pg_dump -U {self.postgres_user} -Fc "$DB" > "$DEST/${{DB}}_${{STAMP}}.dump"
+  docker exec {self.odoo_container} sh -c "test -d /var/lib/odoo/filestore/$DB && tar -C /var/lib/odoo/filestore -czf - $DB || true" > "$DEST/${{DB}}_${{STAMP}}_filestore.tar.gz"
+done
+find "$DEST" -type f -mtime +{int(self.backup_retention_days)} -delete
+'''
+        payload = base64.b64encode(script.encode()).decode()
+        cron = '25 2 * * * root /usr/local/sbin/clickbuild-tenant-backup >/var/log/clickbuild-tenant-backup.log 2>&1\n'
+        cron_payload = base64.b64encode(cron.encode()).decode()
+        self.run_ssh(
+            f'echo {payload} | base64 -d > /usr/local/sbin/clickbuild-tenant-backup && '
+            'chmod 700 /usr/local/sbin/clickbuild-tenant-backup && '
+            f'echo {cron_payload} | base64 -d > /etc/cron.d/clickbuild-tenant-backup && '
+            'chmod 644 /etc/cron.d/clickbuild-tenant-backup')
+        self._audit('backup', f'Daily backup job installed on {self.name}.')
+        return self._notify('success', _('Daily database and filestore backup job installed.'))
+
     # ── Actions ─────────────────────────────────────────────────────────────
     def action_test_connection(self):
         self.ensure_one()
+        self._check_super_admin()
         try:
             code, out, err = self.run_ssh(
-                'docker ps --format "{{.Names}}" 2>/dev/null || echo NO_DOCKER',
+                "set -e; "
+                "printf 'OS='; (grep '^PRETTY_NAME=' /etc/os-release | cut -d= -f2- | tr -d '\"' || uname -s); "
+                "printf 'CPU='; nproc; "
+                "printf 'MEM_KB='; awk '/MemTotal/{print $2}' /proc/meminfo; "
+                "printf 'DISK_KB='; df -Pk /opt | awk 'NR==2{print $2}'; "
+                "printf 'DISK_FREE_KB='; df -Pk /opt | awk 'NR==2{print $4}'; "
+                "printf 'DISK_USED='; df -Pk /opt | awk 'NR==2{gsub(/%/,\"\",$5);print $5}'; "
+                "printf 'DOCKER='; docker --version | head -1; "
+                "printf 'CONTAINERS='; docker ps --format '{{.Names}}' | paste -sd, -",
                 raise_on_error=False)
-            names = [n for n in out.split() if n]
+            probe = {}
+            for line in out.splitlines():
+                if '=' in line:
+                    key, value = line.split('=', 1)
+                    probe[key.strip()] = value.strip()
+            names = [n for n in probe.get('CONTAINERS', '').split(',') if n]
             has_odoo = self.odoo_container in names
             has_pg = self.postgres_container in names
-            if 'NO_DOCKER' in out or not names:
+            has_nginx = self.nginx_container in names
+            if code != 0 or not names:
+                self.write({
+                    'state': 'error', 'last_check': fields.Datetime.now(),
+                    'last_error': (err or 'Connected, but Docker is not reachable.')[:2000],
+                    'readiness_summary': _('Docker health probe failed.'),
+                })
+                msg, typ = _('Connected, but Docker is not reachable.'), 'warning'
+            elif not (has_odoo and has_pg and has_nginx):
+                missing = [name for ok, name in (
+                    (has_odoo, self.odoo_container),
+                    (has_pg, self.postgres_container),
+                    (has_nginx, self.nginx_container),
+                ) if not ok]
                 self.write({'state': 'error', 'last_check': fields.Datetime.now(),
-                            'last_error': 'Connected, but docker not reachable as this user.',
-                            'docker_info': out[:1000]})
-                msg, typ = _('Connected, but docker is not reachable.'), 'warning'
-            elif not (has_odoo and has_pg):
-                self.write({'state': 'error', 'last_check': fields.Datetime.now(),
-                            'last_error': 'Missing containers: '
-                                          f'odoo={"ok" if has_odoo else "MISSING"}, '
-                                          f'postgres={"ok" if has_pg else "MISSING"}',
-                            'docker_info': ', '.join(names)[:1000]})
-                msg, typ = _('Connected, but required containers are missing.'), 'warning'
+                            'last_error': 'Missing containers: ' + ', '.join(missing),
+                            'docker_info': ', '.join(names)[:1000],
+                            'readiness_summary': _('Required containers are missing.')})
+                msg = _('Connected, but required containers are missing: %s', ', '.join(missing))
+                typ = 'warning'
             else:
-                self.write({'state': 'online', 'last_check': fields.Datetime.now(),
-                            'last_error': False, 'docker_info': ', '.join(names)[:1000]})
-                msg, typ = _('✅ Online — Odoo and Postgres containers found.'), 'success'
+                try:
+                    resolved = socket.gethostbyname(self.base_domain)
+                    target = socket.gethostbyname(self.host)
+                    dns_ok = resolved == target
+                except OSError:
+                    resolved, target, dns_ok = '', '', False
+                disk_used = float(probe.get('DISK_USED') or 0)
+                warnings = []
+                if disk_used >= 85:
+                    warnings.append(_('Disk usage is %s%%.', disk_used))
+                if not dns_ok:
+                    warnings.append(_(
+                        'DNS %(domain)s resolves to %(resolved)s, not server %(target)s.',
+                        domain=self.base_domain, resolved=resolved or '?', target=target or '?'))
+                self.write({
+                    'state': 'online', 'last_check': fields.Datetime.now(),
+                    'last_error': '\n'.join(warnings) or False,
+                    'docker_info': ', '.join(names)[:1000],
+                    'operating_system': probe.get('OS'),
+                    'docker_version': probe.get('DOCKER'),
+                    'cpu_cores': int(probe.get('CPU') or 0),
+                    'memory_total_mb': int(probe.get('MEM_KB') or 0) // 1024,
+                    'disk_total_gb': round(int(probe.get('DISK_KB') or 0) / 1024 / 1024, 2),
+                    'disk_free_gb': round(int(probe.get('DISK_FREE_KB') or 0) / 1024 / 1024, 2),
+                    'disk_used_percent': disk_used,
+                    'dns_status': 'valid' if dns_ok else 'warning',
+                    'readiness_summary': '\n'.join(warnings) if warnings else _('All readiness checks passed.'),
+                })
+                msg = _('Server is online. All required containers were found.')
+                typ = 'warning' if warnings else 'success'
+            self._audit(
+                'security', f'External server readiness check completed for {self.name}: {self.state}.',
+                severity='warning' if self.state != 'online' or self.last_error else 'info')
         except Exception as e:
             self.write({'state': 'offline', 'last_check': fields.Datetime.now(),
-                        'last_error': str(e)[:2000]})
-            msg, typ = _('❌ Connection failed: %s', str(e)[:200]), 'danger'
-        return {'type': 'ir.actions.client', 'tag': 'display_notification',
-                'params': {'type': typ, 'message': msg, 'sticky': typ != 'success'}}
+                        'last_error': str(e)[:2000],
+                        'readiness_summary': _('Connection failed.')})
+            self._audit(
+                'security', f'External server connection failed for {self.name}.',
+                severity='critical')
+            msg, typ = _('Connection failed: %s', str(e)[:200]), 'danger'
+        return self._notify(typ, msg)
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        self._check_super_admin()
+        records = super().create(vals_list)
+        for rec in records:
+            rec._audit('create', f'External server {rec.name} registered.')
+        return records
+
+    def write(self, vals):
+        self._check_super_admin()
+        if {'host', 'ssh_port'} & set(vals) and any(rec.ssh_host_key_fingerprint for rec in self):
+            vals = dict(vals, ssh_host_key_fingerprint=False, ssh_host_key_type=False, state='draft')
+        return super().write(vals)
+
+    def unlink(self):
+        self._check_super_admin()
+        for rec in self:
+            active_tenants = rec.tenant_ids.filtered(lambda tenant: tenant.state != 'deleted')
+            if active_tenants:
+                raise UserError(_(
+                    'Server %s cannot be deleted while it has active tenants.', rec.name))
+            rec._audit('unlink', f'External server {rec.name} deleted.', severity='warning')
+        return super().unlink()

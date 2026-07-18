@@ -10,6 +10,7 @@
                     <field name="existing_server_id"
                            invisible="server_mode != 'existing'"
                            required="server_mode == 'existing'"
+                           domain="[('state', '=', 'online')]"
                            options="{'no_create_edit': True}"/>
                     <group invisible="server_mode != 'new'" col="4">
                         <field name="new_server_name" required="server_mode == 'new'"/>
@@ -18,11 +19,17 @@
                         <field name="ssh_port"/>
                         <field name="auth_method" widget="radio"/>
                         <field name="base_domain"/>
+                        <field name="expected_host_key_fingerprint"
+                               placeholder="SHA256:..." colspan="4"/>
                         <field name="ssh_private_key" password="True" colspan="4"
                                invisible="auth_method != 'key'"
+                               required="server_mode == 'new' and auth_method == 'key'"
                                placeholder="-----BEGIN OPENSSH PRIVATE KEY-----"/>
+                        <field name="ssh_key_passphrase" password="True"
+                               invisible="auth_method != 'key'"/>
                         <field name="ssh_password" password="True"
-                               invisible="auth_method != 'password'"/>
+                               invisible="auth_method != 'password'"
+                               required="server_mode == 'new' and auth_method == 'password'"/>
                     </group>
                     <field name="auto_install"
                            invisible="server_mode != 'new'"/>
@@ -61,5 +68,5 @@
     <menuitem id="menu_remote_customer_wizard" name="New Remote Customer"
               parent="saas_core.menu_saas_operations"
               action="action_remote_customer_wizard" sequence="41"
-              groups="saas_tenant_manager.group_saas_admin"/>
+              groups="saas_core.group_saas_super_admin"/>
 </odoo>

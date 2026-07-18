@@ -10,6 +10,8 @@
                 <field name="ssh_user"/>
                 <field name="state"/>
                 <field name="tenant_count"/>
+                <field name="available_slots"/>
+                <field name="disk_used_percent"/>
                 <field name="last_check"/>
             </list>
         </field>
@@ -21,11 +23,18 @@
         <field name="arch" type="xml">
             <form string="External Server">
                 <header>
+                    <button name="action_scan_host_key" type="object"
+                            string="Scan / Verify Fingerprint" class="btn-secondary"/>
+                    <button name="action_open_credentials" type="object"
+                            string="Update Credentials" class="btn-secondary"/>
                     <button name="action_bootstrap_stack" type="object"
-                            string="⚙️ Install Odoo Stack" class="btn-primary"
+                            string="Install Odoo Stack" class="btn-primary"
                             confirm="سيتم تثبيت Docker وأودو وقاعدة البيانات و nginx على هذا السيرفر عن بُعد عبر SSH (آمن للتكرار — يتخطى ما هو مثبّت). متابعة؟ — This installs Docker, Odoo, Postgres and nginx on the server over SSH (idempotent). Continue?"/>
                     <button name="action_test_connection" type="object"
-                            string="🔌 Test Connection" class="btn-secondary"/>
+                            string="Readiness Check" class="btn-secondary"/>
+                    <button name="action_install_backup_job" type="object"
+                            string="Install Backup Job" class="btn-secondary"
+                            invisible="state != 'online'"/>
                     <field name="state" widget="statusbar"
                            statusbar_visible="draft,online"/>
                 </header>
@@ -40,13 +49,9 @@
                             <field name="ssh_port"/>
                             <field name="ssh_user"/>
                             <field name="auth_method" widget="radio"/>
-                            <field name="ssh_private_key" password="True"
-                                   invisible="auth_method != 'key'"
-                                   placeholder="-----BEGIN OPENSSH PRIVATE KEY-----"/>
-                            <field name="ssh_key_passphrase" password="True"
-                                   invisible="auth_method != 'key'"/>
-                            <field name="ssh_password" password="True"
-                                   invisible="auth_method != 'password'"/>
+                            <field name="credential_status" readonly="1"/>
+                            <field name="ssh_host_key_type" readonly="1"/>
+                            <field name="ssh_host_key_fingerprint" readonly="1"/>
                         </group>
                         <group string="Remote Stack">
                             <field name="odoo_container"/>
@@ -54,15 +59,49 @@
                             <field name="postgres_user"/>
                             <field name="db_owner"/>
                             <field name="base_domain"/>
+                            <field name="letsencrypt_email"/>
+                            <field name="max_tenants"/>
                             <field name="active"/>
                         </group>
                     </group>
-                    <group string="Status" invisible="state == 'draft'">
-                        <field name="last_check" readonly="1"/>
-                        <field name="docker_info" readonly="1"/>
-                        <field name="last_error" readonly="1" invisible="not last_error"/>
-                    </group>
                     <notebook>
+                        <page string="Ownership &amp; Service">
+                            <group>
+                                <group>
+                                    <field name="server_owner"/>
+                                    <field name="customer_id"/>
+                                    <field name="service_start_date"/>
+                                    <field name="service_end_date"/>
+                                </group>
+                                <group>
+                                    <field name="support_level"/>
+                                    <field name="billing_responsibility"/>
+                                    <field name="backup_location" placeholder="/mnt/offsite-backups/customer"/>
+                                    <field name="backup_retention_days"/>
+                                </group>
+                            </group>
+                        </page>
+                        <page string="Health &amp; Capacity">
+                            <group>
+                                <group>
+                                    <field name="last_check" readonly="1"/>
+                                    <field name="operating_system" readonly="1"/>
+                                    <field name="docker_version" readonly="1"/>
+                                    <field name="docker_info" readonly="1"/>
+                                    <field name="dns_status" readonly="1"/>
+                                </group>
+                                <group>
+                                    <field name="cpu_cores" readonly="1"/>
+                                    <field name="memory_total_mb" readonly="1"/>
+                                    <field name="disk_total_gb" readonly="1"/>
+                                    <field name="disk_free_gb" readonly="1"/>
+                                    <field name="disk_used_percent" readonly="1"/>
+                                    <field name="available_slots" readonly="1"/>
+                                </group>
+                            </group>
+                            <field name="readiness_summary" readonly="1"/>
+                            <field name="last_error" readonly="1" invisible="not last_error"/>
+                        </page>
                         <page string="Tenants">
                             <field name="tenant_ids" readonly="1">
                                 <list>
@@ -87,5 +126,5 @@
     <menuitem id="menu_saas_external_server" name="External Servers"
               parent="saas_core.menu_saas_operations"
               action="action_saas_external_server" sequence="40"
-              groups="saas_tenant_manager.group_saas_admin"/>
+              groups="saas_core.group_saas_super_admin"/>
 </odoo>

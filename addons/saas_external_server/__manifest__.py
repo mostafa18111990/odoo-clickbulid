@@ -1,6 +1,6 @@
 {
     'name': 'SaaS External Servers',
-    'version': '19.0.1.0.0',
+    'version': '19.0.2.0.0',
     'category': 'SaaS',
     'summary': 'Provision and manage tenants on external (customer-owned) servers over SSH',
     'description': """
@@ -15,8 +15,10 @@ SSH, managed from the same SaaS backend as local tenants.
         'security/ir.model.access.csv',
         'views/saas_external_server_views.xml',
         'views/saas_tenant_deploy_views.xml',
+        'wizards/server_credentials_wizard_views.xml',
         'wizards/remote_customer_wizard_views.xml',
     ],
+    'external_dependencies': {'python': ['paramiko', 'cryptography']},
     'installable': True,
     'application': False,
     'auto_install': False,

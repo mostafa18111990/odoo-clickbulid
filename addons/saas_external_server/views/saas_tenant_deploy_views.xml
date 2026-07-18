@@ -7,10 +7,17 @@
         <field name="inherit_id" ref="saas_tenant_manager.view_saas_tenant_form"/>
         <field name="arch" type="xml">
             <xpath expr="//field[@name='subdomain']" position="after">
+                <field name="hosting_type"
+                       groups="saas_core.group_saas_super_admin"/>
                 <field name="external_server_id"
+                       groups="saas_core.group_saas_super_admin"
+                       invisible="hosting_type != 'dedicated'"
+                       required="hosting_type == 'dedicated'"
+                       domain="[('state', '=', 'online')]"
                        options="{'no_create_edit': True}"
-                       placeholder="ClickBuild platform (local)"/>
-                <field name="is_remote" invisible="1"/>
+                       placeholder="Dedicated customer server"/>
+                <field name="is_remote" invisible="1"
+                       groups="saas_core.group_saas_super_admin"/>
             </xpath>
         </field>
     </record>
@@ -22,10 +29,13 @@
         <field name="inherit_id" ref="saas_tenant_manager.view_saas_tenant_search"/>
         <field name="arch" type="xml">
             <field name="subdomain" position="after">
-                <field name="external_server_id"/>
+                <field name="hosting_type" groups="saas_core.group_saas_super_admin"/>
+                <field name="external_server_id" groups="saas_core.group_saas_super_admin"/>
                 <filter name="filter_remote" string="Remote-hosted"
+                        groups="saas_core.group_saas_super_admin"
                         domain="[('external_server_id', '!=', False)]"/>
                 <filter name="filter_local" string="Local (platform)"
+                        groups="saas_core.group_saas_super_admin"
                         domain="[('external_server_id', '=', False)]"/>
             </field>
         </field>
