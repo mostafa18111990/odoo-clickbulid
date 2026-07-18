@@ -39,7 +39,7 @@ class SaasSubscription(models.Model):
                               required=True, tracking=True, index=True)
     is_current = fields.Boolean(string='Current Subscription', default=True, index=True)
     billing_cycle = fields.Selection(selection=BILLING_CYCLES, string='Billing Cycle',
-                                     required=True, default='monthly')
+                                     required=True, default='yearly')
     currency = fields.Selection(selection=CURRENCIES, string='Currency', required=True, default='SAR')
 
     trial_start = fields.Date(string='Trial Start')
@@ -96,6 +96,13 @@ class SaasSubscription(models.Model):
         for rec in self:
             if rec.base_amount < 0:
                 raise ValidationError('Base amount cannot be negative.')
+
+    @api.constrains('billing_cycle')
+    def _check_annual_only_billing(self):
+        for rec in self:
+            if rec.billing_cycle != 'yearly':
+                raise ValidationError(_(
+                    'New subscriptions are annual only; monthly billing is unavailable.'))
 
     @api.constrains('credit_balance')
     def _check_credit(self):

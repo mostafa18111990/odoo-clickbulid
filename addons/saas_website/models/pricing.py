@@ -15,19 +15,19 @@ class SaasPlanPricing(models.Model):
     _inherit = 'saas.plan'
 
     @api.model
-    def tiered_quote(self, edition, user_count, cycle='monthly'):
+    def tiered_quote(self, edition, user_count, cycle='yearly'):
         edition = edition if edition in RATES else 'community'
         seats = max(1, min(int(user_count or 1), 500))
         tier = 1 if seats == 1 else 2 if seats == 2 else 3
         unit = RATES[edition][tier]
         monthly = round(seats * unit, 2)
         before = round(monthly * 12, 2)
-        saving = round(before * 0.15, 2)
-        annual = round(before - saving, 2)
-        cycle = cycle if cycle in ('monthly', 'yearly') else 'monthly'
+        saving = 0.0
+        annual = before
+        cycle = cycle if cycle in ('monthly', 'yearly') else 'yearly'
         return {'edition': edition, 'users': seats, 'tier': tier, 'unit_price': unit,
                 'monthly_total': monthly, 'annual_before_discount': before,
-                'discount_pct': 15.0, 'discount_amount': saving,
+                'discount_pct': 0.0, 'discount_amount': saving,
                 'annual_total': annual, 'cycle': cycle,
                 'total': annual if cycle == 'yearly' else monthly}
 

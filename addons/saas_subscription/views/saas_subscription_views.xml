@@ -43,7 +43,7 @@
                         <group string="Subscription">
                             <field name="tenant_id"/>
                             <field name="plan_id"/>
-                            <field name="billing_cycle"/>
+                            <field name="billing_cycle" readonly="1"/>
                             <field name="currency"/>
                             <field name="is_current"/>
                         </group>
@@ -192,7 +192,7 @@
                             <field name="current_subscription_id"/>
                             <field name="sub_status" widget="badge" readonly="1"/>
                             <field name="plan_id"/>
-                            <field name="billing_cycle"/>
+                            <field name="billing_cycle" readonly="1"/>
                             <field name="sub_total_amount" readonly="1"/>
                             <field name="user_count" string="عدد المستخدمين المشترى"/>
                         </group>

@@ -22,12 +22,9 @@
                 </div></div></div>
                 <div class="d-flex gap-2 flex-wrap mb-4">
                     <a href="/my/saas/subscription/plans" class="btn btn-primary"><i class="fa fa-exchange me-1"/> Change Plan</a>
-                    <form method="post" action="/my/saas/subscription/cycle" class="d-inline">
-                        <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
-                        <input type="hidden" name="cycle" t-att-value="'yearly' if sub['billing_cycle'] == 'monthly' else 'monthly'"/>
-                        <button type="submit" class="btn btn-outline-success"><i class="fa fa-calendar me-1"/>
-                            Switch to <t t-esc="'Yearly (Save!)' if sub['billing_cycle'] == 'monthly' else 'Monthly'"/></button>
-                    </form>
+                    <span class="btn btn-outline-success disabled" aria-disabled="true">
+                        <i class="fa fa-calendar me-1"/> Annual billing / فوترة سنوية
+                    </span>
                     <t t-if="not sub.get('cancel_at_period_end')">
                         <a href="/my/saas/subscription/cancel" class="btn btn-outline-danger ms-auto"><i class="fa fa-times me-1"/> Cancel</a>
                     </t>
@@ -46,6 +43,7 @@
                         <div class="card-body text-center">
                             <h4 t-esc="plan['name']"/>
                             <div class="my-3"><span class="display-6 fw-bold" t-esc="'%.0f' % plan['monthly_price']"/><span class="text-muted">SAR/mo</span></div>
+                            <div class="small text-muted mb-3">Billed annually: <strong t-esc="'%.2f' % plan['yearly_price']"/> SAR — الفوترة سنوية فقط</div>
                             <ul class="list-unstyled text-start small mb-4">
                                 <li><i class="fa fa-check text-success me-2"/><t t-esc="plan['max_users']"/> users</li>
                                 <li><i class="fa fa-check text-success me-2"/><t t-esc="plan['max_storage_gb']"/> GB storage</li>

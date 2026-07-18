@@ -22,7 +22,8 @@ class SubscriptionService:
         self.events = EventBusService(env)
         self.audit = AuditService(env)
 
-    def create_trial(self, tenant, plan, cycle='monthly', currency='SAR'):
+    def create_trial(self, tenant, plan, cycle='yearly', currency='SAR'):
+        cycle = 'yearly'
         config = self.env['saas.config']._get_config()
         today = date.today()
         trial_end = today + timedelta(days=config.trial_days)
@@ -134,6 +135,8 @@ class SubscriptionService:
         change.write({'status': 'applied', 'applied_at': fields.Datetime.now()})
 
     def change_cycle(self, subscription, new_cycle):
+        if new_cycle != 'yearly':
+            raise UserError(_('Subscriptions are annual only; monthly billing is unavailable.'))
         if subscription.billing_cycle == new_cycle:
             raise UserError(_('Already on %s billing.', new_cycle))
         calc = {'net_charge': 0, 'credit_amount': 0}

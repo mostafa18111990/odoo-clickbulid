@@ -99,7 +99,14 @@ class SaasTenant(models.Model):
     provisioning_job_count = fields.Integer(string='Jobs', compute='_compute_job_count')
 
     billing_cycle = fields.Selection([('monthly', 'Monthly'), ('yearly', 'Yearly')],
-                                     string='Billing Cycle', default='monthly')
+                                     string='Billing Cycle', default='yearly')
+
+    @api.constrains('billing_cycle')
+    def _check_annual_only_billing_cycle(self):
+        for tenant in self:
+            if tenant.billing_cycle and tenant.billing_cycle != 'yearly':
+                raise UserError(_(
+                    'New subscriptions are annual only; monthly billing is unavailable.'))
     next_billing_date = fields.Date(string='Next Billing Date', index=True)
     payment_retry_count = fields.Integer(string='Payment Retry Count', default=0, readonly=True)
     last_payment_date = fields.Date(string='Last Payment Date', readonly=True)

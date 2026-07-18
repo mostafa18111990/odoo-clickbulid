@@ -1,5 +1,5 @@
 /* ClickBuild — frontend behaviors
- * Scroll-reveal + pricing monthly/yearly toggle. Plain DOM, no Odoo bundles.
+ * Scroll reveal and annual-only pricing. Plain DOM, no Odoo bundles.
  */
 (function () {
     'use strict';
@@ -36,14 +36,8 @@
         });
     }
 
-    // ---- Pricing billing toggle (monthly <-> yearly) -----------------------
-    // Markup contract:
-    //   <div class="cb-billing-toggle">
-    //     <button data-billing="monthly" class="active">شهري</button>
-    //     <button data-billing="yearly">سنوي <span class="save-badge">-15%</span></button>
-    //   </div>
-    //   <span class="js-price" data-monthly="299" data-yearly="2999">299</span>
-    //   <span class="js-price-suffix" data-monthly-text="ريال/شهر" data-yearly-text="ريال/سنة"/>
+    // Legacy toggle support remains for old cached markup. Current pricing
+    // pages expose annual billing only and do not render these controls.
     function initBillingToggle() {
         var toggles = document.querySelectorAll('.cb-billing-toggle');
         if (!toggles.length) return;
@@ -78,7 +72,6 @@
         if (!root) return;
         var users = root.querySelector('#pricingUserCount');
         var edition = 'community';
-        var cycle = 'monthly';
         function format(value) {
             return Number(value).toLocaleString(document.documentElement.lang.indexOf('ar') === 0 ? 'ar-SA' : 'en-US', {
                 minimumFractionDigits: Number.isInteger(value) ? 0 : 2,
@@ -92,20 +85,15 @@
             var rates = edition === 'enterprise' ? {1: 399, 2: 349, 3: 299} : {1: 299, 2: 249, 3: 199};
             var unit = rates[tier];
             var monthly = count * unit;
-            var annualBefore = monthly * 12;
-            var saving = annualBefore * 0.15;
-            var annual = annualBefore - saving;
+            // Annual-only billing: the customer sees the monthly price and is
+            // invoiced once a year for exactly 12 x monthly.
+            var annual = monthly * 12;
             root.querySelector('[data-tier-unit]').textContent = format(unit);
             root.querySelector('[data-tier-monthly]').textContent = format(monthly);
-            root.querySelector('[data-tier-annual-before]').textContent = format(annualBefore);
-            root.querySelector('[data-tier-saving]').textContent = format(saving);
-            root.querySelector('[data-tier-total]').textContent = format(cycle === 'yearly' ? annual : monthly);
-            root.querySelector('[data-tier-period]').textContent = cycle === 'yearly' ? (document.documentElement.lang.indexOf('ar') === 0 ? 'سنويًا' : 'yearly') : (document.documentElement.lang.indexOf('ar') === 0 ? 'شهريًا' : 'monthly');
-            root.querySelectorAll('[data-tier-annual-row], [data-tier-discount-note]').forEach(function(el) { el.hidden = cycle !== 'yearly'; });
-            root.querySelector('[data-tier-cta]').href = '/get-started?edition=' + edition + '&users=' + count + '&billing=' + cycle;
+            root.querySelector('[data-tier-total]').textContent = format(annual);
+            root.querySelector('[data-tier-cta]').href = '/get-started?edition=' + edition + '&users=' + count + '&billing=yearly';
         }
         root.querySelectorAll('[data-tier-edition]').forEach(function(btn) { btn.addEventListener('click', function() { edition = btn.dataset.tierEdition; root.querySelectorAll('[data-tier-edition]').forEach(function(b) { b.classList.toggle('active', b === btn); }); update(); }); });
-        root.querySelectorAll('[data-tier-cycle]').forEach(function(btn) { btn.addEventListener('click', function() { cycle = btn.dataset.tierCycle; root.querySelectorAll('[data-tier-cycle]').forEach(function(b) { b.classList.toggle('active', b === btn); }); update(); }); });
         root.querySelector('[data-tier-minus]').addEventListener('click', function() { users.value = Math.max(1, parseInt(users.value || '1', 10) - 1); update(); });
         root.querySelector('[data-tier-plus]').addEventListener('click', function() { users.value = Math.min(500, parseInt(users.value || '1', 10) + 1); update(); });
         users.addEventListener('input', update);
@@ -129,11 +117,16 @@
             var codes = enterprise ? {1:'starter_ee',2:'business_ee',3:'enterprise_ee'} : {1:'starter',2:'business',3:'enterprise'};
             Array.from(select.options).forEach(function(opt) { if ((opt.dataset.code || '').toLowerCase() === codes[tier]) opt.selected = true; });
             var monthly = count * rates[tier];
-            var total = cycleInput.value === 'yearly' ? monthly * 12 * 0.85 : monthly;
-            box.textContent = total.toLocaleString(undefined, {maximumFractionDigits:2}) + ' SAR / ' + (cycleInput.value === 'yearly' ? 'year' : 'month');
+            // Annual-only billing: monthly price shown, invoiced 12 x monthly.
+            var yearly = monthly * 12;
+            if (cycleInput) cycleInput.value = 'yearly';
+            var isAr = (document.documentElement.lang || '').indexOf('ar') === 0;
+            var fmt = function (n) { return n.toLocaleString(isAr ? 'ar-SA' : 'en-US', {maximumFractionDigits: 2}); };
+            box.textContent = isAr
+                ? (fmt(monthly) + ' ريال/شهر — تُفوتر سنوياً: ' + fmt(yearly) + ' ريال')
+                : (fmt(monthly) + ' SAR/month — billed annually: ' + fmt(yearly) + ' SAR');
         }
         form.querySelectorAll('.signup-edition-card').forEach(function(card) { card.addEventListener('click', function() { editionInput.value = card.dataset.edition; setTimeout(update, 0); }); });
-        form.querySelectorAll('[data-signup-billing]').forEach(function(btn) { btn.addEventListener('click', function() { cycleInput.value = btn.dataset.signupBilling; form.querySelectorAll('[data-signup-billing]').forEach(function(b) { b.classList.toggle('active', b === btn); }); update(); }); });
         users.addEventListener('input', function() { setTimeout(update, 0); });
         form.addEventListener('submit', update);
         // The inline signup compatibility script may calculate the legacy

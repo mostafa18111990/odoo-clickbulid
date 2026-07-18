@@ -24,7 +24,7 @@
                             <!-- Edition switch (visual) — pre-selects based on chosen plan -->
                             <t t-set="default_ed" t-value="selected_edition or ((selected_plan.edition if selected_plan else 'community') or 'community')"/>
                             <input type="hidden" name="edition" id="signupEdition" t-att-value="default_ed"/>
-                            <input type="hidden" name="billing_cycle" id="signupBilling" t-att-value="selected_billing_cycle or 'monthly'"/>
+                            <input type="hidden" name="billing_cycle" id="signupBilling" value="yearly"/>
                             <div class="mb-3">
                                 <label class="form-label fw-bold">
                                     <t t-if="lang_is_ar">اختر الإصدار</t><t t-else="">Choose edition</t></label>
@@ -119,15 +119,10 @@
                                 <div class="mt-2 p-2 rounded text-center fw-bold" id="seatPriceBox"
                                      style="background:#f5f3ff; color:#6d28d9; font-size:1.1rem;"></div>
                             </div>
-                            <div class="cb-billing-toggle mb-3" style="display:flex;">
-                                <button type="button" data-signup-billing="monthly"
-                                        t-attf-class="flex-fill #{'active' if (selected_billing_cycle or 'monthly') == 'monthly' else ''}">
-                                    <t t-if="lang_is_ar">شهري</t><t t-else="">Monthly</t>
-                                </button>
-                                <button type="button" data-signup-billing="yearly"
-                                        t-attf-class="flex-fill #{'active' if selected_billing_cycle == 'yearly' else ''}">
-                                    <t t-if="lang_is_ar">سنوي — وفّر 15%</t><t t-else="">Yearly — Save 15%</t>
-                                </button>
+                            <div class="mb-3 p-2 rounded text-center small"
+                                 style="background:#f5f3ff; color:#6d28d9;">
+                                <t t-if="lang_is_ar">الأسعار شهرية وتُفوتر سنوياً (قيمة 12 شهراً في فاتورة واحدة)</t>
+                                <t t-else="">Prices are per month, billed annually (12 months in one invoice)</t>
                             </div>
                             <div class="mb-3"><label class="form-label fw-bold">
                                 <t t-if="lang_is_ar">اسم منصة الأعمال</t><t t-else="">Business platform name</t></label>
@@ -259,7 +254,6 @@
                                         var seats = Math.max(1, Math.min(500, parseInt(seatInput.value || '1', 10)));
                                         seatInput.value = seats;
                                         var edition = document.getElementById('signupEdition').value || 'community';
-                                        var cycle = document.getElementById('signupBilling').value || 'monthly';
                                         var tier = seats === 1 ? 1 : (seats === 2 ? 2 : 3);
                                         var rates = edition === 'enterprise'
                                             ? {1: 399, 2: 349, 3: 299}
@@ -274,12 +268,12 @@
                                         });
                                         var unit = rates[tier];
                                         var monthly = seats * unit;
-                                        var total = cycle === 'yearly' ? monthly * 12 * 0.85 : monthly;
+                                        var yearly = monthly * 12;
                                         priceBox.textContent = isAr
-                                            ? ('الإجمالي: ' + fmt(total) + ' ريال/' + (cycle === 'yearly' ? 'سنة' : 'شهر')
-                                                + ' (' + fmt(seats) + ' مستخدم × ' + fmt(unit) + ' ريال)')
-                                            : ('Total: ' + fmt(total) + ' SAR/' + (cycle === 'yearly' ? 'year' : 'month')
-                                                + ' (' + fmt(seats) + ' users × ' + fmt(unit) + ' SAR)');
+                                            ? (fmt(monthly) + ' ريال/شهر (' + fmt(seats) + ' مستخدم × ' + fmt(unit)
+                                                + ') — تُفوتر سنوياً: ' + fmt(yearly) + ' ريال')
+                                            : (fmt(monthly) + ' SAR/month (' + fmt(seats) + ' users × ' + fmt(unit)
+                                                + ') — billed annually: ' + fmt(yearly) + ' SAR');
                                     }
                                     if (seatInput) {
                                         seatInput.addEventListener('input', updatePrice);

@@ -46,7 +46,7 @@ class SaasWebsiteSignup(http.Controller):
                                'selected_industry': selected_industry,
                                'selected_edition': selected_edition,
                                'selected_user_count': selected_user_count,
-                               'selected_billing_cycle': kw.get('billing', 'monthly'),
+                               'selected_billing_cycle': 'yearly',
                                'platform_domain': platform_domain})
 
     @http.route('/get-started/check', type='json', auth='public', csrf=False)

@@ -336,6 +336,10 @@
                                                 </t>
                                             </span>
                                         </div>
+                                        <div class="text-muted small mb-3">
+                                            <t t-if="lang_is_ar">تُدفع سنويًا: <strong t-esc="'%.2f' % ((plan.price_per_user * 12) if home_per_user else plan.get_effective_yearly_price())"/> ريال<t t-if="home_per_user"> / مستخدم</t> — لا يتوفر دفع شهري</t>
+                                            <t t-else="">Billed annually: <strong t-esc="'%.2f' % ((plan.price_per_user * 12) if home_per_user else plan.get_effective_yearly_price())"/> SAR<t t-if="home_per_user"> / user</t> — monthly payment unavailable</t>
+                                        </div>
                                         <ul>
                                             <li>
                                                 <i class="fa fa-check"/>

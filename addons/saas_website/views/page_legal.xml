@@ -49,13 +49,13 @@
                                 <p>باستخدامك لمنصة شركة كليك بيلد لتقنية المعلومات، فإنك توافق على الالتزام بهذه الشروط والأحكام. إذا كنت لا توافق على هذه الشروط، يُرجى عدم استخدام الخدمة.</p>
 
                                 <h2 class="h5 fw-bold mt-4">2. وصف الخدمة</h2>
-                                <p>شركة كليك بيلد لتقنية المعلومات توفر منصة ERP سحابية مبنية على Odoo 19، تشمل إدارة المحاسبة، المبيعات، المخزون، الموارد البشرية، وغيرها. تُقدَّم الخدمة بشكل اشتراك شهري أو سنوي.</p>
+                                <p>شركة كليك بيلد لتقنية المعلومات توفر منصة ERP سحابية مبنية على Odoo 19، تشمل إدارة المحاسبة، المبيعات، المخزون، الموارد البشرية، وغيرها. تُقدَّم الخدمة باشتراك سنوي فقط.</p>
 
                                 <h2 class="h5 fw-bold mt-4">3. حساب المستخدم</h2>
                                 <p>أنت مسؤول عن الحفاظ على سرية بيانات تسجيل الدخول الخاصة بك. يجب إبلاغنا فوراً عن أي استخدام غير مصرح به لحسابك.</p>
 
                                 <h2 class="h5 fw-bold mt-4">4. الرسوم والمدفوعات</h2>
-                                <p>تُحتسب رسوم الاشتراك مقدماً على أساس شهري أو سنوي. في حالة عدم السداد، يحق لنا تعليق الخدمة بعد فترة سماح مدتها 7 أيام.</p>
+                                <p>تُعرض تكلفة شهرية مرجعية لتوضيح سعر الباقة، وتُحتسب رسوم الاشتراك مقدماً عن اثني عشر شهرًا في فاتورة سنوية واحدة دون خصم سنوي. في حالة عدم السداد، يحق لنا تعليق الخدمة بعد فترة سماح مدتها 7 أيام.</p>
 
                                 <h2 class="h5 fw-bold mt-4">5. إنهاء الخدمة</h2>
                                 <p>يمكنك إلغاء اشتراكك في أي وقت. ستظل بياناتك محفوظة لمدة 90 يوماً بعد الإلغاء، بعدها تُحذف نهائياً.</p>
@@ -68,13 +68,13 @@
                                 <p>By using Click Build Information Technology Company, you agree to be bound by these Terms of Service. If you do not agree, please do not use the service.</p>
 
                                 <h2 class="h5 fw-bold mt-4">2. Service Description</h2>
-                                <p>Click Build Information Technology Company provides a cloud ERP platform built on Odoo 19, including accounting, sales, inventory, HR, and more. The service is offered on a monthly or annual subscription basis.</p>
+                                <p>Click Build Information Technology Company provides a cloud ERP platform built on Odoo 19, including accounting, sales, inventory, HR, and more. The service is offered on an annual subscription basis only.</p>
 
                                 <h2 class="h5 fw-bold mt-4">3. User Account</h2>
                                 <p>You are responsible for maintaining the confidentiality of your login credentials. You must notify us immediately of any unauthorized use of your account.</p>
 
                                 <h2 class="h5 fw-bold mt-4">4. Fees and Payments</h2>
-                                <p>Subscription fees are charged in advance on a monthly or annual basis. In case of non-payment, we may suspend service after a 7-day grace period.</p>
+                                <p>A reference monthly rate is displayed to explain package pricing. Subscription fees are charged in advance for twelve months in one annual invoice, with no annual discount. In case of non-payment, we may suspend service after a 7-day grace period.</p>
 
                                 <h2 class="h5 fw-bold mt-4">5. Termination</h2>
                                 <p>You may cancel your subscription at any time. Your data will be retained for 90 days after cancellation, after which it will be permanently deleted.</p>
@@ -83,8 +83,8 @@
                                 <p>These terms are governed by the laws of the Kingdom of Saudi Arabia, and Saudi courts shall have exclusive jurisdiction over any disputes.</p>
                             </div>
                             <div class="alert alert-light border mt-4" role="note">
-                                <p class="mb-0" t-if="lang_is_ar">سياسة الدفع السنوي: يُحتسب السعر السنوي بخصم ثابت قدره 15% من إجمالي اثني عشر شهرًا بالسعر الشهري الساري. لا تُقدَّم هذه السياسة على أنها «شهران مجانًا»، وتُطبق المعادلة نفسها في بطاقات الأسعار والحاسبة وعند إنشاء الاشتراك أو تجديده.</p>
-                                <p class="mb-0" t-else="">Annual billing policy: the annual price is calculated as a fixed 15% discount from twelve months at the current monthly price. This policy is not represented as “two months free”, and the same formula applies to pricing cards, the calculator, and subscription creation or renewal.</p>
+                                <p class="mb-0" t-if="lang_is_ar">سياسة الدفع السنوي: الاشتراك سنوي فقط ولا يتوفر الدفع الشهري. السعر السنوي يساوي السعر الشهري المعروض × 12 دون خصم، وتُطبق المعادلة نفسها في بطاقات الأسعار والحاسبة وعند إنشاء الاشتراك أو تجديده.</p>
+                                <p class="mb-0" t-else="">Annual billing policy: subscriptions are annual only and monthly payment is unavailable. The annual price equals the displayed monthly rate × 12 with no discount; the same formula applies to pricing cards, the calculator, and subscription creation or renewal.</p>
                             </div>
                         </t>
 

@@ -23,18 +23,11 @@
                         <t t-if="lang_is_ar">قارن رسوم باقات شركة كليك بيلد لتقنية المعلومات وما تشمله من تشغيل ودعم. أي تراخيص خارجية تُوضح في عرض السعر قبل التعاقد.</t>
                         <t t-else="">Compare Click Build Information Technology Company package fees and included services. Any external licensing is identified in the quotation before contracting.</t>
                     </p>
-                    <div class="d-flex justify-content-center gap-3 flex-wrap mb-4">
-                        <div class="cb-billing-toggle">
-                            <button type="button" data-billing="monthly" class="active">
-                                <t t-if="lang_is_ar">شهري</t><t t-else="">Monthly</t>
-                            </button>
-                            <button type="button" data-billing="yearly">
-                                <t t-if="lang_is_ar">سنوي</t><t t-else="">Yearly</t>
-                                <span class="save-badge" style="margin-inline-start:0.4rem;padding:0.1rem 0.5rem;background:var(--cb-gold);color:#000;border-radius:100px;font-size:0.7rem;font-weight:800;">
-                                    <t t-if="lang_is_ar">وفّر 15%</t><t t-else="">Save 15%</t>
-                                </span>
-                            </button>
-                        </div>
+                    <div class="d-flex justify-content-center mb-4">
+                        <span style="background:rgba(255,255,255,0.12);color:#fff;border-radius:100px;padding:0.45rem 1.4rem;font-size:0.92rem;font-weight:600;">
+                            <t t-if="lang_is_ar">الأسعار شهرية — تُفوتر سنوياً في فاتورة واحدة</t>
+                            <t t-else="">Prices are per month — billed annually in one invoice</t>
+                        </span>
                     </div>
                     <div style="display:flex;justify-content:center;gap:2rem;flex-wrap:wrap;color:rgba(255,255,255,0.55);font-size:0.82rem;">
                         <span><i class="fa fa-check-circle" style="color:var(--cb-teal);margin-inline-end:0.4rem;"/><t t-if="lang_is_ar">بدون بطاقة ائتمان</t><t t-else="">No credit card</t></span>
@@ -74,7 +67,7 @@
                 <div class="container"><div class="cb-tier-card mx-auto" data-tier-calculator="1">
                     <div class="text-center mb-4">
                         <h2 class="fw-bold"><t t-if="lang_is_ar">احسب اشتراك منصة أعمالك</t><t t-else="">Calculate your business platform subscription</t></h2>
-                        <p class="text-muted mb-0"><t t-if="lang_is_ar">اختر إصدار Odoo وعدد المستخدمين ودورة الدفع، وسيتحدث السعر فورًا.</t><t t-else="">Choose the Odoo edition, user count, and billing cycle for an instant quote.</t></p>
+                        <p class="text-muted mb-0"><t t-if="lang_is_ar">اختر إصدار Odoo وعدد المستخدمين، وسيتحدث السعر فورًا. الفوترة سنوية.</t><t t-else="">Choose the Odoo edition and user count for an instant quote. Billing is annual.</t></p>
                     </div>
                     <div class="cb-tier-controls">
                         <div class="cb-tier-choice" role="group" aria-label="Odoo edition">
@@ -89,20 +82,13 @@
                                 <button type="button" class="btn btn-outline-secondary" data-tier-plus="1">+</button>
                             </div>
                         </div>
-                        <div class="cb-tier-choice" role="group" aria-label="Billing cycle">
-                            <button type="button" class="active" data-tier-cycle="monthly"><t t-if="lang_is_ar">شهري</t><t t-else="">Monthly</t></button>
-                            <button type="button" data-tier-cycle="yearly"><t t-if="lang_is_ar">سنوي</t><t t-else="">Yearly</t> <span class="save-badge"><t t-if="lang_is_ar">وفّر 15%</t><t t-else="">Save 15%</t></span></button>
-                        </div>
                     </div>
                     <div class="cb-tier-summary mt-4">
                         <div><span><t t-if="lang_is_ar">سعر المستخدم</t><t t-else="">Price per user</t></span><strong><b data-tier-unit="1">299</b> <t t-if="lang_is_ar">ريال/شهر</t><t t-else="">SAR/month</t></strong></div>
-                        <div><span><t t-if="lang_is_ar">الإجمالي الشهري</t><t t-else="">Monthly total</t></span><strong><b data-tier-monthly="1">299</b> <t t-if="lang_is_ar">ريال</t><t t-else="">SAR</t></strong></div>
-                        <div data-tier-annual-row="1" hidden="hidden"><span><t t-if="lang_is_ar">السعر السنوي قبل الخصم</t><t t-else="">Annual price before discount</t></span><strong class="text-decoration-line-through"><b data-tier-annual-before="1">3588</b> <t t-if="lang_is_ar">ريال</t><t t-else="">SAR</t></strong></div>
-                        <div data-tier-annual-row="1" hidden="hidden"><span><t t-if="lang_is_ar">قيمة التوفير</t><t t-else="">You save</t></span><strong class="text-success"><b data-tier-saving="1">538.20</b> <t t-if="lang_is_ar">ريال</t><t t-else="">SAR</t></strong></div>
-                        <div class="cb-tier-total"><span><t t-if="lang_is_ar">الإجمالي</t><t t-else="">Total</t></span><strong><b data-tier-total="1">299</b> <t t-if="lang_is_ar">ريال</t><t t-else="">SAR</t> <small data-tier-period="1"><t t-if="lang_is_ar">شهريًا</t><t t-else="">monthly</t></small></strong></div>
+                        <div><span><t t-if="lang_is_ar">الإجمالي الشهري</t><t t-else="">Monthly total</t></span><strong><b data-tier-monthly="1">299</b> <t t-if="lang_is_ar">ريال/شهر</t><t t-else="">SAR/month</t></strong></div>
+                        <div class="cb-tier-total"><span><t t-if="lang_is_ar">تُفوتر سنوياً (12 شهراً)</t><t t-else="">Billed annually (12 months)</t></span><strong><b data-tier-total="1">3588</b> <t t-if="lang_is_ar">ريال/سنة</t><t t-else="">SAR/year</t></strong></div>
                     </div>
-                    <p class="text-center text-success fw-bold mt-3" data-tier-discount-note="1" hidden="hidden"><t t-if="lang_is_ar">خصم 15% عند الدفع السنوي</t><t t-else="">15% discount with annual billing</t></p>
-                    <a class="btn btn-primary btn-lg w-100 mt-3" data-tier-cta="1" href="/get-started?edition=community&amp;users=1&amp;billing=monthly"><t t-if="lang_is_ar">طلب الاشتراك</t><t t-else="">Request subscription</t></a>
+                    <a class="btn btn-primary btn-lg w-100 mt-3" data-tier-cta="1" href="/get-started?edition=community&amp;users=1&amp;billing=yearly"><t t-if="lang_is_ar">طلب الاشتراك</t><t t-else="">Request subscription</t></a>
                     <div class="cb-tier-legal mt-4">
                         <p><t t-if="lang_is_ar">Odoo Community بلا رسوم ترخيص من Odoo؛ قيمة الاشتراك مقابل الاستضافة والإدارة الفنية والنسخ الاحتياطي والدعم المشمول.</t><t t-else="">Odoo Community has no Odoo license fee; the subscription covers included hosting, technical management, backups, and support.</t></p>
                         <p><t t-if="lang_is_ar">تتضمن أسعار Enterprise إتاحة Odoo Enterprise عبر اشتراك الشريك، ولا تضاف رسوم ترخيص منفصلة إلا إذا نص عرض السعر على خلاف ذلك.</t><t t-else="">Enterprise prices include access through the partner subscription; no separate license fee is added unless the quotation states otherwise.</t></p>
@@ -115,8 +101,8 @@
                     <t t-foreach="plans" t-as="plan">
                         <t t-set="is_per_user" t-value="plan.pricing_mode == 'per_user' and plan.price_per_user > 0"/>
                         <t t-set="monthly_price" t-value="'%.0f' % (plan.price_per_user if is_per_user else plan.monthly_price)"/>
-                        <t t-set="yearly_per_month" t-value="'%.2f' % ((plan.price_per_user * 0.85) if is_per_user else (plan.get_effective_yearly_price() / 12))"/>
-                        <t t-set="yearly_total" t-value="'%.2f' % ((plan.price_per_user * 12 * 0.85) if is_per_user else plan.get_effective_yearly_price())"/>
+                        <t t-set="yearly_per_month" t-value="'%.2f' % (plan.price_per_user if is_per_user else (plan.get_effective_yearly_price() / 12))"/>
+                        <t t-set="yearly_total" t-value="'%.2f' % ((plan.price_per_user * 12) if is_per_user else plan.get_effective_yearly_price())"/>
                         <!-- The toggle above hides cards whose edition doesn't match. -->
                         <div t-attf-class="col-lg-4 col-md-6 cb-pricing-col"
                              t-att-data-edition="plan.edition or 'community'"
@@ -161,9 +147,9 @@
                                     <t t-if="lang_is_ar">اختر عدد المستخدمين عند التسجيل — تدفع فقط مقابل ما تحتاجه</t>
                                     <t t-else="">Pick your user count at signup — pay only for what you need</t>
                                 </div>
-                                <div class="js-yearly-note text-center small text-success mb-3" style="display:none;">
-                                    <t t-if="lang_is_ar">يُحصَّل سنوياً: <strong t-esc="yearly_total"/> ريال<t t-if="is_per_user"> / مستخدم</t> (خصم سنوي 15%)</t>
-                                    <t t-else="">Billed yearly: <strong t-esc="yearly_total"/> SAR<t t-if="is_per_user"> / user</t> (15% annual discount)</t>
+                                <div class="js-yearly-note text-center small text-muted mb-3">
+                                    <t t-if="lang_is_ar">تُفوتر سنوياً: <strong t-esc="yearly_total"/> ريال<t t-if="is_per_user"> / مستخدم</t> (قيمة 12 شهراً)</t>
+                                    <t t-else="">Billed annually: <strong t-esc="yearly_total"/> SAR<t t-if="is_per_user"> / user</t> (12 months)</t>
                                 </div>
 
                                 <ul class="list-unstyled mb-4">

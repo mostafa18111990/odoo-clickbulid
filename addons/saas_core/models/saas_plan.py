@@ -1,7 +1,10 @@
 from odoo import models, fields, api
 from odoo.exceptions import ValidationError
 
-ANNUAL_DISCOUNT_RATE = 0.15
+# Annual-only billing: plans are entered as a monthly price and the customer
+# is invoiced once a year for exactly 12 x monthly. No annual discount —
+# there is no monthly alternative to discount against.
+ANNUAL_DISCOUNT_RATE = 0.0
 TIER_PRICING = {
     'community': {1: 299.0, 2: 249.0, 3: 199.0},
     'enterprise': {1: 399.0, 2: 349.0, 3: 299.0},
@@ -83,12 +86,12 @@ class SaasPlan(models.Model):
 
     def get_effective_yearly_price(self):
         self.ensure_one()
-        # One annual policy everywhere: 15% off twelve monthly payments.
-        # The legacy override field is synchronized during module migration.
+        # Annual-only policy: exactly twelve times the displayed monthly rate.
+        # The legacy stored field is synchronized during module migration.
         return round(self.monthly_price * 12 * (1 - ANNUAL_DISCOUNT_RATE), 2)
 
     @api.model
-    def tiered_quote(self, edition, user_count, cycle='monthly'):
+    def tiered_quote(self, edition, user_count, cycle='yearly'):
         edition = edition if edition in TIER_PRICING else 'community'
         seats = max(1, min(int(user_count or 1), 500))
         tier = 1 if seats == 1 else 2 if seats == 2 else 3
@@ -97,12 +100,13 @@ class SaasPlan(models.Model):
         annual_before_discount = round(monthly_total * 12, 2)
         discount_amount = round(annual_before_discount * ANNUAL_DISCOUNT_RATE, 2)
         annual_total = round(annual_before_discount - discount_amount, 2)
-        normalized_cycle = cycle if cycle in ('monthly', 'yearly') else 'monthly'
+        normalized_cycle = cycle if cycle in ('monthly', 'yearly') else 'yearly'
         return {
             'edition': edition, 'users': seats, 'tier': tier,
             'unit_price': unit_price, 'monthly_total': monthly_total,
             'annual_before_discount': annual_before_discount,
-            'discount_rate': ANNUAL_DISCOUNT_RATE, 'discount_pct': 15.0,
+            'discount_rate': ANNUAL_DISCOUNT_RATE,
+            'discount_pct': round(ANNUAL_DISCOUNT_RATE * 100, 1),
             'discount_amount': discount_amount, 'annual_total': annual_total,
             'cycle': normalized_cycle,
             'total': annual_total if normalized_cycle == 'yearly' else monthly_total,
@@ -117,8 +121,8 @@ class SaasPlan(models.Model):
     def price_for_users(self, user_count, cycle='monthly'):
         """Price for the given seat count under this plan's pricing mode.
 
-        per_user: seats × price_per_user (yearly = twelve months less the
-        platform-wide 15% annual discount).
+        per_user: seats × price_per_user (the annual invoice is exactly
+        twelve months with no annual discount).
         flat: the classic plan price, seats ignored.
         """
         self.ensure_one()

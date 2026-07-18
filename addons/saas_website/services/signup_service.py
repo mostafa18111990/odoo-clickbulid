@@ -76,7 +76,9 @@ class SignupService:
         except (TypeError, ValueError):
             user_count = 0
         edition = data.get('edition') if data.get('edition') in ('community', 'enterprise') else None
-        billing_cycle = data.get('billing_cycle') if data.get('billing_cycle') in ('monthly', 'yearly') else 'monthly'
+        # Annual-only billing: the form shows the monthly price but every
+        # subscription is created and invoiced on a yearly cycle.
+        billing_cycle = 'yearly'
         submitted_plan = self.env['saas.plan'].sudo().browse(int(data['plan_id'])).exists() if data.get('plan_id') else None
         edition = edition or (submitted_plan.edition if submitted_plan else 'community')
         plan = self.env['saas.plan'].tier_plan_for(edition, user_count or 1)
