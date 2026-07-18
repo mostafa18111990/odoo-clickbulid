@@ -115,8 +115,8 @@
                     <t t-foreach="plans" t-as="plan">
                         <t t-set="is_per_user" t-value="plan.pricing_mode == 'per_user' and plan.price_per_user > 0"/>
                         <t t-set="monthly_price" t-value="'%.0f' % (plan.price_per_user if is_per_user else plan.monthly_price)"/>
-                        <t t-set="yearly_per_month" t-value="'%.0f' % ((plan.price_per_user * 10 / 12) if is_per_user else (plan.get_effective_yearly_price() / 12))"/>
-                        <t t-set="yearly_total" t-value="'%.0f' % ((plan.price_per_user * 10) if is_per_user else plan.get_effective_yearly_price())"/>
+                        <t t-set="yearly_per_month" t-value="'%.2f' % ((plan.price_per_user * 0.85) if is_per_user else (plan.get_effective_yearly_price() / 12))"/>
+                        <t t-set="yearly_total" t-value="'%.2f' % ((plan.price_per_user * 12 * 0.85) if is_per_user else plan.get_effective_yearly_price())"/>
                         <!-- The toggle above hides cards whose edition doesn't match. -->
                         <div t-attf-class="col-lg-4 col-md-6 cb-pricing-col"
                              t-att-data-edition="plan.edition or 'community'"
@@ -162,8 +162,8 @@
                                     <t t-else="">Pick your user count at signup — pay only for what you need</t>
                                 </div>
                                 <div class="js-yearly-note text-center small text-success mb-3" style="display:none;">
-                                    <t t-if="lang_is_ar">يُحصَّل سنوياً: <strong t-esc="yearly_total"/> ريال<t t-if="is_per_user"> / مستخدم</t> (شهران مجاناً)</t>
-                                    <t t-else="">Billed yearly: <strong t-esc="yearly_total"/> SAR<t t-if="is_per_user"> / user</t> (2 months free)</t>
+                                    <t t-if="lang_is_ar">يُحصَّل سنوياً: <strong t-esc="yearly_total"/> ريال<t t-if="is_per_user"> / مستخدم</t> (خصم سنوي 15%)</t>
+                                    <t t-else="">Billed yearly: <strong t-esc="yearly_total"/> SAR<t t-if="is_per_user"> / user</t> (15% annual discount)</t>
                                 </div>
 
                                 <ul class="list-unstyled mb-4">

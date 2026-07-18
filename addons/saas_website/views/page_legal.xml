@@ -82,6 +82,10 @@
                                 <h2 class="h5 fw-bold mt-4">6. Governing Law</h2>
                                 <p>These terms are governed by the laws of the Kingdom of Saudi Arabia, and Saudi courts shall have exclusive jurisdiction over any disputes.</p>
                             </div>
+                            <div class="alert alert-light border mt-4" role="note">
+                                <p class="mb-0" t-if="lang_is_ar">سياسة الدفع السنوي: يُحتسب السعر السنوي بخصم ثابت قدره 15% من إجمالي اثني عشر شهرًا بالسعر الشهري الساري. لا تُقدَّم هذه السياسة على أنها «شهران مجانًا»، وتُطبق المعادلة نفسها في بطاقات الأسعار والحاسبة وعند إنشاء الاشتراك أو تجديده.</p>
+                                <p class="mb-0" t-else="">Annual billing policy: the annual price is calculated as a fixed 15% discount from twelve months at the current monthly price. This policy is not represented as “two months free”, and the same formula applies to pricing cards, the calculator, and subscription creation or renewal.</p>
+                            </div>
                         </t>
 
                         <!-- PRIVACY POLICY -->

@@ -23,3 +23,16 @@ class TestTierPricing(TransactionCase):
         self.assertEqual(pricing.tiered_quote('community', 3)['unit_price'], 199)
         self.assertEqual(pricing.tiered_quote('enterprise', 2)['unit_price'], 349)
         self.assertEqual(pricing.tiered_quote('enterprise', 3)['unit_price'], 299)
+
+    def test_flat_and_usage_prices_use_exact_fifteen_percent_discount(self):
+        plan = self.env['saas.plan'].create({
+            'name': 'Annual policy test', 'code': 'annual-policy-test',
+            'monthly_price': 299.0, 'yearly_price': 2990.0,
+            'extra_user_price': 10.0, 'extra_storage_price': 2.0,
+        })
+        self.assertEqual(plan.get_effective_yearly_price(), 3049.80)
+        self.assertEqual(plan.yearly_discount_pct, 15.0)
+        bill = plan.calculate_bill('yearly', extra_users=1, extra_gb=1)
+        self.assertEqual(bill['base'], 3049.80)
+        self.assertEqual(bill['extra_users'], 102.0)
+        self.assertEqual(bill['extra_storage'], 20.4)

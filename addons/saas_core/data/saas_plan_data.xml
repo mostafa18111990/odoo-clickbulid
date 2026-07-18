@@ -6,7 +6,7 @@
             <field name="name">Starter</field>
             <field name="code">starter</field>
             <field name="monthly_price">149.00</field>
-            <field name="yearly_price">1490.00</field>
+            <field name="yearly_price">1519.80</field>
             <field name="trial_days">14</field>
             <field name="max_users">3</field>
             <field name="max_storage_mb">2048</field>
@@ -21,7 +21,7 @@
             <field name="name">Business</field>
             <field name="code">business</field>
             <field name="monthly_price">349.00</field>
-            <field name="yearly_price">3490.00</field>
+            <field name="yearly_price">3559.80</field>
             <field name="trial_days">14</field>
             <field name="max_users">10</field>
             <field name="max_storage_mb">10240</field>
@@ -38,7 +38,7 @@
             <field name="name">Enterprise</field>
             <field name="code">enterprise</field>
             <field name="monthly_price">749.00</field>
-            <field name="yearly_price">7490.00</field>
+            <field name="yearly_price">7639.80</field>
             <field name="trial_days">14</field>
             <field name="max_users">9999</field>
             <field name="max_storage_mb">51200</field>
@@ -65,7 +65,7 @@
             <field name="enterprise_license_cost_per_user">117.00</field>
             <field name="enterprise_modules">studio,helpdesk,documents,sign</field>
             <field name="monthly_price">599.00</field>
-            <field name="yearly_price">5990.00</field>
+            <field name="yearly_price">6109.80</field>
             <field name="trial_days">14</field>
             <field name="max_users">3</field>
             <field name="max_storage_mb">5120</field>
@@ -83,7 +83,7 @@
             <field name="enterprise_license_cost_per_user">117.00</field>
             <field name="enterprise_modules">studio,helpdesk,documents,sign,subscriptions,marketing_automation,project_forecast</field>
             <field name="monthly_price">1199.00</field>
-            <field name="yearly_price">11990.00</field>
+            <field name="yearly_price">12229.80</field>
             <field name="trial_days">14</field>
             <field name="max_users">10</field>
             <field name="max_storage_mb">20480</field>
@@ -103,7 +103,7 @@
             <field name="enterprise_license_cost_per_user">117.00</field>
             <field name="enterprise_modules">studio,helpdesk,documents,sign,subscriptions,marketing_automation,project_forecast,industry_fsm,quality,mrp_plm,planning,timesheet_grid,voip</field>
             <field name="monthly_price">2499.00</field>
-            <field name="yearly_price">24990.00</field>
+            <field name="yearly_price">25489.80</field>
             <field name="trial_days">14</field>
             <field name="max_users">9999</field>
             <field name="max_storage_mb">102400</field>

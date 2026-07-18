@@ -62,13 +62,14 @@ class SaasPlan(models.Model):
     @api.depends('monthly_price')
     def _compute_yearly_price(self):
         for rec in self:
-            rec.yearly_price_computed = round(rec.monthly_price * 10, 2)
+            rec.yearly_price_computed = round(
+                rec.monthly_price * 12 * (1 - ANNUAL_DISCOUNT_RATE), 2)
 
     @api.depends('monthly_price', 'yearly_price', 'yearly_price_computed')
     def _compute_yearly_discount(self):
         for rec in self:
             annual_monthly = rec.monthly_price * 12
-            effective_yearly = rec.yearly_price or rec.yearly_price_computed
+            effective_yearly = rec.yearly_price_computed
             if annual_monthly > 0 and effective_yearly > 0:
                 rec.yearly_discount_pct = round((1 - effective_yearly / annual_monthly) * 100, 1)
             else:
@@ -82,7 +83,9 @@ class SaasPlan(models.Model):
 
     def get_effective_yearly_price(self):
         self.ensure_one()
-        return self.yearly_price if self.yearly_price > 0 else self.yearly_price_computed
+        # One annual policy everywhere: 15% off twelve monthly payments.
+        # The legacy override field is synchronized during module migration.
+        return round(self.monthly_price * 12 * (1 - ANNUAL_DISCOUNT_RATE), 2)
 
     @api.model
     def tiered_quote(self, edition, user_count, cycle='monthly'):
@@ -114,8 +117,8 @@ class SaasPlan(models.Model):
     def price_for_users(self, user_count, cycle='monthly'):
         """Price for the given seat count under this plan's pricing mode.
 
-        per_user: seats × price_per_user (yearly = ×10, two months free —
-        same convention as the flat yearly price).
+        per_user: seats × price_per_user (yearly = twelve months less the
+        platform-wide 15% annual discount).
         flat: the classic plan price, seats ignored.
         """
         self.ensure_one()
@@ -135,8 +138,8 @@ class SaasPlan(models.Model):
         extra_users_cost = max(0, extra_users) * self.extra_user_price
         extra_storage_cost = max(0, extra_gb) * self.extra_storage_price
         if billing_cycle == 'yearly':
-            extra_users_cost *= 10
-            extra_storage_cost *= 10
+            extra_users_cost *= 12 * (1 - ANNUAL_DISCOUNT_RATE)
+            extra_storage_cost *= 12 * (1 - ANNUAL_DISCOUNT_RATE)
         total = base + extra_users_cost + extra_storage_cost
         return {'base': base, 'extra_users': extra_users_cost, 'extra_storage': extra_storage_cost,
                 'setup_fee': self.setup_fee, 'total': total, 'currency': 'SAR', 'cycle': billing_cycle}
