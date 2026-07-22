@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="res_config_settings_view_form_demo" model="ir.ui.view">
+        <field name="name">res.config.settings.view.form.enterprise.demo</field>
+        <field name="model">res.config.settings</field>
+        <field name="inherit_id" ref="base.res_config_settings_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form" position="inside">
+                <app string="Enterprise Demos" name="saas_demo_management" groups="saas_core.group_saas_super_admin">
+                    <block title="Enterprise Demo Provisioning">
+                        <setting string="Allow Enterprise provisioning" help="Enable only after the Enterprise provisioner and warm pool pass health checks."><field name="demo_provision_enabled"/></setting>
+                        <setting string="Default duration"><field name="demo_default_duration_days"/></setting>
+                        <setting string="Anti-abuse request limit"><field name="demo_max_requests_per_15_minutes"/></setting>
+                    </block>
+                    <block title="Telegram Approval">
+                        <setting string="Enable Telegram notifications"><field name="demo_telegram_enabled"/></setting>
+                        <setting string="Bot credentials"><div class="content-group"><field name="demo_telegram_bot_token" password="True"/><field name="demo_telegram_chat_id"/></div></setting>
+                        <setting string="Authorized approvers"><field name="demo_telegram_allowed_user_ids"/></setting>
+                        <setting string="Webhook security"><div class="content-group"><field name="demo_telegram_webhook_secret" password="True"/><field name="demo_callback_signing_secret" password="True"/></div></setting>
+                    </block>
+                </app>
+            </xpath>
+        </field>
+    </record>
+</odoo>

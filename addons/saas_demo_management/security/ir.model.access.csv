@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_saas_demo_request_manager,saas.demo.request manager,model_saas_demo_request,saas_tenant_manager.group_saas_manager,1,1,1,0
+access_saas_demo_request_admin,saas.demo.request admin,model_saas_demo_request,saas_tenant_manager.group_saas_admin,1,1,1,1
+access_saas_demo_template_manager,saas.demo.template manager,model_saas_demo_template,saas_tenant_manager.group_saas_manager,1,0,0,0
+access_saas_demo_template_admin,saas.demo.template admin,model_saas_demo_template,saas_tenant_manager.group_saas_admin,1,1,1,1

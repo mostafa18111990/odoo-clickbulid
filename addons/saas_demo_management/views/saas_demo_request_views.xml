@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_demo_request_list" model="ir.ui.view">
+        <field name="name">saas.demo.request.list</field>
+        <field name="model">saas.demo.request</field>
+        <field name="arch" type="xml">
+            <list string="Enterprise Demo Requests" decoration-success="state in ('ready', 'active')" decoration-danger="state in ('failed', 'rejected')" decoration-warning="state in ('pending_review', 'needs_info')">
+                <field name="name"/><field name="create_date"/><field name="company_name"/>
+                <field name="contact_name"/><field name="sector"/><field name="user_count"/>
+                <field name="edition"/><field name="state"/><field name="telegram_status"/>
+                <field name="tenant_id" optional="show"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_saas_demo_request_search" model="ir.ui.view">
+        <field name="name">saas.demo.request.search</field>
+        <field name="model">saas.demo.request</field>
+        <field name="arch" type="xml">
+            <search string="Enterprise Demo Requests">
+                <field name="name"/><field name="company_name"/><field name="email"/><field name="phone"/>
+                <filter name="awaiting" string="Awaiting Review" domain="[('state', 'in', ('new', 'pending_review', 'needs_info'))]"/>
+                <filter name="approved" string="Approved" domain="[('state', '=', 'approved')]"/>
+                <filter name="in_progress" string="Provisioning" domain="[('state', 'in', ('queued', 'provisioning'))]"/>
+                <filter name="ready" string="Ready / Active" domain="[('state', 'in', ('ready', 'active', 'extended'))]"/>
+                <separator/><filter name="group_sector" string="Sector" context="{'group_by': 'sector'}"/>
+                <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+            </search>
+        </field>
+    </record>
+    <record id="view_saas_demo_request_form" model="ir.ui.view">
+        <field name="name">saas.demo.request.form</field>
+        <field name="model">saas.demo.request</field>
+        <field name="arch" type="xml">
+            <form string="Enterprise Demo Request">
+                <header>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary" invisible="state not in ('new', 'pending_review', 'needs_info')"/>
+                    <button name="action_needs_info" type="object" string="Need Information" invisible="state not in ('new', 'pending_review')"/>
+                    <button name="action_reject" type="object" string="Reject" class="btn-secondary" invisible="state not in ('new', 'pending_review', 'needs_info', 'approved')" confirm="Reject this demo request?"/>
+                    <button name="action_provision" type="object" string="Provision Enterprise Demo" class="btn-primary" invisible="state != 'approved'" confirm="Queue an Enterprise demo database for this request?"/>
+                    <button name="action_mark_ready" type="object" string="Mark Ready" invisible="state != 'provisioning'"/>
+                    <button name="action_extend" type="object" string="Extend 7 Days" invisible="state not in ('ready', 'active', 'expired', 'extended')"/>
+                    <field name="state" widget="statusbar" statusbar_visible="new,pending_review,approved,queued,provisioning,ready,active,expired"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+                    <group>
+                        <group string="Customer">
+                            <field name="contact_name"/><field name="company_name"/><field name="email" widget="email"/>
+                            <field name="phone" widget="phone"/><field name="city"/><field name="country_code"/>
+                        </group>
+                        <group string="Enterprise Demo">
+                            <field name="edition"/><field name="sector"/><field name="template_id"/>
+                            <field name="user_count"/><field name="branch_count"/><field name="company_size"/>
+                            <field name="duration_days"/><field name="requested_subdomain"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Requirements">
+                            <group><field name="requested_apps"/><field name="notes"/></group>
+                            <group><field name="preferred_contact_channel"/><field name="preferred_contact_time"/><field name="privacy_consent"/></group>
+                        </page>
+                        <page string="Provisioning">
+                            <group><field name="tenant_id"/><field name="expires_at"/><field name="provisioning_error"/></group>
+                        </page>
+                        <page string="Decision &amp; Telegram">
+                            <group><field name="decision_by_id"/><field name="decision_at"/><field name="rejection_reason"/></group>
+                            <group><field name="telegram_status"/><field name="telegram_chat_id"/><field name="telegram_message_id"/><field name="telegram_error"/></group>
+                        </page>
+                        <page string="Attribution">
+                            <group><field name="utm_source"/><field name="utm_medium"/><field name="utm_campaign"/><field name="landing_url"/></group>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_saas_demo_request" model="ir.actions.act_window">
+        <field name="name">Enterprise Demo Requests</field><field name="res_model">saas.demo.request</field>
+        <field name="view_mode">list,form</field><field name="search_view_id" ref="view_saas_demo_request_search"/>
+        <field name="context">{'search_default_awaiting': 1}</field>
+    </record>
+    <menuitem id="menu_saas_demo_root" name="Enterprise Demos" parent="saas_core.menu_saas_root" sequence="12" groups="saas_tenant_manager.group_saas_manager"/>
+    <menuitem id="menu_saas_demo_requests" name="Demo Requests" parent="menu_saas_demo_root" action="action_saas_demo_request" sequence="10"/>
+</odoo>

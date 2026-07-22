@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="rule_demo_request_manager" model="ir.rule">
+        <field name="name">Demo Requests: SaaS Managers</field>
+        <field name="model_id" ref="model_saas_demo_request"/>
+        <field name="groups" eval="[(4, ref('saas_tenant_manager.group_saas_manager'))]"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="perm_read" eval="True"/>
+        <field name="perm_write" eval="True"/>
+        <field name="perm_create" eval="True"/>
+        <field name="perm_unlink" eval="False"/>
+    </record>
+</odoo>
