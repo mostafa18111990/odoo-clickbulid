@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_tenant_form_demo_fields" model="ir.ui.view">
+        <field name="name">saas.tenant.form.demo.fields</field>
+        <field name="model">saas.tenant</field>
+        <field name="inherit_id" ref="saas_tenant_manager.view_saas_tenant_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//sheet" position="inside">
+                <group string="Enterprise Demo" invisible="not is_demo">
+                    <group><field name="is_demo"/><field name="demo_request_id"/><field name="demo_template_id"/></group>
+                    <group><field name="demo_expires_at"/><field name="demo_sandbox_state"/></group>
+                    <field name="demo_module_codes" colspan="2"/>
+                </group>
+            </xpath>
+        </field>
+    </record>
+</odoo>

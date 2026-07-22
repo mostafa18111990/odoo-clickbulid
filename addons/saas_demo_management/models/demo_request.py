@@ -77,6 +77,12 @@ class SaasDemoRequest(models.Model):
     decision_at = fields.Datetime(readonly=True, copy=False)
     rejection_reason = fields.Text(copy=False)
     provisioning_error = fields.Text(readonly=True, copy=False)
+    health_status = fields.Selection([
+        ('pending', 'Pending Check'), ('healthy', 'Healthy'),
+        ('warning', 'Warning'), ('failed', 'Failed'),
+    ], default='pending', readonly=True, copy=False, tracking=True)
+    health_checked_at = fields.Datetime(readonly=True, copy=False)
+    health_summary = fields.Char(readonly=True, copy=False)
     telegram_chat_id = fields.Char(readonly=True, copy=False)
     telegram_message_id = fields.Char(readonly=True, copy=False)
     telegram_status = fields.Selection([
@@ -200,10 +206,19 @@ class SaasDemoRequest(models.Model):
                 industry=CORE_INDUSTRY.get(self.sector, 'other'), user_count=self.user_count)
             if tenant.edition != 'enterprise':
                 raise UserError(_('Provisioning guard rejected a non-Enterprise tenant.'))
+            expiration = fields.Datetime.now() + timedelta(days=self.duration_days)
+            tenant.sudo().with_context(bypass_fsm=True).write({
+                'is_demo': True,
+                'demo_request_id': self.id,
+                'demo_template_id': self.template_id.id,
+                'demo_expires_at': expiration,
+                'demo_module_codes': self.template_id.module_codes or '',
+                'demo_sandbox_state': 'pending',
+            })
             self.write({'tenant_id': tenant.id, 'requested_subdomain': tenant.subdomain,
                         'state': 'provisioning'})
             result = tenant.sudo().action_provision()
-            self.expires_at = fields.Datetime.now() + timedelta(days=self.duration_days)
+            self.expires_at = expiration
             self.message_post(body=_('Enterprise provisioning queued for %s.', tenant.subdomain))
             return result
         except Exception as exc:
@@ -219,6 +234,50 @@ class SaasDemoRequest(models.Model):
                 fields.Datetime.now() + timedelta(days=record.duration_days)))
         return True
 
+    def action_mark_active(self):
+        for record in self:
+            if record.state not in ('ready', 'extended'):
+                raise UserError(_('Only a ready demo can be activated.'))
+            if record.health_status != 'healthy':
+                raise UserError(_('Run a successful readiness check before activation.'))
+            record._set_state('active')
+        return True
+
+    def action_refresh_health(self):
+        for record in self:
+            tenant = record.tenant_id
+            instance = (tenant.api_instance_id or '') if tenant else ''
+            if not tenant or tenant.edition != 'enterprise' or not instance or instance.startswith('pending:'):
+                record.write({
+                    'health_status': 'pending',
+                    'health_checked_at': fields.Datetime.now(),
+                    'health_summary': _('Enterprise database is not ready yet.'),
+                })
+                continue
+            url = 'https://%s.odoo.clickbulid.com/web/login' % tenant.subdomain
+            try:
+                req = urllib.request.Request(url, headers={'User-Agent': 'ClickBuild-Demo-Health/1.0'})
+                with urllib.request.urlopen(req, timeout=12) as response:
+                    status = int(response.status or 0)
+                healthy = 200 <= status < 400
+                sandbox_ok = tenant.demo_sandbox_state == 'enforced'
+                record.write({
+                    'health_status': 'healthy' if healthy and sandbox_ok else 'warning',
+                    'health_checked_at': fields.Datetime.now(),
+                    'health_summary': (
+                        _('Login is reachable and demo sandbox is enforced.')
+                        if healthy and sandbox_ok else
+                        _('Login is reachable, but demo sandbox confirmation is pending.')),
+                })
+            except Exception as exc:
+                _logger.warning('Demo health check failed for %s: %s', record.name, exc)
+                record.write({
+                    'health_status': 'failed',
+                    'health_checked_at': fields.Datetime.now(),
+                    'health_summary': _('Demo login health check failed.'),
+                })
+        return True
+
     def action_extend(self):
         for record in self:
             if record.state not in ('ready', 'active', 'expired', 'extended'):
@@ -226,7 +285,35 @@ class SaasDemoRequest(models.Model):
             base = max(record.expires_at or fields.Datetime.now(), fields.Datetime.now())
             record._set_state('extended', expires_at=base + timedelta(days=7))
             if record.tenant_id:
+                record.tenant_id.sudo().with_context(bypass_fsm=True).write({
+                    'demo_expires_at': record.expires_at,
+                })
                 record.tenant_id.sudo().action_extend_trial()
+        return True
+
+    @api.model
+    def cron_refresh_demo_health(self):
+        records = self.search([
+            ('state', 'in', ('provisioning', 'ready', 'active', 'extended')),
+            ('tenant_id', '!=', False),
+        ], limit=20)
+        records.action_refresh_health()
+
+    @api.model
+    def cron_expire_demos(self):
+        now = fields.Datetime.now()
+        records = self.search([
+            ('state', 'in', ('ready', 'active', 'extended')),
+            ('expires_at', '!=', False), ('expires_at', '<=', now),
+        ])
+        for record in records:
+            record._set_state('expired')
+            tenant = record.tenant_id
+            if tenant and tenant.state in ('trial', 'active', 'grace_period'):
+                try:
+                    tenant.sudo().action_suspend()
+                except Exception as exc:
+                    _logger.warning('Unable to suspend expired demo %s: %s', record.name, exc)
         return True
 
     def _callback_signature(self, action):

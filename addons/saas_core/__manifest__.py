@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Core',
-    'version': '19.0.1.4.0',
+    'version': '19.0.1.5.0',
     'category': 'SaaS',
     'summary': 'Core foundation for ClickBuild SaaS Platform',
     'description': 'Core foundation: event bus, audit trail, lifecycle FSM, provisioning bridge.',

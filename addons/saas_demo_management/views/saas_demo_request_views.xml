@@ -38,6 +38,8 @@
                     <button name="action_reject" type="object" string="Reject" class="btn-secondary" invisible="state not in ('new', 'pending_review', 'needs_info', 'approved')" confirm="Reject this demo request?"/>
                     <button name="action_provision" type="object" string="Provision Enterprise Demo" class="btn-primary" invisible="state != 'approved'" confirm="Queue an Enterprise demo database for this request?"/>
                     <button name="action_mark_ready" type="object" string="Mark Ready" invisible="state != 'provisioning'"/>
+                    <button name="action_refresh_health" type="object" string="Check Readiness" invisible="state not in ('provisioning', 'ready', 'active', 'extended')"/>
+                    <button name="action_mark_active" type="object" string="Activate Demo" class="btn-primary" invisible="state not in ('ready', 'extended')"/>
                     <button name="action_extend" type="object" string="Extend 7 Days" invisible="state not in ('ready', 'active', 'expired', 'extended')"/>
                     <field name="state" widget="statusbar" statusbar_visible="new,pending_review,approved,queued,provisioning,ready,active,expired"/>
                 </header>
@@ -60,7 +62,7 @@
                             <group><field name="preferred_contact_channel"/><field name="preferred_contact_time"/><field name="privacy_consent"/></group>
                         </page>
                         <page string="Provisioning">
-                            <group><field name="tenant_id"/><field name="expires_at"/><field name="provisioning_error"/></group>
+                            <group><field name="tenant_id"/><field name="expires_at"/><field name="health_status"/><field name="health_checked_at"/><field name="health_summary"/><field name="provisioning_error"/></group>
                         </page>
                         <page string="Decision &amp; Telegram">
                             <group><field name="decision_by_id"/><field name="decision_at"/><field name="rejection_reason"/></group>

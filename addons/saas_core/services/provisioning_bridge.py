@@ -334,6 +334,9 @@ class ProvisioningBridgeService:
         edition = (tenant.edition
                    or (tenant.plan_id.edition if tenant.plan_id else None)
                    or 'community')
+        is_demo = bool(getattr(tenant, 'is_demo', False))
+        if is_demo and edition != 'enterprise':
+            raise UserError('Demo provisioning is restricted to Odoo Enterprise.')
         # For Enterprise plans the admin may have curated a specific module set
         # (Studio, Helpdesk, Subscriptions, Sign…). Append these to the base
         # modules list so the provisioner installs them on first boot.
@@ -343,6 +346,17 @@ class ProvisioningBridgeService:
             for m in ee_modules:
                 if m not in modules:
                     modules.append(m)
+        # Sector demo templates can request a curated Enterprise application
+        # set in addition to the commercial plan defaults. The host-side
+        # official-module allowlist still filters every requested module.
+        if is_demo:
+            demo_modules = [
+                m.strip() for m in (getattr(tenant, 'demo_module_codes', '') or '').split(',')
+                if m.strip()
+            ]
+            for module in demo_modules:
+                if module not in modules:
+                    modules.append(module)
         # Accounting + country localization. The customer's chosen country
         # drives which localization (chart of accounts, taxes, e-invoicing) is
         # installed; Saudi tenants get ZATCA e-invoicing. Full Accounting Kit is
@@ -409,6 +423,11 @@ class ProvisioningBridgeService:
             # they stay licensed under the partner's Odoo contract.
             'enterprise_code': (self.config.odoo_enterprise_code or '')
             if edition == 'enterprise' and 'odoo_enterprise_code' in self.config._fields else '',
+            # Demo isolation metadata. The host provisioner applies sandbox
+            # restrictions inside the tenant before exposing its final URL.
+            'is_demo': is_demo,
+            'demo_request_id': getattr(getattr(tenant, 'demo_request_id', None), 'id', 0) or 0,
+            'demo_expires_at': str(getattr(tenant, 'demo_expires_at', '') or ''),
         }
         with open(req_path, 'w') as f:
             json.dump(payload, f, ensure_ascii=False)

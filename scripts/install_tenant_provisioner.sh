@@ -43,6 +43,8 @@ LANG=$(read_json language)
 EDITION=$(read_json edition)
 PLAN_CODE=$(read_json plan_code)
 COUNTRY=$(read_json customer_country)
+IS_DEMO=$(read_json is_demo)
+DEMO_EXPIRES_AT=$(read_json demo_expires_at)
 # Pick the right container + Postgres role based on edition. Community
 # tenants run on odoo_saas_app (db_user odoo_community); Enterprise tenants
 # run on odoo_saas_ent (db_user odoo_enterprise). The DB MUST be owned by the
@@ -269,6 +271,8 @@ docker exec \
     -e SAAS_CLONED="$CLONED" \
     -e SAAS_MAX_USERS="${MAX_USERS:-0}" \
     -e SAAS_ENTERPRISE_CODE="$ENTERPRISE_CODE" \
+    -e SAAS_IS_DEMO="${IS_DEMO:-false}" \
+    -e SAAS_DEMO_EXPIRES_AT="$DEMO_EXPIRES_AT" \
     "$ODOO_CONTAINER" python3 -c '
 import os, odoo
 from odoo.tools import config
@@ -295,6 +299,21 @@ with reg.cursor() as cr:
     ent_code = (os.environ.get("SAAS_ENTERPRISE_CODE") or "").strip()
     if ent_code:
         env["ir.config_parameter"].sudo().set_param("database.enterprise_code", ent_code)
+    # Demo sandbox: never allow a trial database to contact real customers or
+    # charge real payment methods. These restrictions are applied before the
+    # temporary database is renamed to its public subdomain.
+    is_demo = (os.environ.get("SAAS_IS_DEMO") or "").strip().lower() in ("1", "true", "yes")
+    if is_demo:
+        icp = env["ir.config_parameter"].sudo()
+        icp.set_param("saas.demo_mode", "true")
+        icp.set_param("saas.demo.outbound_blocked", "true")
+        icp.set_param("saas.demo.expires_at", os.environ.get("SAAS_DEMO_EXPIRES_AT") or "")
+        if "ir.mail_server" in env:
+            env["ir.mail_server"].sudo().search([]).write({"active": False})
+        if "payment.provider" in env:
+            providers = env["payment.provider"].sudo().search([("state", "!=", "disabled")])
+            if providers:
+                providers.write({"state": "disabled"})
     admin = env["res.users"].browse(2)
     admin.write({
         "login": os.environ["SAAS_ADMIN_EMAIL"],
@@ -391,10 +410,13 @@ with reg.cursor() as cr:
     env = odoo.api.Environment(cr, 1, {})
     tenant = env["saas.tenant"].browse(int(os.environ["SAAS_TENANT_ID"]))
     if tenant.exists():
-        tenant.with_context(bypass_fsm=True).write({
+        tenant_values = {
             "api_instance_id": os.environ["SAAS_DB"],
             "state": "trial",
-        })
+        }
+        if "demo_sandbox_state" in tenant._fields and getattr(tenant, "is_demo", False):
+            tenant_values["demo_sandbox_state"] = "enforced"
+        tenant.with_context(bypass_fsm=True).write(tenant_values)
         jobs = env["saas.provisioning.job"].search([
             ("tenant_id", "=", tenant.id),
             ("job_type", "=", "provision"),
