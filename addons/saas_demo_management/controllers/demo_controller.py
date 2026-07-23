@@ -1,5 +1,7 @@
 import hashlib
+import hmac
 import re
+import secrets
 from datetime import timedelta
 
 from odoo import fields, http
@@ -9,6 +11,31 @@ from odoo.addons.saas_demo_management.models.demo_template import SECTOR_SELECTI
 
 
 class SaasDemoWebsite(http.Controller):
+    SESSION_KEY = 'saas_demo_public_status'
+
+    def _bind_demo_to_session(self, demo):
+        raw_token = secrets.token_urlsafe(32)
+        demo.sudo().write({
+            'public_status_token_hash': hashlib.sha256(
+                raw_token.encode('utf-8')).hexdigest(),
+        })
+        request.session[self.SESSION_KEY] = {
+            'demo_id': demo.id,
+            'token': raw_token,
+        }
+
+    def _session_demo(self):
+        session_data = request.session.get(self.SESSION_KEY) or {}
+        demo_id = session_data.get('demo_id')
+        raw_token = session_data.get('token') or ''
+        if not isinstance(demo_id, int) or not raw_token:
+            return request.env['saas.demo.request']
+        demo = request.env['saas.demo.request'].sudo().browse(demo_id).exists()
+        supplied_hash = hashlib.sha256(raw_token.encode('utf-8')).hexdigest()
+        if not demo or not demo.public_status_token_hash or not hmac.compare_digest(
+                supplied_hash, demo.public_status_token_hash):
+            return request.env['saas.demo.request']
+        return demo
 
     @http.route('/demo/request', type='http', auth='public', website=True, sitemap=True)
     def demo_request(self, **kw):
@@ -90,9 +117,82 @@ class SaasDemoWebsite(http.Controller):
             'source_fingerprint': fingerprint,
             'duration_days': template.default_duration_days if template else 14})
         demo.action_submit_for_review()
+        self._bind_demo_to_session(demo)
         return request.redirect('/demo/request/success')
 
     @http.route('/demo/request/success', type='http', auth='public', website=True,
                 sitemap=False)
     def demo_request_success(self, **kw):
-        return request.render('saas_demo_management.page_demo_request_success', {})
+        demo = self._session_demo()
+        response = request.render('saas_demo_management.page_demo_request_success', {
+            'has_demo_status': bool(demo),
+        })
+        response.headers['Cache-Control'] = 'no-store, private'
+        response.headers['Referrer-Policy'] = 'no-referrer'
+        return response
+
+    @http.route('/demo/request/status.json', type='http', auth='public',
+                methods=['GET'], csrf=False, sitemap=False)
+    def demo_request_status(self, **kw):
+        demo = self._session_demo()
+        if not demo:
+            response = request.make_json_response(
+                {'ok': False, 'error': 'not_found'}, status=404)
+            response.headers['Cache-Control'] = 'no-store, private'
+            return response
+
+        state_messages = {
+            'new': ('received', 10),
+            'pending_review': ('pending_review', 20),
+            'needs_info': ('needs_info', 20),
+            'approved': ('approved', 35),
+            'queued': ('queued', 45),
+            'provisioning': ('provisioning', 65),
+            'ready': ('checking', 85),
+            'active': ('ready', 100),
+            'extended': ('ready', 100),
+            'rejected': ('rejected', 100),
+            'failed': ('failed', 100),
+            'expired': ('expired', 100),
+            'suspended': ('expired', 100),
+            'deleted': ('expired', 100),
+            'converted': ('converted', 100),
+        }
+        status_code, progress = state_messages.get(demo.state, ('processing', 30))
+        tenant = demo.tenant_id
+        is_ready = bool(
+            tenant
+            and demo.state in ('ready', 'active', 'extended')
+            and demo.health_status == 'healthy'
+            and tenant.demo_sandbox_state == 'enforced'
+            and tenant.api_instance_id
+            and not tenant.api_instance_id.startswith('pending:')
+            and tenant.admin_login
+            and tenant.admin_password
+        )
+        payload = {
+            'ok': True,
+            'request_name': demo.name,
+            'state': demo.state,
+            'status_code': 'ready' if is_ready else status_code,
+            'progress': 100 if is_ready else progress,
+            'terminal': demo.state in (
+                'rejected', 'failed', 'expired', 'suspended',
+                'deleted', 'converted'),
+            'ready': is_ready,
+        }
+        if is_ready:
+            payload['credentials'] = {
+                'url': 'https://%s.odoo.clickbulid.com/web/login' % tenant.subdomain,
+                'username': tenant.admin_login,
+                'password': tenant.admin_password,
+                'expires_at': fields.Datetime.to_string(
+                    demo.expires_at or tenant.demo_expires_at),
+            }
+            if not demo.credentials_revealed_at:
+                demo.sudo().write({'credentials_revealed_at': fields.Datetime.now()})
+        response = request.make_json_response(payload)
+        response.headers['Cache-Control'] = 'no-store, private'
+        response.headers['Pragma'] = 'no-cache'
+        response.headers['Referrer-Policy'] = 'no-referrer'
+        return response

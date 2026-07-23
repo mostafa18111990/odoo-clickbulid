@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Enterprise Demo Management',
-    'version': '19.0.1.2.0',
+    'version': '19.0.1.3.0',
     'category': 'SaaS',
     'summary': 'Enterprise demos with Telegram approvals and WhatsApp delivery',
     'author': 'Click Build Information Technology Company',
@@ -21,6 +21,7 @@
     'assets': {
         'web.assets_frontend': [
             'saas_demo_management/static/src/css/demo_request.css',
+            'saas_demo_management/static/src/js/demo_status.js',
         ],
     },
     'installable': True,

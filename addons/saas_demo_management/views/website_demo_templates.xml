@@ -67,12 +67,73 @@
     </template>
 
     <template id="page_demo_request_success" name="Enterprise Demo Request Received">
-        <t t-call="website.layout"><main class="cb-demo-page py-5"><div class="container"><div class="cb-demo-success mx-auto text-center shadow-sm">
-            <div class="cb-demo-success__icon"><i class="fa fa-check"/></div>
-            <span class="cb-demo-badge">Odoo Enterprise</span>
-            <h1 class="mt-3">تم استلام طلب الديمو</h1>
-            <p class="lead text-muted">سيصل الطلب إلى فريق الإدارة للمراجعة. بعد الموافقة سنجهز بيئة Enterprise آمنة ونرسل تفاصيل المتابعة عبر بيانات التواصل المسجلة.</p>
-            <a href="/industries" class="btn btn-outline-primary">العودة إلى القطاعات</a>
-        </div></div></main></t>
+        <t t-call="website.layout">
+            <t t-set="lang_code" t-value="request.env.lang or 'ar_001'"/>
+            <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
+            <main class="cb-demo-page py-5" t-att-dir="'rtl' if lang_is_ar else 'ltr'">
+                <div class="container">
+                    <div class="cb-demo-success mx-auto text-center shadow-sm"
+                         t-att-data-demo-status-endpoint="'/demo/request/status.json' if has_demo_status else None"
+                         t-att-data-demo-lang="'ar' if lang_is_ar else 'en'">
+                        <div class="cb-demo-success__icon" data-demo-status-icon="1">
+                            <i class="fa fa-clock-o" t-if="has_demo_status"/>
+                            <i class="fa fa-check" t-else=""/>
+                        </div>
+                        <span class="cb-demo-badge">Odoo Enterprise</span>
+                        <h1 class="mt-3" data-demo-status-title="1">
+                            <t t-if="lang_is_ar">تم استلام طلب الديمو</t>
+                            <t t-else="">Your demo request was received</t>
+                        </h1>
+                        <p class="lead text-muted" data-demo-status-message="1">
+                            <t t-if="has_demo_status and lang_is_ar">هذه الصفحة ستتحدث تلقائيًا. بعد موافقة الإدارة سيبدأ تجهيز بيئة Enterprise وتظهر بيانات الدخول هنا.</t>
+                            <t t-elif="has_demo_status">This page updates automatically. Once approved, your Enterprise demo and login details will appear here.</t>
+                            <t t-elif="lang_is_ar">تم استلام الطلب وسيقوم فريق الإدارة بمراجعته.</t>
+                            <t t-else="">Your request was received and will be reviewed by the administration team.</t>
+                        </p>
+                        <div t-if="has_demo_status" class="cb-demo-progress-wrap my-4">
+                            <div class="progress" role="progressbar" aria-label="Demo preparation progress"
+                                 aria-valuemin="0" aria-valuemax="100">
+                                <div class="progress-bar" data-demo-progress="1" style="width: 10%">10%</div>
+                            </div>
+                            <small class="text-muted d-block mt-2">
+                                <t t-if="lang_is_ar">يمكنك إبقاء هذه الصفحة مفتوحة أثناء التجهيز.</t>
+                                <t t-else="">You may keep this page open while we prepare your demo.</t>
+                            </small>
+                        </div>
+                        <div class="cb-demo-credentials text-start d-none" data-demo-credentials="1">
+                            <h2 class="h4 mb-3">
+                                <t t-if="lang_is_ar">بيانات الدخول إلى الديمو</t>
+                                <t t-else="">Demo login details</t>
+                            </h2>
+                            <div class="cb-demo-credential-row">
+                                <strong><t t-if="lang_is_ar">الرابط</t><t t-else="">URL</t></strong>
+                                <a data-demo-credential="url" target="_blank" rel="noopener noreferrer"/>
+                            </div>
+                            <div class="cb-demo-credential-row">
+                                <strong><t t-if="lang_is_ar">اسم المستخدم</t><t t-else="">Username</t></strong>
+                                <code data-demo-credential="username"/>
+                            </div>
+                            <div class="cb-demo-credential-row">
+                                <strong><t t-if="lang_is_ar">كلمة المرور</t><t t-else="">Password</t></strong>
+                                <code data-demo-credential="password"/>
+                            </div>
+                            <div class="cb-demo-credential-row">
+                                <strong><t t-if="lang_is_ar">ينتهي في</t><t t-else="">Expires</t></strong>
+                                <span data-demo-credential="expires_at"/>
+                            </div>
+                            <a class="btn btn-primary btn-lg mt-4 w-100" data-demo-login="1"
+                               target="_blank" rel="noopener noreferrer">
+                                <t t-if="lang_is_ar">الدخول إلى منصة أعمالك</t>
+                                <t t-else="">Open your business platform</t>
+                            </a>
+                        </div>
+                        <a href="/industries" class="btn btn-outline-primary">
+                            <t t-if="lang_is_ar">العودة إلى القطاعات</t>
+                            <t t-else="">Back to industries</t>
+                        </a>
+                    </div>
+                </div>
+            </main>
+        </t>
     </template>
 </odoo>

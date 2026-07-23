@@ -98,6 +98,8 @@ class SaasDemoRequest(models.Model):
     whatsapp_attempted_at = fields.Datetime(readonly=True, copy=False)
     whatsapp_sent_at = fields.Datetime(readonly=True, copy=False, tracking=True)
     whatsapp_error = fields.Char(readonly=True, copy=False)
+    public_status_token_hash = fields.Char(readonly=True, copy=False, index=True)
+    credentials_revealed_at = fields.Datetime(readonly=True, copy=False)
 
     _enterprise_only = models.Constraint(
         "CHECK(edition = 'enterprise')", 'Demo requests must use Odoo Enterprise.')
@@ -167,6 +169,11 @@ class SaasDemoRequest(models.Model):
                 decision_by_id=self.env.user.id, decision_at=fields.Datetime.now())
             record.message_post(body=_('Enterprise demo request approved.'))
         return True
+
+    def action_approve_and_provision(self):
+        self.ensure_one()
+        self.action_approve()
+        return self.action_provision()
 
     def action_reject(self):
         for record in self:
@@ -314,6 +321,7 @@ class SaasDemoRequest(models.Model):
         records = self.search([
             ('state', 'in', ('provisioning', 'ready', 'active', 'extended')),
             ('tenant_id', '!=', False),
+            ('health_status', '!=', 'healthy'),
         ], limit=20)
         records.action_refresh_health()
 

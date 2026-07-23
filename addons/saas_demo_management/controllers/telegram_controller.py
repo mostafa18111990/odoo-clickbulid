@@ -47,10 +47,14 @@ class SaasDemoTelegram(http.Controller):
                 demo.invalidate_recordset(['state'])
                 if demo.state not in ('new', 'pending_review', 'needs_info'):
                     raise UserWarning('already-decided')
-                {'approve': demo.action_approve, 'reject': demo.action_reject,
-                 'info': demo.action_needs_info}[action]()
-                answer = {'approve': 'تمت الموافقة', 'reject': 'تم الرفض',
-                          'info': 'تم طلب معلومات إضافية'}[action]
+                if action == 'approve':
+                    demo.action_approve_and_provision()
+                else:
+                    {'reject': demo.action_reject,
+                     'info': demo.action_needs_info}[action]()
+                answer = {'approve': 'تمت الموافقة وبدأ تجهيز الديمو',
+                          'reject': 'تم الرفض',
+                           'info': 'تم طلب معلومات إضافية'}[action]
                 demo.message_post(body='Telegram decision by user ID %s: %s' % (actor_id, action))
             except UserWarning:
                 answer = 'تم اتخاذ قرار سابقًا لهذا الطلب'
