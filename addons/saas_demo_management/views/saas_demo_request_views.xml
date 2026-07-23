@@ -8,6 +8,7 @@
                 <field name="name"/><field name="create_date"/><field name="company_name"/>
                 <field name="contact_name"/><field name="sector"/><field name="user_count"/>
                 <field name="edition"/><field name="state"/><field name="telegram_status"/>
+                <field name="whatsapp_status"/>
                 <field name="tenant_id" optional="show"/>
             </list>
         </field>
@@ -39,6 +40,8 @@
                     <button name="action_provision" type="object" string="Provision Enterprise Demo" class="btn-primary" invisible="state != 'approved'" confirm="Queue an Enterprise demo database for this request?"/>
                     <button name="action_mark_ready" type="object" string="Mark Ready" invisible="state != 'provisioning'"/>
                     <button name="action_refresh_health" type="object" string="Check Readiness" invisible="state not in ('provisioning', 'ready', 'active', 'extended')"/>
+                    <button name="action_send_whatsapp_credentials" type="object" string="Send WhatsApp Credentials"
+                            invisible="health_status != 'healthy'" confirm="Send or resend the demo URL and login credentials to this customer by WhatsApp?"/>
                     <button name="action_mark_active" type="object" string="Activate Demo" class="btn-primary" invisible="state not in ('ready', 'extended')"/>
                     <button name="action_extend" type="object" string="Extend 7 Days" invisible="state not in ('ready', 'active', 'expired', 'extended')"/>
                     <field name="state" widget="statusbar" statusbar_visible="new,pending_review,approved,queued,provisioning,ready,active,expired"/>
@@ -67,6 +70,16 @@
                         <page string="Decision &amp; Telegram">
                             <group><field name="decision_by_id"/><field name="decision_at"/><field name="rejection_reason"/></group>
                             <group><field name="telegram_status"/><field name="telegram_chat_id"/><field name="telegram_message_id"/><field name="telegram_error"/></group>
+                        </page>
+                        <page string="WhatsApp Delivery">
+                            <group>
+                                <field name="whatsapp_status"/>
+                                <field name="whatsapp_message_id"/>
+                                <field name="whatsapp_attempts"/>
+                                <field name="whatsapp_attempted_at"/>
+                                <field name="whatsapp_sent_at"/>
+                                <field name="whatsapp_error"/>
+                            </group>
                         </page>
                         <page string="Attribution">
                             <group><field name="utm_source"/><field name="utm_medium"/><field name="utm_campaign"/><field name="landing_url"/></group>

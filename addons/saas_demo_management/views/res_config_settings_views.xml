@@ -18,6 +18,27 @@
                         <setting string="Authorized approvers"><field name="demo_telegram_allowed_user_ids"/></setting>
                         <setting string="Webhook security"><div class="content-group"><field name="demo_telegram_webhook_secret" password="True"/><field name="demo_callback_signing_secret" password="True"/></div></setting>
                     </block>
+                    <block title="WhatsApp Demo Delivery">
+                        <setting string="Send credentials after readiness"
+                                 help="Sends only after HTTPS health succeeds and the Enterprise demo sandbox is enforced.">
+                            <field name="demo_whatsapp_enabled"/>
+                        </setting>
+                        <setting string="Meta Cloud API credentials"
+                                 help="Use a permanent System User token with whatsapp_business_messaging permission.">
+                            <div class="content-group">
+                                <field name="demo_whatsapp_access_token" password="True" placeholder="System User access token"/>
+                                <field name="demo_whatsapp_phone_number_id" placeholder="Phone Number ID"/>
+                            </div>
+                        </setting>
+                        <setting string="Approved message template"
+                                 help="The template body must contain five variables in this order: customer name, demo URL, username, password, expiry date.">
+                            <div class="content-group">
+                                <field name="demo_whatsapp_template_name"/>
+                                <field name="demo_whatsapp_template_language"/>
+                                <field name="demo_whatsapp_api_version"/>
+                            </div>
+                        </setting>
+                    </block>
                 </app>
             </xpath>
         </field>

@@ -1,8 +1,8 @@
 {
     'name': 'SaaS Enterprise Demo Management',
-    'version': '19.0.1.1.0',
+    'version': '19.0.1.2.0',
     'category': 'SaaS',
-    'summary': 'Sector demo requests, Telegram approvals, and Enterprise provisioning',
+    'summary': 'Enterprise demos with Telegram approvals and WhatsApp delivery',
     'author': 'Click Build Information Technology Company',
     'website': 'https://odoo.clickbulid.com',
     'depends': ['saas_website', 'mail', 'base_setup'],

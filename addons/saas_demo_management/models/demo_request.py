@@ -89,6 +89,15 @@ class SaasDemoRequest(models.Model):
         ('pending', 'Pending'), ('sent', 'Sent'), ('disabled', 'Disabled'),
         ('failed', 'Failed')], default='pending', readonly=True, copy=False)
     telegram_error = fields.Char(readonly=True, copy=False)
+    whatsapp_status = fields.Selection([
+        ('pending', 'Pending'), ('sending', 'Sending'), ('sent', 'Sent'),
+        ('disabled', 'Disabled'), ('failed', 'Failed'),
+    ], default='pending', readonly=True, copy=False, tracking=True)
+    whatsapp_message_id = fields.Char(readonly=True, copy=False)
+    whatsapp_attempts = fields.Integer(default=0, readonly=True, copy=False)
+    whatsapp_attempted_at = fields.Datetime(readonly=True, copy=False)
+    whatsapp_sent_at = fields.Datetime(readonly=True, copy=False, tracking=True)
+    whatsapp_error = fields.Char(readonly=True, copy=False)
 
     _enterprise_only = models.Constraint(
         "CHECK(edition = 'enterprise')", 'Demo requests must use Odoo Enterprise.')
@@ -269,6 +278,8 @@ class SaasDemoRequest(models.Model):
                         if healthy and sandbox_ok else
                         _('Login is reachable, but demo sandbox confirmation is pending.')),
                 })
+                if healthy and sandbox_ok:
+                    record._send_whatsapp_credentials()
             except Exception as exc:
                 _logger.warning('Demo health check failed for %s: %s', record.name, exc)
                 record.write({
@@ -276,6 +287,13 @@ class SaasDemoRequest(models.Model):
                     'health_checked_at': fields.Datetime.now(),
                     'health_summary': _('Demo login health check failed.'),
                 })
+        return True
+
+    def action_send_whatsapp_credentials(self):
+        for record in self:
+            if record.health_status != 'healthy':
+                raise UserError(_('Run a successful readiness check before sending credentials.'))
+            record._send_whatsapp_credentials(force=True)
         return True
 
     def action_extend(self):
@@ -315,6 +333,134 @@ class SaasDemoRequest(models.Model):
                 except Exception as exc:
                     _logger.warning('Unable to suspend expired demo %s: %s', record.name, exc)
         return True
+
+    def _whatsapp_recipient(self):
+        self.ensure_one()
+        digits = re.sub(r'\D', '', self.phone or '')
+        if digits.startswith('00'):
+            digits = digits[2:]
+        if self.country_code == 'SA':
+            if digits.startswith('0'):
+                digits = '966' + digits[1:]
+            elif len(digits) == 9 and digits.startswith('5'):
+                digits = '966' + digits
+        if not 8 <= len(digits) <= 15:
+            raise UserError(_('The customer phone number is not valid for WhatsApp delivery.'))
+        return digits
+
+    def _whatsapp_api(self, payload):
+        params = self.env['ir.config_parameter'].sudo()
+        token = params.get_param('saas_demo.whatsapp_access_token') or ''
+        phone_number_id = params.get_param('saas_demo.whatsapp_phone_number_id') or ''
+        api_version = params.get_param('saas_demo.whatsapp_api_version') or 'v23.0'
+        if not token or not phone_number_id:
+            raise UserError(_('WhatsApp Cloud API credentials are not configured.'))
+        if not re.fullmatch(r'v\d+\.\d+', api_version):
+            raise UserError(_('The Meta Graph API version is invalid.'))
+        if not phone_number_id.isdigit():
+            raise UserError(_('The WhatsApp Phone Number ID is invalid.'))
+        req = urllib.request.Request(
+            'https://graph.facebook.com/%s/%s/messages' % (api_version, phone_number_id),
+            data=json.dumps(payload, ensure_ascii=False).encode('utf-8'),
+            headers={
+                'Authorization': 'Bearer %s' % token,
+                'Content-Type': 'application/json',
+            })
+        try:
+            with urllib.request.urlopen(req, timeout=15) as response:
+                result = json.loads(response.read().decode('utf-8'))
+        except urllib.error.HTTPError as exc:
+            # Never persist Meta's response body because it may contain
+            # submitted template parameters (including the one-time password).
+            raise UserError(
+                _('WhatsApp Cloud API rejected the request (HTTP %s).', exc.code)
+            ) from exc
+        except (urllib.error.URLError, TimeoutError, ValueError) as exc:
+            raise UserError(_('WhatsApp Cloud API request failed.')) from exc
+        messages = result.get('messages') or []
+        message_id = messages[0].get('id') if messages else ''
+        if not message_id:
+            raise UserError(_('WhatsApp Cloud API did not return a message ID.'))
+        return message_id
+
+    def _whatsapp_template_payload(self):
+        self.ensure_one()
+        params = self.env['ir.config_parameter'].sudo()
+        template_name = params.get_param('saas_demo.whatsapp_template_name') or ''
+        language = params.get_param('saas_demo.whatsapp_template_language') or 'ar'
+        tenant = self.tenant_id
+        if not template_name:
+            raise UserError(_('The approved WhatsApp template name is not configured.'))
+        if not tenant or not tenant.admin_login or not tenant.admin_password:
+            raise UserError(_('Demo login credentials are not available yet.'))
+        login_url = 'https://%s.odoo.clickbulid.com/web/login' % tenant.subdomain
+        expiry = fields.Datetime.context_timestamp(
+            self, self.expires_at or tenant.demo_expires_at or fields.Datetime.now()
+        ).strftime('%Y-%m-%d')
+        values = [
+            self.contact_name, login_url, tenant.admin_login,
+            tenant.admin_password, expiry,
+        ]
+        return {
+            'messaging_product': 'whatsapp',
+            'recipient_type': 'individual',
+            'to': self._whatsapp_recipient(),
+            'type': 'template',
+            'template': {
+                'name': template_name,
+                'language': {'code': language},
+                'components': [{
+                    'type': 'body',
+                    'parameters': [{'type': 'text', 'text': value} for value in values],
+                }],
+            },
+        }
+
+    def _send_whatsapp_credentials(self, force=False):
+        self.ensure_one()
+        params = self.env['ir.config_parameter'].sudo()
+        enabled = params.get_param('saas_demo.whatsapp_enabled', 'False')
+        if str(enabled).lower() not in ('true', '1', 'yes'):
+            if self.whatsapp_status != 'sent':
+                self.whatsapp_status = 'disabled'
+            return False
+        tenant = self.tenant_id
+        if (self.health_status != 'healthy' or not tenant
+                or tenant.demo_sandbox_state != 'enforced'):
+            return False
+        self.env.cr.execute(
+            'SELECT id FROM saas_demo_request WHERE id = %s FOR UPDATE', [self.id])
+        self.invalidate_recordset([
+            'whatsapp_status', 'whatsapp_attempts', 'whatsapp_message_id'])
+        if self.whatsapp_status == 'sent' and not force:
+            return True
+        if self.whatsapp_attempts >= 3 and not force:
+            return False
+        attempts = self.whatsapp_attempts + 1
+        self.write({
+            'whatsapp_status': 'sending',
+            'whatsapp_attempts': attempts,
+            'whatsapp_attempted_at': fields.Datetime.now(),
+            'whatsapp_error': False,
+        })
+        try:
+            message_id = self._whatsapp_api(self._whatsapp_template_payload())
+            self.write({
+                'whatsapp_status': 'sent',
+                'whatsapp_message_id': message_id,
+                'whatsapp_sent_at': fields.Datetime.now(),
+                'whatsapp_error': False,
+            })
+            self.message_post(body=_('Demo login credentials were sent by WhatsApp.'))
+            return True
+        except Exception as exc:
+            # Store only the sanitized exception generated by this module.
+            error = str(exc)[:240]
+            _logger.warning(
+                'WhatsApp demo delivery failed for request %s (attempt %s)',
+                self.name, attempts)
+            self.write({'whatsapp_status': 'failed', 'whatsapp_error': error})
+            return False
 
     def _callback_signature(self, action):
         self.ensure_one()

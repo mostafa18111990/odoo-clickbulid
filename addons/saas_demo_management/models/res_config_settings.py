@@ -23,6 +23,25 @@ class ResConfigSettings(models.TransientModel):
     demo_callback_signing_secret = fields.Char(
         string='Callback Signing Secret',
         config_parameter='saas_demo.callback_signing_secret')
+    demo_whatsapp_enabled = fields.Boolean(
+        string='Send Demo Credentials by WhatsApp',
+        config_parameter='saas_demo.whatsapp_enabled')
+    demo_whatsapp_access_token = fields.Char(
+        string='WhatsApp System User Access Token',
+        config_parameter='saas_demo.whatsapp_access_token')
+    demo_whatsapp_phone_number_id = fields.Char(
+        string='WhatsApp Phone Number ID',
+        config_parameter='saas_demo.whatsapp_phone_number_id')
+    demo_whatsapp_api_version = fields.Char(
+        string='Meta Graph API Version', default='v23.0',
+        config_parameter='saas_demo.whatsapp_api_version')
+    demo_whatsapp_template_name = fields.Char(
+        string='Approved WhatsApp Template',
+        default='clickbuild_demo_ready_ar',
+        config_parameter='saas_demo.whatsapp_template_name')
+    demo_whatsapp_template_language = fields.Char(
+        string='WhatsApp Template Language', default='ar',
+        config_parameter='saas_demo.whatsapp_template_language')
     demo_provision_enabled = fields.Boolean(
         string='Allow Enterprise Demo Provisioning',
         config_parameter='saas_demo.provision_enabled',
