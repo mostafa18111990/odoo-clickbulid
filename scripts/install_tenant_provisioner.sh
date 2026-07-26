@@ -38,6 +38,7 @@ COMPANY=$(read_json company_name)
 COMPANY_EMAIL=$(read_json company_email)
 COMPANY_PHONE=$(read_json company_phone)
 INDUSTRY=$(read_json industry)
+DEMO_SECTOR=$(read_json demo_sector)
 MAX_USERS=$(read_json max_users)
 ENTERPRISE_CODE=$(read_json enterprise_code)
 LANG=$(read_json language)
@@ -268,7 +269,7 @@ docker exec \
     -e SAAS_COMPANY="$COMPANY" \
     -e SAAS_COMPANY_EMAIL="${COMPANY_EMAIL:-$ADMIN_EMAIL}" \
     -e SAAS_COMPANY_PHONE="$COMPANY_PHONE" \
-    -e SAAS_INDUSTRY="${INDUSTRY:-other}" \
+    -e SAAS_INDUSTRY="${DEMO_SECTOR:-${INDUSTRY:-other}}" \
     -e SAAS_COUNTRY="${COUNTRY:-SA}" \
     -e SAAS_CLONED="$CLONED" \
     -e SAAS_MAX_USERS="${MAX_USERS:-0}" \

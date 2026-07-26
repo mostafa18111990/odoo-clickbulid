@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Demo Business Cycle',
-    'version': '19.0.1.0.0',
+    'version': '19.0.3.0.0',
     'category': 'SaaS',
     'summary': 'Safe, sector-aware sample operations for Enterprise demos',
     'author': 'Click Build Information Technology Company',

@@ -82,6 +82,13 @@ SECTOR_SCENARIOS = {
         'service': ('خدمة تنفيذ ودعم', 6500.0, 0.0),
     },
 }
+SCENARIO_ALIASES = {
+    'trading-distribution': 'trading',
+    'restaurants-cafes': 'restaurant',
+    'professional-services': 'services',
+    'field-services': 'services',
+    'startups-smes': 'other',
+}
 
 
 class SaasDemoSeed(models.AbstractModel):
@@ -99,11 +106,13 @@ class SaasDemoSeed(models.AbstractModel):
         if previous == SEED_VERSION:
             raw_summary = params.get_param('saas.demo.seed.summary') or '{}'
             try:
-                return json.loads(raw_summary)
+                summary = json.loads(raw_summary)
             except (TypeError, ValueError):
-                return {'status': 'already_seeded', 'version': SEED_VERSION}
+                summary = {'status': 'already_seeded', 'version': SEED_VERSION}
+            return self._seed_sector_pack(sector, summary)
 
-        scenario = SECTOR_SCENARIOS.get(sector) or SECTOR_SCENARIOS['other']
+        scenario_key = SCENARIO_ALIASES.get(sector, sector)
+        scenario = SECTOR_SCENARIOS.get(scenario_key) or SECTOR_SCENARIOS['other']
         env = self.env(context=dict(self.env.context, **DEMO_CONTEXT))
         company = env.company
 
@@ -318,8 +327,51 @@ class SaasDemoSeed(models.AbstractModel):
             'projects': len(project),
             'tasks': len(tasks),
         }
+        summary = self._seed_sector_pack(sector, summary)
         params.set_param('saas.demo.seed.version', SEED_VERSION)
         params.set_param('saas.demo.seed.summary', json.dumps(summary, ensure_ascii=False))
+        return summary
+
+    @api.model
+    def _seed_sector_pack(self, sector, summary):
+        requirements = {
+            'manufacturing': {
+                'maintenance.equipment', 'maintenance.request', 'mrp.bom',
+                'mrp.production', 'mrp.workcenter', 'quality.check', 'quality.point',
+            },
+            'construction': {'account.analytic.line', 'project.milestone'},
+            'trading-distribution': {
+                'stock.warehouse', 'stock.warehouse.orderpoint'},
+            'retail': {'pos.config', 'pos.session'},
+            'restaurants-cafes': {
+                'pos.config', 'pos.session', 'restaurant.floor', 'restaurant.table'},
+            'professional-services': {
+                'account.analytic.line', 'helpdesk.ticket', 'project.milestone'},
+            'real-estate': {
+                'documents.document', 'maintenance.equipment', 'maintenance.request'},
+            'ecommerce': {'sale.order'},
+            'field-services': {
+                'helpdesk.ticket', 'maintenance.equipment', 'maintenance.request'},
+            'education': {
+                'event.event', 'event.event.ticket', 'event.registration'},
+            'startups-smes': {
+                'project.milestone', 'stock.warehouse.orderpoint'},
+        }
+        required = requirements.get(sector, set())
+        missing = sorted(model for model in required if model not in self.env)
+        if missing:
+            raise UserError(_(
+                'The %s demo requires these installed applications: %s',
+                sector, ', '.join(missing)))
+        if sector == 'manufacturing':
+            sector_summary = self.env['saas.demo.seed.manufacturing'].sudo().seed()
+        else:
+            sector_summary = self.env[
+                'saas.demo.seed.sector.operations'].sudo().seed(sector)
+        summary = dict(summary)
+        summary[sector] = sector_summary
+        self.env['ir.config_parameter'].sudo().set_param(
+            'saas.demo.seed.summary', json.dumps(summary, ensure_ascii=False))
         return summary
 
     @api.model

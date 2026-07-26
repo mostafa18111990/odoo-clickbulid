@@ -404,6 +404,10 @@ class ProvisioningBridgeService:
             'company_email': tenant.customer_email or '',
             'company_phone': getattr(tenant, 'phone', '') or '',
             'industry': getattr(tenant, 'industry', '') or '',
+            'demo_sector': (
+                getattr(getattr(tenant, 'demo_template_id', None), 'sector', '')
+                if is_demo else ''
+            ) or '',
             'admin_password': admin_password,
             'plan_code': tenant.plan_id.code if tenant.plan_id else 'starter',
             # Seat limit — the customer's purchased seat count (falls back to
