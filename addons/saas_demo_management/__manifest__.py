@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Enterprise Demo Management',
-    'version': '19.0.1.4.0',
+    'version': '19.0.1.5.0',
     'category': 'SaaS',
     'summary': 'Enterprise demos with Telegram approvals and WhatsApp delivery',
     'author': 'Click Build Information Technology Company',

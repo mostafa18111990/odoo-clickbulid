@@ -1,0 +1,21 @@
+{
+    'name': 'SaaS Demo Business Cycle',
+    'version': '19.0.1.0.0',
+    'category': 'SaaS',
+    'summary': 'Safe, sector-aware sample operations for Enterprise demos',
+    'author': 'Click Build Information Technology Company',
+    'website': 'https://odoo.clickbulid.com',
+    'depends': [
+        'account',
+        'crm',
+        'project',
+        'purchase_stock',
+        'sale_management',
+        'stock',
+    ],
+    'data': [],
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+    'license': 'LGPL-3',
+}

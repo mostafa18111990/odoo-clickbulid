@@ -37,6 +37,7 @@ ADMIN_PASSWORD=$(read_json admin_password)
 COMPANY=$(read_json company_name)
 COMPANY_EMAIL=$(read_json company_email)
 COMPANY_PHONE=$(read_json company_phone)
+INDUSTRY=$(read_json industry)
 MAX_USERS=$(read_json max_users)
 ENTERPRISE_CODE=$(read_json enterprise_code)
 LANG=$(read_json language)
@@ -267,6 +268,7 @@ docker exec \
     -e SAAS_COMPANY="$COMPANY" \
     -e SAAS_COMPANY_EMAIL="${COMPANY_EMAIL:-$ADMIN_EMAIL}" \
     -e SAAS_COMPANY_PHONE="$COMPANY_PHONE" \
+    -e SAAS_INDUSTRY="${INDUSTRY:-other}" \
     -e SAAS_COUNTRY="${COUNTRY:-SA}" \
     -e SAAS_CLONED="$CLONED" \
     -e SAAS_MAX_USERS="${MAX_USERS:-0}" \
@@ -363,6 +365,12 @@ with reg.cursor() as cr:
     troot = env.ref("trailer_inspection_saso.menu_trailer_root", raise_if_not_found=False)
     if troot and not troot.web_icon:
         troot.write({"web_icon": "fleet,static/description/icon.png"})
+    # Build a coherent, sector-aware business cycle only inside isolated
+    # Enterprise demos. The seeder is idempotent and refuses normal tenants.
+    if is_demo and "saas.demo.seed" in env:
+        summary = env["saas.demo.seed"].sudo().seed_demo_cycle(
+            os.environ.get("SAAS_INDUSTRY") or "other")
+        print("demo business cycle seeded:", summary)
     cr.commit()
     print("admin configured:", admin.login, "/", company.name,
           "/", (country.name if country else "?"))
