@@ -296,6 +296,38 @@ class SaasDemoRequest(models.Model):
                 })
         return True
 
+    def _refresh_public_readiness_if_due(self):
+        """Refresh a ready public demo without depending on the shared cron queue."""
+        self.ensure_one()
+        tenant = self.tenant_id
+        if (
+            self.state not in ('ready', 'active', 'extended')
+            or self.health_status == 'healthy'
+            or not tenant
+            or tenant.edition != 'enterprise'
+            or tenant.demo_sandbox_state != 'enforced'
+            or not tenant.api_instance_id
+            or tenant.api_instance_id.startswith('pending:')
+        ):
+            return False
+
+        # Serialize status-page retries and re-check the timestamp after waiting
+        # for the lock. This keeps many browser tabs from causing a health storm.
+        self.env.cr.execute(
+            'SELECT id FROM saas_demo_request WHERE id = %s FOR UPDATE',
+            [self.id],
+        )
+        self.invalidate_recordset([
+            'state', 'health_status', 'health_checked_at', 'tenant_id',
+        ])
+        if self.health_status == 'healthy':
+            return False
+        retry_after = fields.Datetime.now() - timedelta(seconds=20)
+        if self.health_checked_at and self.health_checked_at >= retry_after:
+            return False
+        self.action_refresh_health()
+        return True
+
     def action_send_whatsapp_credentials(self):
         for record in self:
             if record.health_status != 'healthy':
@@ -340,6 +372,13 @@ class SaasDemoRequest(models.Model):
                     tenant.sudo().action_suspend()
                 except Exception as exc:
                     _logger.warning('Unable to suspend expired demo %s: %s', record.name, exc)
+        return True
+
+    @api.model
+    def cron_demo_maintenance(self):
+        """Central-database fallback invoked by the dedicated system timer."""
+        self.cron_refresh_demo_health()
+        self.cron_expire_demos()
         return True
 
     def _whatsapp_recipient(self):

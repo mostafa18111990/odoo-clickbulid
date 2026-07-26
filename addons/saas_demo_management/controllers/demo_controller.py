@@ -160,6 +160,12 @@ class SaasDemoWebsite(http.Controller):
         }
         status_code, progress = state_messages.get(demo.state, ('processing', 30))
         tenant = demo.tenant_id
+        if (
+            demo.state in ('ready', 'active', 'extended')
+            and demo.health_status != 'healthy'
+        ):
+            demo._refresh_public_readiness_if_due()
+            tenant = demo.tenant_id
         is_ready = bool(
             tenant
             and demo.state in ('ready', 'active', 'extended')

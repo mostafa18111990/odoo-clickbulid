@@ -1,0 +1,12 @@
+[Unit]
+Description=Run ClickBuild SaaS central demo maintenance independently
+
+[Timer]
+OnBootSec=1min
+OnUnitActiveSec=2min
+RandomizedDelaySec=10
+Persistent=true
+Unit=saas-demo-maintenance.service
+
+[Install]
+WantedBy=timers.target
