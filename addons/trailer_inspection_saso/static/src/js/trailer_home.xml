@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="trailer_inspection_saso.TrailerHome">
+    <div class="o_trailer_home">
+        <div class="ti-hero">
+            <img t-if="logoUrl" class="ti-hero-logo" t-att-src="logoUrl" alt=""/>
+            <div>
+                <h1 class="ti-hero-company" t-esc="state.company.name or ''"/>
+                <p class="ti-hero-sub">نظام فحص المقطورات ونصف المقطورات — Trailer &amp; Semi-Trailer Inspection</p>
+            </div>
+            <span t-if="state.standard" class="ti-hero-standard" t-esc="state.standard"/>
+        </div>
+
+        <div class="ti-kpis">
+            <div class="ti-kpi ti-kpi--amber"
+                 t-on-click="() => this.openInspections([['state','in',['draft','scheduled','in_progress']]], 'الفحوصات الجارية')">
+                <div class="ti-kpi-label">فحوصات جارية</div>
+                <div class="ti-kpi-value" t-esc="state.kpi.open_count"/>
+                <div class="ti-kpi-hint">مسودة ومجدولة وتحت التنفيذ</div>
+            </div>
+            <div class="ti-kpi ti-kpi--warn"
+                 t-on-click="() => this.openInspections([['state','=','technical_review']], 'بانتظار المراجعة الفنية')">
+                <div class="ti-kpi-label">بانتظار المراجعة</div>
+                <div class="ti-kpi-value" t-esc="state.kpi.review_count"/>
+                <div class="ti-kpi-hint">جاهزة لاعتماد المراجع</div>
+            </div>
+            <div class="ti-kpi ti-kpi--pass"
+                 t-on-click="() => this.openInspections([['state','=','approved']], 'الفحوصات المعتمدة')">
+                <div class="ti-kpi-label">معتمدة</div>
+                <div class="ti-kpi-value" t-esc="state.kpi.approved_count"/>
+                <div class="ti-kpi-hint">تقارير صادرة</div>
+            </div>
+            <div class="ti-kpi ti-kpi--fail"
+                 t-on-click="() => this.openInspections([['overall_result','=','non_compliant']], 'غير مطابقة')">
+                <div class="ti-kpi-label">غير مطابقة</div>
+                <div class="ti-kpi-value" t-esc="state.kpi.non_compliant_count"/>
+                <div class="ti-kpi-hint">تحتاج إجراء تصحيحي</div>
+            </div>
+            <div class="ti-kpi"
+                 t-on-click="() => this.openAction('trailer_inspection_saso.action_trailer_equipment')">
+                <div class="ti-kpi-label">معايرة تنتهي قريباً</div>
+                <div class="ti-kpi-value" t-esc="state.kpi.equipment_due"/>
+                <div class="ti-kpi-hint">معدات خلال 30 يوماً</div>
+            </div>
+            <div class="ti-kpi"
+                 t-on-click="() => this.openInspections([['report_valid_until','&lt;=', state.kpi.expiry_horizon],['state','=','approved']], 'تقارير تنتهي صلاحيتها')">
+                <div class="ti-kpi-label">تقارير تنتهي</div>
+                <div class="ti-kpi-value" t-esc="state.kpi.expiring_reports"/>
+                <div class="ti-kpi-hint">خلال 30 يوماً</div>
+            </div>
+        </div>
+
+        <div class="ti-section-title">إجراءات سريعة</div>
+        <div class="ti-actions">
+            <div class="ti-action ti-action--primary" t-on-click="newInspection">
+                <i class="fa fa-plus"/><span>فحص جديد</span>
+            </div>
+            <div class="ti-action" t-on-click="() => this.openInspections([], 'كل الفحوصات')">
+                <i class="fa fa-list-ul"/><span>كل الفحوصات</span>
+            </div>
+            <div class="ti-action"
+                 t-on-click="() => this.openAction('trailer_inspection_saso.action_trailer_nonconformity')">
+                <i class="fa fa-exclamation-triangle"/><span>عدم المطابقات</span>
+            </div>
+            <div class="ti-action"
+                 t-on-click="() => this.openAction('trailer_inspection_saso.action_trailer_equipment')">
+                <i class="fa fa-wrench"/><span>معدات القياس</span>
+            </div>
+            <div class="ti-action"
+                 t-on-click="() => this.openAction('trailer_inspection_saso.action_trailer_requirement')">
+                <i class="fa fa-check-square-o"/><span>متطلبات المواصفة</span>
+            </div>
+            <div class="ti-action"
+                 t-on-click="() => this.openAction('trailer_inspection_saso.action_trailer_quality_complaint')">
+                <i class="fa fa-comments-o"/><span>الشكاوى والتظلمات</span>
+            </div>
+        </div>
+    </div>
+</t>
+
+</templates>

@@ -1,43 +1,200 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
-    <template id="portal_trailer_verification" name="Trailer Report Verification">
+    <!-- Shared shell: every customer-facing page opens with the operating
+         company's own logo and name, so the portal reads as their service. -->
+    <template id="portal_trailer_shell" name="Trailer Portal Shell">
         <t t-call="web.layout">
-            <main class="container py-5" style="max-width: 900px;">
-                <div t-if="valid" class="border rounded p-4 bg-white shadow-sm">
-                    <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
-                        <div><h1 class="h3 mb-1">تقرير فحص معتمد</h1><p class="text-muted">Verified Trailer Inspection Report</p></div>
-                        <span class="badge text-bg-success fs-6">صالح / Verified</span>
-                    </div>
-                    <hr/>
-                    <div class="row g-3">
-                        <div class="col-md-6"><strong>رقم التقرير / Report</strong><div t-field="inspection.name"/></div>
-                        <div class="col-md-6"><strong>VIN</strong><div t-field="inspection.vin"/></div>
-                        <div class="col-md-6"><strong>العميل / Client</strong><div t-field="inspection.partner_id"/></div>
-                        <div class="col-md-6"><strong>تاريخ الفحص / Date</strong><div t-field="inspection.inspection_date"/></div>
-                        <div class="col-md-6"><strong>النتيجة / Result</strong><div t-field="inspection.overall_result"/></div>
-                        <div class="col-md-6"><strong>صالح حتى / Valid Until</strong><div t-field="inspection.report_valid_until"/></div>
+            <!-- These routes are not website routes, so the portal/website
+                 layouts (and the context they need) are unavailable. Pull in
+                 the frontend stylesheet only: Bootstrap plus this module's
+                 own portal theme, no JS. -->
+            <t t-set="head">
+                <t t-call-assets="web.assets_frontend" t-js="false"/>
+            </t>
+            <div class="ti-portal" dir="rtl">
+                <div class="ti-p-header">
+                    <div class="container d-flex align-items-center gap-3 flex-wrap">
+                        <img t-if="company" class="ti-p-logo"
+                             t-att-src="'/web/image/res.company/%s/logo/104x104' % company.id" alt=""/>
+                        <div>
+                            <h1 t-esc="company.name if company else ''"/>
+                            <p class="ti-p-sub">بوابة تقارير فحص المقطورات — Trailer Inspection Reports</p>
+                        </div>
                     </div>
                 </div>
-                <div t-else="" class="alert alert-danger p-4"><h1 class="h4">تعذر التحقق من التقرير</h1><p class="mb-0">The report is invalid, unavailable, or has not been approved.</p></div>
-            </main>
+                <div class="container ti-p-body">
+                    <t t-out="0"/>
+                </div>
+            </div>
         </t>
     </template>
 
-    <template id="portal_trailer_inspection_list" name="My Trailer Inspections">
-        <t t-call="web.layout"><main class="container py-5">
-            <h1 class="h3 mb-4">فحوصات المقطورات / Trailer Inspections</h1>
-            <div class="table-responsive"><table class="table table-hover align-middle"><thead><tr><th>Report</th><th>VIN</th><th>Date</th><th>Status</th><th>Result</th><th/></tr></thead><tbody>
-                <tr t-foreach="inspections" t-as="inspection"><td t-field="inspection.name"/><td t-field="inspection.vin"/><td t-field="inspection.inspection_date"/><td t-field="inspection.state"/><td t-field="inspection.overall_result"/><td><a t-att-href="'/my/trailer-inspections/%s' % inspection.id" class="btn btn-sm btn-outline-primary">View</a></td></tr>
-            </tbody></table></div>
-        </main></t>
+    <!-- Public verification of a printed / QR-scanned report -->
+    <template id="portal_trailer_verification" name="Trailer Report Verification">
+        <t t-call="trailer_inspection_saso.portal_trailer_shell">
+            <div class="ti-card" t-if="valid">
+                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap mb-3">
+                    <div>
+                        <div class="ti-label">تقرير فحص معتمد / Verified inspection report</div>
+                        <div class="ti-ref fs-4" t-field="inspection.name"/>
+                    </div>
+                    <span class="ti-seal"><i class="fa fa-check-circle"/> صالح / Verified</span>
+                </div>
+                <hr class="my-3"/>
+                <div class="row g-3">
+                    <div class="col-md-4">
+                        <div class="ti-label">رقم الهيكل / VIN</div>
+                        <div class="ti-value ti-vin" t-field="inspection.vin"/>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="ti-label">العميل / Client</div>
+                        <div class="ti-value" t-field="inspection.partner_id"/>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="ti-label">تاريخ الفحص / Inspection date</div>
+                        <div class="ti-value" t-field="inspection.inspection_date"/>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="ti-label">النتيجة / Result</div>
+                        <div>
+                            <span t-attf-class="ti-badge ti-badge--#{'pass' if inspection.overall_result == 'compliant' else ('fail' if inspection.overall_result == 'non_compliant' else 'none')}"
+                                  t-field="inspection.overall_result"/>
+                        </div>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="ti-label">صالح حتى / Valid until</div>
+                        <div class="ti-value" t-field="inspection.report_valid_until"/>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="ti-label">نوع المقطورة / Trailer</div>
+                        <div class="ti-value">
+                            <span t-field="inspection.trailer_type"/> ·
+                            <span t-field="inspection.category"/>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="ti-card" t-else="">
+                <div class="d-flex align-items-center gap-3 flex-wrap">
+                    <span class="ti-seal ti-seal--invalid"><i class="fa fa-times-circle"/> غير صالح / Not verified</span>
+                    <div>
+                        <div class="ti-value">تعذر التحقق من هذا التقرير</div>
+                        <div class="ti-vin">The report is invalid, unavailable, or has not been approved.</div>
+                    </div>
+                </div>
+            </div>
+        </t>
     </template>
 
+    <!-- The customer's own inspections -->
+    <template id="portal_trailer_inspection_list" name="My Trailer Inspections">
+        <t t-call="trailer_inspection_saso.portal_trailer_shell">
+            <div class="ti-card mb-3">
+                <div class="ti-label">فحوصاتي / My inspections</div>
+                <div class="ti-value fs-5"><t t-esc="len(inspections)"/> تقرير</div>
+            </div>
+
+            <div t-if="inspections" class="row g-3">
+                <t t-foreach="inspections" t-as="inspection">
+                    <div class="col-md-6 col-lg-4">
+                        <!-- The stripe follows the outcome the customer cares
+                             about: a rejected report reads as a failure even
+                             when its checklist never reached a verdict. -->
+                        <a t-att-href="'/my/trailer-inspections/%s' % inspection.id"
+                           t-attf-class="ti-card ti-rec ti-rec--#{'fail' if inspection.state == 'rejected' or inspection.overall_result == 'non_compliant' else ('pass' if inspection.state == 'approved' and inspection.overall_result == 'compliant' else 'wait')} h-100">
+                            <div class="d-flex justify-content-between align-items-start gap-2">
+                                <span class="ti-ref" t-field="inspection.name"/>
+                                <span t-attf-class="ti-badge ti-badge--#{'pass' if inspection.overall_result == 'compliant' else ('fail' if inspection.overall_result == 'non_compliant' else 'none')}"
+                                      t-field="inspection.overall_result"/>
+                            </div>
+                            <div class="ti-vin mt-1" t-field="inspection.vin"/>
+                            <div class="d-flex justify-content-between align-items-center mt-3">
+                                <span class="ti-vin"><i class="fa fa-calendar me-1"/><span t-field="inspection.inspection_date"/></span>
+                                <span t-attf-class="ti-badge ti-badge--#{'pass' if inspection.state == 'approved' else ('fail' if inspection.state == 'rejected' else 'wait')}"
+                                      t-field="inspection.state"/>
+                            </div>
+                        </a>
+                    </div>
+                </t>
+            </div>
+
+            <div t-else="" class="ti-card ti-empty">
+                <i class="fa fa-folder-open-o"/>
+                لا توجد تقارير فحص بعد
+                <div class="ti-vin mt-1">No inspection reports yet.</div>
+            </div>
+        </t>
+    </template>
+
+    <!-- One inspection in full -->
     <template id="portal_trailer_inspection_detail" name="Trailer Inspection Detail">
-        <t t-call="web.layout"><main class="container py-5" style="max-width: 1000px;">
-            <a href="/my/trailer-inspections" class="btn btn-link px-0 mb-3">Back</a>
-            <div class="d-flex justify-content-between flex-wrap"><div><h1 class="h3" t-field="inspection.name"/><p class="text-muted" t-field="inspection.vin"/></div><div><span class="badge text-bg-secondary" t-field="inspection.state"/></div></div>
-            <div class="row g-3 my-3"><div class="col-md-4"><strong>Date</strong><div t-field="inspection.inspection_date"/></div><div class="col-md-4"><strong>Result</strong><div t-field="inspection.overall_result"/></div><div class="col-md-4"><strong>Nonconformities</strong><div t-field="inspection.nonconformity_count"/></div></div>
-            <h2 class="h5 mt-4">Checklist</h2><div class="table-responsive"><table class="table table-sm"><thead><tr><th>Clause</th><th>Requirement</th><th>Result</th><th>Observation</th></tr></thead><tbody><tr t-foreach="inspection.line_ids" t-as="line"><td t-field="line.clause_ref"/><td t-field="line.requirement_name_ar"/><td t-field="line.result"/><td t-field="line.observation"/></tr></tbody></table></div>
-        </main></t>
+        <t t-call="trailer_inspection_saso.portal_trailer_shell">
+            <a href="/my/trailer-inspections" class="ti-back">
+                <i class="fa fa-arrow-right me-1"/>رجوع إلى فحوصاتي
+            </a>
+
+            <div class="ti-card mb-3">
+                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                    <div>
+                        <div class="ti-ref fs-4" t-field="inspection.name"/>
+                        <div class="ti-vin mt-1" t-field="inspection.vin"/>
+                    </div>
+                    <div class="d-flex gap-2 flex-wrap">
+                        <span t-attf-class="ti-badge ti-badge--#{'pass' if inspection.overall_result == 'compliant' else ('fail' if inspection.overall_result == 'non_compliant' else 'none')}"
+                              t-field="inspection.overall_result"/>
+                        <span t-attf-class="ti-badge ti-badge--#{'pass' if inspection.state == 'approved' else ('fail' if inspection.state == 'rejected' else 'wait')}"
+                              t-field="inspection.state"/>
+                    </div>
+                </div>
+                <hr class="my-3"/>
+                <div class="row g-3">
+                    <div class="col-6 col-md-3">
+                        <div class="ti-label">تاريخ الفحص</div>
+                        <div class="ti-value" t-field="inspection.inspection_date"/>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="ti-label">نوع المقطورة</div>
+                        <div class="ti-value"><span t-field="inspection.trailer_type"/> · <span t-field="inspection.category"/></div>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="ti-label">عدم المطابقات</div>
+                        <div class="ti-value" t-field="inspection.nonconformity_count"/>
+                    </div>
+                    <div class="col-6 col-md-3">
+                        <div class="ti-label">صالح حتى</div>
+                        <div class="ti-value" t-field="inspection.report_valid_until"/>
+                    </div>
+                </div>
+            </div>
+
+            <div class="ti-card">
+                <div class="ti-label mb-2">قائمة الفحص / Checklist</div>
+                <div class="ti-table-wrap">
+                    <table class="ti-table">
+                        <thead>
+                            <tr>
+                                <th>البند</th>
+                                <th>المتطلب</th>
+                                <th>النتيجة</th>
+                                <th>الملاحظة</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <!-- QWeb widgets need an inline element: t-field on
+                                 a <td> raises at render time. -->
+                            <tr t-foreach="inspection.line_ids" t-as="line">
+                                <td class="ti-clause"><span t-field="line.clause_ref"/></td>
+                                <td><span t-field="line.requirement_name_ar"/></td>
+                                <td>
+                                    <span t-attf-class="ti-badge ti-badge--#{'pass' if line.result == 'pass' else ('fail' if line.result == 'fail' else 'none')}"
+                                          t-field="line.result"/>
+                                </td>
+                                <td><span t-field="line.observation"/></td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </t>
     </template>
 </odoo>

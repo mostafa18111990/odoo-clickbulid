@@ -1,6 +1,6 @@
 {
     "name": "Trailer Inspection - SASO",
-    "version": "19.0.3.0.4",
+    "version": "19.0.4.0.0",
     "category": "Operations/Inspections",
     "summary": "Trailer and semi-trailer inspections against SASO requirements",
     "description": """
@@ -22,6 +22,7 @@ and bilingual inspection reports.
         "views/trailer_vin_views.xml",
         "views/trailer_equipment_views.xml",
         "views/trailer_inspection_views.xml",
+        "views/trailer_inspection_kanban.xml",
         "views/trailer_quality_views.xml",
         "views/trailer_portal_templates.xml",
         "views/trailer_inspection_menus.xml",
@@ -29,6 +30,18 @@ and bilingual inspection reports.
         "report/trailer_inspection_report.xml",
         "report/trailer_inspection_report_templates.xml",
     ],
+    "assets": {
+        "web.assets_backend": [
+            "trailer_inspection_saso/static/src/scss/trailer_backend.scss",
+            "trailer_inspection_saso/static/src/js/trailer_app_theme.js",
+            "trailer_inspection_saso/static/src/js/trailer_home.js",
+            "trailer_inspection_saso/static/src/js/trailer_home.xml",
+        ],
+        "web.assets_frontend": [
+            "trailer_inspection_saso/static/src/scss/trailer_portal.scss",
+        ],
+    },
+    "post_init_hook": "post_init_branding",
     "application": True,
     "installable": True,
     "auto_install": False,

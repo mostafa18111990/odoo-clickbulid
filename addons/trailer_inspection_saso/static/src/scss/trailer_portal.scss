@@ -1,0 +1,189 @@
+// Trailer Inspection — customer-facing portal identity.
+// Scoped under .ti-portal so the rest of the website keeps its own theme.
+
+.ti-portal {
+    --ti-navy: #0F2A44;
+    --ti-navy-600: #17395C;
+    --ti-amber: #F5A524;
+    --ti-steel: #62748B;
+    --ti-line: #DCE3EB;
+    --ti-canvas: #F4F6F8;
+    --ti-pass: #157F4B;
+    --ti-pass-bg: #E7F3EC;
+    --ti-fail: #C0362C;
+    --ti-fail-bg: #FBEAE8;
+    --ti-warn: #B45309;
+    --ti-warn-bg: #FBF1E0;
+
+    background: var(--ti-canvas);
+    min-height: 100vh;
+    padding-bottom: 3rem;
+
+    .ti-p-header {
+        background: linear-gradient(135deg, var(--ti-navy) 0%, var(--ti-navy-600) 100%);
+        color: #fff;
+        padding: 1.6rem 0 2.4rem;
+
+        .ti-p-logo {
+            width: 52px;
+            height: 52px;
+            object-fit: contain;
+            background: #fff;
+            border-radius: 10px;
+            padding: 5px;
+            flex: none;
+        }
+
+        h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+            margin: 0;
+            line-height: 1.3;
+        }
+
+        .ti-p-sub {
+            margin: 0.1rem 0 0;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.7);
+        }
+    }
+
+    // Cards lift over the header edge; anything sitting above them needs to
+    // stay legible against the navy band it overlaps.
+    .ti-p-body {
+        margin-top: -1.4rem;
+        position: relative;
+        z-index: 1;
+    }
+
+    .ti-back {
+        display: inline-block;
+        color: rgba(255, 255, 255, 0.85);
+        text-decoration: none;
+        font-weight: 600;
+        margin-bottom: 0.9rem;
+
+        &:hover { color: #fff; }
+    }
+
+    .ti-card {
+        background: #fff;
+        border: 1px solid var(--ti-line);
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(15, 42, 68, 0.06);
+        padding: 1.15rem 1.3rem;
+    }
+
+    .ti-rec {
+        border-inline-start: 4px solid var(--ti-steel);
+        display: block;
+        text-decoration: none;
+        color: inherit;
+        transition: transform 0.12s ease, box-shadow 0.12s ease;
+
+        &:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(15, 42, 68, 0.12);
+            color: inherit;
+        }
+
+        &.ti-rec--pass { border-inline-start-color: var(--ti-pass); }
+        &.ti-rec--fail { border-inline-start-color: var(--ti-fail); }
+        &.ti-rec--wait { border-inline-start-color: var(--ti-amber); }
+    }
+
+    .ti-ref {
+        font-weight: 800;
+        color: var(--ti-navy);
+        font-variant-numeric: tabular-nums;
+    }
+
+    .ti-vin {
+        font-size: 0.82rem;
+        color: var(--ti-steel);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.05em;
+    }
+
+    .ti-label {
+        font-size: 0.72rem;
+        font-weight: 700;
+        letter-spacing: 0.03em;
+        color: var(--ti-steel);
+        text-transform: uppercase;
+    }
+
+    .ti-value { font-weight: 600; color: var(--ti-navy); }
+
+    .ti-badge {
+        display: inline-block;
+        border-radius: 6px;
+        padding: 2px 11px;
+        font-size: 0.78rem;
+        font-weight: 700;
+        white-space: nowrap;
+    }
+
+    .ti-badge--pass { background: var(--ti-pass-bg); color: var(--ti-pass); }
+    .ti-badge--fail { background: var(--ti-fail-bg); color: var(--ti-fail); }
+    .ti-badge--wait { background: var(--ti-warn-bg); color: var(--ti-warn); }
+    .ti-badge--none { background: #EAF0F6; color: var(--ti-steel); }
+
+    // Verified-report seal
+    .ti-seal {
+        display: inline-flex;
+        align-items: center;
+        gap: 0.6rem;
+        background: var(--ti-pass-bg);
+        color: var(--ti-pass);
+        border: 1px solid rgba(21, 127, 75, 0.25);
+        border-radius: 999px;
+        padding: 0.45rem 1.15rem;
+        font-weight: 800;
+
+        i { font-size: 1.15rem; }
+    }
+
+    .ti-seal--invalid {
+        background: var(--ti-fail-bg);
+        color: var(--ti-fail);
+        border-color: rgba(192, 54, 44, 0.25);
+    }
+
+    table.ti-table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 0.9rem;
+
+        th {
+            background: #EAF0F6;
+            color: var(--ti-navy);
+            font-weight: 700;
+            padding: 0.55rem 0.75rem;
+            text-align: start;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 0.5rem 0.75rem;
+            border-top: 1px solid var(--ti-line);
+            vertical-align: top;
+        }
+
+        .ti-clause {
+            font-variant-numeric: tabular-nums;
+            color: var(--ti-steel);
+            white-space: nowrap;
+        }
+    }
+
+    .ti-table-wrap { overflow-x: auto; }
+
+    .ti-empty {
+        text-align: center;
+        color: var(--ti-steel);
+        padding: 3rem 1rem;
+
+        i { font-size: 2.5rem; opacity: 0.35; display: block; margin-bottom: 0.75rem; }
+    }
+}

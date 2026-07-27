@@ -3,6 +3,15 @@ from odoo.http import request
 
 
 class TrailerInspectionPortal(http.Controller):
+    def _branding(self, inspection=None):
+        """Portal pages carry the operating company's identity.
+
+        A verified report shows the company that issued it; elsewhere the
+        visitor sees the company running the portal.
+        """
+        company = inspection.company_id if inspection else None
+        return {"company": company or request.env.company}
+
     @http.route("/trailer-inspection/verify/<string:token>", type="http", auth="public", website=False, sitemap=False)
     def verify_report(self, token, **kwargs):
         inspection = request.env["trailer.inspection"].sudo().search(
@@ -10,7 +19,8 @@ class TrailerInspectionPortal(http.Controller):
         )
         return request.render(
             "trailer_inspection_saso.portal_trailer_verification",
-            {"inspection": inspection, "valid": bool(inspection)},
+            {"inspection": inspection, "valid": bool(inspection),
+             **self._branding(inspection)},
         )
 
     @http.route("/my/trailer-inspections", type="http", auth="user", website=False)
@@ -22,7 +32,7 @@ class TrailerInspectionPortal(http.Controller):
         )
         return request.render(
             "trailer_inspection_saso.portal_trailer_inspection_list",
-            {"inspections": inspections},
+            {"inspections": inspections, **self._branding()},
         )
 
     @http.route("/my/trailer-inspections/<int:inspection_id>", type="http", auth="user", website=False)
@@ -36,5 +46,5 @@ class TrailerInspectionPortal(http.Controller):
             return request.not_found()
         return request.render(
             "trailer_inspection_saso.portal_trailer_inspection_detail",
-            {"inspection": inspection},
+            {"inspection": inspection, **self._branding(inspection)},
         )

@@ -575,6 +575,45 @@ class TrailerInspection(models.Model):
             raise UserError(_("Only draft or cancelled inspections can be deleted."))
         return super().unlink()
 
+    @api.model
+    def get_home_overview(self):
+        """Figures behind the app landing screen.
+
+        The operator's own company identity travels with it so the workspace
+        reads as their inspection system rather than a generic Odoo app.
+        """
+        company = self.env.company
+        horizon = fields.Date.add(fields.Date.context_today(self), days=30)
+        counts = {
+            "open_count": self.search_count(
+                [("state", "in", ("draft", "scheduled", "in_progress"))]
+            ),
+            "review_count": self.search_count([("state", "=", "technical_review")]),
+            "approved_count": self.search_count([("state", "=", "approved")]),
+            "non_compliant_count": self.search_count(
+                [("overall_result", "=", "non_compliant")]
+            ),
+            "equipment_due": self.env["trailer.inspection.equipment"].search_count(
+                [("calibration_due_date", "<=", horizon)]
+            ),
+            "expiring_reports": self.search_count(
+                [
+                    ("state", "=", "approved"),
+                    ("report_valid_until", "!=", False),
+                    ("report_valid_until", "<=", horizon),
+                ]
+            ),
+            "expiry_horizon": fields.Date.to_string(horizon),
+        }
+        standard = self.env["trailer.inspection.standard"].search(
+            [("active", "=", True)], order="id", limit=1
+        )
+        return {
+            "company": {"id": company.id, "name": company.name},
+            "kpi": counts,
+            "standard": standard.display_name if standard else "",
+        }
+
 
 class TrailerInspectionAxle(models.Model):
     _name = "trailer.inspection.axle"
