@@ -135,11 +135,12 @@ template_exists() { db_exists "$TEMPLATE_DB"; }
 # in-place migration.
 CACHE_DB=""
 CACHE_HIT=0
+CACHE_GENERATION="ee-sector-cycles-19.0.3"
 if [ "$EDITION" = "enterprise" ] && [ "${COUNTRY:-SA}" = "SA" ] && db_exists "$TEMPLATE_DB"; then
     TEMPLATE_OID=$(docker exec odoo_saas_postgres psql -At -U odoo -d postgres -c \
         "select oid from pg_database where datname='$TEMPLATE_DB'")
     NORMALIZED_MODULES=$(printf '%s' "$INIT_MODULES" | tr ',' '\n' | sed '/^$/d' | sort -u | paste -sd, -)
-    CACHE_KEY=$(printf '%s' "$TEMPLATE_DB|$TEMPLATE_OID|${COUNTRY:-SA}|$NORMALIZED_MODULES" \
+    CACHE_KEY=$(printf '%s' "$CACHE_GENERATION|$TEMPLATE_DB|$TEMPLATE_OID|${COUNTRY:-SA}|$NORMALIZED_MODULES" \
         | sha256sum | cut -c1-16)
     CACHE_DB="tpl_ee_cache_$CACHE_KEY"
     if db_exists "$CACHE_DB"; then
