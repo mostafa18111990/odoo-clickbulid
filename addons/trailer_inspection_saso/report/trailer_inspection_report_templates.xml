@@ -8,7 +8,12 @@
                         <style>
                             .trailer-report h2 { margin: 0; font-size: 19px; }
                             .trailer-report h3 { margin: 3px 0 12px; font-size: 14px; color: #4b5563; }
-                            .trailer-report h4 { background: #714b67; color: white; padding: 6px 8px; margin: 12px 0 5px; font-size: 12px; }
+                            .trailer-report h4 { background: #0F2A44; color: white; padding: 6px 8px; margin: 12px 0 5px; font-size: 12px; border-inline-start: 4px solid #F5A524; }
+                            .trailer-report .letterhead { border-bottom: 3px solid #0F2A44; padding-bottom: 6px; margin-bottom: 8px; }
+                            .trailer-report .letterhead .co-logo { max-height: 52px; max-width: 150px; object-fit: contain; }
+                            .trailer-report .letterhead .co-name { font-size: 15px; font-weight: 700; color: #0F2A44; }
+                            .trailer-report .verdict-seal { display: inline-block; border: 2px solid #157F4B; color: #157F4B; border-radius: 6px; padding: 5px 14px; font-size: 13px; font-weight: 700; }
+                            .trailer-report .verdict-seal.fail { border-color: #C0362C; color: #C0362C; }
                             .trailer-report table { width: 100%; border-collapse: collapse; }
                             .trailer-report th, .trailer-report td { border: 1px solid #9ca3af; padding: 4px 5px; vertical-align: top; }
                             .trailer-report th { background: #f3f4f6; font-weight: 700; }
@@ -30,6 +35,26 @@
                             .trailer-report .page-break { page-break-before: always; }
                         </style>
                         <div t-if="o.state != 'approved'" style="position:fixed; top:45%; left:25%; width:50%; text-align:center; font-size:54px; color:#d1d5db; transform:rotate(-30deg); z-index:-1;">مسودة / DRAFT</div>
+
+                        <!-- Letterhead: the issuing centre owns the document -->
+                        <table class="letterhead" style="border: 0;">
+                            <tbody>
+                                <tr>
+                                    <td style="border: 0; width: 60%; vertical-align: middle;">
+                                        <img t-if="o.company_id.logo" class="co-logo"
+                                             t-att-src="image_data_uri(o.company_id.logo)" alt=""/>
+                                        <div class="co-name" t-field="o.company_id.name"/>
+                                    </td>
+                                    <td style="border: 0; width: 40%; text-align: end; vertical-align: middle;">
+                                        <span t-attf-class="verdict-seal #{'fail' if o.overall_result == 'non_compliant' else ''}"
+                                              t-if="o.overall_result != 'incomplete'">
+                                            <span t-if="o.overall_result == 'compliant'">مطابق / COMPLIANT</span>
+                                            <span t-else="">غير مطابق / NON-COMPLIANT</span>
+                                        </span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
 
                         <div style="position: relative; min-height: 100px;">
                             <div class="text-center" style="padding: 5px 105px;">

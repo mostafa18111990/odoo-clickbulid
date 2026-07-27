@@ -205,6 +205,57 @@ body.ti-app {
     }
 }
 
+// ── Inspection job card (form header) ───────────────────────────────────────
+.ti-jobcard {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1.5rem;
+    flex-wrap: wrap;
+    background: var(--ti-navy-050);
+    border: 1px solid var(--ti-line);
+    border-inline-start: 4px solid var(--ti-navy);
+    border-radius: 10px;
+    padding: 0.9rem 1.15rem;
+    margin-bottom: 1rem;
+
+    .ti-jc-ref {
+        font-size: 1.5rem;
+        font-weight: 800;
+        color: var(--ti-navy);
+        font-variant-numeric: tabular-nums;
+        line-height: 1.2;
+    }
+
+    .ti-jc-vin {
+        font-size: 0.95rem;
+        color: var(--ti-steel);
+        font-variant-numeric: tabular-nums;
+        letter-spacing: 0.06em;
+    }
+
+    .ti-jc-unit {
+        font-size: 0.82rem;
+        color: var(--ti-steel);
+        margin-top: 0.15rem;
+    }
+
+    .ti-jc-dot { margin: 0 0.35rem; opacity: 0.6; }
+
+    .ti-jc-verdict {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-end;
+        gap: 0.45rem;
+        min-width: 190px;
+    }
+
+    .ti-jc-progress { width: 190px; }
+
+    // the header is a summary, not an entry area
+    .o_field_widget { margin: 0; }
+}
+
 // ── Records: statusbar, kanban, measurements ────────────────────────────────
 .o_trailer_app {
     .o_form_statusbar .o_arrow_button.btn-primary,

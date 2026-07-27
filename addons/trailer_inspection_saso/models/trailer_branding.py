@@ -5,7 +5,11 @@ header, so the module reads as their inspection system rather than a
 generic Odoo app.
 """
 
+import logging
+
 from odoo import api, models
+
+_logger = logging.getLogger(__name__)
 
 ROOT_MENU = "trailer_inspection_saso.menu_trailer_root"
 
@@ -23,6 +27,19 @@ class ResCompany(models.Model):
 class TrailerBranding(models.AbstractModel):
     _name = "trailer.inspection.branding"
     _description = "Trailer Inspection App Branding"
+
+    def _register_hook(self):
+        """Re-assert the company name on the app tile after every load.
+
+        Loading the module's translations rewrites the menu label, so a
+        one-shot install hook is not enough to keep the operator's name on
+        the tile through upgrades.
+        """
+        super()._register_hook()
+        try:
+            self._sync_app_name()
+        except Exception:  # never block a registry load over a label
+            _logger.warning("Trailer branding: app name sync skipped", exc_info=True)
 
     @api.model
     def _sync_app_name(self):

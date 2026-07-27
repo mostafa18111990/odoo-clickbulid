@@ -52,10 +52,32 @@
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" icon="fa-check-square-o" type="object" name="action_prepare_checklist" invisible="state != 'draft'" groups="trailer_inspection_saso.group_trailer_manager"><field name="checklist_total" widget="statinfo" string="Checklist Items"/></button>
                     </div>
-                    <div class="oe_title"><label for="name"/><h1><field name="name"/></h1></div>
+                    <!-- Job-card header: the identity of the unit under
+                         inspection, its verdict and progress, readable
+                         without opening a tab. -->
+                    <div class="ti-jobcard">
+                        <div class="ti-jc-id">
+                            <div class="ti-jc-ref"><field name="name" readonly="1" nolabel="1"/></div>
+                            <div class="ti-jc-vin"><field name="vin" readonly="1" nolabel="1" placeholder="—"/></div>
+                            <div class="ti-jc-unit">
+                                <field name="trailer_type" readonly="1" nolabel="1"/>
+                                <span class="ti-jc-dot">·</span>
+                                <field name="category" readonly="1" nolabel="1"/>
+                            </div>
+                        </div>
+                        <div class="ti-jc-verdict">
+                            <field name="overall_result" widget="badge" readonly="1" nolabel="1"
+                                   decoration-success="overall_result == 'compliant'"
+                                   decoration-danger="overall_result == 'non_compliant'"/>
+                            <div class="ti-jc-progress">
+                                <field name="checklist_progress" widget="progressbar" readonly="1" nolabel="1"/>
+                            </div>
+                        </div>
+                    </div>
                     <group>
                         <group><field name="partner_id" readonly="state not in ('draft','scheduled')"/><field name="inspection_type"/><field name="parent_inspection_id" invisible="inspection_type != 'reinspection'"/><field name="inspection_date" readonly="state not in ('draft','scheduled')"/><field name="scheduled_datetime"/><field name="inspection_location"/><field name="company_id" groups="base.group_multi_company"/></group>
-                        <group><field name="inspector_id"/><field name="reviewer_id"/><field name="authorization_id" readonly="1"/><field name="overall_result" widget="badge" readonly="1"/><field name="checklist_progress" widget="progressbar"/><field name="nonconformity_count"/></group>
+                        <!-- verdict and progress live in the job card above -->
+                        <group><field name="inspector_id"/><field name="reviewer_id"/><field name="authorization_id" readonly="1"/><field name="nonconformity_count"/></group>
                     </group>
                     <notebook>
                         <page string="Trailer Data">
