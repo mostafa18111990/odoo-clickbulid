@@ -273,6 +273,9 @@ class SaasDemoSeedSectorOperations(models.AbstractModel):
             'user_id': env.user.id,
         })
         closed_session.action_pos_session_open()
+        if closed_session.state == 'opening_control':
+            closed_session.set_opening_control(
+                0.0, 'رصيد افتتاحي تجريبي')
         paid_order = self._pos_order(
             env, closed_session, customer, products[0], quantity=2.0, paid=True)
         closed_session.action_pos_session_closing_control()
@@ -283,6 +286,9 @@ class SaasDemoSeedSectorOperations(models.AbstractModel):
             'user_id': env.user.id,
         })
         open_session.action_pos_session_open()
+        if open_session.state == 'opening_control':
+            open_session.set_opening_control(
+                0.0, 'رصيد افتتاحي تجريبي')
         draft_order = self._pos_order(
             env, open_session, customer, products[-1], quantity=1.0)
         return {
@@ -320,6 +326,9 @@ class SaasDemoSeedSectorOperations(models.AbstractModel):
             'user_id': env.user.id,
         })
         session.action_pos_session_open()
+        if session.state == 'opening_control':
+            session.set_opening_control(
+                0.0, 'رصيد افتتاحي تجريبي')
         paid_order = self._pos_order(
             env, session, customer, products[0], quantity=2.0,
             table=tables[0], paid=True)
