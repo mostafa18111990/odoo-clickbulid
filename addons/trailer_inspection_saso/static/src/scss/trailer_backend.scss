@@ -25,7 +25,17 @@ body.ti-app {
         background-color: var(--ti-navy);
         border-bottom: 3px solid var(--ti-amber);
 
+        // Enterprise drives the navbar through its own custom properties,
+        // so the theme is applied both directly and through them.
+        --NavBar-brand-color: #fff;
+        --NavBar-menuToggle-color: #fff;
+        --NavBar-entry-color--active: #fff;
+        --NavBar-entry-backgroundColor--active: var(--ti-navy-600);
+        --NavBar-entry-backgroundColor--hover: var(--ti-navy-600);
+        --NavBar-entry-backgroundColor--focus: var(--ti-navy-600);
+
         .o_menu_brand,
+        .o_menu_toggle,
         .o_nav_entry,
         .dropdown-toggle {
             color: #fff;
