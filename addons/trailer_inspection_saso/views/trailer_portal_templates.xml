@@ -38,7 +38,12 @@
                         <div class="ti-label">تقرير فحص معتمد / Verified inspection report</div>
                         <div class="ti-ref fs-4" t-field="inspection.name"/>
                     </div>
-                    <span class="ti-seal"><i class="fa fa-check-circle"/> صالح / Verified</span>
+                    <div class="d-flex flex-column align-items-end gap-2">
+                        <span class="ti-seal"><i class="fa fa-check-circle"/> صالح / Verified</span>
+                        <a class="ti-dl" t-att-href="'/trailer-inspection/verify/%s/report' % inspection.access_token">
+                            <i class="fa fa-download me-1"/>تحميل التقرير PDF
+                        </a>
+                    </div>
                 </div>
                 <hr class="my-3"/>
                 <div class="row g-3">
@@ -139,11 +144,19 @@
                         <div class="ti-ref fs-4" t-field="inspection.name"/>
                         <div class="ti-vin mt-1" t-field="inspection.vin"/>
                     </div>
-                    <div class="d-flex gap-2 flex-wrap">
-                        <span t-attf-class="ti-badge ti-badge--#{'pass' if inspection.overall_result == 'compliant' else ('fail' if inspection.overall_result == 'non_compliant' else 'none')}"
-                              t-field="inspection.overall_result"/>
-                        <span t-attf-class="ti-badge ti-badge--#{'pass' if inspection.state == 'approved' else ('fail' if inspection.state == 'rejected' else 'wait')}"
-                              t-field="inspection.state"/>
+                    <div class="d-flex flex-column align-items-end gap-2">
+                        <div class="d-flex gap-2 flex-wrap">
+                            <span t-attf-class="ti-badge ti-badge--#{'pass' if inspection.overall_result == 'compliant' else ('fail' if inspection.overall_result == 'non_compliant' else 'none')}"
+                                  t-field="inspection.overall_result"/>
+                            <span t-attf-class="ti-badge ti-badge--#{'pass' if inspection.state == 'approved' else ('fail' if inspection.state == 'rejected' else 'wait')}"
+                                  t-field="inspection.state"/>
+                        </div>
+                        <!-- Only an approved report is downloadable; anything
+                             earlier can still change. -->
+                        <a t-if="inspection.state == 'approved'" class="ti-dl"
+                           t-att-href="'/my/trailer-inspections/%s/report' % inspection.id">
+                            <i class="fa fa-download me-1"/>تحميل التقرير PDF
+                        </a>
                     </div>
                 </div>
                 <hr class="my-3"/>

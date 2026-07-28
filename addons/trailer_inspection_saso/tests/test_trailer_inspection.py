@@ -13,18 +13,24 @@ class TestTrailerInspection(TransactionCase):
         super().setUpClass()
         inspector_group = cls.env.ref("trailer_inspection_saso.group_trailer_inspector")
         reviewer_group = cls.env.ref("trailer_inspection_saso.group_trailer_reviewer")
+        # Inspectors and reviewers are employees of the centre: without the
+        # internal-user group they cannot even read the sequence that numbers
+        # an inspection, which is not how these users exist in practice.
+        internal_group = cls.env.ref("base.group_user")
         cls.inspector = cls.env["res.users"].create(
             {
                 "name": "Trailer Inspector",
                 "login": "trailer.inspector.test",
-                "group_ids": [Command.link(inspector_group.id)],
+                "group_ids": [Command.link(internal_group.id),
+                              Command.link(inspector_group.id)],
             }
         )
         cls.reviewer = cls.env["res.users"].create(
             {
                 "name": "Technical Reviewer",
                 "login": "trailer.reviewer.test",
-                "group_ids": [Command.link(reviewer_group.id)],
+                "group_ids": [Command.link(internal_group.id),
+                              Command.link(reviewer_group.id)],
             }
         )
         cls.authorization = cls.env["trailer.inspector.authorization"].create(

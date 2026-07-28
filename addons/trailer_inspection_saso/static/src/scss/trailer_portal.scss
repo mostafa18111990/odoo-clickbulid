@@ -56,6 +56,20 @@
         z-index: 1;
     }
 
+    .ti-dl {
+        display: inline-block;
+        background: var(--ti-navy);
+        color: #fff;
+        border-radius: 8px;
+        padding: 0.4rem 0.95rem;
+        font-size: 0.85rem;
+        font-weight: 700;
+        text-decoration: none;
+        white-space: nowrap;
+
+        &:hover { background: var(--ti-navy-600); color: #fff; }
+    }
+
     .ti-back {
         display: inline-block;
         color: rgba(255, 255, 255, 0.85);

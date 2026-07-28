@@ -679,13 +679,42 @@ class TrailerInspectionLine(models.Model):
     corrective_action_due = fields.Date()
     nc_closed = fields.Boolean()
 
+    def _breached_limit(self):
+        """The limit this measurement falls outside of, if any."""
+        self.ensure_one()
+        if self.minimum_value and self.measured_value < self.minimum_value:
+            return "min", self.minimum_value
+        if self.maximum_value and self.measured_value > self.maximum_value:
+            return "max", self.maximum_value
+        return None, 0.0
+
+    def _measurement_observation(self, direction, limit):
+        """Why the rule engine failed this line.
+
+        A nonconforming result must carry its reason — the accreditation
+        constraint enforces it, and the inspector should not have to retype
+        what the measurement already says.
+        """
+        self.ensure_one()
+        unit = self.unit or ""
+        if direction == "min":
+            return _(
+                "Measured %(measured)s %(unit)s is below the minimum of %(limit)s %(unit)s.",
+                measured=self.measured_value, limit=limit, unit=unit,
+            ).strip()
+        return _(
+            "Measured %(measured)s %(unit)s exceeds the maximum of %(limit)s %(unit)s.",
+            measured=self.measured_value, limit=limit, unit=unit,
+        ).strip()
+
     @api.onchange("measured_value")
     def _onchange_measured_value(self):
         for line in self.filtered(lambda item: item.response_type == "numeric"):
             line.measurement_recorded = True
-            below_minimum = bool(line.minimum_value and line.measured_value < line.minimum_value)
-            above_maximum = bool(line.maximum_value and line.measured_value > line.maximum_value)
-            line.result = "no" if (below_minimum or above_maximum) else "yes"
+            direction, limit = line._breached_limit()
+            line.result = "no" if direction else "yes"
+            if direction and not line.observation:
+                line.observation = line._measurement_observation(direction, limit)
 
     def write(self, vals):
         if "measured_value" in vals:
@@ -694,9 +723,13 @@ class TrailerInspectionLine(models.Model):
 
     def _evaluate_measurements(self):
         for line in self.filtered(lambda item: item.response_type == "numeric" and item.measurement_recorded):
-            below_minimum = bool(line.minimum_value and line.measured_value < line.minimum_value)
-            above_maximum = bool(line.maximum_value and line.measured_value > line.maximum_value)
-            line.result = "no" if below_minimum or above_maximum else "yes"
+            direction, limit = line._breached_limit()
+            values = {"result": "no" if direction else "yes"}
+            if direction and not line.observation:
+                # Writing the verdict without its reason would trip the
+                # nonconformity constraint and abort the evaluation.
+                values["observation"] = line._measurement_observation(direction, limit)
+            line.write(values)
 
     @api.onchange("result")
     def _onchange_result(self):
