@@ -131,25 +131,42 @@ class SaasDemoSeedSectorOperations(models.AbstractModel):
         )
         costs = env['account.analytic.line']
         if 'account.analytic.line' in env:
-            employee = self._demo_employee(env)
-            costs = env['account.analytic.line'].create([
+            analytic_account = project.account_id
+            if not analytic_account:
+                analytic_plan = env['account.analytic.plan'].search([], limit=1)
+                analytic_account = env['account.analytic.account'].create({
+                    'name': 'تكاليف مشروع المبنى الإداري (تجريبي)',
+                    'plan_id': analytic_plan.id,
+                    'company_id': env.company.id,
+                    'partner_id': customer.id,
+                })
+                project.account_id = analytic_account
+            cost_values = [
                 {
                     'name': 'تكلفة مقاول باطن — أعمال الأساسات (تجريبي)',
                     'date': fields.Date.context_today(self),
                     'amount': -38000.0,
-                    'project_id': project.id,
-                    'employee_id': employee.id,
+                    'account_id': analytic_account.id,
                     'company_id': env.company.id,
                 },
                 {
                     'name': 'تكلفة مواد موقع — خرسانة وحديد (تجريبي)',
                     'date': fields.Date.context_today(self),
                     'amount': -24500.0,
-                    'project_id': project.id,
-                    'employee_id': employee.id,
+                    'account_id': analytic_account.id,
                     'company_id': env.company.id,
                 },
-            ])
+            ]
+            if (
+                'employee_id' in env['account.analytic.line']._fields
+                and 'hr.employee' in env
+            ):
+                employee = self._demo_employee(env)
+                for values in cost_values:
+                    values['employee_id'] = employee.id
+                    if 'project_id' in env['account.analytic.line']._fields:
+                        values['project_id'] = project.id
+            costs = env['account.analytic.line'].create(cost_values)
         return {
             'projects': len(project),
             'milestones': len(milestones),
