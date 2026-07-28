@@ -49,12 +49,12 @@ class SaasWebsiteSignup(http.Controller):
                                'selected_billing_cycle': 'yearly',
                                'platform_domain': platform_domain})
 
-    @http.route('/get-started/check', type='json', auth='public', csrf=False)
+    @http.route('/get-started/check', type='jsonrpc', auth='public', csrf=False)
     def check_subdomain(self, subdomain=None, **kw):
         from odoo.addons.saas_website.services.signup_service import SignupService
         return SignupService(request.env).check_subdomain(subdomain or '')
 
-    @http.route('/get-started/status', type='json', auth='public', csrf=False)
+    @http.route('/get-started/status', type='jsonrpc', auth='public', csrf=False)
     def signup_status(self, tenant=None, **kw):
         """Polled by the success page to know when the new tenant is fully
         provisioned and reachable. Returns a dict the frontend uses to enable

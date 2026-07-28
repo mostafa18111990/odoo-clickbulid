@@ -30,7 +30,7 @@ class SaasCoreWebhookController(http.Controller):
         except json.JSONDecodeError:
             return None, {'error': 'Invalid JSON', 'status': 400}
 
-    @http.route('/saas/core/webhook/provisioning', type='json', auth='none', methods=['POST'], csrf=False)
+    @http.route('/saas/core/webhook/provisioning', type='jsonrpc', auth='none', methods=['POST'], csrf=False)
     def provisioning_webhook(self, **kwargs):
         data, err = self._parse_and_validate()
         if err:

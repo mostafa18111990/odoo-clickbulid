@@ -108,7 +108,7 @@ class SaasWebsiteMain(http.Controller):
             'message': post.get('message'), 'source': 'contact_form'})
         return request.redirect('/contact?submitted=1' if result.get('success') else '/contact?error=save')
 
-    @http.route('/newsletter/subscribe', type='json', auth='public', csrf=False)
+    @http.route('/newsletter/subscribe', type='jsonrpc', auth='public', csrf=False)
     def newsletter_subscribe(self, email=None, **kw):
         if not email:
             return {'success': False}
@@ -132,7 +132,7 @@ class SaasWebsiteMain(http.Controller):
     def sla(self, **kw):
         return request.render('saas_website.page_legal', {'page': 'sla'})
 
-    @http.route('/health', type='json', auth='public', csrf=False)
+    @http.route('/health', type='jsonrpc', auth='public', csrf=False)
     def health_check(self, **kw):
         """Platform health status endpoint."""
         return HealthCheck.get_platform_status()
