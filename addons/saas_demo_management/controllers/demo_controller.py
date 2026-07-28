@@ -10,6 +10,21 @@ from odoo.http import request
 from odoo.addons.saas_demo_management.models.demo_template import SECTOR_SELECTION
 
 
+SECTOR_LABELS_AR = {
+    'construction': 'المقاولات',
+    'trading-distribution': 'التجارة والتوزيع',
+    'retail': 'التجزئة',
+    'restaurants-cafes': 'المطاعم والمقاهي',
+    'manufacturing': 'التصنيع',
+    'professional-services': 'الخدمات المهنية',
+    'real-estate': 'العقارات وإدارة الأملاك',
+    'ecommerce': 'التجارة الإلكترونية',
+    'field-services': 'الصيانة والخدمات الميدانية',
+    'education': 'التعليم والتدريب',
+    'startups-smes': 'الشركات الناشئة والمنشآت الصغيرة والمتوسطة',
+}
+
+
 class SaasDemoWebsite(http.Controller):
     SESSION_KEY = 'saas_demo_public_status'
 
@@ -41,8 +56,13 @@ class SaasDemoWebsite(http.Controller):
     def demo_request(self, **kw):
         sectors = dict(SECTOR_SELECTION)
         selected = kw.get('industry') if kw.get('industry') in sectors else ''
+        is_arabic = request.env.lang in ('ar_001', 'ar')
+        sector_options = [
+            (code, SECTOR_LABELS_AR.get(code, label) if is_arabic else label)
+            for code, label in SECTOR_SELECTION
+        ]
         return request.render('saas_demo_management.page_demo_request', {
-            'sectors': SECTOR_SELECTION, 'selected_sector': selected,
+            'sectors': sector_options, 'selected_sector': selected,
             'form_error': kw.get('error')})
 
     @http.route('/demo/request/submit', type='http', auth='public', website=True,

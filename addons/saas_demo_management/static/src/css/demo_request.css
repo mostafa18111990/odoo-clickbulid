@@ -11,7 +11,7 @@
 .cb-demo-form .form-control, .cb-demo-form .form-select { min-height: 3.15rem; border-color: #ddd5eb; border-radius: .75rem; }
 .cb-demo-form textarea.form-control { min-height: 7rem; }
 .cb-demo-form .form-control:focus, .cb-demo-form .form-select:focus { border-color: #7d42c5; box-shadow: 0 0 0 .2rem rgba(125, 66, 197, .12); }
-.cb-demo-honeypot { position: absolute !important; left: -10000px !important; width: 1px !important; height: 1px !important; opacity: 0 !important; }
+.cb-demo-honeypot { position: absolute !important; inset-inline-start: -10000px !important; width: 1px !important; height: 1px !important; padding: 0 !important; border: 0 !important; overflow: hidden !important; opacity: 0 !important; pointer-events: none !important; }
 .cb-demo-success { max-width: 760px; }
 .cb-demo-success__icon { width: 5rem; height: 5rem; display: grid; place-items: center; margin: 0 auto 1.25rem; border-radius: 50%; background: #e8f8ef; color: #159652; font-size: 2.5rem; }
 .cb-demo-progress-wrap .progress { height: 1rem; border-radius: 999px; background: #eee9f6; overflow: hidden; }

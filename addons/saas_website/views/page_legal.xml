@@ -38,8 +38,8 @@
 
                         <h1 class="display-6 fw-bold mb-2"><t t-esc="page_title"/></h1>
                         <p class="text-muted mb-5">
-                            <t t-if="lang_is_ar">آخر تحديث: يونيو 2026</t>
-                            <t t-else="">Last updated: June 2026</t>
+                            <t t-if="lang_is_ar">آخر تحديث: يوليو 2026</t>
+                            <t t-else="">Last updated: July 2026</t>
                         </p>
 
                         <!-- TERMS OF SERVICE -->
@@ -58,7 +58,7 @@
                                 <p>تُعرض تكلفة شهرية مرجعية لتوضيح سعر الباقة، وتُحتسب رسوم الاشتراك مقدماً عن اثني عشر شهرًا في فاتورة سنوية واحدة دون خصم سنوي. في حالة عدم السداد، يحق لنا تعليق الخدمة بعد فترة سماح مدتها 7 أيام.</p>
 
                                 <h2 class="h5 fw-bold mt-4">5. إنهاء الخدمة</h2>
-                                <p>يمكنك إلغاء اشتراكك في أي وقت. ستظل بياناتك محفوظة لمدة 90 يوماً بعد الإلغاء، بعدها تُحذف نهائياً.</p>
+                                <p>يمكنك طلب إيقاف التجديد التالي في أي وقت، وتستمر الخدمة حتى نهاية مدة الاشتراك السنوي المدفوعة. لا تُرد رسوم المدة المدفوعة أو الجزء غير المستخدم منها إلا إذا نص عرض السعر أو العقد على خلاف ذلك. بعد انتهاء الخدمة تُحفظ بياناتك لمدة 90 يوماً لإتاحة التصدير، ثم تُحذف نهائياً.</p>
 
                                 <h2 class="h5 fw-bold mt-4">6. القانون المطبق</h2>
                                 <p>تخضع هذه الشروط لقوانين المملكة العربية السعودية، وتختص المحاكم السعودية بالنظر في أي نزاعات.</p>
@@ -77,7 +77,7 @@
                                 <p>A reference monthly rate is displayed to explain package pricing. Subscription fees are charged in advance for twelve months in one annual invoice, with no annual discount. In case of non-payment, we may suspend service after a 7-day grace period.</p>
 
                                 <h2 class="h5 fw-bold mt-4">5. Termination</h2>
-                                <p>You may cancel your subscription at any time. Your data will be retained for 90 days after cancellation, after which it will be permanently deleted.</p>
+                                <p>You may stop the next renewal at any time, and service continues through the paid annual term. Fees for the paid term or any unused portion are non-refundable unless the quotation or contract states otherwise. After service ends, data is retained for 90 days for export and is then permanently deleted.</p>
 
                                 <h2 class="h5 fw-bold mt-4">6. Governing Law</h2>
                                 <p>These terms are governed by the laws of the Kingdom of Saudi Arabia, and Saudi courts shall have exclusive jurisdiction over any disputes.</p>

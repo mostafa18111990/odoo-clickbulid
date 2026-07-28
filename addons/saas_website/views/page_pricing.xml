@@ -90,6 +90,7 @@
                     </div>
                     <a class="btn btn-primary btn-lg w-100 mt-3" data-tier-cta="1" href="/get-started?edition=community&amp;users=1&amp;billing=yearly"><t t-if="lang_is_ar">طلب الاشتراك</t><t t-else="">Request subscription</t></a>
                     <div class="cb-tier-legal mt-4">
+                        <p><t t-if="lang_is_ar">السعر المعروض هو سعر المستخدم الواحد ضمن شريحة الباقة المختارة. قد ينخفض سعر المستخدم في الشرائح الأكبر، بينما يُحسب إجمالي السنة تلقائيًا وفق عدد المستخدمين × سعر المستخدم الشهري × 12.</t><t t-else="">The displayed rate is per user within the selected tier. Larger tiers may have a lower per-user rate, while the annual total is calculated as users × monthly per-user rate × 12.</t></p>
                         <p><t t-if="lang_is_ar">Odoo Community بلا رسوم ترخيص من Odoo؛ قيمة الاشتراك مقابل الاستضافة والإدارة الفنية والنسخ الاحتياطي والدعم المشمول.</t><t t-else="">Odoo Community has no Odoo license fee; the subscription covers included hosting, technical management, backups, and support.</t></p>
                         <p><t t-if="lang_is_ar">تتضمن أسعار Enterprise إتاحة Odoo Enterprise عبر اشتراك الشريك، ولا تضاف رسوم ترخيص منفصلة إلا إذا نص عرض السعر على خلاف ذلك.</t><t t-else="">Enterprise prices include access through the partner subscription; no separate license fee is added unless the quotation states otherwise.</t></p>
                         <p><t t-if="lang_is_ar">الأسعار لا تشمل ضريبة القيمة المضافة. رسوم الإعداد والتهيئة والتنفيذ تُحدد بصورة منفصلة وفقًا لمتطلبات المشروع.</t><t t-else="">Prices exclude VAT. Setup, configuration, and implementation are quoted separately according to project requirements.</t></p>
@@ -223,10 +224,10 @@
                     </div>
                     <div class="col-md-3 col-6">
                         <div class="cb-feature-icon"><i class="fa fa-times-circle"/></div>
-                        <h6 class="fw-bold"><t t-if="lang_is_ar">إلغاء مرن</t><t t-else="">Flexible cancellation</t></h6>
+                        <h6 class="fw-bold"><t t-if="lang_is_ar">إدارة التجديد</t><t t-else="">Renewal control</t></h6>
                         <p class="small text-muted mb-0">
-                            <t t-if="lang_is_ar">ألغِ خطتك في أي وقت بدون رسوم</t>
-                            <t t-else="">Cancel any time with no fees</t></p>
+                            <t t-if="lang_is_ar">أوقف التجديد القادم في أي وقت؛ وتستمر الخدمة حتى نهاية المدة المدفوعة</t>
+                            <t t-else="">Stop the next renewal at any time; service continues through the paid term</t></p>
                     </div>
                 </div>
             </div></section>

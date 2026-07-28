@@ -1,5 +1,6 @@
 from odoo import http
 from odoo.http import request
+from odoo.addons.account.controllers.terms import TermsController
 from odoo.addons.saas_website.services.error_handler import ErrorHandler, HealthCheck, PlatformError
 from .content_catalog import APPLICATIONS, INDUSTRIES, SERVICES
 
@@ -119,10 +120,6 @@ class SaasWebsiteMain(http.Controller):
     def about(self, **kw):
         return request.render('saas_website.page_about', {})
 
-    @http.route('/terms', type='http', auth='public', website=True, sitemap=True)
-    def terms(self, **kw):
-        return request.render('saas_website.page_legal', {'page': 'terms'})
-
     @http.route('/privacy', type='http', auth='public', website=True, sitemap=True)
     def privacy(self, **kw):
         return request.render('saas_website.page_legal', {'page': 'privacy'})
@@ -149,3 +146,11 @@ class SaasWebsiteMain(http.Controller):
             'error_code': code,
             'error_message': error_msg
         })
+
+
+class SaasWebsiteTerms(TermsController):
+    """Override Odoo Accounting's /terms controller with the platform terms."""
+
+    @http.route()
+    def terms_conditions(self, **kwargs):
+        return request.render('saas_website.page_legal', {'page': 'terms'})
