@@ -575,6 +575,39 @@ class TrailerInspection(models.Model):
             raise UserError(_("Only draft or cancelled inspections can be deleted."))
         return super().unlink()
 
+    def _set_pending_lines(self, result):
+        """Resolve every checklist line still awaiting a verdict.
+
+        A 55-item checklist is mostly uneventful: the inspector records the
+        exceptions and clears the rest in one go. Lines already judged are
+        never touched, and numeric lines with a measurement keep the verdict
+        the rule engine derived from it.
+        """
+        self.ensure_one()
+        if self.state != "in_progress":
+            raise UserError(_(
+                "The checklist can only be filled while the inspection is in progress."
+            ))
+        pending = self.line_ids.filtered(
+            lambda line: line.result == "pending"
+            and not (line.response_type == "numeric" and line.measurement_recorded)
+        )
+        if not pending:
+            raise UserError(_("Every checklist item already has a result."))
+        pending.write({"result": result})
+        self.message_post(body=_(
+            "%(count)s checklist items set to %(result)s in bulk.",
+            count=len(pending),
+            result=dict(self.line_ids._fields["result"].selection)[result],
+        ))
+        return len(pending)
+
+    def action_checklist_remaining_compliant(self):
+        return self._set_pending_lines("yes")
+
+    def action_checklist_remaining_not_applicable(self):
+        return self._set_pending_lines("na")
+
     @api.model
     def get_home_overview(self):
         """Figures behind the app landing screen.

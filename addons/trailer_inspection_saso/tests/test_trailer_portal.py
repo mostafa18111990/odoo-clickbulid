@@ -1,6 +1,7 @@
 from datetime import timedelta
 
 from odoo import Command, fields
+from odoo.exceptions import UserError
 from odoo.tests.common import HttpCase, TransactionCase, tagged
 
 from ..models.trailer_vin import calculate_vin_check_digit
@@ -140,6 +141,61 @@ class TestWorkspaceOverview(TrailerCase):
         overview = self.env["trailer.inspection"].get_home_overview()
         self.assertEqual(overview["company"]["name"], self.env.company.name)
         self.assertEqual(overview["company"]["id"], self.env.company.id)
+
+
+class TestChecklistBulkEntry(TrailerCase):
+    """Clearing the uneventful majority of a 55-item checklist."""
+
+    def setUp(self):
+        super().setUp()
+        self.inspection = self._make_inspection(
+            self.customer, _vin("1FUJGLDR0CLBP8834"))
+        self.inspection.write({"state": "in_progress"})
+
+    def test_bulk_pass_only_touches_undecided_lines(self):
+        lines = self.inspection.line_ids
+        self.assertTrue(len(lines) > 1, "the checklist should be generated")
+        judged = lines[0]
+        judged.write({"result": "na"})
+        pending_before = len(lines.filtered(lambda l: l.result == "pending"))
+
+        touched = self.inspection.action_checklist_remaining_compliant()
+
+        self.assertEqual(touched, pending_before)
+        self.assertEqual(judged.result, "na", "an existing verdict was overwritten")
+        self.assertFalse(lines.filtered(lambda l: l.result == "pending"))
+
+    def test_bulk_not_applicable(self):
+        self.inspection.action_checklist_remaining_not_applicable()
+        self.assertFalse(
+            self.inspection.line_ids.filtered(lambda l: l.result == "pending"))
+        self.assertTrue(
+            all(l.result == "na" for l in self.inspection.line_ids))
+
+    def test_measured_lines_keep_their_derived_verdict(self):
+        numeric = self.inspection.line_ids.filtered(
+            lambda l: l.response_type == "numeric" and l.maximum_value)[:1]
+        if not numeric:
+            self.skipTest("no numeric requirement in the standard data")
+        numeric.write({"measured_value": numeric.maximum_value + 1})
+        numeric._evaluate_measurements()
+        self.assertEqual(numeric.result, "no")
+        self.assertTrue(numeric.observation, "the breach should be documented")
+
+        self.inspection.action_checklist_remaining_compliant()
+
+        self.assertEqual(numeric.result, "no",
+                         "a measured failure was cleared by the bulk action")
+
+    def test_bulk_entry_is_refused_outside_the_inspection(self):
+        self.inspection.write({"state": "draft"})
+        with self.assertRaises(UserError):
+            self.inspection.action_checklist_remaining_compliant()
+
+    def test_bulk_entry_reports_when_nothing_is_left(self):
+        self.inspection.action_checklist_remaining_compliant()
+        with self.assertRaises(UserError):
+            self.inspection.action_checklist_remaining_compliant()
 
 
 class TestAppBranding(TrailerCase):

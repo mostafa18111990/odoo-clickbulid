@@ -89,6 +89,30 @@
                             <field name="standard_ids" widget="many2many_tags" options="{'no_create': True}"/>
                         </page>
                         <page string="Checklist">
+                            <!-- Most of a 55-item checklist is uneventful: the
+                                 inspector records the exceptions, then clears
+                                 what is left in one action. -->
+                            <div class="ti-bulk mb-2" invisible="state != 'in_progress'">
+                                <span class="ti-bulk-label">البنود المتبقية:</span>
+                                <button name="action_checklist_remaining_compliant" type="object"
+                                        class="btn btn-sm btn-outline-success"
+                                        groups="trailer_inspection_saso.group_trailer_inspector"
+                                        confirm="Set every checklist item still awaiting a result to compliant?">
+                                    <i class="fa fa-check me-1"/>تعيينها مطابقة
+                                </button>
+                                <button name="action_checklist_remaining_not_applicable" type="object"
+                                        class="btn btn-sm btn-outline-secondary"
+                                        groups="trailer_inspection_saso.group_trailer_inspector"
+                                        confirm="Set every checklist item still awaiting a result to not applicable?">
+                                    <i class="fa fa-ban me-1"/>تعيينها غير منطبقة
+                                </button>
+                                <span class="ti-bulk-hint">
+                                    البنود التي سجّلت لها نتيجة أو قياساً تبقى كما هي
+                                </span>
+                            </div>
+                            <!-- Lines arrive grouped by section through the
+                                 model's own order: the web client ignores
+                                 default_group_by inside an x2many field. -->
                             <field name="line_ids" readonly="state not in ('draft','in_progress')">
                                 <list editable="bottom" decoration-danger="result == 'no'" decoration-success="result == 'yes'" decoration-muted="result == 'na'">
                                     <field name="sequence" column_invisible="True"/><field name="section_id" readonly="1"/><field name="clause_ref" readonly="1"/>
