@@ -38,6 +38,9 @@
         <field name="name">Inspection Manager</field>
         <field name="privilege_id" ref="privilege_trailer_operations"/>
         <field name="implied_ids" eval="[(4, ref('group_trailer_inspector')), (4, ref('group_trailer_reviewer'))]"/>
+        <!-- Without this the administrator installs the app and cannot see
+             it: every menu is gated behind the inspection groups. -->
+        <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
     </record>
 
     <record id="rule_trailer_inspection_company" model="ir.rule">
