@@ -2,7 +2,7 @@ import json
 from datetime import datetime, time, timedelta
 
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import UserError, ValidationError
 
 from odoo.addons.saas_demo_seed.models.seed_service import DEMO_CONTEXT
 
@@ -756,7 +756,18 @@ class SaasRestaurantDemoSeed(models.AbstractModel):
         bills = purchase.invoice_ids.filtered(lambda move: move.state == 'draft')
         if bills:
             bills.write({'invoice_date': fields.Date.context_today(self)})
-            bills.action_post()
+            # A Saudi demo database deliberately has no real ZATCA private key
+            # or production certificate.  l10n_sa_edi therefore rejects posting
+            # until the legal entity is onboarded.  Keep the sample bill in
+            # draft in that case instead of rolling back the entire restaurant
+            # scenario; users can still review the complete purchasing flow.
+            try:
+                with env.cr.savepoint():
+                    bills.action_post()
+            except UserError:
+                bills.message_post(body=_(
+                    'This sample vendor bill remains in draft because the '
+                    'isolated demo company is not connected to ZATCA.'))
             self.env['saas.demo.seed']._register_payments(bills)
         return purchase
 
