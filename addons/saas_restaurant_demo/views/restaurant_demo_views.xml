@@ -1,0 +1,318 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_restaurant_demo_channel_list" model="ir.ui.view">
+        <field name="name">restaurant.demo.channel.list</field>
+        <field name="model">restaurant.demo.channel</field>
+        <field name="arch" type="xml">
+            <list string="قنوات البيع">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="channel_type"/>
+                <field name="commission_rate"/>
+                <field name="payment_gateway_rate"/>
+                <field name="analytic_account_id"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_restaurant_demo_channel_form" model="ir.ui.view">
+        <field name="name">restaurant.demo.channel.form</field>
+        <field name="model">restaurant.demo.channel</field>
+        <field name="arch" type="xml">
+            <form string="قناة البيع">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="code"/>
+                            <field name="channel_type"/>
+                            <field name="partner_id"/>
+                        </group>
+                        <group>
+                            <field name="commission_rate"/>
+                            <field name="payment_gateway_rate"/>
+                            <field name="analytic_account_id"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_restaurant_demo_channels" model="ir.actions.act_window">
+        <field name="name">قنوات البيع والتوصيل</field>
+        <field name="res_model">restaurant.demo.channel</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_restaurant_demo_order_list" model="ir.ui.view">
+        <field name="name">restaurant.demo.order.list</field>
+        <field name="model">restaurant.demo.order</field>
+        <field name="arch" type="xml">
+            <list string="طلبات المطعم" decoration-danger="state in ('cancelled', 'refunded')" decoration-success="state == 'delivered'">
+                <field name="order_datetime"/>
+                <field name="external_reference"/>
+                <field name="channel_id"/>
+                <field name="branch_id"/>
+                <field name="product_id"/>
+                <field name="quantity"/>
+                <field name="food_amount" sum="إجمالي الطعام"/>
+                <field name="commission_amount" sum="إجمالي العمولة"/>
+                <field name="cost_amount" sum="إجمالي التكلفة"/>
+                <field name="margin_amount" sum="إجمالي الهامش"/>
+                <field name="margin_percent"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_restaurant_demo_order_form" model="ir.ui.view">
+        <field name="name">restaurant.demo.order.form</field>
+        <field name="model">restaurant.demo.order</field>
+        <field name="arch" type="xml">
+            <form string="طلب متعدد القنوات">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="external_reference"/>
+                            <field name="order_datetime"/>
+                            <field name="channel_id"/>
+                            <field name="branch_id"/>
+                            <field name="state"/>
+                        </group>
+                        <group>
+                            <field name="partner_id"/>
+                            <field name="product_id"/>
+                            <field name="quantity"/>
+                            <field name="driver_id"/>
+                            <field name="vehicle_id"/>
+                        </group>
+                    </group>
+                    <group string="القيمة والتكلفة">
+                        <group>
+                            <field name="food_amount"/>
+                            <field name="vat_amount"/>
+                            <field name="delivery_fee"/>
+                            <field name="discount_amount"/>
+                            <field name="platform_discount_share"/>
+                        </group>
+                        <group>
+                            <field name="commission_amount"/>
+                            <field name="gateway_fee"/>
+                            <field name="net_due"/>
+                            <field name="cost_amount"/>
+                            <field name="margin_amount"/>
+                            <field name="margin_percent"/>
+                        </group>
+                    </group>
+                    <group string="مؤشرات التشغيل">
+                        <field name="preparation_minutes"/>
+                        <field name="delivery_minutes"/>
+                        <field name="pos_order_id"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="view_restaurant_demo_order_search" model="ir.ui.view">
+        <field name="name">restaurant.demo.order.search</field>
+        <field name="model">restaurant.demo.order</field>
+        <field name="arch" type="xml">
+            <search string="بحث طلبات المطعم">
+                <field name="external_reference"/>
+                <field name="channel_id"/>
+                <field name="branch_id"/>
+                <field name="product_id"/>
+                <filter string="تم التسليم" name="delivered" domain="[('state','=','delivered')]"/>
+                <filter string="ملغي أو مرتجع" name="failed" domain="[('state','in',('cancelled','refunded'))]"/>
+                <separator/>
+                <filter string="القناة" name="group_channel" context="{'group_by':'channel_id'}"/>
+                <filter string="الفرع" name="group_branch" context="{'group_by':'branch_id'}"/>
+                <filter string="المنتج" name="group_product" context="{'group_by':'product_id'}"/>
+                <filter string="اليوم" name="group_day" context="{'group_by':'order_datetime:day'}"/>
+            </search>
+        </field>
+    </record>
+
+    <record id="view_restaurant_demo_order_graph" model="ir.ui.view">
+        <field name="name">restaurant.demo.order.graph</field>
+        <field name="model">restaurant.demo.order</field>
+        <field name="arch" type="xml">
+            <graph string="المبيعات والهامش حسب القناة" type="bar">
+                <field name="channel_id"/>
+                <field name="food_amount" type="measure"/>
+                <field name="margin_amount" type="measure"/>
+                <field name="commission_amount" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="view_restaurant_demo_order_pivot" model="ir.ui.view">
+        <field name="name">restaurant.demo.order.pivot</field>
+        <field name="model">restaurant.demo.order</field>
+        <field name="arch" type="xml">
+            <pivot string="ربحية المطعم">
+                <field name="branch_id" type="row"/>
+                <field name="channel_id" type="row"/>
+                <field name="product_id" type="col"/>
+                <field name="food_amount" type="measure"/>
+                <field name="cost_amount" type="measure"/>
+                <field name="margin_amount" type="measure"/>
+            </pivot>
+        </field>
+    </record>
+
+    <record id="action_restaurant_demo_orders" model="ir.actions.act_window">
+        <field name="name">طلبات وربحية المطعم</field>
+        <field name="res_model">restaurant.demo.order</field>
+        <field name="view_mode">list,graph,pivot,form</field>
+        <field name="search_view_id" ref="view_restaurant_demo_order_search"/>
+        <field name="context">{'search_default_delivered': 1}</field>
+    </record>
+
+    <record id="view_restaurant_demo_settlement_list" model="ir.ui.view">
+        <field name="name">restaurant.demo.settlement.list</field>
+        <field name="model">restaurant.demo.settlement</field>
+        <field name="arch" type="xml">
+            <list string="تسويات تطبيقات التوصيل" decoration-danger="state == 'difference'" decoration-success="state == 'matched'">
+                <field name="name"/>
+                <field name="channel_id"/>
+                <field name="date_from"/>
+                <field name="date_to"/>
+                <field name="order_count"/>
+                <field name="gross_amount" sum="الإجمالي"/>
+                <field name="commission_amount" sum="العمولات"/>
+                <field name="expected_net" sum="الصافي المتوقع"/>
+                <field name="received_amount" sum="المستلم"/>
+                <field name="variance" sum="الفروقات"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_restaurant_demo_settlement_form" model="ir.ui.view">
+        <field name="name">restaurant.demo.settlement.form</field>
+        <field name="model">restaurant.demo.settlement</field>
+        <field name="arch" type="xml">
+            <form string="تسوية تطبيق توصيل">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="channel_id"/>
+                            <field name="date_from"/>
+                            <field name="date_to"/>
+                            <field name="order_count"/>
+                            <field name="state"/>
+                        </group>
+                        <group>
+                            <field name="gross_amount"/>
+                            <field name="commission_amount"/>
+                            <field name="gateway_fees"/>
+                            <field name="discounts"/>
+                            <field name="expected_net"/>
+                            <field name="received_amount"/>
+                            <field name="variance"/>
+                        </group>
+                    </group>
+                    <field name="note"/>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_restaurant_demo_settlements" model="ir.actions.act_window">
+        <field name="name">تسويات تطبيقات التوصيل</field>
+        <field name="res_model">restaurant.demo.settlement</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <record id="view_restaurant_demo_waste_list" model="ir.ui.view">
+        <field name="name">restaurant.demo.waste.list</field>
+        <field name="model">restaurant.demo.waste</field>
+        <field name="arch" type="xml">
+            <list string="الهدر والتالف">
+                <field name="date"/>
+                <field name="name"/>
+                <field name="branch_id"/>
+                <field name="product_id"/>
+                <field name="quantity"/>
+                <field name="reason"/>
+                <field name="unit_cost"/>
+                <field name="total_cost" sum="إجمالي الهدر"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_restaurant_demo_waste_graph" model="ir.ui.view">
+        <field name="name">restaurant.demo.waste.graph</field>
+        <field name="model">restaurant.demo.waste</field>
+        <field name="arch" type="xml">
+            <graph string="تكلفة الهدر" type="bar">
+                <field name="reason"/>
+                <field name="total_cost" type="measure"/>
+            </graph>
+        </field>
+    </record>
+
+    <record id="action_restaurant_demo_waste" model="ir.actions.act_window">
+        <field name="name">الهدر والتالف</field>
+        <field name="res_model">restaurant.demo.waste</field>
+        <field name="view_mode">list,graph,form</field>
+    </record>
+
+    <record id="view_restaurant_demo_checklist_list" model="ir.ui.view">
+        <field name="name">restaurant.demo.checklist.list</field>
+        <field name="model">restaurant.demo.checklist</field>
+        <field name="arch" type="xml">
+            <list string="قوائم التشغيل اليومية" decoration-success="state == 'done'" decoration-danger="state == 'issue'">
+                <field name="date"/>
+                <field name="name"/>
+                <field name="checklist_type"/>
+                <field name="branch_id"/>
+                <field name="responsible_id"/>
+                <field name="state"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_restaurant_demo_checklist_form" model="ir.ui.view">
+        <field name="name">restaurant.demo.checklist.form</field>
+        <field name="model">restaurant.demo.checklist</field>
+        <field name="arch" type="xml">
+            <form string="قائمة تشغيل يومية">
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <field name="date"/>
+                        <field name="checklist_type"/>
+                        <field name="branch_id"/>
+                        <field name="responsible_id"/>
+                        <field name="state"/>
+                    </group>
+                    <group string="بنود الفحص">
+                        <field name="items" nolabel="1"/>
+                        <field name="notes" nolabel="1" placeholder="الملاحظات والإجراء التصحيحي"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_restaurant_demo_checklists" model="ir.actions.act_window">
+        <field name="name">قوائم التشغيل اليومية</field>
+        <field name="res_model">restaurant.demo.checklist</field>
+        <field name="view_mode">list,form</field>
+    </record>
+
+    <menuitem id="menu_restaurant_demo_root" name="إدارة المطعم" sequence="7" web_icon="point_of_sale,static/description/icon.png"/>
+    <menuitem id="menu_restaurant_demo_dashboard" name="المبيعات والربحية" parent="menu_restaurant_demo_root" action="action_restaurant_demo_orders" sequence="10"/>
+    <menuitem id="menu_restaurant_demo_settlements" name="تسويات التطبيقات" parent="menu_restaurant_demo_root" action="action_restaurant_demo_settlements" sequence="20"/>
+    <menuitem id="menu_restaurant_demo_waste" name="الهدر والتالف" parent="menu_restaurant_demo_root" action="action_restaurant_demo_waste" sequence="30"/>
+    <menuitem id="menu_restaurant_demo_checklists" name="قوائم التشغيل" parent="menu_restaurant_demo_root" action="action_restaurant_demo_checklists" sequence="40"/>
+    <menuitem id="menu_restaurant_demo_channels" name="قنوات البيع" parent="menu_restaurant_demo_root" action="action_restaurant_demo_channels" sequence="50"/>
+</odoo>

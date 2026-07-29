@@ -1,0 +1,11 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_restaurant_demo_channel_user,restaurant.demo.channel user,model_restaurant_demo_channel,base.group_user,1,0,0,0
+access_restaurant_demo_channel_admin,restaurant.demo.channel admin,model_restaurant_demo_channel,base.group_system,1,1,1,1
+access_restaurant_demo_order_user,restaurant.demo.order user,model_restaurant_demo_order,base.group_user,1,0,0,0
+access_restaurant_demo_order_admin,restaurant.demo.order admin,model_restaurant_demo_order,base.group_system,1,1,1,1
+access_restaurant_demo_settlement_user,restaurant.demo.settlement user,model_restaurant_demo_settlement,base.group_user,1,0,0,0
+access_restaurant_demo_settlement_admin,restaurant.demo.settlement admin,model_restaurant_demo_settlement,base.group_system,1,1,1,1
+access_restaurant_demo_waste_user,restaurant.demo.waste user,model_restaurant_demo_waste,base.group_user,1,0,0,0
+access_restaurant_demo_waste_admin,restaurant.demo.waste admin,model_restaurant_demo_waste,base.group_system,1,1,1,1
+access_restaurant_demo_checklist_user,restaurant.demo.checklist user,model_restaurant_demo_checklist,base.group_user,1,0,0,0
+access_restaurant_demo_checklist_admin,restaurant.demo.checklist admin,model_restaurant_demo_checklist,base.group_system,1,1,1,1
