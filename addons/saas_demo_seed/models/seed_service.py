@@ -227,7 +227,7 @@ class SaasDemoSeed(models.AbstractModel):
         purchase.action_create_invoice()
         vendor_bills = purchase.invoice_ids.filtered(lambda move: move.state == 'draft')
         vendor_bills.write({'invoice_date': fields.Date.context_today(self)})
-        vendor_bills.action_post()
+        self._safe_post_demo_moves(vendor_bills)
         self._register_payments(vendor_bills)
 
         quotation = env['sale.order'].create({
@@ -285,7 +285,7 @@ class SaasDemoSeed(models.AbstractModel):
         self._complete_pickings(sale.picking_ids)
         customer_invoices = sale._create_invoices()
         customer_invoices.write({'invoice_date': fields.Date.context_today(self)})
-        customer_invoices.action_post()
+        self._safe_post_demo_moves(customer_invoices)
         self._register_payments(customer_invoices)
 
         project = env['project.project'].create({
@@ -407,3 +407,16 @@ class SaasDemoSeed(models.AbstractModel):
             ).create({})
             wizard.action_create_payments()
         return True
+
+    @api.model
+    def _safe_post_demo_moves(self, moves):
+        """Post demo invoices unless Saudi EDI still needs legal onboarding."""
+        for move in moves.filtered(lambda item: item.state == 'draft'):
+            try:
+                with self.env.cr.savepoint():
+                    move.action_post()
+            except UserError:
+                move.message_post(body=_(
+                    'This sample invoice remains in draft because the isolated '
+                    'demo company is not connected to ZATCA.'))
+        return moves.filtered(lambda item: item.state == 'posted')
