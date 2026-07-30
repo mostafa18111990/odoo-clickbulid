@@ -80,7 +80,7 @@ if [ "$EDITION" = "enterprise" ]; then
     for m in $(echo "$INIT_MODULES" | tr ',' ' '); do
         case "$m" in
             saas_*) EE_KEPT="$EE_KEPT,$m" ;;
-            *) if printf '%s\n' "$EE_OFFICIAL" | grep -qx "$m"; then EE_KEPT="$EE_KEPT,$m"; else EE_DROPPED="$EE_DROPPED $m"; fi ;;
+            *) if grep -Fqx -- "$m" <<<"$EE_OFFICIAL"; then EE_KEPT="$EE_KEPT,$m"; else EE_DROPPED="$EE_DROPPED $m"; fi ;;
         esac
     done
     INIT_MODULES="${EE_KEPT#,}"
