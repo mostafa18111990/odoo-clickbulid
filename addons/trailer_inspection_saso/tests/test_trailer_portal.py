@@ -418,3 +418,14 @@ class TestAppBranding(TrailerCase):
                 "Desert Trailer Authority",
                 "app tile fell back to the module name in %s" % code,
             )
+
+    def test_source_language_carries_the_name_too(self):
+        """A user whose language is not installed falls back to en_US.
+
+        Writing only the installed languages left those users looking at the
+        module's own name instead of the company they work for.
+        """
+        menu = self.env.ref("trailer_inspection_saso.menu_trailer_root")
+        self.env.company.write({"name": "Northern Inspection Centre"})
+        self.assertEqual(menu.with_context(lang="en_US").name,
+                         "Northern Inspection Centre")

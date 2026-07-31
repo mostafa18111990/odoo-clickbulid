@@ -61,8 +61,12 @@ class TrailerBranding(models.AbstractModel):
         name = (companies.name or "").strip()
         if not name:
             return
-        langs = self.env["res.lang"].sudo().get_installed() or [("en_US", "English")]
-        for code, _label in langs:
+        # en_US is Odoo's source language: it carries the value shown to any
+        # user whose own language is not installed, so it must be written even
+        # when the database only has Arabic loaded.
+        codes = {"en_US"}
+        codes.update(code for code, _label in self.env["res.lang"].sudo().get_installed())
+        for code in codes:
             menu_in_lang = menu.sudo().with_context(lang=code)
             if menu_in_lang.name != name:
                 menu_in_lang.write({"name": name})
