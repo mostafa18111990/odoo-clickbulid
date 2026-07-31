@@ -116,16 +116,22 @@ class TrailerVinProfile(models.Model):
         sequence = sequence_model.search([("profile_id", "=", self.id), ("model_year", "=", model_year)], limit=1)
         if not sequence:
             sequence = sequence_model.create({"profile_id": self.id, "model_year": model_year, "next_number": 1})
-        self.env.cr.execute(
-            "SELECT next_number FROM trailer_vin_sequence WHERE id = %s FOR UPDATE",
-            [sequence.id],
-        )
-        next_number = self.env.cr.fetchone()[0]
         maximum = 999 if self.low_volume else 999999
-        if next_number > maximum:
+        # Claim the serial in a single statement. Reading the counter and
+        # writing it back through the ORM handed the same number out twice:
+        # the write stayed in the cache, so the next raw read still saw the
+        # old value and a second trailer was issued an identical VIN.
+        sequence.flush_recordset(["next_number"])
+        self.env.cr.execute(
+            "UPDATE trailer_vin_sequence SET next_number = next_number + 1 "
+            "WHERE id = %s AND next_number <= %s RETURNING next_number - 1",
+            [sequence.id, maximum],
+        )
+        row = self.env.cr.fetchone()
+        sequence.invalidate_recordset(["next_number"])
+        if not row:
             raise UserError(_("The VIN serial range for this profile and model year is exhausted."))
-        sequence.write({"next_number": next_number + 1})
-        return next_number
+        return row[0]
 
     def action_approve(self):
         for record in self:

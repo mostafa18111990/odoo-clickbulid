@@ -266,6 +266,41 @@ body.ti-app {
     .o_field_widget { margin: 0; }
 }
 
+// ── Submission readiness ────────────────────────────────────────────────────
+.ti-ready {
+    border-radius: 8px;
+    padding: 0.65rem 0.95rem;
+    font-size: 0.88rem;
+
+    &.ti-ready--todo {
+        background: var(--ti-warn-bg);
+        border: 1px solid rgba(180, 83, 9, 0.25);
+        color: var(--ti-warn);
+    }
+
+    &.ti-ready--ok {
+        background: var(--ti-pass-bg);
+        border: 1px solid rgba(21, 127, 75, 0.25);
+        color: var(--ti-pass);
+        font-weight: 700;
+    }
+
+    .ti-ready-head {
+        font-weight: 800;
+        margin-bottom: 0.25rem;
+        display: flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+
+    .ti-ready-list {
+        white-space: pre-line;
+        display: block;
+    }
+
+    .o_field_widget { display: inline; }
+}
+
 // ── Checklist bulk bar ──────────────────────────────────────────────────────
 .ti-bulk {
     display: flex;

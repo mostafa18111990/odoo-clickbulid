@@ -180,6 +180,37 @@
                 </div>
             </div>
 
+            <!-- What the customer has to fix, and by when -->
+            <div class="ti-card mb-3" t-if="inspection.nonconformity_ids">
+                <div class="ti-label mb-2">حالات عدم المطابقة / Nonconformities</div>
+                <div class="row g-3">
+                    <div class="col-md-6" t-foreach="inspection.nonconformity_ids" t-as="nc">
+                        <div t-attf-class="ti-nc ti-nc--#{nc.severity}">
+                            <div class="d-flex justify-content-between align-items-start gap-2">
+                                <span class="ti-ref" t-field="nc.name"/>
+                                <span t-attf-class="ti-badge ti-badge--#{'fail' if nc.severity == 'critical' else 'wait'}"
+                                      t-field="nc.severity"/>
+                            </div>
+                            <div class="ti-vin mt-1" t-if="nc.line_id">
+                                البند <span t-field="nc.line_id.clause_ref"/>
+                            </div>
+                            <div class="mt-2"><span class="ti-label">المخالفة</span>
+                                <div><span t-field="nc.finding"/></div></div>
+                            <div class="mt-2" t-if="nc.corrective_action">
+                                <span class="ti-label">الإجراء التصحيحي المطلوب</span>
+                                <div><span t-field="nc.corrective_action"/></div></div>
+                            <div class="d-flex justify-content-between align-items-center mt-2">
+                                <span class="ti-vin" t-if="nc.due_date">
+                                    <i class="fa fa-clock-o me-1"/><span t-field="nc.due_date"/>
+                                </span>
+                                <span t-attf-class="ti-badge ti-badge--#{'pass' if nc.state == 'closed' else 'wait'}"
+                                      t-field="nc.state"/>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="ti-card">
                 <div class="ti-label mb-2">قائمة الفحص / Checklist</div>
                 <div class="ti-table-wrap">

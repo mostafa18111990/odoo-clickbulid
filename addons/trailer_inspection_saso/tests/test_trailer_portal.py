@@ -223,6 +223,140 @@ class TestChecklistBulkEntry(TrailerCase):
         self.assertIn(unmeasured[0].clause_ref, str(caught.exception))
 
 
+class TestSubmissionReadiness(TrailerCase):
+    """The inspector sees everything outstanding at once, not one at a time."""
+
+    def setUp(self):
+        super().setUp()
+        self.inspection = self._make_inspection(
+            self.customer, _vin("1FUJGLDR0CLBP8834"))
+        self.inspection.write({"state": "in_progress", "reviewer_id": False})
+
+    def test_every_obstacle_is_reported_together(self):
+        blockers = self.inspection._submission_blockers()
+        joined = "\n".join(blockers)
+        self.assertIn("reviewer", joined.lower())
+        # measurements and results are both outstanding on a fresh checklist
+        self.assertGreaterEqual(len(blockers), 2)
+        self.assertFalse(self.inspection.submission_ready)
+        self.assertEqual(self.inspection.submission_blocker_count, len(blockers))
+
+    def test_submit_names_all_of_them_in_one_message(self):
+        with self.assertRaises(UserError) as caught:
+            # submitted by the assigned inspector, as it would be in practice
+            self.inspection.with_user(self.inspector).action_submit()
+        message = str(caught.exception)
+        # the message carries each blocker as its own bullet
+        self.assertGreaterEqual(message.count("•"), 2)
+
+    def test_readiness_clears_as_the_work_is_done(self):
+        before = self.inspection.submission_blocker_count
+        self.inspection.action_checklist_remaining_not_applicable()
+        self.inspection.invalidate_recordset()
+        self.assertLess(self.inspection.submission_blocker_count, before)
+
+
+class TestBulkEvidenceAndEquipment(TrailerCase):
+    """One file and one instrument, applied to everything still missing them."""
+
+    def setUp(self):
+        super().setUp()
+        self.inspection = self._make_inspection(
+            self.customer, _vin("3AKJGLDR0ESFR1290"))
+        self.inspection.write({"state": "in_progress"})
+
+    def test_one_file_answers_every_outstanding_requirement(self):
+        import base64
+        needing = self.inspection.line_ids.filtered(
+            lambda l: l.evidence_required and not l.evidence_attachment)
+        if not needing:
+            self.skipTest("the standard data asks for no evidence")
+        already = needing[0]
+        already.write({"evidence_attachment": base64.b64encode(b"kept"),
+                       "evidence_filename": "kept.pdf"})
+
+        self.inspection.write({
+            "bulk_evidence": base64.b64encode(b"%PDF-1.4 shared"),
+            "bulk_evidence_filename": "shared.pdf"})
+        touched = self.inspection.action_apply_bulk_evidence()
+
+        self.assertEqual(touched, len(needing) - 1)
+        self.assertEqual(already.evidence_filename, "kept.pdf",
+                         "an existing evidence file was overwritten")
+        self.assertFalse(self.inspection.line_ids.filtered(
+            lambda l: l.evidence_required and not l.evidence_attachment))
+        self.assertFalse(self.inspection.bulk_evidence, "the staging field was not cleared")
+
+    def test_one_instrument_answers_every_measurement(self):
+        equipment = self.env["trailer.inspection.equipment"].create({
+            "name": "Calibrated tape", "code": "TAPE-T", "serial_number": "T-1",
+            "equipment_type": list(dict(self.env["trailer.inspection.equipment"]
+                                        ._fields["equipment_type"].selection))[0],
+            "calibration_due_date": fields.Date.today() + timedelta(days=90),
+        })
+        needing = self.inspection.line_ids.filtered(
+            lambda l: l.equipment_required and not l.equipment_id)
+        if not needing:
+            self.skipTest("the standard data asks for no equipment")
+
+        self.inspection.write({"bulk_equipment_id": equipment.id})
+        touched = self.inspection.action_apply_bulk_equipment()
+
+        self.assertEqual(touched, len(needing))
+        self.assertTrue(all(l.equipment_id == equipment for l in needing))
+        self.assertFalse(self.inspection.bulk_equipment_id)
+
+    def test_nothing_to_do_is_reported(self):
+        import base64
+        self.inspection.line_ids.filtered("evidence_required").write(
+            {"evidence_attachment": base64.b64encode(b"x"), "evidence_filename": "x"})
+        self.inspection.write({"bulk_evidence": base64.b64encode(b"y"),
+                               "bulk_evidence_filename": "y"})
+        with self.assertRaises(UserError):
+            self.inspection.action_apply_bulk_evidence()
+
+
+class TestVinAllocation(TrailerCase):
+    """A VIN identifies one trailer and one only."""
+
+    def _approved_profile(self):
+        maker = self.env["res.partner"].create({"name": "Trailer Works", "is_company": True})
+        profile = self.env["trailer.vin.profile"].create({
+            "name": "Allocation profile", "manufacturer_id": maker.id,
+            "wmi": "SA9", "vds": "TRL01", "plant_code": "R",
+            "wmi_certificate_number": "WMI-1",
+            "wmi_certificate": b"Y2VydA==",
+            "wmi_certificate_filename": "wmi.pdf",
+            "assignment_authority_confirmed": True,
+        })
+        profile.action_approve()
+        return profile
+
+    def test_consecutive_vins_are_distinct(self):
+        profile = self._approved_profile()
+        issued = [profile.generate_vin(2026) for _ in range(5)]
+        self.assertEqual(len(set(issued)), 5,
+                         "the same VIN was issued more than once: %s" % issued)
+
+    def test_the_counter_matches_what_was_issued(self):
+        profile = self._approved_profile()
+        for _ in range(3):
+            profile.generate_vin(2026)
+        sequence = self.env["trailer.vin.sequence"].search(
+            [("profile_id", "=", profile.id), ("model_year", "=", 2026)])
+        self.assertEqual(sequence.next_number, 4)
+
+    def test_an_exhausted_range_is_refused(self):
+        profile = self._approved_profile()
+        profile.generate_vin(2026)
+        sequence = self.env["trailer.vin.sequence"].search(
+            [("profile_id", "=", profile.id), ("model_year", "=", 2026)])
+        sequence.write({"next_number": 999999})
+        profile.generate_vin(2026)          # the last one in the range
+        with self.assertRaises(UserError):
+            profile.generate_vin(2026)
+
+
 class TestNonconformitySync(TrailerCase):
     """Raising a nonconformity must never fail on a missing observation."""
 

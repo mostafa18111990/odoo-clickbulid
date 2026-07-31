@@ -150,6 +150,10 @@ class TrailerInspection(models.Model):
     nonconformity_ids = fields.One2many(
         "trailer.inspection.nonconformity", "inspection_id", string="Nonconformities", copy=False
     )
+    # What is still standing between this inspection and technical review.
+    submission_ready = fields.Boolean(compute="_compute_submission_readiness")
+    submission_blockers = fields.Text(compute="_compute_submission_readiness")
+    submission_blocker_count = fields.Integer(compute="_compute_submission_readiness")
     checklist_total = fields.Integer(compute="_compute_checklist_progress")
     checklist_completed = fields.Integer(compute="_compute_checklist_progress")
     checklist_progress = fields.Float(compute="_compute_checklist_progress")
@@ -390,31 +394,72 @@ class TrailerInspection(models.Model):
                 record._prepare_checklist()
             record.write({"authorization_id": authorization.id, "state": "in_progress"})
 
+    @staticmethod
+    def _clause_list(lines, limit=8):
+        refs = [ref for ref in lines.mapped("clause_ref") if ref][:limit]
+        more = len(lines) - len(refs)
+        listed = "، ".join(refs)
+        return "%s%s" % (listed, _(" and %s more", more) if more > 0 else "")
+
+    def _submission_blockers(self):
+        """Everything standing between this inspection and review.
+
+        Reported together rather than one at a time: an inspector should see
+        the whole of what is left, not discover it over several attempts.
+        """
+        self.ensure_one()
+        blockers = []
+        numeric = self.line_ids.filtered(lambda line: line.response_type == "numeric")
+        unmeasured = numeric.filtered(lambda line: not line.measurement_recorded)
+        if unmeasured:
+            blockers.append(_("%(count)s measurement(s) not taken: %(clauses)s",
+                              count=len(unmeasured),
+                              clauses=self._clause_list(unmeasured)))
+        pending = self.line_ids.filtered(
+            lambda line: line.result == "pending" and line not in unmeasured)
+        if pending:
+            blockers.append(_("%(count)s checklist item(s) without a result: %(clauses)s",
+                              count=len(pending), clauses=self._clause_list(pending)))
+        missing_evidence = self.line_ids.filtered(
+            lambda line: line.evidence_required and not line.evidence_attachment)
+        if missing_evidence:
+            blockers.append(_("%(count)s evidence file(s) missing: %(clauses)s",
+                              count=len(missing_evidence),
+                              clauses=self._clause_list(missing_evidence)))
+        missing_equipment = self.line_ids.filtered(
+            lambda line: line.equipment_required and not line.equipment_id)
+        if missing_equipment:
+            blockers.append(_("%(count)s requirement(s) without calibrated equipment: %(clauses)s",
+                              count=len(missing_equipment),
+                              clauses=self._clause_list(missing_equipment)))
+        if not self.reviewer_id:
+            blockers.append(_("No independent technical reviewer assigned."))
+        if not self.inspector_signed_on:
+            blockers.append(_("The inspector has not signed yet."))
+        return blockers
+
+    @api.depends("line_ids.result", "line_ids.measurement_recorded",
+                 "line_ids.evidence_attachment", "line_ids.equipment_id",
+                 "reviewer_id", "inspector_signed_on", "state")
+    def _compute_submission_readiness(self):
+        for record in self:
+            blockers = record._submission_blockers() if record.state == "in_progress" else []
+            record.submission_blocker_count = len(blockers)
+            record.submission_blockers = "\n".join("• %s" % b for b in blockers)
+            record.submission_ready = record.state == "in_progress" and not blockers
+
     def action_submit(self):
         for record in self:
             if record.inspector_id != self.env.user and not self.env.user.has_group(
                 "trailer_inspection_saso.group_trailer_manager"
             ):
                 raise UserError(_("Only the assigned inspector or an inspection manager can submit this inspection."))
-            numeric_lines = record.line_ids.filtered(lambda line: line.response_type == "numeric")
-            if numeric_lines.filtered(lambda line: not line.measurement_recorded):
-                raise UserError(_("Record every required numeric measurement before submission."))
-            numeric_lines._evaluate_measurements()
-            pending = record.line_ids.filtered(lambda line: line.result == "pending")
-            if pending:
-                raise UserError(_("Complete all checklist items before submission."))
-            missing_evidence = record.line_ids.filtered(
-                lambda line: line.evidence_required and not line.evidence_attachment
-            )
-            if missing_evidence:
-                raise UserError(_("Attach the required evidence before submission."))
-            missing_equipment = record.line_ids.filtered(
-                lambda line: line.equipment_required and not line.equipment_id
-            )
-            if missing_equipment:
-                raise UserError(_("Select calibrated equipment for all measurement requirements."))
-            if not record.reviewer_id:
-                raise UserError(_("Assign an independent technical reviewer before submission."))
+            record.line_ids.filtered(
+                lambda line: line.response_type == "numeric")._evaluate_measurements()
+            blockers = record._submission_blockers()
+            if blockers:
+                raise UserError(_("This inspection is not ready for review:\n\n%s",
+                                  "\n".join("• %s" % b for b in blockers)))
             record._synchronize_nonconformities()
             record.state = "technical_review"
 
@@ -623,6 +668,52 @@ class TrailerInspection(models.Model):
             result=dict(self.line_ids._fields["result"].selection)[result],
         ))
         return len(pending)
+
+    bulk_evidence = fields.Binary(string="Evidence for all pending items", copy=False)
+    bulk_evidence_filename = fields.Char(copy=False)
+    bulk_equipment_id = fields.Many2one(
+        "trailer.inspection.equipment", string="Equipment for all pending items",
+        copy=False, domain="[('calibration_status', '!=', 'expired')]")
+
+    def action_apply_bulk_evidence(self):
+        """Attach one file to every requirement still waiting for evidence.
+
+        A single inspection can demand twenty or more evidence files; a
+        photograph of the same plate or document usually answers several of
+        them, and uploading it once per line is pure repetition.
+        """
+        self.ensure_one()
+        if not self.bulk_evidence:
+            raise UserError(_("Choose the evidence file first."))
+        targets = self.line_ids.filtered(
+            lambda line: line.evidence_required and not line.evidence_attachment)
+        if not targets:
+            raise UserError(_("Every requirement that needs evidence already has it."))
+        targets.write({
+            "evidence_attachment": self.bulk_evidence,
+            "evidence_filename": self.bulk_evidence_filename or "evidence",
+        })
+        self.write({"bulk_evidence": False, "bulk_evidence_filename": False})
+        self.message_post(body=_("Evidence attached to %(count)s requirement(s): %(clauses)s",
+                                 count=len(targets),
+                                 clauses=self._clause_list(targets)))
+        return len(targets)
+
+    def action_apply_bulk_equipment(self):
+        """Record the same calibrated instrument on every measurement left."""
+        self.ensure_one()
+        if not self.bulk_equipment_id:
+            raise UserError(_("Choose the measuring equipment first."))
+        targets = self.line_ids.filtered(
+            lambda line: line.equipment_required and not line.equipment_id)
+        if not targets:
+            raise UserError(_("Every measurement requirement already names its equipment."))
+        targets.write({"equipment_id": self.bulk_equipment_id.id})
+        self.write({"bulk_equipment_id": False})
+        self.message_post(body=_("%(equipment)s recorded on %(count)s requirement(s).",
+                                 equipment=self.bulk_equipment_id.display_name,
+                                 count=len(targets)))
+        return len(targets)
 
     def action_checklist_remaining_compliant(self):
         return self._set_pending_lines("yes")

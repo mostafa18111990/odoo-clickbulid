@@ -92,6 +92,22 @@
                             <!-- Most of a 55-item checklist is uneventful: the
                                  inspector records the exceptions, then clears
                                  what is left in one action. -->
+                            <!-- Everything still outstanding, in one place -->
+                            <div class="ti-ready ti-ready--todo mb-2"
+                                 invisible="state != 'in_progress' or submission_blocker_count == 0">
+                                <div class="ti-ready-head">
+                                    <i class="fa fa-list-check me-1"/>
+                                    ما تبقّى قبل الإرسال للمراجعة
+                                    (<field name="submission_blocker_count" nolabel="1" readonly="1"/>)
+                                </div>
+                                <field name="submission_blockers" nolabel="1" readonly="1"
+                                       class="ti-ready-list"/>
+                            </div>
+                            <div class="ti-ready ti-ready--ok mb-2"
+                                 invisible="state != 'in_progress' or not submission_ready">
+                                <i class="fa fa-check-circle me-1"/>
+                                الفحص مكتمل وجاهز للإرسال إلى المراجعة الفنية
+                            </div>
                             <div class="ti-bulk mb-2" invisible="state != 'in_progress'">
                                 <span class="ti-bulk-label">البنود المتبقية:</span>
                                 <button name="action_checklist_remaining_compliant" type="object"
@@ -109,6 +125,29 @@
                                 <span class="ti-bulk-hint">
                                     البنود التي سجّلت لها نتيجة أو قياساً تبقى كما هي
                                 </span>
+                            </div>
+                            <!-- One file, one instrument, applied to everything
+                                 still waiting for them. -->
+                            <div class="ti-bulk mb-2" invisible="state != 'in_progress'">
+                                <span class="ti-bulk-label">دليل واحد لكل المتبقي:</span>
+                                <field name="bulk_evidence_filename" invisible="1"/>
+                                <field name="bulk_evidence" filename="bulk_evidence_filename"
+                                       nolabel="1" class="oe_inline"/>
+                                <button name="action_apply_bulk_evidence" type="object"
+                                        class="btn btn-sm btn-outline-primary"
+                                        invisible="not bulk_evidence"
+                                        groups="trailer_inspection_saso.group_trailer_inspector">
+                                    <i class="fa fa-paperclip me-1"/>إرفاقه بالبنود الناقصة
+                                </button>
+                                <span class="ti-bulk-label ms-3">معدة واحدة لكل المتبقي:</span>
+                                <field name="bulk_equipment_id" nolabel="1" class="oe_inline"
+                                       options="{'no_create': True}"/>
+                                <button name="action_apply_bulk_equipment" type="object"
+                                        class="btn btn-sm btn-outline-primary"
+                                        invisible="not bulk_equipment_id"
+                                        groups="trailer_inspection_saso.group_trailer_inspector">
+                                    <i class="fa fa-wrench me-1"/>تسجيلها على البنود الناقصة
+                                </button>
                             </div>
                             <!-- Lines arrive grouped by section through the
                                  model's own order: the web client ignores

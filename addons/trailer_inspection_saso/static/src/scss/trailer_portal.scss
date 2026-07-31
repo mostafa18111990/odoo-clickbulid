@@ -56,6 +56,20 @@
         z-index: 1;
     }
 
+    // A nonconformity the customer has to act on
+    .ti-nc {
+        border: 1px solid var(--ti-line);
+        border-inline-start: 4px solid var(--ti-warn);
+        border-radius: 10px;
+        padding: 0.85rem 1rem;
+        height: 100%;
+        background: #fff;
+
+        &.ti-nc--critical { border-inline-start-color: var(--ti-fail); }
+
+        .ti-label { display: block; margin-bottom: 0.1rem; }
+    }
+
     .ti-dl {
         display: inline-block;
         background: var(--ti-navy);
