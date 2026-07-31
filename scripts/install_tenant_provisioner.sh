@@ -120,12 +120,38 @@ if [ "$EDITION" = "enterprise" ]; then
     esac
 fi
 CLONED=0
+BUILD_CRON_IDS=""
 db_exists() {
     local db="$1"
     docker exec odoo_saas_postgres psql -At -U odoo -d postgres -c \
         "select 1 from pg_database where datname='$db'" 2>/dev/null | grep -qx 1
 }
 template_exists() { db_exists "$TEMPLATE_DB"; }
+
+# Odoo's main Enterprise workers enumerate every database owned by their role
+# for cron processing, including temporary prov_* databases. Suspend only the
+# jobs that were active while a tenant is being built, then restore those exact
+# jobs after the atomic rename. This prevents schedulers from racing module
+# installation, demo seeding and ALTER DATABASE.
+disable_build_crons() {
+    local has_table active_ids
+    has_table=$(docker exec odoo_saas_postgres psql -U odoo -d "$DB" -Atc \
+        "select to_regclass('public.ir_cron') is not null" 2>/dev/null || true)
+    [ "$has_table" = "t" ] || return 0
+    active_ids=$(docker exec odoo_saas_postgres psql -U odoo -d "$DB" \
+        -v ON_ERROR_STOP=1 -Atc \
+        "select coalesce(string_agg(id::text, ','), '')
+           from ir_cron where active")
+    if [ -n "$active_ids" ]; then
+        BUILD_CRON_IDS=$(printf '%s,%s' "$BUILD_CRON_IDS" "$active_ids" \
+            | tr ',' '\n' | sed '/^$/d' | sort -n -u | paste -sd, -)
+        docker exec odoo_saas_postgres psql -U odoo -d "$DB" \
+            -v ON_ERROR_STOP=1 -c \
+            "update ir_cron set active=false where id in ($active_ids);" \
+            >>"$LOG" 2>&1
+        echo "$(date -Is) suspended build crons for $DB: $active_ids" >>"$LOG"
+    fi
+}
 
 # Exact Enterprise cache: the first request for a plan+industry module set
 # installs its delta from the tier template, then stores a clean pre-customer
@@ -189,6 +215,7 @@ else
     docker exec odoo_saas_postgres createdb -U odoo -O "$DB_OWNER" "$DB" >> "$LOG" 2>&1
     echo "$(date -Is) created DB $DB" >> "$LOG"
 fi
+disable_build_crons
 
 # 2. Install modules.
 # Fast path: only the delta between the requested set and what the template
@@ -235,6 +262,7 @@ print(','.join([m for m in requested if m not in installed]))")
     else
         echo "$(date -Is) initialized $DB (template covered all modules)" >> "$LOG"
     fi
+    disable_build_crons
 
     # Cache only a real delta and do it before tenant credentials, UUID,
     # company details or Enterprise code are written. A concurrent request may
@@ -242,6 +270,12 @@ print(','.join([m for m in requested if m not in installed]))")
     if [ "$EDITION" = "enterprise" ] && [ "$CACHE_HIT" = "0" ] \
             && [ -n "$CACHE_DB" ] && [ -n "$MISSING" ] && ! db_exists "$CACHE_DB"; then
         if docker exec odoo_saas_postgres createdb -U odoo -T "$DB" -O odoo "$CACHE_DB" >>"$LOG" 2>&1; then
+            if [ -n "$BUILD_CRON_IDS" ]; then
+                docker exec odoo_saas_postgres psql -U odoo -d "$CACHE_DB" \
+                    -v ON_ERROR_STOP=1 -c \
+                    "update ir_cron set active=true where id in ($BUILD_CRON_IDS);" \
+                    >>"$LOG" 2>&1
+            fi
             docker exec "$ODOO_CONTAINER" sh -c \
                 "rm -rf /var/lib/odoo/filestore/$CACHE_DB && cp -a /var/lib/odoo/filestore/$DB /var/lib/odoo/filestore/$CACHE_DB" \
                 >>"$LOG" 2>&1 || true
@@ -258,6 +292,7 @@ else
             exit 4
         }
     echo "$(date -Is) initialized $DB (modules: $INIT_MODULES)" >> "$LOG"
+    disable_build_crons
 fi
 
 # 3. Set the admin user password + email + name + company.
@@ -405,6 +440,13 @@ docker exec "$ODOO_CONTAINER" sh -c "rm -rf /var/lib/odoo/filestore/$FINAL_DB; m
 docker exec odoo_saas_postgres psql -U odoo -d postgres -v ON_ERROR_STOP=1 \
     -c "ALTER DATABASE \"$FINAL_DB\" WITH ALLOW_CONNECTIONS true;" >>"$LOG" 2>&1
 DB="$FINAL_DB"
+if [ -n "$BUILD_CRON_IDS" ]; then
+    docker exec odoo_saas_postgres psql -U odoo -d "$DB" \
+        -v ON_ERROR_STOP=1 -c \
+        "update ir_cron set active=true where id in ($BUILD_CRON_IDS);" \
+        >>"$LOG" 2>&1
+    echo "$(date -Is) restored tenant crons for $DB: $BUILD_CRON_IDS" >>"$LOG"
+fi
 echo "$(date -Is) renamed provisioning DB -> $FINAL_DB" >> "$LOG"
 
 # 4. Notify the master DB that provisioning succeeded.
