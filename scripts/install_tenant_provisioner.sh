@@ -443,9 +443,15 @@ DB="$FINAL_DB"
 if [ -n "$BUILD_CRON_IDS" ]; then
     docker exec odoo_saas_postgres psql -U odoo -d "$DB" \
         -v ON_ERROR_STOP=1 -c \
-        "update ir_cron set active=true where id in ($BUILD_CRON_IDS);" \
+        "update ir_cron
+            set active=true,
+                nextcall=greatest(
+                    coalesce(nextcall, now() at time zone 'UTC'),
+                    (now() at time zone 'UTC') + interval '5 minutes'
+                        + ((id % 30) * interval '10 seconds'))
+          where id in ($BUILD_CRON_IDS);" \
         >>"$LOG" 2>&1
-    echo "$(date -Is) restored tenant crons for $DB: $BUILD_CRON_IDS" >>"$LOG"
+    echo "$(date -Is) restored and staggered tenant crons for $DB: $BUILD_CRON_IDS" >>"$LOG"
 fi
 echo "$(date -Is) renamed provisioning DB -> $FINAL_DB" >> "$LOG"
 
