@@ -526,7 +526,17 @@ class TrailerInspection(models.Model):
                     "inspection_id": record.id,
                     "line_id": line.id,
                     "severity": line.nc_severity or line.criticality,
-                    "finding": line.observation,
+                    # The finding is mandatory on the nonconformity while the
+                    # observation it comes from is not, so fall back to the
+                    # requirement that failed: an unexplained nonconformity is
+                    # still better than a report that cannot be produced.
+                    "finding": line.observation or _(
+                        "Requirement %(clause)s not met: %(requirement)s",
+                        clause=line.clause_ref or "-",
+                        requirement=line.requirement_name_ar
+                        or line.requirement_name_en
+                        or "",
+                    ),
                     "corrective_action": line.corrective_action,
                     "due_date": line.corrective_action_due,
                 }
@@ -588,11 +598,23 @@ class TrailerInspection(models.Model):
             raise UserError(_(
                 "The checklist can only be filled while the inspection is in progress."
             ))
+        # Numeric requirements are left alone: submission demands a recorded
+        # measurement for each of them, so clearing one here would only hide
+        # the work still to do behind a full progress bar.
         pending = self.line_ids.filtered(
-            lambda line: line.result == "pending"
-            and not (line.response_type == "numeric" and line.measurement_recorded)
+            lambda line: line.result == "pending" and line.response_type != "numeric"
         )
         if not pending:
+            awaiting = self.line_ids.filtered(
+                lambda line: line.response_type == "numeric"
+                and not line.measurement_recorded
+            )
+            if awaiting:
+                raise UserError(_(
+                    "%(count)s measurement(s) are still to be taken: %(clauses)s",
+                    count=len(awaiting),
+                    clauses=", ".join(awaiting.mapped("clause_ref")[:8]),
+                ))
             raise UserError(_("Every checklist item already has a result."))
         pending.write({"result": result})
         self.message_post(body=_(

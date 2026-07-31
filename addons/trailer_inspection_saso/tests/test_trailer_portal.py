@@ -159,18 +159,23 @@ class TestChecklistBulkEntry(TrailerCase):
         judged.write({"result": "na"})
         pending_before = len(lines.filtered(lambda l: l.result == "pending"))
 
+        numeric_pending = len(lines.filtered(
+            lambda l: l.result == "pending" and l.response_type == "numeric"))
+
         touched = self.inspection.action_checklist_remaining_compliant()
 
-        self.assertEqual(touched, pending_before)
+        self.assertEqual(touched, pending_before - numeric_pending)
         self.assertEqual(judged.result, "na", "an existing verdict was overwritten")
-        self.assertFalse(lines.filtered(lambda l: l.result == "pending"))
+        # only unmeasured numeric requirements may still be outstanding
+        still_pending = lines.filtered(lambda l: l.result == "pending")
+        self.assertTrue(all(l.response_type == "numeric" for l in still_pending))
 
     def test_bulk_not_applicable(self):
         self.inspection.action_checklist_remaining_not_applicable()
-        self.assertFalse(
-            self.inspection.line_ids.filtered(lambda l: l.result == "pending"))
-        self.assertTrue(
-            all(l.result == "na" for l in self.inspection.line_ids))
+        non_numeric = self.inspection.line_ids.filtered(
+            lambda l: l.response_type != "numeric")
+        self.assertTrue(all(l.result == "na" for l in non_numeric))
+        self.assertFalse(non_numeric.filtered(lambda l: l.result == "pending"))
 
     def test_measured_lines_keep_their_derived_verdict(self):
         numeric = self.inspection.line_ids.filtered(
@@ -196,6 +201,70 @@ class TestChecklistBulkEntry(TrailerCase):
         self.inspection.action_checklist_remaining_compliant()
         with self.assertRaises(UserError):
             self.inspection.action_checklist_remaining_compliant()
+
+    def test_measurements_are_never_cleared_by_the_bulk_action(self):
+        """Submission demands a measurement for every numeric requirement.
+
+        Marking those lines compliant in bulk would show a full progress bar
+        while submission stays blocked, with nothing pointing at the work
+        that is actually left.
+        """
+        self.inspection.action_checklist_remaining_compliant()
+        unmeasured = self.inspection.line_ids.filtered(
+            lambda l: l.response_type == "numeric" and not l.measurement_recorded)
+        self.assertTrue(unmeasured, "the standard should carry numeric requirements")
+        self.assertTrue(
+            all(l.result == "pending" for l in unmeasured),
+            "a numeric line was marked compliant without its measurement",
+        )
+        # and the inspector is told which ones are outstanding
+        with self.assertRaises(UserError) as caught:
+            self.inspection.action_checklist_remaining_compliant()
+        self.assertIn(unmeasured[0].clause_ref, str(caught.exception))
+
+
+class TestNonconformitySync(TrailerCase):
+    """Raising a nonconformity must never fail on a missing observation."""
+
+    def test_finding_falls_back_to_the_failed_requirement(self):
+        inspection = self._make_inspection(
+            self.customer, _vin("2HSCNAPR04C098211"))
+        inspection.write({"state": "in_progress"})
+        line = inspection.line_ids[0]
+        # bypass the ORM constraint the way an import or an RPC caller that
+        # swallows the error would, leaving a verdict without its reason
+        self.env.cr.execute(
+            "UPDATE trailer_inspection_line SET result='no', observation=NULL "
+            "WHERE id=%s", (line.id,))
+        line.invalidate_recordset()
+
+        inspection._synchronize_nonconformities()
+
+        nc = self.env["trailer.inspection.nonconformity"].search(
+            [("line_id", "=", line.id)], limit=1)
+        self.assertTrue(nc, "no nonconformity was raised")
+        self.assertTrue(nc.finding, "the finding was left empty")
+        self.assertIn(line.clause_ref or "-", nc.finding)
+
+
+class TestReportRendering(TrailerCase):
+    """The printed report must survive incomplete evidence."""
+
+    def test_photo_row_without_an_image_does_not_break_the_report(self):
+        inspection = self._make_inspection(
+            self.customer, _vin("5TFUW5F10AX112233"), approved=True)
+        # a row flagged for the report, but the image never uploaded
+        self.env["trailer.inspection.photo"].create({
+            "inspection_id": inspection.id,
+            "name": "لوحة المطابقة",
+            "photo_type": "plate",
+            "include_in_report": True,
+        })
+        report = self.env["ir.actions.report"].search(
+            [("model", "=", "trailer.inspection")], limit=1)
+        content, _type = self.env["ir.actions.report"]._render_qweb_pdf(
+            report.report_name, res_ids=inspection.ids)
+        self.assertTrue(content)
 
 
 class TestAppBranding(TrailerCase):

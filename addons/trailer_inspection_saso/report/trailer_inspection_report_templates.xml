@@ -136,7 +136,10 @@
 
                         <div class="page-break"/>
                         <h4>صور المقطورة وأدلة الفحص / Trailer Pictures and Inspection Evidence</h4>
-                        <t t-set="report_photos" t-value="o.photo_ids.filtered('include_in_report')"/>
+                        <!-- A row flagged for the report but never given an
+                             image would abort the whole render. -->
+                        <t t-set="report_photos"
+                           t-value="o.photo_ids.filtered(lambda p: p.include_in_report and p.photo)"/>
                         <t t-if="report_photos">
                             <div>
                                 <div class="photo-card" t-foreach="report_photos" t-as="photo">
