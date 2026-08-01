@@ -31,6 +31,15 @@
 - أساس Design Tokens لإطار التركيز، أهداف لمس 44px، reduced motion، وتحسين Dropdown على سطح المكتب.
 - صلاحيات إدارة الأقسام مقيدة بمسؤولي النظام، ولا توجد ACL عامة للنموذج.
 
+وأضيف موديول `clickbuild_crm_bridge` لربط التحويلات دون حذف البيانات الأصلية:
+
+- تثبيت CRM Community وUTM على Staging وربط `saas.website.lead` و`saas.demo.request` بـ`crm.lead`.
+- Backfill idempotent لطلبات الديمو السابقة؛ تم ربط 10 طلبات بـ10 فرص CRM.
+- مراحل: New، Qualified، Demo Requested، Demo Delivered، Quotation، Negotiation، مع إبقاء Won/Lost القياسية.
+- حفظ Source/Medium/Campaign/Term/Content وصفحة الوصول وReferrer ووقت موافقة الخصوصية.
+- نموذج التواصل يطلب موافقة صريحة قبل الحفظ؛ طلب الديمو يحتفظ بموافقته الحالية.
+- تحديث فرصة الديمو إلى `Demo Delivered` عند وصول الطلب إلى ready/active/extended.
+
 ## Staging
 
 - الرابط: `https://staging.odoo.clickbulid.com`.
@@ -41,6 +50,7 @@
 - Rollback الأول الخاص بالتثبيت: `/opt/clickbuild-staging/backups/pre-phase1-content-2026-08-01-133024`.
 - Rollback الخاص بآخر ترقية ناجحة: `/opt/clickbuild-staging/backups/pre-phase1-content-2026-08-01-133529`.
 - Rollback الخاص بآخر ترقية `clickbuild_website_core`: `/opt/clickbuild-staging/backups/pre-phase1-core-2026-08-01-143233`.
+- Rollback الخاص بآخر ترقية CRM الناجحة: `/opt/clickbuild-staging/backups/pre-phase1-crm-2026-08-01-160025`.
 
 ## الاختبارات
 
@@ -53,12 +63,15 @@
 - الصفحة الرئيسية العربية والإنجليزية: 7 أقسام منشورة بالترتيب 10–70، RTL/LTR صحيح، ولا overflow أو أخطاء Console.
 - الهيدر العربي: «الحلول» تعرض نظرة عامة والتطبيقات والخدمات؛ روابط القطاعات والديموهات والأسعار تعمل من القائمة الفعلية.
 - اختبار Mobile عند 390×844: الأقسام السبعة ظاهرة، ولا يسجل المتصفح overflow أفقيًا أو أخطاء Console.
+- اختبار عقد CRM: إنشاء Lead تواصل وطلب Demo مؤقتين، التحقق من الربط والمراحل وUTM وعدم التكرار، ثم حذف بيانات QA: PASS.
+- بقايا QA: 0؛ إضافات Enterprise المفقودة بحالة pending: 0؛ Cron والبريد والدفع: 0.
+- الفحص المرئي لنموذجي التواصل والديمو: Consent إلزامي وUTM Term/Content محفوظان، ولا أخطاء Console.
 
 ## المتبقي في Phase 1
 
 - استكمال `clickbuild_website_core`: تحويل Dropdown الحالي إلى Mega Menu متعدد الأعمدة وإضافة محتوى وصفي وصورة اختيارية.
 - إكمال ترجمة القوائم التفصيلية للخدمات والتحديات والعمليات إلى الإنجليزية بدل إبقاء نصوص المصدر القديمة حيث لا تتوفر ترجمة.
-- CRM Bridge وUTM/Consent والنماذج.
+- إضافة Automation ومهام متابعة اختيارية بعد اعتماد سياسة SLA للمبيعات.
 - Metadata/Schema/Sitemap/Hreflang/Redirect Registry.
 - اختبارات Mobile/Accessibility/Performance والـ pricing السنوي ضد بيانات `saas.plan`.
 

@@ -1,0 +1,15 @@
+{
+    'name': 'ClickBuild CRM Bridge',
+    'version': '19.0.1.0.0',
+    'category': 'CRM',
+    'summary': 'Consent-aware CRM bridge for website leads and Enterprise demos',
+    'author': 'شركة كليك بيلد لتقنية المعلومات',
+    'website': 'https://odoo.clickbulid.com',
+    'depends': ['crm', 'utm', 'saas_website', 'saas_demo_management'],
+    'data': ['views/crm_bridge_views.xml'],
+    'post_init_hook': 'post_init_hook',
+    'installable': True,
+    'application': False,
+    'auto_install': False,
+    'license': 'LGPL-3',
+}

@@ -48,6 +48,10 @@
                         <input type="hidden" name="utm_source" t-att-value="request.params.get('utm_source', '')"/>
                         <input type="hidden" name="utm_medium" t-att-value="request.params.get('utm_medium', '')"/>
                         <input type="hidden" name="utm_campaign" t-att-value="request.params.get('utm_campaign', '')"/>
+                        <input type="hidden" name="utm_term" t-att-value="request.params.get('utm_term', '')"/>
+                        <input type="hidden" name="utm_content" t-att-value="request.params.get('utm_content', '')"/>
+                        <input type="hidden" name="landing_url" t-att-value="request.httprequest.url"/>
+                        <input type="hidden" name="referrer_url" t-att-value="request.httprequest.referrer or ''"/>
                         <input type="text" name="website_url" tabindex="-1" autocomplete="off" class="cb-demo-honeypot" aria-hidden="true"/>
                         <div class="row g-4">
                             <div class="col-md-6"><label class="form-label" for="demo_contact_name"><t t-if="lang_is_ar">الاسم الكامل</t><t t-else="">Full name</t> *</label><input class="form-control" id="demo_contact_name" name="contact_name" required="required" maxlength="120" autocomplete="name"/></div>

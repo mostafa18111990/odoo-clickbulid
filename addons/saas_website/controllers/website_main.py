@@ -1,4 +1,4 @@
-from odoo import http
+from odoo import fields, http
 from odoo.http import request
 from odoo.addons.account.controllers.terms import TermsController
 from odoo.addons.saas_website.services.error_handler import ErrorHandler, HealthCheck, PlatformError
@@ -138,12 +138,22 @@ class SaasWebsiteMain(http.Controller):
         from odoo.addons.saas_website.services.signup_service import SignupService
         if not (post.get('name') and post.get('email') and post.get('message')):
             return request.redirect('/contact?error=required')
+        if not post.get('privacy_consent'):
+            return request.redirect('/contact?error=consent')
         result = SignupService(request.env).capture_lead({
             'name': post.get('name'), 'email': post.get('email'), 'phone': post.get('phone'),
             'company': post.get('company'), 'industry': post.get('industry'),
             'expected_users': post.get('expected_users'),
             'requested_service': post.get('requested_service') or post.get('inquiry_type'),
-            'message': post.get('message'), 'source': 'contact_form'})
+            'message': post.get('message'), 'source': 'contact_form',
+            'utm_source': (post.get('utm_source') or '')[:240],
+            'utm_medium': (post.get('utm_medium') or '')[:240],
+            'utm_campaign': (post.get('utm_campaign') or '')[:240],
+            'utm_term': (post.get('utm_term') or '')[:240],
+            'utm_content': (post.get('utm_content') or '')[:240],
+            'landing_page': (post.get('landing_page') or '')[:500],
+            'referrer': (post.get('referrer') or '')[:500],
+            'privacy_consent': True, 'consent_at': fields.Datetime.now()})
         return request.redirect('/contact?submitted=1' if result.get('success') else '/contact?error=save')
 
     @http.route('/newsletter/subscribe', type='jsonrpc', auth='public', csrf=False)
