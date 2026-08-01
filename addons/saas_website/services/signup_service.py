@@ -198,13 +198,7 @@ class SignupService:
                 'requested_service': data.get('requested_service', ''),
                 'message': data.get('message', ''), 'source': data.get('source', 'contact_form'),
                 'country': data.get('country', ''), 'language': data.get('language', 'ar'),
-                'newsletter_opt_in': data.get('newsletter', False),
-                'utm_source': data.get('utm_source', ''), 'utm_medium': data.get('utm_medium', ''),
-                'utm_campaign': data.get('utm_campaign', ''), 'utm_term': data.get('utm_term', ''),
-                'utm_content': data.get('utm_content', ''), 'referrer': data.get('referrer', ''),
-                'landing_page': data.get('landing_page', ''),
-                'privacy_consent': data.get('privacy_consent', False),
-                'consent_at': data.get('consent_at')})
+                'newsletter_opt_in': data.get('newsletter', False)})
             return {'success': True, 'lead_id': lead.id}
         except Exception as e:
             _logger.error('Lead capture failed: %s', e)

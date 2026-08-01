@@ -2,12 +2,12 @@
 <odoo>
     <data>
         <template id="page_error" name="Error Page">
-            <t t-call="website.layout">
+            <t t-call="saas_website.layout">
                 <div class="container mt-5">
                     <div class="row justify-content-center">
                         <div class="col-md-8 text-center">
                             <div class="alert alert-danger" role="alert">
-                                <h1 class="display-4">عذرًا، حدث خطأ</h1>
+                                <h1 class="display-4">⚠️ خطأ</h1>
                                 <p class="lead mt-3" t-esc="error_message"/>
                                 <hr/>
                                 <p class="text-muted">
@@ -15,7 +15,7 @@
                                 </p>
                                 <div class="mt-4">
                                     <a href="/" class="btn btn-primary btn-lg">
-                                        <i class="fa fa-home"/> العودة إلى الصفحة الرئيسية
+                                        <i class="fa fa-home"/> العودة للصفحة الرئيسية
                                     </a>
                                     <a href="/contact" class="btn btn-secondary btn-lg ms-2">
                                         <i class="fa fa-envelope"/> تواصل معنا
@@ -25,10 +25,10 @@
                             <div class="mt-5 p-4 bg-light rounded">
                                 <h4>ماذا حدث؟</h4>
                                 <p class="text-muted">
-                                    تعذر إكمال طلبك في الوقت الحالي. يمكنك المحاولة مرة أخرى أو التواصل مع فريق الدعم.
+                                    حدث خطأ غير متوقع أثناء معالجة طلبك. فريقنا التقني يعمل على حل المشكلة.
                                 </p>
                                 <small class="text-muted d-block mt-3">
-                                    إذا استمرت المشكلة، يرجى التواصل مع شركة كليك بيلد لتقنية المعلومات.
+                                    إذا استمرت المشكلة، يرجى التواصل بنا عبر البريد الإلكتروني: support@clickbuild.com
                                 </small>
                             </div>
                         </div>

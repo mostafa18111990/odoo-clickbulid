@@ -67,6 +67,13 @@
               inherit_id="website.layout">
         <xpath expr="//header//ul[contains(@class, 'navbar-nav')]" position="inside">
             <t t-set="lc" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>
+            <li class="nav-item">
+                <a class="nav-link cb-nav-about" href="/about">
+                    <i class="fa fa-building me-1"/>
+                    <span t-if="lc in ('ar_001','ar')">من نحن</span>
+                    <span t-else="">About Us</span>
+                </a>
+            </li>
             <!-- Highlight Enterprise so customers discover the new tier even
                  if they only ever look at the navbar. Links straight to the
                  pricing page with the Enterprise toggle pre-selected. -->

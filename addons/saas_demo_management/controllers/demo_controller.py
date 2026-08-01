@@ -133,11 +133,7 @@ class SaasDemoWebsite(http.Controller):
             'utm_source': (post.get('utm_source') or '')[:240],
             'utm_medium': (post.get('utm_medium') or '')[:240],
             'utm_campaign': (post.get('utm_campaign') or '')[:240],
-            'utm_term': (post.get('utm_term') or '')[:240],
-            'utm_content': (post.get('utm_content') or '')[:240],
             'landing_url': (post.get('landing_url') or request.httprequest.referrer or '')[:500],
-            'referrer_url': (post.get('referrer_url') or request.httprequest.referrer or '')[:500],
-            'consent_at': fields.Datetime.now(),
             'source_fingerprint': fingerprint,
             'duration_days': template.default_duration_days if template else 14})
         demo.action_submit_for_review()

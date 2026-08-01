@@ -24,16 +24,16 @@ class ErrorHandler:
 
     # Error codes and fallback responses
     ERROR_CODES = {
-        'TENANT_PROVISION': {'msg': 'تعذر تجهيز منصة الأعمال', 'en': 'Failed to provision tenant'},
-        'DB_CONNECTION': {'msg': 'تعذر الاتصال بقاعدة البيانات', 'en': 'Database connection error'},
-        'PAYMENT_FAILED': {'msg': 'تعذرت معالجة عملية الدفع', 'en': 'Payment processing failed'},
-        'EMAIL_SEND': {'msg': 'تعذر إرسال البريد الإلكتروني', 'en': 'Email delivery failed'},
-        'SSL_CERT': {'msg': 'حدث خطأ في شهادة الاتصال الآمن', 'en': 'SSL certificate error'},
-        'INVALID_INPUT': {'msg': 'بعض البيانات المدخلة غير صحيحة', 'en': 'Invalid input'},
-        'AUTH_FAILED': {'msg': 'تعذرت المصادقة على بيانات الدخول', 'en': 'Authentication failed'},
-        'NOT_FOUND': {'msg': 'لم يتم العثور على المورد المطلوب', 'en': 'Resource not found'},
-        'RATE_LIMIT': {'msg': 'تجاوزت الحد المسموح من المحاولات', 'en': 'Too many requests'},
-        'UNKNOWN': {'msg': 'حدث خطأ غير متوقع، يرجى المحاولة مرة أخرى', 'en': 'Unexpected error'},
+        'TENANT_PROVISION': {'msg': 'خطأ في إنشاء المستأجر', 'en': 'Failed to provision tenant'},
+        'DB_CONNECTION': {'msg': 'خطأ في الاتصال بقاعدة البيانات', 'en': 'Database connection error'},
+        'PAYMENT_FAILED': {'msg': 'فشل معالجة الدفع', 'en': 'Payment processing failed'},
+        'EMAIL_SEND': {'msg': 'فشل إرسال البريد الإلكتروني', 'en': 'Email delivery failed'},
+        'SSL_CERT': {'msg': 'خطأ في شهادة SSL', 'en': 'SSL certificate error'},
+        'INVALID_INPUT': {'msg': 'بيانات غير صحيحة', 'en': 'Invalid input'},
+        'AUTH_FAILED': {'msg': 'خطأ في المصادقة', 'en': 'Authentication failed'},
+        'NOT_FOUND': {'msg': 'لم يتم العثور على المورد', 'en': 'Resource not found'},
+        'RATE_LIMIT': {'msg': 'تجاوزت حد المحاولات', 'en': 'Too many requests'},
+        'UNKNOWN': {'msg': 'خطأ غير متوقع', 'en': 'Unexpected error'},
     }
 
     @staticmethod
@@ -69,7 +69,7 @@ class ErrorHandler:
     def get_graceful_response(code, lang='ar'):
         """Return user-friendly error message based on language."""
         error = ErrorHandler.ERROR_CODES.get(code, ErrorHandler.ERROR_CODES['UNKNOWN'])
-        return error['msg'] if str(lang or '').lower().startswith('ar') else error['en']
+        return error['msg'] if lang == 'ar' else error['en']
 
     @staticmethod
     def retry_db_operation(func, max_retries=3, delay=1):
