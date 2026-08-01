@@ -14,6 +14,39 @@
 
 The branch and tag above are baseline references. They must not be moved, force-updated, or deleted during the project.
 
+## P0 security and staging restore points
+
+- Pre-P0 full backup: `/opt/backups/clickbuild-production-before-phase0-security-staging-2026-07-31-1611`.
+- Mandatory pre-deploy full backup: `/opt/backups/clickbuild-production-before-p0-deploy-2026-08-01-0031`.
+- Pre-error-page delta backup: `/opt/backups/clickbuild-production-before-p0-errorfix-2026-08-01-122735`.
+- Pre-P0 Nginx configuration: `/opt/odoo-saas/config/nginx.conf.pre-p0-2026-08-01-114805`.
+- Isolated staging database/container/volume: `clickbuild3_stage`, `clickbuild3_stage_web`, and `clickbuild3_stage_odoodata`.
+- Staging URL: `https://staging.odoo.clickbulid.com`.
+
+The full pre-deploy backup passed an isolated restore drill in 131 seconds. The central database, matching filestore, Odoo startup, authentication, home page, stored attachment and functional counts were verified without touching production containers.
+
+### Roll back only the P0 error-page change
+
+1. Announce a short maintenance window and create a fresh emergency snapshot.
+2. Stop `odoo_saas_app` and confirm that no module-upgrade process is running.
+3. Restore `error_handler.py` and `page_error.xml` from the delta backup `files/` directory.
+4. Terminate connections to the central `odoo` database only, then restore `odoo.dump` with `pg_restore --clean --if-exists --no-owner`.
+5. Start `odoo_saas_app` and validate home, login, attachments and the error route.
+
+### Roll back the Nginx P0 configuration
+
+1. Preserve the current configuration as a timestamped emergency copy.
+2. Copy `nginx.conf.pre-p0-2026-08-01-114805` over `/opt/odoo-saas/config/nginx.conf`.
+3. Recreate the Nginx Compose service so the single-file bind mount uses the restored inode.
+4. Reconnect the Nginx container to the production network; connect it to the staging network only if Staging must remain routed.
+5. Run `nginx -t`, start the service, and test HTTPS, login, assets, attachments and tenant routing.
+
+Restoring the pre-P0 Nginx file reopens the database-management and public-metrics exposure. Use this rollback only to recover service, then reapply the security locations after diagnosing the failure.
+
+### Remove only the new Staging environment
+
+Stop and remove `clickbuild3_stage_web`, drop only `clickbuild3_stage`, and remove only `clickbuild3_stage_odoodata` after making a final staging snapshot. Do not alter production databases, production filestores, DNS, or the protected baseline branch/tag. If the staging hostname is retired, remove only its exact Nginx virtual host and certificate after validating the production configuration.
+
 ## Backup contents
 
 - `databases/`: custom-format dumps of all 42 non-template PostgreSQL databases, a database inventory with source sizes, and PostgreSQL globals.
@@ -181,4 +214,3 @@ Nginx/Docker application configuration is also contained in the restored `/opt/o
 - **Role conflict:** review `globals.sql`; restore only missing roles, then apply recorded ownership.
 - **Certificate/routing failure:** validate Nginx and certificate paths before starting the proxy; do not change DNS as part of an unapproved rollback.
 - **Newer data would be lost:** retain and checksum the mandatory pre-rollback emergency snapshot before replacing the live state.
-
