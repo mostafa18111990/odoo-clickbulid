@@ -6,12 +6,15 @@
             <t t-set="lang_is_ar" t-value="lang_code in ('ar_001', 'ar')"/>
             <t t-set="additional_title" t-value="'تنفيذ Odoo للشركات في السعودية' if lang_is_ar else 'Odoo Implementation for Saudi Businesses'"/>
             <t t-set="meta_description" t-value="'تساعد شركة كليك بيلد لتقنية المعلومات الشركات على تحليل وتهيئة وتخصيص Odoo لربط المحاسبة والمبيعات والمخزون والمشاريع ضمن منصة متكاملة.' if lang_is_ar else 'Click Build Information Technology Company helps businesses analyze, configure, and extend Odoo across finance, sales, inventory, and projects.'"/>
+            <t t-set="cb_home_sections" t-value="request.env['clickbuild.home.section'].get_public_map(website) if 'clickbuild.home.section' in request.env else {}"/>
 
             <main class="cb-home-v2" t-att-dir="'rtl' if lang_is_ar else 'ltr'">
 
                 <!-- ════ HERO SLIDER ════ -->
                 <t t-set="banners" t-value="request.env['saas.website.banner'].get_published_banners()"/>
-                <section class="cb-slider-shell">
+                <section t-if="not cb_home_sections or cb_home_sections.get('hero', {}).get('published')"
+                         class="cb-slider-shell" data-cb-section="hero"
+                         t-att-style="'order:%s' % cb_home_sections.get('hero', {}).get('sequence', 10)">
                     <div id="cbMarketingCarousel" class="carousel slide cb-marketing-carousel"
                          data-bs-ride="carousel" data-bs-interval="6500"
                          data-bs-pause="hover" data-bs-touch="true">
@@ -142,7 +145,9 @@
                 </section>
 
                 <!-- ════ APPS / MODULES ════ -->
-                <section class="cb-v2-section cb-v2-apps">
+                <section t-if="not cb_home_sections or cb_home_sections.get('applications', {}).get('published')"
+                         class="cb-v2-section cb-v2-apps" data-cb-section="applications"
+                         t-att-style="'order:%s' % cb_home_sections.get('applications', {}).get('sequence', 20)">
                     <div class="container">
                         <div class="cb-v2-section-head" data-cb-reveal="1">
                             <span><t t-if="lang_is_ar">المنصة</t><t t-else="">The Platform</t></span>
@@ -206,7 +211,9 @@
                 </section>
 
                 <!-- ════ HOW IT WORKS ════ -->
-                <section class="cb-v2-section cb-v2-process">
+                <section t-if="not cb_home_sections or cb_home_sections.get('implementation-journey', {}).get('published')"
+                         class="cb-v2-section cb-v2-process" data-cb-section="implementation-journey"
+                         t-att-style="'order:%s' % cb_home_sections.get('implementation-journey', {}).get('sequence', 30)">
                     <div class="container">
                         <div class="cb-v2-process-layout">
                             <div class="cb-v2-process-copy" data-cb-reveal="1">
@@ -260,7 +267,9 @@
                 </section>
 
                 <!-- ════ INDUSTRIES ════ -->
-                <section id="industries" class="cb-v2-section cb-v2-industries">
+                <section t-if="not cb_home_sections or cb_home_sections.get('industries', {}).get('published')"
+                         id="industries" class="cb-v2-section cb-v2-industries" data-cb-section="industries"
+                         t-att-style="'order:%s' % cb_home_sections.get('industries', {}).get('sequence', 40)">
                     <div class="container">
                         <div class="cb-v2-section-head" data-cb-reveal="1">
                             <span><t t-if="lang_is_ar">حلول حسب القطاع</t><t t-else="">Industry Solutions</t></span>
@@ -304,7 +313,9 @@
                 </section>
 
                 <!-- ════ PRICING ════ -->
-                <section class="cb-v2-section cb-v2-pricing">
+                <section t-if="not cb_home_sections or cb_home_sections.get('pricing', {}).get('published')"
+                         class="cb-v2-section cb-v2-pricing" data-cb-section="pricing"
+                         t-att-style="'order:%s' % cb_home_sections.get('pricing', {}).get('sequence', 50)">
                     <div class="container">
                         <div class="cb-v2-section-head" data-cb-reveal="1">
                             <span><t t-if="lang_is_ar">أسعار شفافة</t><t t-else="">Transparent Pricing</t></span>
@@ -393,7 +404,9 @@
                 </section>
 
                 <!-- ════ ENTERPRISE BANNER ════ -->
-                <section class="cb-v2-enterprise">
+                <section t-if="not cb_home_sections or cb_home_sections.get('enterprise', {}).get('published')"
+                         class="cb-v2-enterprise" data-cb-section="enterprise"
+                         t-att-style="'order:%s' % cb_home_sections.get('enterprise', {}).get('sequence', 60)">
                     <div class="container">
                         <div class="cb-v2-enterprise-inner" data-cb-reveal="1">
                             <div>
@@ -417,7 +430,9 @@
                 </section>
 
                 <!-- ════ IMPLEMENTATION PRINCIPLES ════ -->
-                <section class="cb-v2-testimonials">
+                <section t-if="not cb_home_sections or cb_home_sections.get('implementation-method', {}).get('published')"
+                         class="cb-v2-testimonials" data-cb-section="implementation-method"
+                         t-att-style="'order:%s' % cb_home_sections.get('implementation-method', {}).get('sequence', 70)">
                     <div class="container">
                         <div class="cb-v2-section-head" data-cb-reveal="1">
                             <span><t t-if="lang_is_ar">منهجية التنفيذ</t><t t-else="">Implementation approach</t></span>
