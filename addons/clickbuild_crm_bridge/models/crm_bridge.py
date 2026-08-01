@@ -1,8 +1,34 @@
 import logging
+from datetime import timedelta
 
 from odoo import api, fields, models
 
 _logger = logging.getLogger(__name__)
+
+
+class ClickBuildCrmFollowupRule(models.Model):
+    _name = 'clickbuild.crm.followup.rule'
+    _description = 'ClickBuild CRM Follow-up Rule'
+    _order = 'sequence, id'
+
+    name = fields.Char(required=True, translate=True)
+    trigger = fields.Selection([
+        ('contact_new', 'Website Inquiry Received'),
+        ('demo_requested', 'Enterprise Demo Requested'),
+        ('demo_delivered', 'Enterprise Demo Delivered'),
+    ], required=True, index=True)
+    sequence = fields.Integer(default=10)
+    delay_days = fields.Integer(default=1, required=True)
+    activity_type_id = fields.Many2one(
+        'mail.activity.type', required=True,
+        default=lambda self: self.env.ref('mail.mail_activity_data_todo'))
+    user_id = fields.Many2one('res.users', domain=[('share', '=', False)])
+    summary = fields.Char(required=True, translate=True)
+    note = fields.Html(translate=True, sanitize=True)
+    active = fields.Boolean(default=True, index=True)
+
+    _nonnegative_delay = models.Constraint(
+        'CHECK(delay_days >= 0)', 'Follow-up delay cannot be negative.')
 
 
 class CrmLead(models.Model):
@@ -20,6 +46,30 @@ class CrmLead(models.Model):
     clickbuild_referrer = fields.Char(copy=False)
     clickbuild_utm_term = fields.Char(copy=False)
     clickbuild_utm_content = fields.Char(copy=False)
+
+    def _clickbuild_apply_followup(self, trigger):
+        model_id = self.env['ir.model']._get_id('crm.lead')
+        rules = self.env['clickbuild.crm.followup.rule'].sudo().search([
+            ('trigger', '=', trigger), ('active', '=', True)])
+        for lead in self.sudo():
+            for rule in rules:
+                existing = self.env['mail.activity'].sudo().search_count([
+                    ('res_model_id', '=', model_id), ('res_id', '=', lead.id),
+                    ('summary', '=', rule.summary),
+                ])
+                if existing:
+                    continue
+                user = rule.user_id or lead.user_id or self.env.ref('base.user_admin')
+                self.env['mail.activity'].sudo().create({
+                    'activity_type_id': rule.activity_type_id.id,
+                    'res_model_id': model_id,
+                    'res_id': lead.id,
+                    'user_id': user.id,
+                    'summary': rule.summary,
+                    'note': rule.note,
+                    'date_deadline': fields.Date.context_today(lead) + timedelta(days=rule.delay_days),
+                })
+        return True
 
 
 class ClickBuildCrmBridgeMixin(models.AbstractModel):
@@ -104,6 +154,8 @@ class ClickBuildCrmBridgeMixin(models.AbstractModel):
                 else:
                     crm_lead = self.env['crm.lead'].sudo().create(values)
                     record.sudo().write({'crm_lead_id': crm_lead.id})
+                crm_lead._clickbuild_apply_followup(
+                    'demo_requested' if origin == 'demo' else 'contact_new')
             except Exception:
                 _logger.exception('CRM bridge failed for %s,%s', record._name, record.id)
         return True
@@ -146,5 +198,7 @@ class SaasDemoRequest(models.Model):
         result = super().write(vals)
         if 'state' in vals and vals['state'] in ('ready', 'active', 'extended'):
             stage = self._clickbuild_stage('Demo Delivered', 40)
-            self.filtered('crm_lead_id').mapped('crm_lead_id').sudo().write({'stage_id': stage.id})
+            crm_leads = self.filtered('crm_lead_id').mapped('crm_lead_id').sudo()
+            crm_leads.write({'stage_id': stage.id})
+            crm_leads._clickbuild_apply_followup('demo_delivered')
         return result
