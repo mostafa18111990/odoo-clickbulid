@@ -24,29 +24,6 @@
     min-height: var(--cb-touch-target);
 }
 
-header .navbar :is(.nav-link, .dropdown-toggle, .btn),
-header .navbar .navbar-brand,
-.cb-v2-pricing-links a,
-.cb-footer a {
-    display: inline-flex;
-    align-items: center;
-    min-height: var(--cb-touch-target);
-}
-
-header .navbar .btn[role="button"] {
-    min-width: var(--cb-touch-target);
-}
-
-header button {
-    min-width: var(--cb-touch-target);
-    min-height: var(--cb-touch-target);
-}
-
-.cb-marketing-carousel .carousel-indicators button {
-    min-width: var(--cb-touch-target);
-    min-height: var(--cb-touch-target);
-}
-
 @media (min-width: 992px) {
     header .navbar-nav .dropdown-menu {
         min-width: 22rem;
