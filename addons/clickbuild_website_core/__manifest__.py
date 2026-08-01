@@ -1,6 +1,6 @@
 {
     'name': 'ClickBuild Website Core',
-    'version': '19.0.1.0.0',
+    'version': '19.0.1.1.0',
     'category': 'Website',
     'summary': 'Governed homepage sections and navigation foundation for ClickBuild 3',
     'author': 'شركة كليك بيلد لتقنية المعلومات',

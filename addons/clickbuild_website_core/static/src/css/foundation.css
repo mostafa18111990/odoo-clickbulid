@@ -40,6 +40,108 @@
         border-radius: 10px;
         white-space: normal;
     }
+
+    header .navbar-nav .cb-mega-menu {
+        inset-inline: 1.25rem !important;
+        width: auto !important;
+        max-width: 1180px;
+        margin-inline: auto;
+        padding: 0;
+        border-radius: 20px;
+        overflow: hidden;
+    }
+}
+
+.cb-mega-shell {
+    color: #21163d;
+    background: #fff;
+}
+
+.cb-mega-locale-ar {
+    display: none;
+}
+
+html[dir="rtl"] .cb-mega-locale-en,
+html[lang^="ar"] .cb-mega-locale-en {
+    display: none;
+}
+
+html[dir="rtl"] .cb-mega-locale-ar,
+html[lang^="ar"] .cb-mega-locale-ar {
+    display: block;
+}
+
+.cb-mega-heading {
+    margin: 0 0 0.55rem;
+    padding-inline: 0.8rem;
+    color: #6d28d9;
+    font-size: 0.78rem;
+    font-weight: 800;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+}
+
+.cb-mega-link {
+    display: flex;
+    align-items: flex-start;
+    gap: 0.75rem;
+    min-height: var(--cb-touch-target);
+    margin-bottom: 0.3rem;
+    padding: 0.7rem 0.8rem;
+    border: 1px solid transparent;
+    border-radius: 12px;
+    color: #21163d;
+    text-decoration: none;
+}
+
+.cb-mega-link:hover,
+.cb-mega-link:focus-visible {
+    border-color: rgba(124, 58, 237, 0.18);
+    background: #f7f3ff;
+    color: #5b21b6;
+}
+
+.cb-mega-link > i {
+    flex: 0 0 2rem;
+    width: 2rem;
+    height: 2rem;
+    padding-top: 0.48rem;
+    border-radius: 9px;
+    background: #efe7ff;
+    color: #7c3aed;
+    text-align: center;
+}
+
+.cb-mega-link span,
+.cb-mega-link strong,
+.cb-mega-link small {
+    display: block;
+}
+
+.cb-mega-link strong {
+    margin-bottom: 0.12rem;
+    font-size: 0.94rem;
+}
+
+.cb-mega-link small {
+    color: #6b6478;
+    font-size: 0.78rem;
+    line-height: 1.45;
+}
+
+.cb-mega-featured {
+    border-color: rgba(20, 184, 166, 0.25);
+    background: #effcf9;
+}
+
+@media (max-width: 991.98px) {
+    .cb-mega-shell {
+        padding: 1rem !important;
+    }
+
+    .cb-mega-heading {
+        margin-top: 0.6rem;
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
