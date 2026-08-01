@@ -8,7 +8,7 @@
             <t t-set="meta_description" t-value="'تساعد شركة كليك بيلد لتقنية المعلومات الشركات على تحليل وتهيئة وتخصيص Odoo لربط المحاسبة والمبيعات والمخزون والمشاريع ضمن منصة متكاملة.' if lang_is_ar else 'Click Build Information Technology Company helps businesses analyze, configure, and extend Odoo across finance, sales, inventory, and projects.'"/>
             <t t-set="cb_home_sections" t-value="request.env['clickbuild.home.section'].get_public_map(website) if 'clickbuild.home.section' in request.env else {}"/>
 
-            <main class="cb-home-v2" t-att-dir="'rtl' if lang_is_ar else 'ltr'">
+            <div class="cb-home-v2" t-att-dir="'rtl' if lang_is_ar else 'ltr'">
 
                 <!-- ════ HERO SLIDER ════ -->
                 <t t-set="banners" t-value="request.env['saas.website.banner'].get_published_banners()"/>
@@ -16,15 +16,16 @@
                          class="cb-slider-shell" data-cb-section="hero"
                          t-att-style="'order:%s' % cb_home_sections.get('hero', {}).get('sequence', 10)">
                     <div id="cbMarketingCarousel" class="carousel slide cb-marketing-carousel"
-                         data-bs-ride="carousel" data-bs-interval="6500"
-                         data-bs-pause="hover" data-bs-touch="true">
+                         role="region"
+                         t-att-aria-label="'عروض المنصة' if lang_is_ar else 'Platform highlights'"
+                         data-bs-interval="false" data-bs-touch="true">
                         <div class="carousel-indicators">
                             <button t-foreach="banners" t-as="indicator" type="button"
                                     data-bs-target="#cbMarketingCarousel"
                                     t-att-data-bs-slide-to="'%s' % indicator_index"
                                     t-att-class="'active' if indicator_first else ''"
                                     t-att-aria-current="'true' if indicator_first else None"
-                                    t-att-aria-label="'Slide %s' % (indicator_index + 1)"/>
+                                    t-att-aria-label="('%s %s' % ('الشريحة' if lang_is_ar else 'Slide', indicator_index + 1))"/>
                         </div>
                         <div class="carousel-inner">
                             <article t-foreach="banners" t-as="banner"
@@ -75,10 +76,23 @@
                                             </div>
                                         </div>
                                         <div class="cb-product-visual" aria-hidden="true">
-                                            <img t-if="banner.image_desktop or banner.image_path"
+                                            <img t-if="banner.image_desktop"
                                                  class="cb-slide-image"
-                                                 t-att-src="'/web/image/saas.website.banner/%s/image_desktop' % banner.id if banner.image_desktop else banner.image_path"
-                                                 t-att-alt="banner.name"/>
+                                                 t-att-src="'/web/image/saas.website.banner/%s/image_desktop' % banner.id"
+                                                 alt="" width="1408" height="768" decoding="async"
+                                                 t-att-loading="'eager' if banner_first else 'lazy'"
+                                                 t-att-fetchpriority="'high' if banner_first else 'low'"/>
+                                            <picture t-elif="banner.image_path">
+                                                <source type="image/avif"
+                                                        t-att-srcset="banner.image_path.rsplit('.', 1)[0] + '.avif'"/>
+                                                <source type="image/webp"
+                                                        t-att-srcset="banner.image_path.rsplit('.', 1)[0] + '.webp'"/>
+                                                <img class="cb-slide-image"
+                                                     t-att-src="banner.image_path.rsplit('.', 1)[0] + '.webp'"
+                                                     alt="" width="1408" height="768" decoding="async"
+                                                     t-att-loading="'eager' if banner_first else 'lazy'"
+                                                     t-att-fetchpriority="'high' if banner_first else 'low'"/>
+                                            </picture>
                                             <div t-else="" class="cb-odoo-window">
                                                 <div class="cb-window-bar">
                                                     <span/><span/><span/>
@@ -485,7 +499,7 @@
                     </div>
                 </section>
 
-            </main>
+            </div>
         </t>
     </template>
 </odoo>
