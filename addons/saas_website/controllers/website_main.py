@@ -5,6 +5,36 @@ from odoo.addons.saas_website.services.error_handler import ErrorHandler, Health
 from .content_catalog import APPLICATIONS, INDUSTRIES, SERVICES
 
 
+def _published_content(model_name):
+    """Return published records for this website when ClickBuild 3 is installed."""
+    if model_name not in request.env.registry:
+        return []
+    website = request.website or request.env['website'].get_current_website()
+    return request.env[model_name].sudo().search([
+        ('website_id', '=', website.id),
+        ('active', '=', True),
+        ('published', '=', True),
+    ], order='sequence, id')
+
+
+def _application_catalog():
+    if 'clickbuild.application' not in request.env.registry:
+        return list(APPLICATIONS.values())
+    return [record._catalog_dict() for record in _published_content('clickbuild.application')]
+
+
+def _industry_catalog():
+    if 'clickbuild.industry' not in request.env.registry:
+        return list(INDUSTRIES.values())
+    return [record._catalog_dict() for record in _published_content('clickbuild.industry')]
+
+
+def _service_catalog():
+    if 'clickbuild.service' not in request.env.registry:
+        return SERVICES
+    return [(record.name, record.summary) for record in _published_content('clickbuild.service')]
+
+
 class SaasWebsiteMain(http.Controller):
 
     @http.route('/switch-lang/<string:lang_code>', type='http', auth='public', website=True, sitemap=False)
@@ -52,16 +82,20 @@ class SaasWebsiteMain(http.Controller):
 
     @http.route('/features', type='http', auth='public', website=True, sitemap=True)
     def features(self, **kw):
-        return request.render('saas_website.page_features', {'applications': list(APPLICATIONS.values())})
+        return request.render('saas_website.page_features', {'applications': _application_catalog()})
 
     @http.route('/apps', type='http', auth='public', website=True, sitemap=True)
     def apps(self, **kw):
         return request.render('saas_website.page_catalog', {
-            'catalog_kind': 'apps', 'items': list(APPLICATIONS.values())})
+            'catalog_kind': 'apps', 'items': _application_catalog()})
 
     @http.route('/apps/<string:slug>', type='http', auth='public', website=True, sitemap=True)
     def app_detail(self, slug, **kw):
-        item = APPLICATIONS.get(slug)
+        if 'clickbuild.application' in request.env.registry:
+            record = _published_content('clickbuild.application').filtered(lambda row: row.slug == slug)[:1]
+            item = record._catalog_dict() if record else None
+        else:
+            item = APPLICATIONS.get(slug)
         if not item:
             return request.not_found()
         return request.render('saas_website.page_solution_detail', {'item': item})
@@ -69,18 +103,22 @@ class SaasWebsiteMain(http.Controller):
     @http.route('/industries', type='http', auth='public', website=True, sitemap=True)
     def industries(self, **kw):
         return request.render('saas_website.page_catalog', {
-            'catalog_kind': 'industries', 'items': list(INDUSTRIES.values())})
+            'catalog_kind': 'industries', 'items': _industry_catalog()})
 
     @http.route('/industries/<string:slug>', type='http', auth='public', website=True, sitemap=True)
     def industry_detail(self, slug, **kw):
-        item = INDUSTRIES.get(slug)
+        if 'clickbuild.industry' in request.env.registry:
+            record = _published_content('clickbuild.industry').filtered(lambda row: row.slug == slug)[:1]
+            item = record._catalog_dict() if record else None
+        else:
+            item = INDUSTRIES.get(slug)
         if not item:
             return request.not_found()
         return request.render('saas_website.page_solution_detail', {'item': item})
 
     @http.route('/services', type='http', auth='public', website=True, sitemap=True)
     def services(self, **kw):
-        return request.render('saas_website.page_services', {'services': SERVICES})
+        return request.render('saas_website.page_services', {'services': _service_catalog()})
 
     @http.route('/pricing', type='http', auth='public', website=True, sitemap=True)
     def pricing(self, **kw):

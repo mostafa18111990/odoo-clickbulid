@@ -1,0 +1,12 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_clickbuild_application_group_admin,clickbuild.application.group admin,model_clickbuild_application_group,base.group_system,1,1,1,1
+access_clickbuild_application_admin,clickbuild.application admin,model_clickbuild_application,base.group_system,1,1,1,1
+access_clickbuild_industry_admin,clickbuild.industry admin,model_clickbuild_industry,base.group_system,1,1,1,1
+access_clickbuild_industry_challenge_admin,clickbuild.industry.challenge admin,model_clickbuild_industry_challenge,base.group_system,1,1,1,1
+access_clickbuild_service_admin,clickbuild.service admin,model_clickbuild_service,base.group_system,1,1,1,1
+access_clickbuild_solution_admin,clickbuild.solution admin,model_clickbuild_solution,base.group_system,1,1,1,1
+access_clickbuild_integration_admin,clickbuild.integration admin,model_clickbuild_integration,base.group_system,1,1,1,1
+access_clickbuild_faq_admin,clickbuild.faq admin,model_clickbuild_faq,base.group_system,1,1,1,1
+access_clickbuild_content_block_admin,clickbuild.content.block admin,model_clickbuild_content_block,base.group_system,1,1,1,1
+access_clickbuild_cta_admin,clickbuild.cta admin,model_clickbuild_cta,base.group_system,1,1,1,1
+access_clickbuild_media_admin,clickbuild.media admin,model_clickbuild_media,base.group_system,1,1,1,1

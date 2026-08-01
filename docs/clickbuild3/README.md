@@ -8,5 +8,6 @@
 - [خطة الرجوع الأساسية](../../ROLLBACK_PLAN.md)
 - [تقرير النسخة واختبار الاستعادة](../../BACKUP_AND_RESTORE_REPORT.md)
 - [تقرير إغلاق مرحلة P0 والأمان وبيئة Staging](./P0_SECURITY_STAGING_REPORT.md)
+- [تقدم Phase 1 على Staging](./PHASE1_PROGRESS.md)
 
 الحالة: اكتملت مرحلة P0 الأمنية وبيئة Staging. تظل إعادة التصميم والتطوير الأوسع محصورة في Staging إلى أن تصدر موافقة كتابية مستقلة على نشرها.
