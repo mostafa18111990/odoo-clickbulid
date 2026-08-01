@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="layout_technical_seo" name="ClickBuild Technical SEO"
+              inherit_id="website.layout" priority="90">
+        <xpath expr="//meta[@t-att-content='meta_content']" position="attributes">
+            <attribute name="t-if">property not in ('og:url', 'og:image')</attribute>
+        </xpath>
+        <xpath expr="//meta[@t-att-content='opengraph_meta[property]']" position="attributes">
+            <attribute name="t-if">property not in ('og:url', 'og:image')</attribute>
+        </xpath>
+        <xpath expr="//link[@rel='canonical']" position="before">
+            <meta property="og:image"
+                  t-att-content="'https://%s/web/image/website/%s/logo' % (request.httprequest.host, website.id)"/>
+            <meta t-if="request.httprequest.host.split(':', 1)[0].lower().startswith('staging.')"
+                  name="robots" content="noindex,nofollow,noarchive"/>
+            <script type="application/ld+json"><t t-out="website._clickbuild_schema_json()"/></script>
+        </xpath>
+    </template>
+</odoo>
