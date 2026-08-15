@@ -5,6 +5,15 @@ from odoo.addons.saas_website.services.error_handler import ErrorHandler, Health
 from .content_catalog import APPLICATIONS, INDUSTRIES, SERVICES
 
 
+def sitemap_industries(env, rule, qs):
+    """Expose every configured industry detail page to Odoo's sitemap."""
+    query = (qs or '').lower()
+    for slug in INDUSTRIES:
+        loc = f'/industries/{slug}'
+        if not query or query in loc.lower():
+            yield {'loc': loc}
+
+
 class SaasWebsiteMain(http.Controller):
 
     @http.route('/switch-lang/<string:lang_code>', type='http', auth='public', website=True, sitemap=False)
@@ -71,7 +80,8 @@ class SaasWebsiteMain(http.Controller):
         return request.render('saas_website.page_catalog', {
             'catalog_kind': 'industries', 'items': list(INDUSTRIES.values())})
 
-    @http.route('/industries/<string:slug>', type='http', auth='public', website=True, sitemap=True)
+    @http.route('/industries/<string:slug>', type='http', auth='public', website=True,
+                sitemap=sitemap_industries)
     def industry_detail(self, slug, **kw):
         item = INDUSTRIES.get(slug)
         if not item:
