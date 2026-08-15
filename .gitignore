@@ -27,6 +27,22 @@ vendor/saas_tenant_manager/
 odoo_test.log
 /backups/
 *.dump
+/tmp/
+/output/
+/audit_evidence/
+/document_output/
+/docx_work/
+/exports/
+/presentation_review_tmp/
+/premium_presentation_build/
+/Amazon_Output/
+*.inspect.ndjson
+~$*
+
+# Local deployment material must never enter Git or Codex Cloud.
+*.tar.gz
+*.bundle
+ssh_askpass.cmd
 
 # ── OS ────────────────────────────────────────────────────────────────────────
 .DS_Store
