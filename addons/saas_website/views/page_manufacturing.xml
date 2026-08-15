@@ -1,0 +1,170 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="page_manufacturing" name="نظام إدارة التصنيع والمصانع في السعودية">
+        <t t-set="lang_is_ar" t-value="True"/>
+        <t t-set="additional_title" t-value="'نظام إدارة التصنيع والمصانع في السعودية | شركة كليك بيلد لتقنية المعلومات'"/>
+        <t t-set="meta_description" t-value="'أدر أوامر التصنيع وقوائم المواد والمخزون والجودة والصيانة واحسب تكلفة المنتج الفعلية وربحيته من نظام تصنيع متكامل للمصانع والورش في السعودية.'"/>
+        <t t-call="website.layout">
+            <t t-set="title">نظام إدارة التصنيع والمصانع في السعودية | شركة كليك بيلد لتقنية المعلومات</t>
+            <t t-set="head">
+                <script type="application/ld+json">
+                    {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"الرئيسية","item":"https://odoo.clickbulid.com/"},{"@type":"ListItem","position":2,"name":"القطاعات","item":"https://odoo.clickbulid.com/industries"},{"@type":"ListItem","position":3,"name":"التصنيع وإدارة المصانع","item":"https://odoo.clickbulid.com/industries/manufacturing"}]}
+                </script>
+                <script type="application/ld+json">
+                    {"@context":"https://schema.org","@type":"Service","name":"نظام إدارة التصنيع والمصانع","serviceType":"تهيئة وتنفيذ نظام ERP لإدارة التصنيع","areaServed":{"@type":"Country","name":"Saudi Arabia"},"provider":{"@type":"Organization","name":"شركة كليك بيلد لتقنية المعلومات","url":"https://odoo.clickbulid.com/"},"url":"https://odoo.clickbulid.com/industries/manufacturing","description":"حل متكامل لربط تخطيط الإنتاج وأوامر التصنيع وقوائم المواد والمخزون والجودة والصيانة والتكلفة والمحاسبة."}
+                </script>
+                <script type="application/ld+json">
+                    {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"هل يناسب النظام المصانع الصغيرة والورش؟","acceptedAnswer":{"@type":"Answer","text":"نعم. يمكن البدء بالوظائف الأساسية مثل قوائم المواد وأوامر التصنيع والمخزون والتكلفة، ثم إضافة التخطيط المتقدم والجودة والصيانة بحسب نمو المنشأة."}},{"@type":"Question","name":"هل يدعم التصنيع حسب الطلب والتصنيع للمخزون؟","acceptedAnswer":{"@type":"Answer","text":"يدعم السيناريوهين، كما يمكن ربط أمر البيع مباشرة بأمر تصنيع أو تشغيل قواعد إعادة الطلب والإنتاج المتوقع."}},{"@type":"Question","name":"كيف يحسب النظام تكلفة المنتج؟","acceptedAnswer":{"@type":"Answer","text":"يجمع تكلفة المواد المستهلكة والعمالة ومراكز العمل والآلة والتكاليف غير المباشرة والهالك وفق الإعداد المحاسبي والتشغيلي المعتمد."}},{"@type":"Question","name":"هل يمكن تتبع الدفعات والأرقام التسلسلية؟","acceptedAnswer":{"@type":"Answer","text":"نعم، ويمكن معرفة مصدر المكونات والدفعة المستخدمة والمنتجات والعملاء المرتبطين بها."}},{"@type":"Question","name":"هل يمكن إدارة أكثر من مصنع أو مستودع؟","acceptedAnswer":{"@type":"Answer","text":"نعم، يمكن تهيئة مستودعات ومواقع تشغيل وفروع متعددة مع صلاحيات وتقارير منفصلة أو مجمعة."}},{"@type":"Question","name":"هل يدعم الجودة والصيانة؟","acceptedAnswer":{"@type":"Answer","text":"يمكن إنشاء نقاط فحص وتنبيهات جودة، إلى جانب خطط الصيانة الوقائية وطلبات الصيانة التصحيحية وربط الآلات بمراكز العمل."}},{"@type":"Question","name":"هل يمكن تعديل النظام ليتوافق مع دورة المصنع؟","acceptedAnswer":{"@type":"Answer","text":"نعم، يبدأ المشروع بتحليل العمليات ثم تهيئة القوائم والمسارات والصلاحيات والتقارير والتكاملات المطلوبة وفق نطاق متفق عليه."}}]}
+                </script>
+            </t>
+
+            <main class="cb-mfg" dir="rtl">
+                <section class="cb-mfg-hero">
+                    <div class="container">
+                        <nav class="cb-mfg-breadcrumb" aria-label="مسار التنقل">
+                            <a href="/">الرئيسية</a><i class="fa fa-angle-left" aria-hidden="true"/><a href="/industries">القطاعات</a><i class="fa fa-angle-left" aria-hidden="true"/><span aria-current="page">التصنيع وإدارة المصانع</span>
+                        </nav>
+                        <div class="row align-items-center g-5">
+                            <div class="col-lg-6">
+                                <span class="cb-mfg-eyebrow"><i class="fa fa-industry" aria-hidden="true"/> نظام إدارة التصنيع</span>
+                                <h1>أدِر مصنعك من المواد الخام حتى المنتج النهائي في نظام واحد</h1>
+                                <p class="lead">خطط الإنتاج، تابع أوامر التصنيع، احسب التكلفة الفعلية، راقب الجودة، وجدول الصيانة مع رؤية لحظية للمخزون والربحية — من منصة متكاملة تناسب المصانع والورش في السعودية.</p>
+                                <div class="cb-mfg-actions">
+                                    <a href="/demo/request?industry=manufacturing" class="btn btn-primary btn-lg" data-analytics-event="manufacturing_demo_click"><i class="fa fa-play-circle" aria-hidden="true"/> اطلب عرضاً توضيحياً</a>
+                                    <a href="/contact?type=consultation&amp;industry=manufacturing" class="btn btn-outline-light btn-lg" data-analytics-event="manufacturing_contact_click"><i class="fa fa-comments" aria-hidden="true"/> تحدث مع خبير التصنيع</a>
+                                </div>
+                                <ul class="cb-mfg-trust" aria-label="مزايا رئيسية">
+                                    <li><i class="fa fa-check-circle" aria-hidden="true"/>إدارة متكاملة لدورة التصنيع</li>
+                                    <li><i class="fa fa-check-circle" aria-hidden="true"/>تكلفة دقيقة لكل منتج وأمر تصنيع</li>
+                                    <li><i class="fa fa-check-circle" aria-hidden="true"/>تتبع المواد والدفعات والأرقام التسلسلية</li>
+                                    <li><i class="fa fa-check-circle" aria-hidden="true"/>تكامل الإنتاج مع المخزون والمحاسبة</li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-6">
+                                <picture class="cb-mfg-picture cb-mfg-hero-picture">
+                                    <source type="image/webp" srcset="/saas_website/static/src/img/manufacturing/01-manufacturing-hero-960.webp 960w, /saas_website/static/src/img/manufacturing/01-manufacturing-hero-1600.webp 1600w" sizes="(max-width: 991px) 100vw, 50vw"/>
+                                    <img src="/saas_website/static/src/img/manufacturing/01-manufacturing-hero.png" width="1672" height="941" loading="eager" fetchpriority="high" decoding="async" alt="فريق تشغيل سعودي يراجع الإنتاج داخل مصنع حديث وخط إنتاج منظم"/>
+                                </picture>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="cb-mfg-section cb-mfg-soft" id="challenges">
+                    <div class="container">
+                        <div class="cb-mfg-heading text-center">
+                            <span>تحديات التشغيل</span>
+                            <h2>حين تعمل أقسام المصنع بمعزل عن بعضها… تصبح الأرباح مجرد تقديرات</h2>
+                            <p>تبدأ المشكلة من معلومات متفرقة بين المبيعات والإنتاج والمشتريات والمستودع والمحاسبة، ثم تظهر في صورة تأخير وهدر وتسعير غير دقيق.</p>
+                        </div>
+                        <div class="cb-mfg-card-grid cb-mfg-challenge-grid">
+                            <article t-foreach="[('fa-calculator','عدم معرفة تكلفة الوحدة الحقيقية'),('fa-random','ضعف التنسيق بين المبيعات والإنتاج والمشتريات'),('fa-cubes','صعوبة متابعة المواد الخام والإنتاج تحت التشغيل'),('fa-exclamation-triangle','تأخر اكتشاف الهدر والانحرافات'),('fa-wrench','أعطال المعدات المفاجئة'),('fa-line-chart','اكتشاف انخفاض الربحية بعد فوات الأوان')]" t-as="challenge" class="cb-mfg-card">
+                                <i t-att-class="'fa ' + challenge[0]" aria-hidden="true"/><h3 t-esc="challenge[1]"/>
+                            </article>
+                        </div>
+                        <div class="cb-mfg-callout"><i class="fa fa-database" aria-hidden="true"/><p><strong>مصدر بيانات واحد:</strong> تربط شركة كليك بيلد لتقنية المعلومات الطلب والتخطيط والتنفيذ والمخزون والتكلفة حتى يعمل كل قسم على المعلومة نفسها.</p></div>
+                    </div>
+                </section>
+
+                <section class="cb-mfg-section" id="planning">
+                    <div class="container"><div class="row align-items-center g-5">
+                        <div class="col-lg-6">
+                            <picture class="cb-mfg-picture"><source type="image/webp" srcset="/saas_website/static/src/img/manufacturing/02-production-planning-960.webp 960w, /saas_website/static/src/img/manufacturing/02-production-planning-1600.webp 1600w" sizes="(max-width: 991px) 100vw, 50vw"/><img loading="lazy" decoding="async" src="/saas_website/static/src/img/manufacturing/02-production-planning.png" width="1672" height="941" alt="مدير إنتاج ومشرف تشغيل يتابعان خطة التصنيع بجوار مراكز العمل"/></picture>
+                        </div>
+                        <div class="col-lg-6">
+                            <span class="cb-mfg-kicker">التخطيط والطاقة</span><h2>خطط الإنتاج وفق الطلب والطاقة المتاحة</h2>
+                            <p>أنشئ خطة إنتاج واقعية مبنية على الطلبات الفعلية، المخزون المتوفر، مدة التوريد، طاقة مراكز العمل وأوقات التشغيل. اكتشف التعارضات وأعد الجدولة قبل أن تتحول المشكلة إلى تأخير فعلي.</p>
+                            <ul class="cb-mfg-checks"><li t-foreach="['تخطيط أوامر التصنيع حسب الطلب والأولوية','جدولة العمليات ومراكز العمل','متابعة الطاقة المتاحة والتحميل','إعادة الجدولة عند تأخر المواد أو تعطل المعدات','تخطيط متطلبات المواد MRP','مقارنة وقت التنفيذ المتوقع بالفعلي']" t-as="line"><i class="fa fa-check" aria-hidden="true"/><span t-esc="line"/></li></ul>
+                            <a href="/contact?type=consultation&amp;industry=manufacturing" class="cb-mfg-text-link" data-analytics-event="manufacturing_contact_click">اكتشف الحل المناسب لمصنعك <i class="fa fa-arrow-left" aria-hidden="true"/></a>
+                        </div>
+                    </div></div>
+                </section>
+
+                <section class="cb-mfg-section cb-mfg-soft" id="production-orders">
+                    <div class="container">
+                        <div class="cb-mfg-heading"><span>التنفيذ الصناعي</span><h2>من أمر التصنيع إلى المنتج المستلم</h2><p>أدر الإنتاج المتكرر أو التصنيع حسب الطلب أو خطوط الإنتاج متعددة المراحل، مع تسجيل الاستهلاك والوقت والكميات والهالك ومقارنة النتائج بالخطة.</p></div>
+                        <div class="row g-4">
+                            <div class="col-lg-6"><article class="cb-mfg-feature-panel h-100"><i class="fa fa-tasks" aria-hidden="true"/><h3>أوامر تصنيع واضحة من البداية حتى الإقفال</h3><ul class="cb-mfg-checks"><li t-foreach="['إنشاء أوامر التصنيع وتحويل طلبات البيع إلى احتياجات إنتاج','أوامر العمل ومراحل التشغيل','تسجيل وقت البداية والتوقف والكمية المنتجة','تسجيل المواد المستهلكة فعلياً','متابعة الهالك وإعادة التشغيل والمنتجات الثانوية','إقفال الأمر وتحديث المخزون والتكلفة آلياً']" t-as="line"><i class="fa fa-check" aria-hidden="true"/><span t-esc="line"/></li></ul></article></div>
+                            <div class="col-lg-6"><article class="cb-mfg-feature-panel h-100"><i class="fa fa-sitemap" aria-hidden="true"/><h3>قوائم مواد BOM مرنة</h3><ul class="cb-mfg-checks"><li t-foreach="['قوائم مواد متعددة المستويات ومكونات وسيطة','نسخ وإصدارات متعددة للمنتج','بدائل المواد وفق الصلاحيات','خطوات ومسارات التشغيل','إرفاق الرسومات وتعليمات العمل','مجموعات المنتجات Kit']" t-as="line"><i class="fa fa-check" aria-hidden="true"/><span t-esc="line"/></li></ul></article></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="cb-mfg-section" id="inventory-traceability">
+                    <div class="container"><div class="row align-items-center g-5 flex-lg-row-reverse">
+                        <div class="col-lg-6"><picture class="cb-mfg-picture"><source type="image/webp" srcset="/saas_website/static/src/img/manufacturing/03-inventory-traceability-960.webp 960w, /saas_website/static/src/img/manufacturing/03-inventory-traceability-1600.webp 1600w" sizes="(max-width: 991px) 100vw, 50vw"/><img loading="lazy" decoding="async" src="/saas_website/static/src/img/manufacturing/03-inventory-traceability.png" width="1672" height="941" alt="موظفا مستودع يتتبعان المواد الخام والمنتجات بالباركود داخل مستودع صناعي"/></picture></div>
+                        <div class="col-lg-6"><span class="cb-mfg-kicker">المخزون والتتبع</span><h2>اعرف مكان وقيمة كل مادة في كل لحظة</h2><p>تابع دورة المخزون من الحجز والصرف إلى استلام المنتج النهائي، واربط كل حركة بالقيمة المحاسبية دون انتظار جرد يدوي طويل.</p>
+                            <div class="cb-mfg-stock-layers"><div><strong>RM</strong><span>المواد الخام</span></div><i class="fa fa-angle-left" aria-hidden="true"/><div><strong>WIP</strong><span>الإنتاج تحت التشغيل</span></div><i class="fa fa-angle-left" aria-hidden="true"/><div><strong>FG</strong><span>المنتجات النهائية</span></div></div>
+                            <ul class="cb-mfg-checks cb-mfg-two-col"><li t-foreach="['حجز وصرف المواد لأوامر التصنيع','إدارة مستودعات ومواقع متعددة','الحد الأدنى ومخزون الأمان','الباركود والدفعات والأرقام التسلسلية','تواريخ الصلاحية','التتبع من المورد إلى العميل','تحديد المنتجات والعملاء المتأثرين بأي دفعة','سجل تدقيق للحركات والموافقات']" t-as="line"><i class="fa fa-check" aria-hidden="true"/><span t-esc="line"/></li></ul>
+                        </div>
+                    </div></div>
+                </section>
+
+                <section class="cb-mfg-section cb-mfg-soft" id="quality">
+                    <div class="container"><div class="row align-items-center g-5">
+                        <div class="col-lg-6"><picture class="cb-mfg-picture"><source type="image/webp" srcset="/saas_website/static/src/img/manufacturing/04-quality-control-960.webp 960w, /saas_website/static/src/img/manufacturing/04-quality-control-1600.webp 1600w" sizes="(max-width: 991px) 100vw, 50vw"/><img loading="lazy" decoding="async" src="/saas_website/static/src/img/manufacturing/04-quality-control.png" width="1672" height="941" alt="مهندسا جودة يفحصان مكوناً مصنعاً بأدوات قياس دقيقة ويسجلان النتائج"/></picture></div>
+                        <div class="col-lg-6"><span class="cb-mfg-kicker">إدارة الجودة</span><h2>جودة مدمجة داخل العملية وليست خطوة متأخرة</h2><p>ضع نقاط فحص عند الاستلام وأثناء التصنيع وعند اكتمال المنتج أو قبل الشحن، وسجّل القياسات والنتائج والصور في توقيتها الصحيح.</p><ul class="cb-mfg-checks"><li t-foreach="['نقاط فحص الجودة حسب المنتج أو العملية','فحص المواد عند الاستلام وأثناء التصنيع والمنتج النهائي','تسجيل القياسات والنتائج والصور','منع انتقال العملية عند فشل الفحص الإلزامي','تنبيهات عدم المطابقة','الإجراءات التصحيحية والوقائية','تحليل الهالك والرفض وإعادة التشغيل']" t-as="line"><i class="fa fa-check" aria-hidden="true"/><span t-esc="line"/></li></ul><p class="cb-mfg-scope-note"><i class="fa fa-info-circle" aria-hidden="true"/> تتحدد وظائف الجودة المتقدمة بحسب الباقة ونطاق التنفيذ.</p></div>
+                    </div></div>
+                </section>
+
+                <section class="cb-mfg-section" id="maintenance">
+                    <div class="container"><div class="row align-items-center g-5 flex-lg-row-reverse">
+                        <div class="col-lg-6"><picture class="cb-mfg-picture"><source type="image/webp" srcset="/saas_website/static/src/img/manufacturing/05-maintenance-960.webp 960w, /saas_website/static/src/img/manufacturing/05-maintenance-1600.webp 1600w" sizes="(max-width: 991px) 100vw, 50vw"/><img loading="lazy" decoding="async" src="/saas_website/static/src/img/manufacturing/05-maintenance.png" width="1672" height="941" alt="فريق صيانة ينفذ فحصاً وقائياً لآلة صناعية مع تطبيق إجراءات السلامة"/></picture></div>
+                        <div class="col-lg-6"><span class="cb-mfg-kicker">إدارة الصيانة</span><h2>صيانة وقائية تقلل التوقفات غير المخطط لها</h2><p>اربط كل آلة بمركز العمل، وجدول الصيانة وفق الزمن أو ساعات التشغيل، وسجّل الأعطال وقطع الغيار والزمن والتكلفة.</p><ul class="cb-mfg-checks"><li t-foreach="['الصيانة الوقائية والتصحيحية','جدولة الصيانة وفتح الطلب من مركز العمل','إدارة قطع الغيار','تسجيل الأعطال ووقت التوقف والإصلاح','متوسط الوقت بين الأعطال MTBF','متوسط زمن الإصلاح MTTR','الفاعلية الشاملة للمعدات OEE']" t-as="line"><i class="fa fa-check" aria-hidden="true"/><span t-esc="line"/></li></ul><p class="cb-mfg-scope-note"><i class="fa fa-info-circle" aria-hidden="true"/> تتوفر بعض مؤشرات الصيانة والتحليلات بحسب الباقة ونطاق الإعداد.</p></div>
+                    </div></div>
+                </section>
+
+                <section class="cb-mfg-section cb-mfg-cost" id="costing">
+                    <div class="container"><div class="row align-items-center g-5">
+                        <div class="col-lg-6"><picture class="cb-mfg-picture"><source type="image/webp" srcset="/saas_website/static/src/img/manufacturing/06-cost-analytics-960.webp 960w, /saas_website/static/src/img/manufacturing/06-cost-analytics-1600.webp 1600w" sizes="(max-width: 991px) 100vw, 50vw"/><img loading="lazy" decoding="async" src="/saas_website/static/src/img/manufacturing/06-cost-analytics.png" width="1672" height="941" alt="فريق مالي وتشغيلي يراجع مؤشرات التكلفة والطاقة والربحية مع إطلالة على المصنع"/></picture></div>
+                        <div class="col-lg-6"><span class="cb-mfg-kicker">التكلفة والربحية</span><h2>اعرف تكلفة المنتج الحقيقية قبل أن يتآكل هامش الربح</h2><p>اجمع تكلفة المواد المستهلكة فعلياً وزمن العمالة والآلات والمصروفات الصناعية غير المباشرة والهالك وإعادة التشغيل لكل أمر تصنيع ووحدة منتجة.</p><ul class="cb-mfg-checks cb-mfg-two-col"><li t-foreach="['تكلفة المواد الفعلية','تكلفة العمالة','تكلفة وقت الآلة ومركز العمل','الكهرباء والإهلاك والصيانة','التكاليف الصناعية غير المباشرة','تكلفة الهالك وإعادة التشغيل','مقارنة الفعلية بالمعيارية','تحليل انحرافات السعر والكمية والوقت','ربحية المنتج والعميل وأمر البيع']" t-as="line"><i class="fa fa-check" aria-hidden="true"/><span t-esc="line"/></li></ul></div>
+                    </div><div class="cb-mfg-cost-message"><i class="fa fa-balance-scale" aria-hidden="true"/><strong>قرار التسعير يجب أن يكون مبنياً على التكلفة الفعلية، لا على التقديرات.</strong></div></div>
+                </section>
+
+                <section class="cb-mfg-section" id="accounting">
+                    <div class="container"><div class="cb-mfg-heading text-center"><span>تكامل مالي وتشغيلي</span><h2>المحاسبة والتصنيع في منظومة واحدة</h2><p>تنتقل قيمة المخزون بين المواد الخام والإنتاج تحت التشغيل والمنتجات النهائية وفق الإعداد المحاسبي المعتمد، وتظهر الربحية عبر الحسابات التحليلية ومراكز التكلفة.</p></div>
+                        <div class="cb-mfg-integration" aria-label="الأنظمة المترابطة"><div t-foreach="[('fa-industry','التصنيع'),('fa-cubes','المخزون'),('fa-shopping-cart','المشتريات'),('fa-handshake-o','المبيعات'),('fa-calculator','المحاسبة'),('fa-pie-chart','الحسابات التحليلية'),('fa-bullseye','مراكز التكلفة والربحية'),('fa-bar-chart','الموازنات'),('fa-file-text-o','الفاتورة الإلكترونية')]" t-as="part"><i t-att-class="'fa ' + part[0]" aria-hidden="true"/><span t-esc="part[1]"/></div></div>
+                        <p class="cb-mfg-scope-note text-center"><i class="fa fa-info-circle" aria-hidden="true"/> الفاتورة الإلكترونية والوظائف المتقدمة متاحة وفق نطاق المشروع وإعداداته والباقة المختارة.</p>
+                    </div>
+                </section>
+
+                <section class="cb-mfg-section cb-mfg-dashboard" id="dashboard">
+                    <div class="container"><div class="row align-items-center g-5"><div class="col-lg-5"><span class="cb-mfg-kicker">لوحة القيادة</span><h2>الصورة التشغيلية والمالية في شاشة واحدة</h2><p>خصص مؤشرات المتابعة بحسب دور مدير المصنع أو الإنتاج أو الجودة أو المالية، مع الانتقال من المؤشر إلى العملية المرتبطة به.</p><span class="cb-mfg-demo-label">نموذج توضيحي للمؤشرات</span></div><div class="col-lg-7"><div class="cb-mfg-kpi-grid"><div t-foreach="['الإنتاج المخطط مقابل الفعلي','إنجاز أوامر التصنيع','الأوامر المتأخرة','استهلاك المواد','نسبة الهالك','وقت التوقف','حالة الجودة','كفاءة المعدات OEE','تكلفة الوحدة','الانحراف عن الموازنة','هامش الربح','دوران المخزون']" t-as="kpi"><i class="fa fa-line-chart" aria-hidden="true"/><span t-esc="kpi"/></div></div></div></div></div>
+                </section>
+
+                <section class="cb-mfg-section" id="sectors">
+                    <div class="container"><div class="cb-mfg-heading text-center"><span>مرونة حسب النشاط</span><h2>أنماط تصنيع وقطاعات متعددة</h2><p>تُهيأ دورة العمل بحسب طبيعة المنتج وخطوط التشغيل وسياسات المخزون والجودة في منشأتك.</p></div><div class="cb-mfg-sector-grid"><article t-foreach="[('fa-cutlery','الأغذية والمشروبات'),('fa-tree','الأثاث والنجارة'),('fa-scissors','الملابس والمنسوجات'),('fa-cog','المعادن وقطع الغيار'),('fa-flask','البلاستيك والكيماويات'),('fa-archive','التعبئة والتغليف'),('fa-calendar-check-o','المصانع المعتمدة على الدفعات والصلاحية'),('fa-wrench','الورش والتصنيع حسب الطلب')]" t-as="sector"><i t-att-class="'fa ' + sector[0]" aria-hidden="true"/><h3 t-esc="sector[1]"/></article></div></div>
+                </section>
+
+                <section class="cb-mfg-section cb-mfg-soft" id="journey">
+                    <div class="container"><div class="cb-mfg-heading text-center"><span>رحلة مترابطة</span><h2>من الطلب حتى التكلفة والربحية</h2></div><ol class="cb-mfg-timeline"><li t-foreach="[('استلام الطلب أو توقع الطلب','تحويل الطلب إلى احتياج إنتاج مع موعد مستهدف.'),('تخطيط المواد والطاقة','فحص المكونات وطاقة مراكز العمل وتحديد موعد واقعي.'),('إطلاق أمر التصنيع','حجز المواد وإصدار أوامر العمل وتعليمات التشغيل.'),('تنفيذ ومتابعة العمليات','تسجيل الاستهلاك والوقت والكميات والهالك.'),('فحص الجودة واستلام المنتج','تنفيذ الاختبارات وإضافة المنتج النهائي للمخزون.'),('احتساب التكلفة وتحليل الربحية','تجميع التكلفة الفعلية وتحليل الانحراف والهامش.')]" t-as="step"><span t-esc="step_index + 1"/><div><h3 t-esc="step[0]"/><p t-esc="step[1]"/></div></li></ol></div>
+                </section>
+
+                <section class="cb-mfg-section" id="why-clickbuild">
+                    <div class="container"><div class="cb-mfg-heading text-center"><span>شريك التنفيذ</span><h2>لماذا شركة كليك بيلد لتقنية المعلومات؟</h2></div><div class="cb-mfg-why-grid"><article t-foreach="[('fa-link','منصة واحدة بدلاً من أنظمة منفصلة'),('fa-eye','رؤية تشغيلية ومالية مترابطة'),('fa-sliders','تهيئة وفق دورة المصنع'),('fa-shield','صلاحيات وموافقات وسجل تدقيق'),('fa-expand','قابلية للتوسع'),('fa-th-large','إضافة تطبيقات أخرى داخل المنظومة'),('fa-graduation-cap','تنفيذ وتخصيص وتدريب بحسب الاحتياج')]" t-as="reason"><i t-att-class="'fa ' + reason[0]" aria-hidden="true"/><h3 t-esc="reason[1]"/><p>تُحدد التفاصيل والمزايا المتقدمة ضمن نطاق تنفيذ واضح يناسب منشأتك.</p></article></div></div>
+                </section>
+
+                <section class="cb-mfg-section cb-mfg-soft" id="faq">
+                    <div class="container cb-mfg-faq-wrap"><div class="cb-mfg-heading text-center"><span>الأسئلة الشائعة</span><h2>إجابات تساعدك قبل البدء</h2></div><div class="cb-mfg-faq">
+                        <details><summary>هل يناسب النظام المصانع الصغيرة والورش؟</summary><p>نعم. يمكن البدء بالوظائف الأساسية مثل قوائم المواد وأوامر التصنيع والمخزون والتكلفة، ثم إضافة التخطيط المتقدم والجودة والصيانة بحسب نمو المنشأة.</p></details>
+                        <details><summary>هل يدعم التصنيع حسب الطلب والتصنيع للمخزون؟</summary><p>يدعم السيناريوهين، كما يمكن ربط أمر البيع مباشرة بأمر تصنيع أو تشغيل قواعد إعادة الطلب والإنتاج المتوقع.</p></details>
+                        <details><summary>كيف يحسب النظام تكلفة المنتج؟</summary><p>يجمع تكلفة المواد المستهلكة والعمالة ومراكز العمل والآلة والتكاليف غير المباشرة والهالك وفق الإعداد المحاسبي والتشغيلي المعتمد.</p></details>
+                        <details><summary>هل يمكن تتبع الدفعات والأرقام التسلسلية؟</summary><p>نعم، ويمكن معرفة مصدر المكونات والدفعة المستخدمة والمنتجات والعملاء المرتبطين بها.</p></details>
+                        <details><summary>هل يمكن إدارة أكثر من مصنع أو مستودع؟</summary><p>نعم، يمكن تهيئة مستودعات ومواقع تشغيل وفروع متعددة مع صلاحيات وتقارير منفصلة أو مجمعة.</p></details>
+                        <details><summary>هل يدعم الجودة والصيانة؟</summary><p>يمكن إنشاء نقاط فحص وتنبيهات جودة، إلى جانب خطط الصيانة الوقائية وطلبات الصيانة التصحيحية وربط الآلات بمراكز العمل.</p></details>
+                        <details><summary>هل يمكن تعديل النظام ليتوافق مع دورة المصنع؟</summary><p>نعم، يبدأ المشروع بتحليل العمليات ثم تهيئة القوائم والمسارات والصلاحيات والتقارير والتكاملات المطلوبة وفق نطاق متفق عليه.</p></details>
+                    </div></div>
+                </section>
+
+                <section class="cb-mfg-final">
+                    <div class="container"><div class="cb-mfg-final-inner"><span>ابدأ من سيناريو واقعي</span><h2>شاهد كيف تتحول دورة التصنيع في منشأتك إلى عملية مترابطة وقابلة للقياس</h2><p>احجز جلسة تعريفية لعرض سيناريو يبدأ من قائمة المواد وأمر التصنيع وينتهي بالتكلفة الفعلية وربحية المنتج.</p><div class="cb-mfg-actions justify-content-center"><a href="/demo/request?industry=manufacturing" class="btn btn-light btn-lg" data-analytics-event="manufacturing_demo_click"><i class="fa fa-play-circle" aria-hidden="true"/> احجز عرضاً توضيحياً للتصنيع</a><a href="/contact?type=consultation&amp;industry=manufacturing" class="btn btn-outline-light btn-lg" data-analytics-event="manufacturing_contact_click"><i class="fa fa-comments" aria-hidden="true"/> تواصل معنا</a></div></div></div>
+                </section>
+            </main>
+        </t>
+    </template>
+    <record id="page_manufacturing" model="ir.ui.view">
+        <field name="website_meta_title">نظام إدارة التصنيع والمصانع في السعودية | شركة كليك بيلد لتقنية المعلومات</field>
+        <field name="website_meta_description">أدر أوامر التصنيع وقوائم المواد والمخزون والجودة والصيانة واحسب تكلفة المنتج الفعلية وربحيته من نظام تصنيع متكامل للمصانع والورش في السعودية.</field>
+        <field name="website_meta_og_img">/saas_website/static/src/img/manufacturing/01-manufacturing-hero.png</field>
+    </record>
+</odoo>

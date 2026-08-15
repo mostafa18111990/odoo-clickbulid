@@ -76,6 +76,13 @@ class SaasWebsiteMain(http.Controller):
         item = INDUSTRIES.get(slug)
         if not item:
             return request.not_found()
+        if slug == 'manufacturing' and (request.env.lang or 'ar_001') in ('ar_001', 'ar'):
+            manufacturing_view = request.env.ref('saas_website.page_manufacturing')
+            return request.render('saas_website.page_manufacturing', {
+                'item': item,
+                'main_object': manufacturing_view,
+                'seo_object': manufacturing_view,
+            })
         return request.render('saas_website.page_solution_detail', {'item': item})
 
     @http.route('/services', type='http', auth='public', website=True, sitemap=True)

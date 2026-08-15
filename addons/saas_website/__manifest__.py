@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Website',
-    'version': '19.0.1.1.13',
+    'version': '19.0.1.1.14',
     'category': 'SaaS',
     'summary': 'Public marketing website for ClickBuild SaaS platform',
     'author': 'ClickBuild',
@@ -21,6 +21,7 @@
         'views/page_pricing.xml',
         'views/page_features.xml',
         'views/page_solutions.xml',
+        'views/page_manufacturing.xml',
         'views/page_contact.xml',
         'views/page_faq.xml',
         'views/page_signup.xml',
@@ -35,6 +36,7 @@
     'assets': {
         'web.assets_frontend': [
             'saas_website/static/src/css/clickbuild.css',
+            'saas_website/static/src/css/manufacturing.css',
             'saas_website/static/src/js/clickbuild.js',
             'saas_website/static/src/js/pricing_signup_cachebuster.js',
         ],
