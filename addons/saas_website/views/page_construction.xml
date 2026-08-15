@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="page_construction" name="نظام إدارة شركات المقاولات في السعودية">
+        <t t-set="lang_is_ar" t-value="True"/>
+        <t t-set="additional_title" t-value="'نظام إدارة شركات المقاولات في السعودية | شركة كليك بيلد لتقنية المعلومات Odoo'"/>
+        <t t-set="meta_description" t-value="'أدر مشاريع المقاولات والتكاليف والمستخلصات والمشتريات والمخزون والعمالة والمعدات من منصة مبنية على Odoo، مع رؤية أوضح لربحية كل مشروع.'"/>
+        <t t-call="website.layout">
+            <t t-set="title">نظام إدارة شركات المقاولات في السعودية | شركة كليك بيلد لتقنية المعلومات Odoo</t>
+            <t t-set="head">
+                <script type="application/ld+json">
+                    {"@context":"https://schema.org","@type":"BreadcrumbList","itemListElement":[{"@type":"ListItem","position":1,"name":"الرئيسية","item":"https://odoo.clickbulid.com/"},{"@type":"ListItem","position":2,"name":"القطاعات","item":"https://odoo.clickbulid.com/industries"},{"@type":"ListItem","position":3,"name":"المقاولات","item":"https://odoo.clickbulid.com/industries/construction"}]}
+                </script>
+                <script type="application/ld+json">
+                    {"@context":"https://schema.org","@type":"Service","name":"نظام إدارة شركات المقاولات","serviceType":"تهيئة وتنفيذ Odoo لإدارة شركات المقاولات","areaServed":{"@type":"Country","name":"Saudi Arabia"},"provider":{"@type":"Organization","name":"شركة كليك بيلد لتقنية المعلومات","url":"https://odoo.clickbulid.com/"},"url":"https://odoo.clickbulid.com/industries/construction","description":"حل يربط المناقصات والمشاريع والمشتريات والمخزون والمستخلصات والتكاليف والحسابات في منصة واحدة، وفق نطاق التهيئة والتخصيص المتفق عليه."}
+                </script>
+                <script type="application/ld+json">
+                    {"@context":"https://schema.org","@type":"FAQPage","mainEntity":[{"@type":"Question","name":"هل يمكن متابعة تكلفة وربحية كل مشروع بشكل مستقل؟","acceptedAnswer":{"@type":"Answer","text":"نعم، من خلال ربط الإيرادات والمصروفات والمشتريات وساعات العمل بحسابات تحليلية أو مراكز تكلفة وفق تصميم النظام."}},{"@type":"Question","name":"هل يدعم النظام المستخلصات وفواتير التقدم؟","acceptedAnswer":{"@type":"Answer","text":"يمكن إعداد دورات للفوترة حسب الدفعات أو المراحل أو الوقت والمواد، أما المستخلصات التفصيلية والحجوزات فتُهيأ أو تُطور حسب العقد."}},{"@type":"Question","name":"هل يمكن إدارة حصر الكميات BOQ والتكلفة التقديرية؟","acceptedAnswer":{"@type":"Answer","text":"يمكن تصميم دورة تربط بنود حصر الكميات بالتكلفة والميزانية والمشتريات، ويحدد مستوى التفاصيل أثناء تحليل الإجراءات."}},{"@type":"Question","name":"هل يمكن متابعة أوامر التغيير والمطالبات؟","acceptedAnswer":{"@type":"Answer","text":"يمكن تهيئة دورة لتسجيل التغيير وقيمته وحالته ومستنداته وأثره على العقد والميزانية والمدة."}},{"@type":"Question","name":"هل يمكن تنظيم تقارير الموقع والجودة والسلامة؟","acceptedAnswer":{"@type":"Answer","text":"يمكن إنشاء نماذج لتقارير الموقع وطلبات الفحص وRFI وSubmittals والجودة والسلامة وقوائم التسليم حسب متطلبات الشركة."}},{"@type":"Question","name":"هل يستطيع فريق الموقع استخدام النظام من الجوال؟","acceptedAnswer":{"@type":"Answer","text":"نعم، يمكن الوصول إلى المهام والجداول الزمنية والمستندات والعمليات المصرح بها بحسب التطبيقات والصلاحيات المفعلة."}},{"@type":"Question","name":"هل يمكن إدارة عدة مشاريع ومستودعات ومواقع؟","acceptedAnswer":{"@type":"Answer","text":"نعم، مع ضبط الصلاحيات وتتبع حركة المواد والتكاليف الخاصة بكل مشروع وموقع."}},{"@type":"Question","name":"هل يمكن البدء بعدد محدود من التطبيقات؟","acceptedAnswer":{"@type":"Answer","text":"نعم، ويمكن تنفيذ النظام على مراحل تبدأ بالأولويات ثم إضافة الوظائف مع استقرار العمليات."}},{"@type":"Question","name":"هل يدعم الفوترة الإلكترونية في السعودية؟","acceptedAnswer":{"@type":"Answer","text":"يمكن تهيئة النظام وفق متطلبات الفوترة الإلكترونية باستخدام الإعدادات والتكاملات المناسبة، ويحدد العرض نطاق الامتثال والدعم."}}]}
+                </script>
+            </t>
+
+            <main class="cb-mfg cb-const" dir="rtl">
+                <section class="cb-mfg-hero cb-const-hero">
+                    <div class="container">
+                        <nav class="cb-mfg-breadcrumb" aria-label="مسار التنقل">
+                            <a href="/">الرئيسية</a><i class="fa fa-angle-left" aria-hidden="true"/><a href="/industries">القطاعات</a><i class="fa fa-angle-left" aria-hidden="true"/><span aria-current="page">المقاولات</span>
+                        </nav>
+                        <div class="row align-items-center g-5">
+                            <div class="col-lg-6">
+                                <span class="cb-mfg-eyebrow"><i class="fa fa-building" aria-hidden="true"/> نظام إدارة شركات المقاولات</span>
+                                <h1>سيطر على تكاليف مشاريعك قبل أن يتآكل هامش الربح</h1>
+                                <p class="lead">نظام متكامل لشركات المقاولات يربط المناقصات والعقود والمشاريع والمشتريات والمخزون والمستخلصات والحسابات في منصة واحدة، لتعرف تكلفة وربحية وسيولة كل مشروع لحظة بلحظة.</p>
+                                <div class="cb-mfg-actions">
+                                    <a href="/demo/request?industry=construction" class="btn btn-primary btn-lg" data-analytics-event="construction_demo_click"><i class="fa fa-play-circle" aria-hidden="true"/> احجز عرضًا تجريبيًا</a>
+                                    <a href="/contact?type=quote&amp;industry=construction" class="btn btn-outline-light btn-lg" data-analytics-event="construction_quote_click"><i class="fa fa-file-text-o" aria-hidden="true"/> اطلب عرض سعر</a>
+                                </div>
+                                <ul class="cb-mfg-trust" aria-label="نتائج تشغيلية رئيسية">
+                                    <li><i class="fa fa-check-circle" aria-hidden="true"/>اكتشف تجاوز الميزانية مبكرًا</li>
+                                    <li><i class="fa fa-check-circle" aria-hidden="true"/>تابع المستخلصات وتأثيرها على السيولة</li>
+                                    <li><i class="fa fa-check-circle" aria-hidden="true"/>اعرف التكلفة الفعلية لكل بند ومشروع</li>
+                                    <li><i class="fa fa-check-circle" aria-hidden="true"/>قلّل تأخر المواد وتعطل فرق التنفيذ</li>
+                                </ul>
+                            </div>
+                            <div class="col-lg-6">
+                                <picture class="cb-mfg-picture cb-mfg-hero-picture">
+                                    <source type="image/webp" srcset="/saas_website/static/src/img/construction/construction-hero-saudi-960.webp 960w, /saas_website/static/src/img/construction/construction-hero-saudi-1600.webp 1600w" sizes="(max-width: 991px) 100vw, 50vw"/>
+                                    <img src="/saas_website/static/src/img/construction/construction-hero-saudi.png" width="1672" height="941" loading="eager" fetchpriority="high" decoding="async" alt="فريق هندسي يدير مشروع مقاولات في السعودية باستخدام نظام رقمي متكامل"/>
+                                </picture>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="cb-mfg-section cb-mfg-soft" id="challenges">
+                    <div class="container">
+                        <div class="cb-mfg-heading text-center"><span>من البيانات المتفرقة إلى رؤية واحدة</span><h2>مشروعات متعددة وبيانات متفرقة؟ اجمع أعمال المقاولات في نظام واحد</h2><p>عندما تنفصل جداول المشاريع عن الحسابات والمشتريات وتقارير المواقع، يصعب معرفة التكلفة الحقيقية والسيولة وربحية كل مشروع في الوقت المناسب.</p></div>
+                        <div class="cb-mfg-card-grid cb-const-benefits">
+                            <article t-foreach="[('fa-eye','رؤية موحدة','بيانات المشروع والمالية والمخزون والموارد في مكان واحد.'),('fa-bolt','قرارات أسرع','مؤشرات محدثة تساعد الإدارة على التدخل قبل تفاقم الانحرافات.'),('fa-calculator','تكلفة أدق','ربط المواد والعمالة والمصاريف والمقاولين الفرعيين بالمشروع.'),('fa-folder-open','توثيق أفضل','سجل واضح للطلبات والموافقات والمستندات والتعديلات.'),('fa-line-chart','ربحية أوضح','قراءة المشروع أثناء التنفيذ بدل انتظار القوائم النهائية.'),('fa-money','سيولة قابلة للمتابعة','متابعة المستخلصات والتحصيلات والالتزامات المتوقعة.') ]" t-as="benefit" class="cb-mfg-card">
+                                <i t-att-class="'fa ' + benefit[0]" aria-hidden="true"/><h3 t-esc="benefit[1]"/><p t-esc="benefit[2]"/>
+                            </article>
+                        </div>
+                        <div class="cb-mfg-callout"><i class="fa fa-database" aria-hidden="true"/><p><strong>مصدر بيانات واحد:</strong> تنعكس حركة المادة والمصروف وساعات العمل والمستخلص على المشروع ومركز التكلفة والتقارير وفق التطبيقات والإعدادات المفعلة.</p></div>
+                    </div>
+                </section>
+
+                <section class="cb-mfg-section" id="project-management">
+                    <div class="container"><div class="row align-items-center g-5">
+                        <div class="col-lg-6"><picture class="cb-mfg-picture"><source type="image/webp" srcset="/saas_website/static/src/img/construction/project-management-site-960.webp 960w, /saas_website/static/src/img/construction/project-management-site-1600.webp 1600w" sizes="(max-width: 991px) 100vw, 50vw"/><img loading="lazy" decoding="async" src="/saas_website/static/src/img/construction/project-management-site.png" width="1672" height="941" alt="مدير مشروع ومهندس موقع يتابعان تنفيذ مشروع مقاولات عبر جهاز لوحي"/></picture></div>
+                        <div class="col-lg-6"><span class="cb-mfg-kicker">المشاريع والتنفيذ الميداني</span><h2>خطط المشروع وتابع التنفيذ من المكتب أو الموقع</h2><p>قسّم المشروع إلى مراحل ومهام ومعالم رئيسية، وحدد المسؤوليات والمواعيد والاعتماديات. يستطيع فريق الموقع تحديث التقدم والساعات والصور والملاحظات والمستندات من الجوال بحسب الصلاحيات.</p><ul class="cb-mfg-checks"><li t-foreach="['قوالب مشاريع ومراحل تشغيل قابلة لإعادة الاستخدام','توزيع المهام والمسؤوليات وتواريخ الاستحقاق','متابعة نسب الإنجاز والأنشطة المتأخرة','الجداول الزمنية وسجلات الوقت','صور ومستندات وملاحظات داخل سجل المشروع','لوحات للمشاريع النشطة والمتعثرة']" t-as="line"><i class="fa fa-check" aria-hidden="true"/><span t-esc="line"/></li></ul></div>
+                    </div></div>
+                </section>
+
+                <section class="cb-mfg-section cb-mfg-soft" id="tenders-boq">
+                    <div class="container">
+                        <div class="cb-mfg-heading"><span>المناقصات والتسعير</span><h2>ابدأ المشروع بتسعير منضبط قبل توقيع العقد</h2><p>نظّم فرص المشاريع ووثائق المناقصة، وأنشئ هيكل تقسيم أعمال WBS يربط بنود BOQ بالتكلفة التقديرية للمواد والعمالة والمعدات والمقاولين الفرعيين.</p></div>
+                        <div class="row g-4">
+                            <div class="col-lg-6"><article class="cb-mfg-feature-panel h-100"><i class="fa fa-list-ol" aria-hidden="true"/><h3>من المناقصة إلى الميزانية</h3><ul class="cb-mfg-checks"><li t-foreach="['فرص المشاريع ومواعيد تقديم العطاءات','وثائق المناقصة والاستفسارات والتحديثات','بنود حصر الكميات ووحدات القياس','التكلفة المباشرة وغير المباشرة والهامش','مقارنة عروض الموردين والمقاولين الفرعيين','تحويل العرض الفائز إلى عقد ومشروع وميزانية']" t-as="line"><i class="fa fa-check" aria-hidden="true"/><span t-esc="line"/></li></ul></article></div>
+                            <div class="col-lg-6"><article class="cb-mfg-feature-panel h-100"><i class="fa fa-sitemap" aria-hidden="true"/><h3>WBS وBOQ مرتبطان بالتنفيذ</h3><p>حافظ على العلاقة بين ما تم تسعيره وما يتم شراؤه وتنفيذه وفوترته، مع نسخ ومراجعات قبل اعتماد العرض وخط الأساس.</p><div class="cb-const-flow"><span>WBS</span><i class="fa fa-angle-left"/><span>BOQ</span><i class="fa fa-angle-left"/><span>الميزانية</span><i class="fa fa-angle-left"/><span>التنفيذ</span></div><p class="cb-mfg-scope-note"><i class="fa fa-info-circle" aria-hidden="true"/> إدارة BOQ والتسعير التفصيلي وتحويله إلى ميزانية تنفيذية يمكن تهيئتها أو تطويرها وفق دورة الشركة ونطاق التنفيذ.</p></article></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="cb-mfg-section cb-mfg-cost" id="cost-control">
+                    <div class="container"><div class="row align-items-center g-5">
+                        <div class="col-lg-6"><span class="cb-mfg-kicker">الميزانيات والربحية</span><h2>اعرف تكلفة المشروع الحقيقية قبل أن يتآكل هامش الربح</h2><p>اربط المشروع بحساب تحليلي أو مركز تكلفة، ووزّع تكاليف المواد والعمالة والمعدات والمقاولين والمصاريف العامة، ثم قارن الميزانية المعتمدة بالتكلفة الفعلية والمتوقعة.</p><div class="cb-mfg-kpi-grid"><div t-foreach="[('fa-file-text-o','قيمة العقد والتغييرات'),('fa-balance-scale','المخطط مقابل الفعلي'),('fa-shopping-cart','الالتزامات المفتوحة'),('fa-money','المفوتر وغير المفوتر'),('fa-clock-o','المستخلصات المتأخرة'),('fa-line-chart','هامش الربح المتوقع')]" t-as="kpi"><i t-att-class="'fa ' + kpi[0]"/><span t-esc="kpi[1]"/></div></div></div>
+                        <div class="col-lg-6"><picture class="cb-mfg-picture"><source type="image/webp" srcset="/saas_website/static/src/img/construction/cost-control-dashboard-960.webp 960w, /saas_website/static/src/img/construction/cost-control-dashboard-1600.webp 1600w" sizes="(max-width: 991px) 100vw, 50vw"/><img loading="lazy" decoding="async" src="/saas_website/static/src/img/construction/cost-control-dashboard.png" width="1672" height="941" alt="إدارة شركة مقاولات سعودية تراجع تكاليف وربحية المشاريع من لوحة تحكم رقمية"/></picture></div>
+                    </div></div>
+                </section>
+
+                <section class="cb-mfg-section" id="certificates-changes">
+                    <div class="container"><div class="cb-mfg-heading text-center"><span>المستخلصات والسيولة</span><h2>دورة مالية موثقة من نسبة الإنجاز حتى التحصيل</h2><p>اربط المستخلص بالمشروع وبنود الإنجاز المعتمدة، وتابع حالة المراجعة والفوترة والتحصيل والمتأخرات وتأثيرها على التدفق النقدي.</p></div>
+                        <div class="row g-4">
+                            <div class="col-lg-6"><article class="cb-mfg-feature-panel h-100"><i class="fa fa-file-text"/><h3>المستخلصات وفواتير التقدم</h3><ol class="cb-const-numbered"><li t-foreach="['تسجيل العقد والميزانية وجدول الدفعات','تحديث نسب أو كميات الإنجاز','إعداد المستخلص والمستندات المؤيدة','المراجعة والاعتماد حسب الصلاحيات','إصدار الفاتورة ومتابعة التحصيل','تحديث التدفق النقدي وربحية المشروع']" t-as="step"><span t-esc="step_index + 1"/><p t-esc="step"/></li></ol><p class="cb-mfg-scope-note">تفاصيل الدفعات المقدمة ونسب الاسترداد والحجوزات تعتمد على شروط العقد ونطاق التهيئة أو التطوير.</p></article></div>
+                            <div class="col-lg-6"><article class="cb-mfg-feature-panel h-100"><i class="fa fa-exchange"/><h3>أوامر التغيير والمطالبات</h3><ul class="cb-mfg-checks"><li t-foreach="['سبب التغيير والجهة الطالبة','القيمة والمدة قبل الاعتماد وبعده','المرفقات والمراسلات والموافقات','الأثر على الميزانية والتدفق النقدي','الدفعة المقدمة ونسبة استردادها','حجوزات العميل والمقاول الفرعي','المطالبات المعتمدة والمعلقة والمرفوضة']" t-as="line"><i class="fa fa-check"/><span t-esc="line"/></li></ul><p class="cb-mfg-scope-note">يمكن تخصيص دورة التغيير والمطالبات وفق العقد ونماذج الاعتماد المعتمدة لدى الشركة.</p></article></div>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="cb-mfg-section cb-mfg-soft" id="procurement-inventory">
+                    <div class="container"><div class="row align-items-center g-5 flex-lg-row-reverse">
+                        <div class="col-lg-6"><picture class="cb-mfg-picture"><source type="image/webp" srcset="/saas_website/static/src/img/construction/procurement-inventory-960.webp 960w, /saas_website/static/src/img/construction/procurement-inventory-1600.webp 1600w" sizes="(max-width: 991px) 100vw, 50vw"/><img loading="lazy" decoding="async" src="/saas_website/static/src/img/construction/procurement-inventory.png" width="1672" height="941" alt="مسح مواد البناء بالباركود ومتابعة مخزون مشروع مقاولات"/></picture></div>
+                        <div class="col-lg-6"><span class="cb-mfg-kicker">المشتريات والمواد</span><h2>مشتريات مرتبطة باحتياجات المشروع، لا بطلبات متفرقة</h2><p>ابدأ بطلب احتياج الموقع، وقارن عروض الموردين، ثم تابع أمر الشراء والاستلام والفاتورة والصرف للمشروع ضمن مسار موثق.</p><ul class="cb-mfg-checks cb-mfg-two-col"><li t-foreach="['طلبات شراء وموافقات حسب الصلاحيات','طلبات عروض ومقارنة الموردين','أوامر شراء مرتبطة بالمشروع والميزانية','تقييم الموردين والتزام التوريد','مستودعات ومواقع مشاريع متعددة','الاستلام والصرف والتحويل والمرتجعات','الباركود والجرد','تتبع الدفعات والأرقام التسلسلية']" t-as="line"><i class="fa fa-check"/><span t-esc="line"/></li></ul></div>
+                    </div></div>
+                </section>
+
+                <section class="cb-mfg-section" id="subcontractors-workforce">
+                    <div class="container"><div class="row align-items-center g-5">
+                        <div class="col-lg-6"><picture class="cb-mfg-picture"><source type="image/webp" srcset="/saas_website/static/src/img/construction/project-handover-workforce-960.webp 960w, /saas_website/static/src/img/construction/project-handover-workforce-1600.webp 1600w" sizes="(max-width: 991px) 100vw, 50vw"/><img loading="lazy" decoding="async" src="/saas_website/static/src/img/construction/project-handover-workforce.png" width="1672" height="941" alt="فريق مقاولات سعودي يراجع جودة التنفيذ وتنسيق الأعمال في موقع المشروع"/></picture></div>
+                        <div class="col-lg-6"><span class="cb-mfg-kicker">العمالة والمقاولون الفرعيون</span><h2>اربط وقت الفريق والأعمال المسندة بالمشروع الصحيح</h2><p>خطط توزيع الفرق على المواقع، وسجّل الوقت والحضور والمهام. وعند تهيئة الربط المحاسبي، يمكن توزيع تكلفة الوقت أو الرواتب على المشاريع ومراكز التكلفة.</p><div class="cb-const-mini-grid"><div><h3>العمالة والموارد</h3><ul><li>الجداول الزمنية وتوزيع الفرق</li><li>ساعات العمل والمهام</li><li>الحضور والإجازات حسب التهيئة</li><li>تخصيص تكلفة العمالة حسب نطاق الربط</li></ul></div><div><h3>المقاولون الفرعيون</h3><ul><li>النطاق والعقد والكميات والأسعار</li><li>ربط الأعمال ببنود المشروع</li><li>الإنجاز والمستخلصات والحجوزات</li><li>مقارنة المعتمد بالمنفذ والمفوتر</li></ul></div></div></div>
+                    </div></div>
+                </section>
+
+                <section class="cb-mfg-section cb-mfg-soft" id="equipment">
+                    <div class="container"><div class="row align-items-center g-5 flex-lg-row-reverse">
+                        <div class="col-lg-6"><picture class="cb-mfg-picture"><source type="image/webp" srcset="/saas_website/static/src/img/construction/equipment-maintenance-960.webp 960w, /saas_website/static/src/img/construction/equipment-maintenance-1600.webp 1600w" sizes="(max-width: 991px) 100vw, 50vw"/><img loading="lazy" decoding="async" src="/saas_website/static/src/img/construction/equipment-maintenance.png" width="1672" height="941" alt="فنيون ينفذون صيانة وقائية لمعدة ثقيلة في مشروع مقاولات سعودي"/></picture></div>
+                        <div class="col-lg-6"><span class="cb-mfg-kicker">المعدات والأسطول</span><h2>قلّل الأعطال المفاجئة وحافظ على جاهزية المعدات</h2><p>سجّل الآليات والمركبات، وخطط للصيانة الوقائية، وتابع الأعطال والإصلاحات وقطع الغيار وتكاليف التشغيل.</p><ul class="cb-mfg-checks"><li t-foreach="['سجل كامل لكل معدة أو مركبة','خطط صيانة دورية وتنبيهات','أوامر إصلاح وأعطال','قطع الغيار وتكاليف الصيانة','تحليل الجاهزية والتوقف والتشغيل','ربط الاستخدام بالمشروع حسب نطاق التنفيذ']" t-as="line"><i class="fa fa-check"/><span t-esc="line"/></li></ul></div>
+                    </div></div>
+                </section>
+
+                <section class="cb-mfg-section" id="site-quality-documents">
+                    <div class="container"><div class="cb-mfg-heading text-center"><span>الموقع والجودة والمستندات</span><h2>حوّل المتابعة الميدانية إلى سجل واضح يمكن الرجوع إليه</h2><p>اجمع تقارير الموقع والاعتمادات والملاحظات والمستندات في سجل مرتبط بالمشروع، مع المسؤول والإجراء والموعد والمرفقات.</p></div>
+                        <div class="cb-mfg-card-grid cb-const-site-grid">
+                            <article t-foreach="[('fa-calendar-check-o','تقارير الموقع اليومية',['العمالة والمعدات الموجودة','الأعمال والكميات والصور','الملاحظات والتأخيرات']),('fa-search','RFI وSubmittals',['طلبات المعلومات','اعتمادات المواد والمخططات','مسارات المراجعة والموافقة']),('fa-shield','الجودة والسلامة',['طلبات الفحص وعدم المطابقة','جولات السلامة والمخاطر','الإجراءات التصحيحية والوقائية']),('fa-check-square-o','Snag List والتسليم',['قوائم الملاحظات','مسؤول وموعد الإغلاق','الاستلام الابتدائي والنهائي']),('fa-folder-open','العقود والمستندات',['العقود والملاحق','المخططات والإصدارات','المراسلات ومحاضر الاجتماعات']),('fa-lock','الصلاحيات والتدقيق',['أحدث نسخة معتمدة','صلاحيات الوصول','سجل الأنشطة والموافقات'])]" t-as="record" class="cb-mfg-card"><i t-att-class="'fa ' + record[0]"/><h3 t-esc="record[1]"/><ul><li t-foreach="record[2]" t-as="line" t-esc="line"/></ul></article>
+                        </div>
+                        <p class="cb-mfg-scope-note cb-const-centered-note"><i class="fa fa-info-circle"/> نماذج الجودة والسلامة وRFI وSubmittals وSnag List تُصمم وفق إجراءات الشركة وقد تحتاج إلى تخصيص ضمن نطاق التنفيذ.</p>
+                    </div>
+                </section>
+
+                <section class="cb-mfg-section cb-mfg-soft" id="project-journey">
+                    <div class="container"><div class="cb-mfg-heading text-center"><span>رحلة المشروع</span><h2>دورة مقاولات مترابطة من الفرصة إلى الإغلاق</h2></div>
+                        <ol class="cb-const-journey"><li t-foreach="[('الفرصة والتأهيل','العميل والمشروع المحتمل ومتطلبات التأهيل.'),('المناقصة والتسعير','BOQ والتكلفة التقديرية وعروض الموردين.'),('العرض والتفاوض','العرض الفني والمالي ومراجعاته.'),('العقد والميزانية','القيمة والمراحل ومراكز التكلفة وخط الأساس.'),('التخطيط والتنفيذ','المهام والموارد ونسب الإنجاز.'),('المشتريات والمواد','الاحتياجات والتوريد والصرف للموقع.'),('التغييرات والمطالبات','الأثر المالي والزمني والموافقات.'),('المستخلصات والتحصيل','الفواتير والدفعات والحجوزات.'),('الجودة والفحص','الاعتمادات والملاحظات والإغلاق.'),('التسليم والضمان','التسليم والضمانات وما بعد المشروع.')]" t-as="step"><span t-esc="step_index + 1"/><div><h3 t-esc="step[0]"/><p t-esc="step[1]"/></div></li></ol>
+                    </div>
+                </section>
+
+                <section class="cb-mfg-section cb-const-example" id="practical-example">
+                    <div class="container"><div class="row align-items-center g-5"><div class="col-lg-5"><span class="cb-mfg-kicker">مثال عملي</span><h2>من صرف المادة إلى ظهور أثرها على ربحية المشروع</h2></div><div class="col-lg-7"><div class="cb-const-example-card"><strong>25,000 ريال مواد مصروفة لمشروع</strong><p>يسجل النظام حركة المخزون ويربط التكلفة بالمشروع ومركز التكلفة. وعند تحديث الإنجاز وإعداد المستخلص، تقارن الإدارة قيمة الإنجاز بالتكلفة الفعلية والمفوتر والمحصّل.</p><p>إذا تجاوز بندٌ الميزانية أو تأخر التحصيل، يظهر الأثر في تقارير المشروع والتدفق النقدي للتدخل مبكرًا.</p><small>مثال توضيحي؛ الحسابات والتقارير الفعلية تتحدد وفق إعداد النظام والسياسات المحاسبية للشركة.</small></div></div></div></div>
+                </section>
+
+                <section class="cb-mfg-section" id="apps-audience">
+                    <div class="container"><div class="row g-5"><div class="col-lg-6"><div class="cb-mfg-heading"><span>تطبيقات تعمل معًا</span><h2>منصة موحدة بدل برامج منفصلة</h2></div><div class="cb-mfg-integration cb-const-app-grid"><div t-foreach="[('fa-handshake-o','CRM والمبيعات'),('fa-tasks','المشاريع والتخطيط'),('fa-clock-o','الوقت والمصروفات'),('fa-shopping-cart','المشتريات والمخزون'),('fa-calculator','المحاسبة والتحليلات'),('fa-users','الموظفون والموارد'),('fa-wrench','الصيانة والأسطول'),('fa-folder-open','المستندات والموافقات'),('fa-bar-chart','لوحات المعلومات')]" t-as="app"><i t-att-class="'fa ' + app[0]"/><span t-esc="app[1]"/></div></div><p class="cb-mfg-scope-note mt-4">التطبيقات الفعلية تعتمد على الباقة وما يتم تفعيله أو تخصيصه في نطاق المشروع.</p></div>
+                        <div class="col-lg-6"><div class="cb-mfg-heading"><span>لمن يناسب الحل؟</span><h2>مصمم لواقع شركات المقاولات المختلفة</h2></div><div class="cb-const-audience"><div t-foreach="['المقاولون العامون متعددو المشاريع','شركات التشطيبات والديكور','شركات MEP','مقاولو البنية التحتية والطرق','شركات التشغيل والصيانة','المقاولون المتخصصون والفرعيون','الشركات المنتقلة من Excel والأنظمة المنفصلة']" t-as="audience"><i class="fa fa-building-o"/><span t-esc="audience"/></div></div></div></div></div>
+                </section>
+
+                <section class="cb-mfg-section cb-mfg-soft" id="implementation">
+                    <div class="container"><div class="cb-mfg-heading text-center"><span>منهجية التنفيذ</span><h2>ابدأ بالأولويات وتوسع مع نمو أعمالك</h2><p>نبدأ بالمشكلات الأكثر تأثيرًا ثم نضيف الوظائف تدريجيًا بعد استقرار البيانات وتدريب الفريق.</p></div><ol class="cb-mfg-timeline cb-const-five-steps"><li t-foreach="[('تحليل الاحتياجات','الإجراءات الحالية والأهداف والتحديات.'),('تصميم الحل','الدورات والصلاحيات والتقارير.'),('التهيئة والنقل','إعداد النظام والبيانات الأساسية.'),('الاختبار والتدريب','تشغيل تجريبي وتدريب المستخدمين.'),('الإطلاق والتحسين','متابعة الأداء والتطوير المستمر.')]" t-as="step"><span t-esc="step_index + 1"/><div><h3 t-esc="step[0]"/><p t-esc="step[1]"/></div></li></ol></div>
+                </section>
+
+                <section class="cb-mfg-section" id="packages">
+                    <div class="container"><div class="cb-mfg-heading text-center"><span>نطاقات تنفيذ استرشادية</span><h2>ثلاث باقات تبدأ من الأساسيات وتصل إلى الإدارة المتكاملة</h2><p>دون أسعار ثابتة؛ يتحدد النطاق والمدة والتكلفة بعد تحليل الشركة والمستخدمين والمشاريع والإجراءات المطلوبة.</p></div>
+                        <div class="cb-const-packages">
+                            <article><span>الأساسية</span><h3>انطلاقة منظمة</h3><p>لجمع العمليات الأساسية في نظام واحد.</p><ul><li>العملاء والفرص وعروض الأسعار</li><li>المشاريع والمهام والجداول الزمنية</li><li>المحاسبة والفواتير والمصروفات</li><li>المشتريات الأساسية</li><li>الحسابات التحليلية ومراكز التكلفة</li></ul><a href="/contact?type=quote&amp;industry=construction&amp;package=essential" class="btn btn-outline-primary">اطلب عرض النطاق</a></article>
+                            <article class="featured"><span>المتقدمة</span><h3>تحكم في التكلفة والتنفيذ</h3><p>تشمل الأساسية وتضيف رؤية أعمق للمشروع.</p><ul><li>المخزون ومستودعات المواقع</li><li>الموازنات والتكلفة المخططة والفعلية</li><li>المستخلصات والحجوزات حسب التهيئة</li><li>الموردون والمقاولون الفرعيون</li><li>المستندات والموافقات ولوحات الإدارة</li></ul><a href="/contact?type=quote&amp;industry=construction&amp;package=advanced" class="btn btn-primary">اطلب عرض النطاق</a></article>
+                            <article><span>الشاملة</span><h3>إدارة متكاملة للمقاولات</h3><p>تشمل المتقدمة وتضيف وظائف تخصصية.</p><ul><li>BOQ والتسعير وفق نطاق التطوير</li><li>أوامر التغيير والمطالبات</li><li>المعدات والأسطول والصيانة</li><li>الموارد البشرية وتوزيع العمالة</li><li>الجودة والسلامة والتقارير المتقدمة</li></ul><a href="/contact?type=quote&amp;industry=construction&amp;package=comprehensive" class="btn btn-outline-primary">اطلب عرض النطاق</a></article>
+                        </div>
+                    </div>
+                </section>
+
+                <section class="cb-mfg-section cb-mfg-soft" id="why-clickbuild">
+                    <div class="container"><div class="cb-mfg-heading text-center"><span>شريك التنفيذ</span><h2>حل يُبنى حول دورة عملك، وليس مجرد برنامج جاهز</h2><p>نحلل رحلة المشروع من المناقصة حتى التسليم، ثم ننفذ النظام على مراحل قابلة للقياس والتطوير.</p></div><div class="cb-mfg-why-grid"><article t-foreach="[('fa-map-marker','فهم السوق السعودي'),('fa-sitemap','تصميم الدورة والصلاحيات'),('fa-puzzle-piece','تهيئة وتخصيص عند الحاجة'),('fa-line-chart','مراكز تكلفة وتقارير'),('fa-graduation-cap','تدريب الإدارة والفرق'),('fa-expand','توسع تدريجي'),('fa-language','دعم عربي'),('fa-shield','نسخ احتياطي وخطة رجوع'),('fa-life-ring','دعم فني حسب الباقة')]" t-as="reason"><i t-att-class="'fa ' + reason[0]"/><h3 t-esc="reason[1]"/><p>تُحدد التفاصيل والمخرجات ضمن نطاق تنفيذ واضح ومتفق عليه.</p></article></div></div>
+                </section>
+
+                <section class="cb-mfg-section" id="request-demo">
+                    <div class="container"><div class="cb-const-request"><div><span>ديمو Odoo Enterprise للمقاولات</span><h2>شاهد سيناريو يبدأ بالمناقصة وينتهي بربحية المشروع</h2><p>استخدم نموذج الديمو الحالي الآمن؛ يحتوي على التحقق من البيانات، حماية من الطلبات المكررة، وربط الطلب بمسار موافقة وتجهيز Enterprise.</p><ul><li>بيانات التواصل والشركة</li><li>عدد المستخدمين وحجم المنشأة</li><li>التطبيقات المطلوبة وتحديات دورة العمل</li></ul></div><a href="/demo/request?industry=construction" class="btn btn-light btn-lg" data-analytics-event="construction_demo_click">افتح نموذج طلب الديمو <i class="fa fa-arrow-left"/></a></div></div>
+                </section>
+
+                <section class="cb-mfg-section cb-mfg-soft" id="faq">
+                    <div class="container cb-mfg-faq-wrap"><div class="cb-mfg-heading text-center"><span>الأسئلة الشائعة</span><h2>إجابات دقيقة قبل بدء مشروعك</h2></div><div class="cb-mfg-faq">
+                        <details><summary>هل يمكن متابعة تكلفة وربحية كل مشروع بشكل مستقل؟</summary><p>نعم، من خلال ربط الإيرادات والمصروفات والمشتريات وساعات العمل بحسابات تحليلية أو مراكز تكلفة، تظهر صورة مالية مستقلة لكل مشروع وفق تصميم النظام.</p></details>
+                        <details><summary>هل يدعم النظام المستخلصات وفواتير التقدم؟</summary><p>يمكن إعداد دورة لفوترة الدفعات أو المراحل أو الوقت والمواد. أما المستخلصات التفصيلية والحجوزات والأوامر التغييرية فتُهيأ أو تُطوّر حسب متطلبات الشركة والعقد.</p></details>
+                        <details><summary>هل يمكن إدارة حصر الكميات BOQ والتكلفة التقديرية؟</summary><p>يمكن تصميم دورة تربط بنود الحصر بالتكلفة التقديرية والميزانية والمشتريات والتنفيذ. ويحدد مستوى التفصيل أثناء تحليل الإجراءات.</p></details>
+                        <details><summary>هل يمكن متابعة أوامر التغيير والمطالبات؟</summary><p>يمكن تهيئة دورة لتسجيل طلب التغيير وقيمته وحالته ومستنداته وأثره على العقد والميزانية والمدة والمستخلصات.</p></details>
+                        <details><summary>هل يمكن تنظيم تقارير الموقع والجودة والسلامة؟</summary><p>يمكن إنشاء نماذج لتقارير الموقع وطلبات الفحص وRFI وSubmittals وملاحظات الجودة والسلامة وقوائم التسليم وفق نماذج الشركة.</p></details>
+                        <details><summary>هل يستطيع فريق الموقع استخدام النظام من الجوال؟</summary><p>نعم، يمكن الوصول إلى المهام والجداول الزمنية والمستندات والعمليات المصرح بها بحسب التطبيقات والصلاحيات المفعلة.</p></details>
+                        <details><summary>هل يمكن إدارة عدة مشاريع ومستودعات ومواقع؟</summary><p>نعم، مع ضبط الصلاحيات وتتبع حركة المواد والتكاليف الخاصة بكل مشروع ومستودع وموقع.</p></details>
+                        <details><summary>هل يمكن البدء بعدد محدود من التطبيقات؟</summary><p>نعم، ويمكن تنفيذ النظام على مراحل تبدأ بالأولويات ثم إضافة بقية الوظائف مع توسع العمل واستقرار العمليات.</p></details>
+                        <details><summary>هل يدعم الفوترة الإلكترونية في السعودية؟</summary><p>يمكن تهيئة النظام وفق المتطلبات المحلية باستخدام الإعدادات والتكاملات المناسبة، ويحدد العرض التجاري نطاق الامتثال والتكامل والدعم المشمول.</p></details>
+                    </div></div>
+                </section>
+
+                <section class="cb-mfg-final cb-const-final">
+                    <div class="container"><div class="cb-mfg-final-inner"><span>ابدأ من مشروع حقيقي</span><h2>حوّل بيانات مشاريعك إلى قرارات واضحة وربحية قابلة للقياس</h2><p>اكتشف كيف يمكن لشركة كليك بيلد لتقنية المعلومات ربط المكتب بالموقع وضبط التكاليف وتسريع المشتريات والمستخلصات.</p><div class="cb-mfg-actions justify-content-center"><a href="/demo/request?industry=construction" class="btn btn-light btn-lg" data-analytics-event="construction_demo_click"><i class="fa fa-play-circle"/> احجز عرضًا تجريبيًا</a><a href="/contact?type=consultation&amp;industry=construction" class="btn btn-outline-light btn-lg" data-analytics-event="construction_contact_click"><i class="fa fa-comments"/> تحدث مع مستشار الحلول</a></div></div></div>
+                </section>
+            </main>
+        </t>
+    </template>
+
+    <record id="page_construction" model="ir.ui.view">
+        <field name="website_meta_title">نظام إدارة شركات المقاولات في السعودية | شركة كليك بيلد لتقنية المعلومات Odoo</field>
+        <field name="website_meta_description">أدر مشاريع المقاولات والتكاليف والمستخلصات والمشتريات والمخزون والعمالة والمعدات من منصة مبنية على Odoo، مع رؤية أوضح لربحية كل مشروع.</field>
+        <field name="website_meta_og_img">/saas_website/static/src/img/construction/construction-hero-saudi.png</field>
+    </record>
+</odoo>

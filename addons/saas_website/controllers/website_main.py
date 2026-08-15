@@ -93,6 +93,13 @@ class SaasWebsiteMain(http.Controller):
                 'main_object': manufacturing_view,
                 'seo_object': manufacturing_view,
             })
+        if slug == 'construction' and (request.env.lang or 'ar_001') in ('ar_001', 'ar'):
+            construction_view = request.env.ref('saas_website.page_construction')
+            return request.render('saas_website.page_construction', {
+                'item': item,
+                'main_object': construction_view,
+                'seo_object': construction_view,
+            })
         return request.render('saas_website.page_solution_detail', {'item': item})
 
     @http.route('/services', type='http', auth='public', website=True, sitemap=True)
