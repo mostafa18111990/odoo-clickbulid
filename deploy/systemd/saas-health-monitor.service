@@ -1,0 +1,6 @@
+[Unit]
+Description=ClickBuild platform health monitor
+
+[Service]
+Type=oneshot
+ExecStart=/usr/local/bin/saas-health-monitor.sh

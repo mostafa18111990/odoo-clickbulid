@@ -1,0 +1,17 @@
+[Unit]
+Description=ClickBuild Odoo central and Community database cron worker
+After=docker.service
+Requires=docker.service
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/odoo-saas
+ExecStartPre=-/usr/bin/docker rm -f odoo_saas_cron
+ExecStart=/usr/bin/docker compose -f /opt/odoo-saas/docker-compose.yml run --rm --no-deps --name odoo_saas_cron odoo odoo -c /etc/odoo/odoo.conf --no-http --workers=0 --max-cron-threads=1 --db_maxconn=8
+ExecStop=/usr/bin/docker stop -t 30 odoo_saas_cron
+Restart=on-failure
+RestartSec=10
+TimeoutStopSec=45
+
+[Install]
+WantedBy=multi-user.target
