@@ -22,6 +22,9 @@
                             .trailer-report .label { width: 19%; font-weight: 700; background: #f9fafb; }
                             .trailer-report .value { width: 31%; }
                             .trailer-report .check { width: 6%; text-align: center; font-size: 13px; }
+                            .trailer-report .checklist-table { font-size: 7.7px; }
+                            .trailer-report .checklist-table th,
+                            .trailer-report .checklist-table td { padding: 3px 4px; }
                             .trailer-report .result-pass { color: #166534; font-weight: 700; }
                             .trailer-report .result-fail { color: #b91c1c; font-weight: 700; }
                             .trailer-report .photo-card { display: inline-block; width: 48%; margin: 0 1% 10px 0; border: 1px solid #9ca3af; vertical-align: top; page-break-inside: avoid; }
@@ -112,7 +115,7 @@
 
                         <h4>قائمة الفحص / Inspection Checklist</h4>
                         <p class="small">توضع النتيجة بعد إكمال الفحص. يرجى تسجيل القياسات والملاحظات والأدلة ذات الصلة. / Record the result only after completing the inspection and document relevant measurements, observations and evidence.</p>
-                        <table style="font-size:8px;">
+                        <table class="checklist-table">
                             <thead><tr><th style="width:7%;">البند<br/>Clause</th><th style="width:14%;">القسم<br/>Section</th><th style="width:39%;">الوصف والمتطلب<br/>Description / Requirement</th><th class="check">نعم<br/>Yes</th><th class="check">لا<br/>No</th><th class="check">لا ينطبق<br/>N/A</th><th style="width:22%;">الملاحظات والقياس<br/>Observation / Measurement</th></tr></thead>
                             <tbody>
                                 <tr t-foreach="o.line_ids" t-as="line" t-att-style="'background:#fef2f2;' if line.result == 'no' else ''">
