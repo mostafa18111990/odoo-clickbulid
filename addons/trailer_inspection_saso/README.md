@@ -43,5 +43,13 @@ method, sampling rules, equipment list, competence matrix and report wording bef
 
 ## Deployment status
 
-This addon has only been built and statically validated in the local workspace. It has not
-been installed, upgraded, copied to the server or loaded into any Odoo database.
+Version `19.0.4.0.1` has been installed and validated on an isolated Odoo 19 Enterprise QA
+database. All 37 automated tests pass, including portal access controls, public report
+verification, PDF rendering, VIN allocation, checklist completion and branding. A
+non-persistent O3 inspection smoke test also generated all 55 checklist lines, calculated a
+compliant result and rendered a PDF report.
+
+The QA validation does not authorize a production upgrade. Existing production databases
+remain on their previously installed module versions until a database-specific backup,
+upgrade, acceptance test and approval are completed. The addon remains excluded from tenant
+bootstrap and has `auto_install` disabled.

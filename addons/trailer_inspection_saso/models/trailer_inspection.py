@@ -394,12 +394,12 @@ class TrailerInspection(models.Model):
                 record._prepare_checklist()
             record.write({"authorization_id": authorization.id, "state": "in_progress"})
 
-    @staticmethod
-    def _clause_list(lines, limit=8):
+    def _clause_list(self, lines, limit=8):
         refs = [ref for ref in lines.mapped("clause_ref") if ref][:limit]
         more = len(lines) - len(refs)
         listed = "، ".join(refs)
-        return "%s%s" % (listed, _(" and %s more", more) if more > 0 else "")
+        suffix = self.env._(" and %s more", more) if more > 0 else ""
+        return "%s%s" % (listed, suffix)
 
     def _submission_blockers(self):
         """Everything standing between this inspection and review.

@@ -31,10 +31,10 @@
                             </div>
                             <div class="ti-k-vin" t-esc="record.vin.value or '—'"/>
                             <div class="mt-2 small">
-                                <div><i class="fa fa-building-o me-1 text-muted"/><field name="partner_id"/></div>
-                                <div><i class="fa fa-truck me-1 text-muted"/><field name="trailer_type"/>
+                                <div><i class="fa fa-building-o me-1 text-muted" title="Customer"/><field name="partner_id"/></div>
+                                <div><i class="fa fa-truck me-1 text-muted" title="Trailer"/><field name="trailer_type"/>
                                     · <field name="category"/></div>
-                                <div><i class="fa fa-calendar me-1 text-muted"/><field name="inspection_date"/></div>
+                                <div><i class="fa fa-calendar me-1 text-muted" title="Inspection date"/><field name="inspection_date"/></div>
                             </div>
                             <div class="mt-2">
                                 <field name="checklist_progress" widget="progressbar"/>
