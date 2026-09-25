@@ -80,6 +80,28 @@
                     </div>
                 </div>
             </div>
+            <div class="ti-card" t-elif="revoked">
+                <div class="d-flex justify-content-between align-items-start gap-3 flex-wrap">
+                    <div>
+                        <div class="ti-label">تقرير فحص ملغى / Revoked inspection report</div>
+                        <div class="ti-ref fs-4" t-field="inspection.name"/>
+                    </div>
+                    <span class="ti-seal ti-seal--invalid"><i class="fa fa-ban"/> ملغى / Revoked</span>
+                </div>
+                <hr class="my-3"/>
+                <div class="ti-value">ألغت الجهة المصدرة اعتماد هذا التقرير ولم يعد صالحاً.</div>
+                <div class="ti-vin">The issuing body revoked the approval of this report; it is no longer valid.</div>
+                <div class="row g-3 mt-1">
+                    <div class="col-md-4">
+                        <div class="ti-label">رقم الهيكل / VIN</div>
+                        <div class="ti-value ti-vin" t-field="inspection.vin"/>
+                    </div>
+                    <div class="col-md-4">
+                        <div class="ti-label">تاريخ الإلغاء / Revoked on</div>
+                        <div class="ti-value" t-field="inspection.revoked_on" t-options="{'widget': 'date'}"/>
+                    </div>
+                </div>
+            </div>
             <div class="ti-card" t-else="">
                 <div class="d-flex align-items-center gap-3 flex-wrap">
                     <span class="ti-seal ti-seal--invalid"><i class="fa fa-times-circle"/> غير صالح / Not verified</span>
@@ -107,7 +129,7 @@
                              about: a rejected report reads as a failure even
                              when its checklist never reached a verdict. -->
                         <a t-att-href="'/my/trailer-inspections/%s' % inspection.id"
-                           t-attf-class="ti-card ti-rec ti-rec--#{'fail' if inspection.state == 'rejected' or inspection.overall_result == 'non_compliant' else ('pass' if inspection.state == 'approved' and inspection.overall_result == 'compliant' else 'wait')} h-100">
+                           t-attf-class="ti-card ti-rec ti-rec--#{'fail' if inspection.state in ('rejected', 'revoked') or inspection.overall_result == 'non_compliant' else ('pass' if inspection.state == 'approved' and inspection.overall_result == 'compliant' else 'wait')} h-100">
                             <div class="d-flex justify-content-between align-items-start gap-2">
                                 <span class="ti-ref" t-field="inspection.name"/>
                                 <span t-attf-class="ti-badge ti-badge--#{'pass' if inspection.overall_result == 'compliant' else ('fail' if inspection.overall_result == 'non_compliant' else 'none')}"
@@ -116,7 +138,7 @@
                             <div class="ti-vin mt-1" t-field="inspection.vin"/>
                             <div class="d-flex justify-content-between align-items-center mt-3">
                                 <span class="ti-vin"><i class="fa fa-calendar me-1"/><span t-field="inspection.inspection_date"/></span>
-                                <span t-attf-class="ti-badge ti-badge--#{'pass' if inspection.state == 'approved' else ('fail' if inspection.state == 'rejected' else 'wait')}"
+                                <span t-attf-class="ti-badge ti-badge--#{'pass' if inspection.state == 'approved' else ('fail' if inspection.state in ('rejected', 'revoked') else 'wait')}"
                                       t-field="inspection.state"/>
                             </div>
                         </a>
@@ -149,7 +171,7 @@
                         <div class="d-flex gap-2 flex-wrap">
                             <span t-attf-class="ti-badge ti-badge--#{'pass' if inspection.overall_result == 'compliant' else ('fail' if inspection.overall_result == 'non_compliant' else 'none')}"
                                   t-field="inspection.overall_result"/>
-                            <span t-attf-class="ti-badge ti-badge--#{'pass' if inspection.state == 'approved' else ('fail' if inspection.state == 'rejected' else 'wait')}"
+                            <span t-attf-class="ti-badge ti-badge--#{'pass' if inspection.state == 'approved' else ('fail' if inspection.state in ('rejected', 'revoked') else 'wait')}"
                                   t-field="inspection.state"/>
                         </div>
                         <!-- Only an approved report is downloadable; anything

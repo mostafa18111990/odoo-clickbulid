@@ -1,6 +1,6 @@
 {
     "name": "Trailer Inspection - SASO",
-    "version": "19.0.4.1.0",
+    "version": "19.0.4.2.0",
     "category": "Operations/Inspections",
     "summary": "Trailer and semi-trailer inspections against SASO requirements",
     "description": """
@@ -24,6 +24,7 @@ and bilingual inspection reports.
         "views/trailer_inspection_views.xml",
         "views/trailer_inspection_kanban.xml",
         "views/trailer_quality_views.xml",
+        "views/trailer_revoke_views.xml",
         "views/trailer_portal_templates.xml",
         "views/trailer_inspection_menus.xml",
         "report/trailer_inspection_paperformat.xml",

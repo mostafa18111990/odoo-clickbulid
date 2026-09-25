@@ -1,5 +1,9 @@
 from odoo import _, api, fields, models
-from odoo.exceptions import ValidationError
+from odoo.exceptions import AccessError, ValidationError
+
+# Set only by an inspection manager: a temporary, documented permission to
+# keep using an instrument whose calibration has lapsed.
+EXCEPTION_FIELDS = ("expired_use_allowed_until", "expired_use_reason")
 
 
 class TrailerInspectionEquipment(models.Model):
@@ -35,11 +39,64 @@ class TrailerInspectionEquipment(models.Model):
     )
     active = fields.Boolean(default=True)
     notes = fields.Text()
+    expired_use_allowed_until = fields.Date(
+        string="Use Despite Expired Calibration Until", tracking=True, copy=False,
+        help="Inspection manager's temporary permission to keep using this instrument after its "
+             "calibration lapsed. It ends on this date; a reason is mandatory.")
+    expired_use_reason = fields.Text(string="Reason for Using Uncalibrated Equipment", tracking=True, copy=False)
+    expired_use_approved_by = fields.Many2one("res.users", string="Exception Approved By", readonly=True, copy=False, tracking=True)
+    expired_use_approved_on = fields.Datetime(string="Exception Approved On", readonly=True, copy=False)
+    usable_for_inspection = fields.Boolean(
+        compute="_compute_usable_for_inspection", search="_search_usable_for_inspection")
 
     _code_company_unique = models.Constraint(
         "UNIQUE(code, company_id)",
         "The equipment code must be unique per company.",
     )
+
+    @api.depends("calibration_due_date", "expired_use_allowed_until")
+    def _compute_usable_for_inspection(self):
+        for record in self:
+            record.usable_for_inspection = not record._is_blocked_for_use()
+
+    def _search_usable_for_inspection(self, operator, value):
+        if operator not in ("=", "!=") or not isinstance(value, bool):
+            raise NotImplementedError(_("Unsupported search on usable equipment."))
+        today = fields.Date.context_today(self)
+        usable = ["|", ("calibration_due_date", ">=", today), ("expired_use_allowed_until", ">=", today)]
+        return usable if (operator == "=") == value else ["!"] + usable
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        for vals in vals_list:
+            if any(vals.get(name) for name in EXCEPTION_FIELDS):
+                self._check_exception_rights()
+                vals.update(expired_use_approved_by=self.env.user.id,
+                            expired_use_approved_on=fields.Datetime.now())
+        return super().create(vals_list)
+
+    def write(self, vals):
+        if "expired_use_approved_by" in vals or "expired_use_approved_on" in vals:
+            if not self.env.su:
+                raise AccessError(_("The exception approval is recorded automatically."))
+        if any(name in vals for name in EXCEPTION_FIELDS):
+            self._check_exception_rights()
+            granted = vals.get("expired_use_allowed_until", True)
+            vals.update(
+                expired_use_approved_by=self.env.user.id if granted else False,
+                expired_use_approved_on=fields.Datetime.now() if granted else False,
+            )
+        return super().write(vals)
+
+    def _check_exception_rights(self):
+        if not self.env.su and not self.env.user.has_group("trailer_inspection_saso.group_trailer_manager"):
+            raise AccessError(_("Only an inspection manager can allow the use of uncalibrated equipment."))
+
+    @api.constrains("expired_use_allowed_until", "expired_use_reason")
+    def _check_exception_reason(self):
+        for record in self:
+            if record.expired_use_allowed_until and not (record.expired_use_reason or "").strip():
+                raise ValidationError(_("State why this uncalibrated equipment may still be used."))
 
     @api.depends("calibration_due_date")
     def _compute_calibration_status(self):
@@ -64,6 +121,14 @@ class TrailerInspectionEquipment(models.Model):
         self.ensure_one()
         on_date = on_date or fields.Date.context_today(self)
         return not self.calibration_due_date or self.calibration_due_date < on_date
+
+    def _is_blocked_for_use(self, on_date=None):
+        """Expired, and not covered by a manager's exception on that date."""
+        self.ensure_one()
+        on_date = on_date or fields.Date.context_today(self)
+        if not self._is_calibration_expired(on_date):
+            return False
+        return not (self.expired_use_allowed_until and self.expired_use_allowed_until >= on_date)
 
     @api.model
     def _refresh_date_dependent_states(self):

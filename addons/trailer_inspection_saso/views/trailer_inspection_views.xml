@@ -43,12 +43,14 @@
                     <button name="action_reject" type="object" string="Reject" invisible="state != 'technical_review'" groups="trailer_inspection_saso.group_trailer_reviewer"/>
                     <button name="action_create_reinspection" type="object" string="Create Reinspection" invisible="state not in ('approved','rejected') or nonconformity_count == 0" groups="trailer_inspection_saso.group_trailer_inspector"/>
                     <button name="action_prepare_checklist" type="object" string="Regenerate Checklist" invisible="state != 'draft'" groups="trailer_inspection_saso.group_trailer_manager" confirm="This replaces the empty checklist using the current controlled requirements. Continue?"/>
-                    <button name="action_cancel" type="object" string="Cancel" invisible="state in ('approved','cancelled')" groups="trailer_inspection_saso.group_trailer_manager"/>
+                    <button name="action_open_revoke_wizard" type="object" string="Revoke Approval" class="btn-danger" invisible="state != 'approved'" groups="trailer_inspection_saso.group_trailer_manager"/>
+                    <button name="action_cancel" type="object" string="Cancel" invisible="state in ('approved','revoked','cancelled')" groups="trailer_inspection_saso.group_trailer_manager"/>
                     <button name="action_reset_draft" type="object" string="Reset to Draft" invisible="state not in ('rejected','cancelled')" groups="trailer_inspection_saso.group_trailer_manager"/>
                     <field name="state" widget="statusbar" statusbar_visible="draft,scheduled,in_progress,technical_review,approved"/>
                 </header>
                 <sheet>
-                    <widget name="web_ribbon" title="Non-Compliant" bg_color="text-bg-danger" invisible="overall_result != 'non_compliant'"/>
+                    <widget name="web_ribbon" title="Revoked" bg_color="text-bg-danger" invisible="state != 'revoked'"/>
+                    <widget name="web_ribbon" title="Non-Compliant" bg_color="text-bg-danger" invisible="overall_result != 'non_compliant' or state == 'revoked'"/>
                     <div class="oe_button_box" name="button_box">
                         <button class="oe_stat_button" icon="fa-check-square-o" type="object" name="action_prepare_checklist" invisible="state != 'draft'" groups="trailer_inspection_saso.group_trailer_manager"><field name="checklist_total" widget="statinfo" string="Checklist Items"/></button>
                     </div>
@@ -157,7 +159,7 @@
                                     <field name="sequence" column_invisible="True"/><field name="section_id" readonly="1"/><field name="clause_ref" readonly="1"/>
                                     <field name="requirement_name_ar" string="Requirement" readonly="1"/><field name="criticality" widget="badge" readonly="1"/>
                                     <field name="result"/><field name="measured_value" invisible="response_type != 'numeric'"/><field name="measurement_recorded" column_invisible="True"/><field name="unit" readonly="1" invisible="response_type != 'numeric'"/>
-                                    <field name="observation"/><field name="equipment_id" invisible="not equipment_required" domain="[('calibration_status','!=','expired')]"/>
+                                    <field name="observation"/><field name="equipment_id" invisible="not equipment_required" domain="[('usable_for_inspection','=',True)]"/>
                                     <field name="evidence_filename" column_invisible="True"/><field name="evidence_attachment" filename="evidence_filename" invisible="not evidence_required"/>
                                     <field name="nc_severity" invisible="result != 'no'"/><field name="response_type" column_invisible="True"/><field name="equipment_required" column_invisible="True"/><field name="evidence_required" column_invisible="True"/>
                                 </list>
@@ -172,10 +174,10 @@
                         </page>
                         <page string="Axles and Weights"><field name="axle_ids"><list editable="bottom"><field name="sequence"/><field name="manufacturer_capacity_kg"/><field name="tyre_capacity_kg"/><field name="measured_weight_kg"/><field name="notes"/></list></field></page>
                         <page string="Photos and Evidence"><field name="photo_ids"><list editable="bottom"><field name="sequence" widget="handle"/><field name="name"/><field name="photo_type"/><field name="line_id"/><field name="photo" widget="image"/><field name="taken_on"/><field name="description"/><field name="include_in_report"/></list></field></page>
-                        <page string="Equipment Used"><field name="equipment_use_ids"><list editable="bottom"><field name="equipment_id" domain="[('calibration_status','!=','expired')]"/><field name="purpose"/><field name="calibration_due_date" readonly="1"/><field name="calibration_status" widget="badge" readonly="1"/><field name="notes"/></list></field></page>
+                        <page string="Equipment Used"><field name="equipment_use_ids"><list editable="bottom"><field name="equipment_id" domain="[('usable_for_inspection','=',True)]"/><field name="purpose"/><field name="calibration_due_date" readonly="1"/><field name="calibration_status" widget="badge" readonly="1"/><field name="notes"/></list></field></page>
                         <page string="Nonconformities"><field name="nonconformity_ids" readonly="1"><list decoration-danger="severity == 'critical' and state != 'closed'"><field name="name"/><field name="line_id"/><field name="severity" widget="badge"/><field name="finding"/><field name="due_date"/><field name="state" widget="badge"/></list></field></page>
                         <page string="Impartiality and Review">
-                            <group><group string="Conflict Check"><field name="impartiality_confirmed"/><field name="impartiality_notes"/></group><group string="Technical Review"><field name="reviewer_id"/><field name="approved_on" readonly="1"/><field name="review_notes"/></group></group>
+                            <group><group string="Conflict Check"><field name="impartiality_confirmed"/><field name="impartiality_notes"/></group><group string="Technical Review"><field name="reviewer_id"/><field name="approved_on" readonly="1"/><field name="review_notes"/><field name="revoked_on" invisible="state != 'revoked'"/><field name="revoked_by" invisible="state != 'revoked'"/><field name="revocation_reason" invisible="state != 'revoked'"/></group></group>
                             <group string="Digital Signatures">
                                 <group string="Inspector"><field name="inspector_signature" widget="image"/><button name="action_sign_inspector" type="object" string="Sign as Inspector" class="btn-secondary" invisible="state != 'in_progress' or inspector_signed_on"/><field name="inspector_signed_by" readonly="1"/><field name="inspector_signed_on" readonly="1"/><field name="inspector_signature_ip" readonly="1"/></group>
                                 <group string="Technical Reviewer"><field name="reviewer_signature" widget="image"/><button name="action_sign_reviewer" type="object" string="Sign as Reviewer" class="btn-secondary" invisible="state != 'technical_review' or reviewer_signed_on"/><field name="reviewer_signed_by" readonly="1"/><field name="reviewer_signed_on" readonly="1"/><field name="reviewer_signature_ip" readonly="1"/></group>

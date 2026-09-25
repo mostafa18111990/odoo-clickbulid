@@ -18,8 +18,11 @@ EDITABLE_STATES = ("draft", "scheduled", "in_progress")
 OPEN_STATES = ("draft", "scheduled", "in_progress", "technical_review")
 # Set only by the workflow actions. A plain write (from the UI or over RPC)
 # must never move an inspection through its lifecycle or forge a signature.
+# A decided report: nothing about it may change any more.
+LOCKED_STATES = ("approved", "revoked")
 WORKFLOW_FIELDS = frozenset({
     "state", "approved_on", "access_token",
+    "revoked_on", "revoked_by", "revocation_reason",
     "inspector_signed_by", "inspector_signed_on", "inspector_signature_ip",
     "reviewer_signed_by", "reviewer_signed_on", "reviewer_signature_ip",
 })
@@ -48,6 +51,7 @@ class TrailerInspection(models.Model):
             ("in_progress", "In Progress"),
             ("technical_review", "Technical Review"),
             ("approved", "Approved"),
+            ("revoked", "Revoked"),
             ("rejected", "Rejected"),
             ("cancelled", "Cancelled"),
         ],
@@ -93,6 +97,9 @@ class TrailerInspection(models.Model):
     impartiality_notes = fields.Text()
     review_notes = fields.Text()
     approved_on = fields.Datetime(readonly=True, copy=False)
+    revoked_on = fields.Datetime(string="Approval Revoked On", readonly=True, copy=False, tracking=True)
+    revoked_by = fields.Many2one("res.users", string="Approval Revoked By", readonly=True, copy=False, tracking=True)
+    revocation_reason = fields.Text(readonly=True, copy=False, tracking=True)
     report_valid_until = fields.Date(copy=False, tracking=True)
     access_token = fields.Char(default=lambda self: str(uuid.uuid4()), copy=False, index=True)
     verification_url = fields.Char(compute="_compute_verification_url")
@@ -229,7 +236,7 @@ class TrailerInspection(models.Model):
     @api.depends("state")
     def _compute_locked(self):
         for record in self:
-            record.locked = record.state == "approved"
+            record.locked = record.state in LOCKED_STATES
 
     @api.model_create_multi
     def create(self, vals_list):
@@ -270,7 +277,7 @@ class TrailerInspection(models.Model):
             raise AccessError(_("%s can only be changed through the inspection workflow buttons.",
                                 ", ".join(sorted(workflow))))
         business = [name for name in vals if not _is_chatter_field(name)]
-        if business and self.filtered(lambda record: record.state == "approved"):
+        if business and self.filtered(lambda record: record.state in LOCKED_STATES):
             raise UserError(_("An approved inspection is locked and can no longer be changed."))
         protected = {
             "partner_id", "inspection_date", "inspection_location", "inspector_id", "reviewer_id",
@@ -564,6 +571,45 @@ class TrailerInspection(models.Model):
                 subtype_xmlid="mail.mt_note",
             )
 
+    def action_open_revoke_wizard(self):
+        self.ensure_one()
+        self._require_group("group_trailer_manager", _("Only an inspection manager can revoke an approval."))
+        self._require_state(("approved",), _("Only an approved report can have its approval revoked."))
+        return {
+            "type": "ir.actions.act_window",
+            "name": _("Revoke Approval"),
+            "res_model": "trailer.inspection.revoke",
+            "view_mode": "form",
+            "target": "new",
+            "context": {"default_inspection_id": self.id},
+        }
+
+    def action_revoke(self, reason):
+        """Withdraw an approved report that should not have been issued.
+
+        The report is not reopened or edited: it stays as it was signed, is
+        marked revoked with who, when and why, and stops verifying as valid.
+        A corrected report is a new inspection of the same trailer.
+        """
+        self._require_group("group_trailer_manager", _("Only an inspection manager can revoke an approval."))
+        self._require_state(("approved",), _("Only an approved report can have its approval revoked."))
+        reason = (reason or "").strip()
+        if not reason:
+            raise UserError(_("State why the approval is being revoked."))
+        self._workflow_write({
+            "state": "revoked",
+            "revoked_on": fields.Datetime.now(),
+            "revoked_by": self.env.user.id,
+            "revocation_reason": reason,
+        })
+        for record in self:
+            record.message_post(
+                body=_("Approval of report %(report)s revoked by %(user)s. Reason: %(reason)s",
+                       report=record.name, user=self.env.user.name, reason=reason),
+                subtype_xmlid="mail.mt_note",
+            )
+        return True
+
     def action_queue_document_extraction(self):
         for record in self:
             if not record.source_file:
@@ -778,7 +824,7 @@ class TrailerInspection(models.Model):
     bulk_evidence_filename = fields.Char(copy=False)
     bulk_equipment_id = fields.Many2one(
         "trailer.inspection.equipment", string="Equipment for all pending items",
-        copy=False, domain="[('calibration_status', '!=', 'expired')]")
+        copy=False, domain="[('usable_for_inspection', '=', True)]")
 
     def action_apply_bulk_evidence(self):
         """Attach one file to every requirement still waiting for evidence.
@@ -1037,7 +1083,7 @@ class TrailerInspectionLine(models.Model):
         for line in self:
             if line.result == "no" and not line.observation:
                 raise ValidationError(_("A nonconforming result requires an observation."))
-            if line.equipment_id and line.equipment_id._is_calibration_expired():
+            if line.equipment_id and line.equipment_id._is_blocked_for_use():
                 raise ValidationError(_("Expired measuring equipment cannot be used."))
 
 
@@ -1084,7 +1130,7 @@ class TrailerInspectionEquipmentUse(models.Model):
     @api.constrains("equipment_id")
     def _check_equipment_validity(self):
         for record in self:
-            if record.equipment_id._is_calibration_expired():
+            if record.equipment_id._is_blocked_for_use():
                 raise ValidationError(_("Expired measuring equipment cannot be assigned."))
 
 

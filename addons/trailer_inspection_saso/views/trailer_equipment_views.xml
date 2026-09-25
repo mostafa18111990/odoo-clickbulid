@@ -23,6 +23,19 @@
                         <group><field name="calibrated_on"/><field name="calibration_due_date"/><field name="calibration_status" widget="badge" readonly="1"/><field name="active"/></group>
                     </group>
                     <group string="Calibration Certificate"><field name="calibration_filename" invisible="1"/><field name="calibration_certificate" filename="calibration_filename"/></group>
+                    <!-- Only an inspection manager may let a lapsed instrument stay in use,
+                         for a stated reason and until a set date. -->
+                    <group string="Use Despite Expired Calibration" groups="trailer_inspection_saso.group_trailer_manager"
+                           invisible="calibration_status != 'expired' and not expired_use_allowed_until">
+                        <field name="expired_use_allowed_until"/>
+                        <field name="expired_use_reason" required="expired_use_allowed_until"/>
+                        <field name="expired_use_approved_by" invisible="not expired_use_approved_by"/>
+                        <field name="expired_use_approved_on" invisible="not expired_use_approved_by"/>
+                    </group>
+                    <div class="alert alert-warning" role="alert" invisible="not expired_use_allowed_until or calibration_status != 'expired'">
+                        Calibration has expired: this instrument is in use under a manager's exception until
+                        <field name="expired_use_allowed_until" readonly="1" class="oe_inline"/>.
+                    </div>
                     <field name="notes" placeholder="Equipment control notes..."/>
                 </sheet>
                 <chatter/>

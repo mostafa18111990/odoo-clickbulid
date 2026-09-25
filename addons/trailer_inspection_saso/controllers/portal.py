@@ -45,18 +45,21 @@ class TrailerInspectionPortal(http.Controller):
     @http.route("/trailer-inspection/verify/<string:token>", type="http", auth="public", website=False, sitemap=False)
     def verify_report(self, token, **kwargs):
         inspection = request.env["trailer.inspection"].sudo().search(
-            [("access_token", "=", token), ("state", "=", "approved")], limit=1
+            [("access_token", "=", token), ("state", "in", ("approved", "revoked"))], limit=1
         )
+        # A revoked report is named as such: "not found" would hide from a
+        # checkpoint that the paper in front of them was withdrawn.
+        revoked = inspection.state == "revoked"
         # A genuine report past its validity must not read as currently valid
         # to whoever scans the QR code at a checkpoint.
         expired = bool(
-            inspection and inspection.report_valid_until
+            inspection and not revoked and inspection.report_valid_until
             and inspection.report_valid_until < fields.Date.context_today(inspection)
         )
         return request.render(
             "trailer_inspection_saso.portal_trailer_verification",
-            {"inspection": inspection, "valid": bool(inspection), "expired": expired,
-             **self._branding(inspection)},
+            {"inspection": inspection, "valid": bool(inspection) and not revoked,
+             "revoked": revoked, "expired": expired, **self._branding(inspection)},
         )
 
     @http.route("/my/trailer-inspections", type="http", auth="user", website=False)

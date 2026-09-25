@@ -18,7 +18,7 @@
                     <t t-name="card">
                         <div t-attf-class="ti-k--{{
                                 record.state.raw_value === 'approved' ? 'approved' :
-                                record.state.raw_value === 'rejected' ? 'rejected' :
+                                ['rejected', 'revoked'].includes(record.state.raw_value) ? 'rejected' :
                                 record.state.raw_value === 'technical_review' ? 'review' :
                                 'progress' }}">
                             <div class="d-flex justify-content-between align-items-start gap-2">

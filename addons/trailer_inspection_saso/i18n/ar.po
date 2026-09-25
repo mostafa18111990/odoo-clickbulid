@@ -3382,3 +3382,324 @@ msgstr ""
 #: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.report_trailer_inspection_document
 msgid "وصف المنتج<br/>Product Description"
 msgstr ""
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "%s can only be changed through the inspection workflow buttons."
+msgstr "لا يمكن تغيير %s إلا من خلال أزرار سير عمل الفحص."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "%s can only be changed through the nonconformity workflow buttons."
+msgstr "لا يمكن تغيير %s إلا من خلال أزرار سير عمل عدم المطابقة."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "A nonconformity is always raised open."
+msgstr "تُسجَّل حالة عدم المطابقة مفتوحة دائماً."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "A reinspection follows an approved or rejected inspection."
+msgstr "إعادة الفحص تتبع فحصاً معتمداً أو مرفوضاً."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "An approved inspection cannot be cancelled."
+msgstr "لا يمكن إلغاء فحص معتمد."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "An approved inspection is locked and can no longer be changed."
+msgstr "الفحص المعتمد مقفل ولا يمكن تعديله."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__revoked_by
+msgid "Approval Revoked By"
+msgstr "أُلغي الاعتماد بواسطة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection__revoked_on
+msgid "Approval Revoked On"
+msgstr "تاريخ إلغاء الاعتماد"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Approval of report %(report)s revoked by %(user)s. Reason: %(reason)s"
+msgstr "أُلغي اعتماد التقرير %(report)s بواسطة %(user)s. السبب: %(reason)s"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_equipment_form
+msgid ""
+"Calibration has expired: this instrument is in use under a manager's "
+"exception until"
+msgstr "انتهت معايرة هذا الجهاز: يُستخدم باستثناء معتمد من المدير حتى"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid ""
+"Closed automatically: the requirement was re-examined and met before the "
+"report was submitted."
+msgstr "أُغلقت تلقائياً: أعيد فحص المتطلب واستوفى الشروط قبل إرسال التقرير."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__expired_use_approved_by
+msgid "Exception Approved By"
+msgstr "الاستثناء معتمد من"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__expired_use_approved_on
+msgid "Exception Approved On"
+msgstr "تاريخ اعتماد الاستثناء"
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_inspection_locked_child
+msgid "Inspection Finding Lock"
+msgstr "قفل نتائج الفحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,help:trailer_inspection_saso.field_trailer_inspection_equipment__expired_use_allowed_until
+msgid ""
+"Inspection manager's temporary permission to keep using this instrument "
+"after its calibration lapsed. It ends on this date; a reason is mandatory."
+msgstr ""
+"إذن مؤقت من مدير الفحص لاستمرار استخدام هذا الجهاز بعد انتهاء معايرته. ينتهي"
+" في هذا التاريخ، وذكر السبب إلزامي."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid ""
+"Inspections start as drafts; workflow fields cannot be set directly (%s)."
+msgstr "يبدأ الفحص كمسودة؛ لا يمكن تعيين حقول سير العمل مباشرة (%s)."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only a draft inspection can be scheduled."
+msgstr "لا يمكن جدولة إلا فحص في حالة مسودة."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only a draft or scheduled inspection can be started."
+msgstr "لا يمكن بدء إلا فحص في حالة مسودة أو مجدول."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only a rejected or cancelled inspection can be reset to draft."
+msgstr "لا يمكن إعادة فحص إلى مسودة إلا إذا كان مرفوضاً أو ملغى."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only a submitted corrective action can be verified."
+msgstr "لا يمكن التحقق إلا من إجراء تصحيحي تم تقديمه."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only a technical reviewer or manager can close a nonconformity."
+msgstr "إغلاق حالة عدم المطابقة للمراجع الفني أو المدير فقط."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only a technical reviewer or manager can verify a corrective action."
+msgstr "التحقق من الإجراء التصحيحي للمراجع الفني أو المدير فقط."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only an approved report can have its approval revoked."
+msgstr "لا يمكن إلغاء الاعتماد إلا لتقرير معتمد."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only an inspection in progress can be submitted for review."
+msgstr "لا يمكن إرسال فحص للمراجعة إلا إذا كان قيد التنفيذ."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_equipment.py:0
+msgid ""
+"Only an inspection manager can allow the use of uncalibrated equipment."
+msgstr "السماح باستخدام جهاز غير معاير لمدير الفحص فقط."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only an inspection manager can cancel an inspection."
+msgstr "إلغاء الفحص لمدير الفحص فقط."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only an inspection manager can regenerate the checklist."
+msgstr "إعادة إنشاء قائمة الفحص لمدير الفحص فقط."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only an inspection manager can reset an inspection."
+msgstr "إعادة الفحص إلى مسودة لمدير الفحص فقط."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only an inspection manager can revoke an approval."
+msgstr "إلغاء الاعتماد لمدير الفحص فقط."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only an inspection under technical review can be rejected."
+msgstr "لا يمكن رفض فحص إلا إذا كان قيد المراجعة الفنية."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only an inspection under technical review can be returned."
+msgstr "لا يمكن إرجاع فحص إلا إذا كان قيد المراجعة الفنية."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only an inspector can create a reinspection."
+msgstr "إنشاء إعادة الفحص للمفتش فقط."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only an inspector can schedule an inspection."
+msgstr "جدولة الفحص للمفتش فقط."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Only an open nonconformity can be submitted."
+msgstr "لا يمكن تقديم إلا حالة عدم مطابقة مفتوحة."
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_revoke__reason
+msgid "Reason"
+msgstr "السبب"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__expired_use_reason
+msgid "Reason for Using Uncalibrated Equipment"
+msgstr "سبب استخدام جهاز غير معاير"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "Returned to the inspector; both signatures were withdrawn."
+msgstr "أُعيد إلى المفتش؛ وسُحب التوقيعان."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_revoke_form
+msgid "Revoke Approval"
+msgstr "إلغاء الاعتماد"
+
+#. module: trailer_inspection_saso
+#: model:ir.model,name:trailer_inspection_saso.model_trailer_inspection_revoke
+msgid "Revoke Inspection Report Approval"
+msgstr "إلغاء اعتماد تقرير الفحص"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__state__revoked
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_form
+msgid "Revoked"
+msgstr "ملغى الاعتماد"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid "State why the approval is being revoked."
+msgstr "اذكر سبب إلغاء الاعتماد."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_equipment.py:0
+msgid "State why this uncalibrated equipment may still be used."
+msgstr "اذكر سبب السماح باستخدام هذا الجهاز غير المعاير."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_equipment.py:0
+msgid "The exception approval is recorded automatically."
+msgstr "يُسجَّل اعتماد الاستثناء تلقائياً."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid ""
+"The findings of this inspection are locked. They can only change while the "
+"inspection is open."
+msgstr "نتائج هذا الفحص مقفلة، ولا يمكن تعديلها إلا والفحص مفتوح."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid ""
+"The inspection data can only change while the inspection is open. Return it "
+"to the inspector first."
+msgstr "لا يمكن تعديل بيانات الفحص إلا وهو مفتوح. أعده إلى المفتش أولاً."
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_revoke_form
+msgid ""
+"The report stays as it was signed, is marked revoked and stops verifying as valid.\n"
+"                    Issue a corrected report as a new inspection of the same trailer."
+msgstr ""
+"يبقى التقرير كما وُقِّع، ويُعلَّم ملغى الاعتماد، ولا يظهر صالحاً عند التحقق.\n"
+"                    أصدر التقرير المصحح كفحص جديد لنفس المقطورة."
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_equipment.py:0
+msgid "Unsupported search on usable equipment."
+msgstr "بحث غير مدعوم في الأجهزة الصالحة للاستخدام."
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_equipment_form
+msgid "Use Despite Expired Calibration"
+msgstr "الاستخدام رغم انتهاء المعايرة"
+
+#. module: trailer_inspection_saso
+#: model:ir.model.fields,field_description:trailer_inspection_saso.field_trailer_inspection_equipment__expired_use_allowed_until
+msgid "Use Despite Expired Calibration Until"
+msgstr "الاستخدام رغم انتهاء المعايرة حتى"
+
+#. module: trailer_inspection_saso
+#. odoo-python
+#: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
+msgid ""
+"VIN %(vin)s already has an open inspection (%(other)s). Finish or cancel it "
+"before opening another."
+msgstr ""
+"رقم الهيكل %(vin)s لديه فحص مفتوح (%(other)s). أنهِه أو ألغِه قبل فتح فحص "
+"آخر."
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_revoke_form
+msgid "Why is this approval being revoked?"
+msgstr "لماذا يُلغى هذا الاعتماد؟"
+
+#. module: trailer_inspection_saso
+#: model_terms:ir.ui.view,arch_db:trailer_inspection_saso.view_trailer_inspection_revoke_form
+msgid "Discard"
+msgstr "تجاهل"

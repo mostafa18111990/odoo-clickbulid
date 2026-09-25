@@ -284,6 +284,123 @@ class TestCalibrationFollowsTheCalendar(IntegrityCase):
         self.assertEqual(equipment.calibration_status, "expired")
 
 
+class TestUncalibratedEquipmentException(IntegrityCase):
+    """Only a manager may let a lapsed instrument stay in use, with a reason
+    and until a date; nobody else can grant or forge that permission."""
+
+    def setUp(self):
+        super().setUp()
+        self.lapsed = self.env["trailer.inspection.equipment"].create({
+            "name": "Lapsed scale", "code": "INT-LAPSED", "serial_number": "L-1",
+            "calibration_due_date": fields.Date.today() - timedelta(days=5)})
+        self.inspection = self._draft()
+        self.inspection.with_user(self.inspector).action_start()
+        self.line = self.inspection.line_ids.filtered("equipment_required")[:1]
+        if not self.line:
+            self.skipTest("the standard data asks for no equipment")
+
+    def _allow(self, user, days=10, reason="Replacement scale arrives next week"):
+        self.lapsed.with_user(user).write({
+            "expired_use_allowed_until": fields.Date.today() + timedelta(days=days),
+            "expired_use_reason": reason})
+
+    def test_without_an_exception_the_instrument_is_refused(self):
+        self.assertFalse(self.lapsed.usable_for_inspection)
+        with self.assertRaises(ValidationError):
+            self.line.write({"equipment_id": self.lapsed.id})
+
+    def test_manager_exception_lets_it_be_used_and_is_recorded(self):
+        self._allow(self.manager)
+        self.assertEqual(self.lapsed.expired_use_approved_by, self.manager)
+        self.assertTrue(self.lapsed.expired_use_approved_on)
+        self.assertTrue(self.lapsed.usable_for_inspection)
+        self.assertIn(self.lapsed, self.env["trailer.inspection.equipment"].search(
+            [("usable_for_inspection", "=", True)]))
+        self.line.with_user(self.inspector).write({"equipment_id": self.lapsed.id})
+        self.assertEqual(self.line.equipment_id, self.lapsed)
+
+    def test_only_a_manager_can_grant_it(self):
+        for user in (self.inspector, self.reviewer, self.clerk):
+            with self.assertRaises(AccessError):
+                self._allow(user)
+        self.assertFalse(self.lapsed.expired_use_allowed_until)
+
+    def test_the_approver_cannot_be_forged(self):
+        with self.assertRaises(AccessError):
+            self.lapsed.with_user(self.manager).write({"expired_use_approved_by": self.reviewer.id})
+
+    def test_a_reason_is_mandatory(self):
+        with self.assertRaises(ValidationError):
+            self._allow(self.manager, reason="  ")
+
+    def test_the_exception_ends_on_its_date(self):
+        self._allow(self.manager, days=-1)
+        self.assertFalse(self.lapsed.usable_for_inspection)
+        with self.assertRaises(ValidationError):
+            self.line.write({"equipment_id": self.lapsed.id})
+
+    def test_withdrawing_the_exception_clears_the_approval(self):
+        self._allow(self.manager)
+        self.lapsed.with_user(self.manager).write(
+            {"expired_use_allowed_until": False, "expired_use_reason": False})
+        self.assertFalse(self.lapsed.expired_use_approved_by)
+        self.assertFalse(self.lapsed.usable_for_inspection)
+
+
+class TestRevokeApproval(IntegrityCase):
+    """A manager withdraws an approved report; it stays as signed."""
+
+    def test_manager_revokes_with_a_reason(self):
+        inspection = self._approved()
+        action = inspection.with_user(self.manager).action_open_revoke_wizard()
+        wizard = self.env[action["res_model"]].with_user(self.manager).with_context(
+            action["context"]).create({"reason": "Wrong axle data on the certificate"})
+        wizard.action_confirm()
+        self.assertEqual(inspection.state, "revoked")
+        self.assertEqual(inspection.revoked_by, self.manager)
+        self.assertTrue(inspection.revoked_on)
+        self.assertEqual(inspection.revocation_reason, "Wrong axle data on the certificate")
+        self.assertTrue(inspection.inspector_signed_on, "the signed record is kept, not reopened")
+
+    def test_only_a_manager_can_revoke(self):
+        inspection = self._approved()
+        for user in (self.reviewer, self.inspector, self.clerk):
+            with self.assertRaises(AccessError):
+                inspection.with_user(user).action_revoke("no")
+            with self.assertRaises(AccessError):
+                inspection.with_user(user).action_open_revoke_wizard()
+        self.assertEqual(inspection.state, "approved")
+
+    def test_a_reason_is_mandatory(self):
+        inspection = self._approved()
+        with self.assertRaises(UserError):
+            inspection.with_user(self.manager).action_revoke("   ")
+
+    def test_only_an_approved_report_can_be_revoked(self):
+        inspection = self._submitted()
+        with self.assertRaises(UserError):
+            inspection.with_user(self.manager).action_revoke("early")
+
+    def test_revoked_report_is_locked_and_final(self):
+        inspection = self._approved()
+        inspection.with_user(self.manager).action_revoke("issued in error")
+        with self.assertRaises(UserError):
+            inspection.with_user(self.manager).write({"review_notes": "edit"})
+        with self.assertRaises(UserError):
+            inspection.line_ids[:1].with_user(self.inspector).write({"result": "na"})
+        for action in ("action_cancel", "action_reset_draft", "action_start"):
+            with self.assertRaises(UserError):
+                getattr(inspection.with_user(self.manager), action)()
+        with self.assertRaises(AccessError):
+            inspection.with_user(self.manager).write({"state": "approved"})
+
+    def test_the_trailer_can_be_inspected_again(self):
+        inspection = self._approved()
+        inspection.with_user(self.manager).action_revoke("issued in error")
+        corrected = self._draft(inspection_type="periodic")
+        self.assertEqual(corrected.vin, inspection.vin)
+
+
 class TestNonconformityFollowsTheFinding(IntegrityCase):
 
     def test_corrected_finding_closes_its_nonconformity(self):
@@ -339,6 +456,18 @@ class TestExpiredReportVerification(HttpCase, IntegrityCase):
         self.assertEqual(response.status_code, 200)
         self.assertIn("Expired", response.text)
         self.assertNotIn("صالح / Verified", response.text)
+
+    def test_revoked_report_says_so_and_serves_no_pdf(self):
+        inspection = self._approved()
+        inspection.with_user(self.manager).action_revoke("issued in error")
+        self.env.flush_all()
+        response = self.url_open("/trailer-inspection/verify/%s" % inspection.access_token)
+        self.assertEqual(response.status_code, 200)
+        self.assertIn("Revoked", response.text)
+        self.assertNotIn("صالح / Verified", response.text)
+        self.assertNotIn("issued in error", response.text, "the internal reason is not published")
+        pdf = self.url_open("/trailer-inspection/verify/%s/report" % inspection.access_token)
+        self.assertEqual(pdf.status_code, 404)
 
     def test_current_report_is_verified(self):
         inspection = self._approved()
