@@ -458,6 +458,18 @@ if [ -n "$BUILD_CRON_IDS" ]; then
         >>"$LOG" 2>&1
     echo "$(date -Is) restored and staggered tenant crons for $DB: $BUILD_CRON_IDS" >>"$LOG"
 fi
+# Enterprise: the publisher-warranty job's schedule is cloned from the
+# template, so a new tenant would keep the template's stale expiration date
+# (shown as "database expired") until that job's next weekly run. Run it now
+# so Odoo sets the tenant's real expiration straight away. Non-fatal.
+if [ "$EDITION" = "enterprise" ]; then
+    docker exec odoo_saas_postgres psql -U odoo -d "$DB" -c \
+        "update ir_cron set nextcall = now() at time zone 'UTC'
+          where id = (select res_id from ir_model_data
+                      where module = 'mail' and name = 'ir_cron_module_update_notification');" \
+        >>"$LOG" 2>&1 || true
+    echo "$(date -Is) enterprise: publisher warranty check scheduled now for $DB" >>"$LOG"
+fi
 echo "$(date -Is) renamed provisioning DB -> $FINAL_DB" >> "$LOG"
 
 # 4. Notify the master DB that provisioning succeeded.
