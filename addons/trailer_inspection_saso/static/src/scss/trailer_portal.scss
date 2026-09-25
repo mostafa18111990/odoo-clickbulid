@@ -178,6 +178,12 @@
         border-color: rgba(192, 54, 44, 0.25);
     }
 
+    .ti-seal--expired {
+        background: var(--ti-warn-bg);
+        color: var(--ti-warn);
+        border-color: rgba(180, 83, 9, 0.25);
+    }
+
     table.ti-table {
         width: 100%;
         border-collapse: collapse;

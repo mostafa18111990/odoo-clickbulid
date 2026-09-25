@@ -386,14 +386,16 @@ class TestReportRendering(TrailerCase):
 
     def test_photo_row_without_an_image_does_not_break_the_report(self):
         inspection = self._make_inspection(
-            self.customer, _vin("5TFUW5F10AX112233"), approved=True)
+            self.customer, _vin("5TFUW5F10AX112233"))
         # a row flagged for the report, but the image never uploaded
+        # (photos are part of the findings, so they are added before approval)
         self.env["trailer.inspection.photo"].create({
             "inspection_id": inspection.id,
             "name": "لوحة المطابقة",
             "photo_type": "plate",
             "include_in_report": True,
         })
+        inspection.write({"state": "approved"})
         report = self.env["ir.actions.report"].search(
             [("model", "=", "trailer.inspection")], limit=1)
         content, _type = self.env["ir.actions.report"]._render_qweb_pdf(

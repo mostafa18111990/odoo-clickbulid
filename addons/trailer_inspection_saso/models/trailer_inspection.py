@@ -4,13 +4,34 @@ import re
 import uuid
 
 from odoo import Command, _, api, fields, models
-from odoo.exceptions import UserError, ValidationError
+from odoo.exceptions import AccessError, UserError, ValidationError
 
 from .trailer_vin import calculate_vin_check_digit
 
 
 VIN_PATTERN = re.compile(r"^[A-HJ-NPR-Z0-9]{17}$")
 _logger = logging.getLogger(__name__)
+
+# States in which the inspection data may still change.
+EDITABLE_STATES = ("draft", "scheduled", "in_progress")
+# One trailer may be inspected many times, but only once at a time.
+OPEN_STATES = ("draft", "scheduled", "in_progress", "technical_review")
+# Set only by the workflow actions. A plain write (from the UI or over RPC)
+# must never move an inspection through its lifecycle or forge a signature.
+WORKFLOW_FIELDS = frozenset({
+    "state", "approved_on", "access_token",
+    "inspector_signed_by", "inspector_signed_on", "inspector_signature_ip",
+    "reviewer_signed_by", "reviewer_signed_on", "reviewer_signature_ip",
+})
+SIGNATURE_RESET = {
+    "inspector_signed_by": False, "inspector_signed_on": False, "inspector_signature_ip": False,
+    "reviewer_signed_by": False, "reviewer_signed_on": False, "reviewer_signature_ip": False,
+}
+
+
+def _is_chatter_field(name):
+    """Fields mail.thread and activities maintain on a locked record."""
+    return name.startswith(("message_", "activity_", "website_message"))
 
 
 class TrailerInspection(models.Model):
@@ -179,7 +200,6 @@ class TrailerInspection(models.Model):
     extraction_notes = fields.Text(copy=False)
 
     _access_token_unique = models.Constraint("UNIQUE(access_token)", "The report verification token must be unique.")
-    _vin_unique = models.Constraint("UNIQUE(vin)", "The VIN must be unique.")
 
     @api.depends("access_token")
     def _compute_verification_url(self):
@@ -215,6 +235,17 @@ class TrailerInspection(models.Model):
     def create(self, vals_list):
         sequence = self.env["ir.sequence"]
         for vals in vals_list:
+            if not self.env.su:
+                # The web client sends the defaults back (draft, a fresh
+                # token); anything beyond that is an attempt to create an
+                # inspection that skipped its own workflow.
+                forged = [
+                    name for name in WORKFLOW_FIELDS - {"access_token"}
+                    if vals.get(name) and not (name == "state" and vals[name] == "draft")
+                ]
+                if forged:
+                    raise AccessError(_("Inspections start as drafts; workflow fields cannot be set directly (%s).",
+                                        ", ".join(sorted(forged))))
             if vals.get("name", "New") == "New":
                 vals["name"] = sequence.next_by_code("trailer.inspection") or "New"
             if vals.get("vin"):
@@ -225,15 +256,32 @@ class TrailerInspection(models.Model):
             record._prepare_checklist()
         return records
 
+    def _workflow_write(self, vals):
+        """Write that the workflow actions use to move state and sign.
+
+        Private (not callable over RPC) and bypasses the guards in
+        :meth:`write`, which exist to stop anyone doing the same by hand.
+        """
+        return super(TrailerInspection, self).write(vals)
+
     def write(self, vals):
+        workflow = WORKFLOW_FIELDS.intersection(vals)
+        if workflow and not self.env.su:
+            raise AccessError(_("%s can only be changed through the inspection workflow buttons.",
+                                ", ".join(sorted(workflow))))
+        business = [name for name in vals if not _is_chatter_field(name)]
+        if business and self.filtered(lambda record: record.state == "approved"):
+            raise UserError(_("An approved inspection is locked and can no longer be changed."))
         protected = {
             "partner_id", "inspection_date", "inspection_location", "inspector_id", "reviewer_id",
             "product_description", "trailer_type", "category", "vin", "manufacturer_name",
             "length_m", "width_m", "height_m", "gross_weight_kg", "standard_ids", "line_ids",
             "axle_ids", "photo_ids", "equipment_use_ids",
         }
-        if protected.intersection(vals) and self.filtered(lambda record: record.state == "approved"):
-            raise UserError(_("An approved inspection is locked. Reset it through the controlled manager action first."))
+        if protected.intersection(vals) and self.filtered(
+                lambda record: record.state not in EDITABLE_STATES):
+            raise UserError(_("The inspection data can only change while the inspection is open. "
+                              "Return it to the inspector first."))
         if "vin" in vals:
             if vals.get("vin"):
                 vals["vin"] = vals["vin"].replace(" ", "").upper()
@@ -273,6 +321,20 @@ class TrailerInspection(models.Model):
                 )
             if record.vin and record.vin[8] != calculate_vin_check_digit(record.vin):
                 raise ValidationError(_("VIN check digit in position 9 is invalid according to GSO 1780."))
+
+    @api.constrains("vin", "state")
+    def _check_single_open_inspection(self):
+        """A trailer is inspected again every period and after every failure,
+        so its VIN recurs across inspections — but never on two open ones."""
+        for record in self.filtered(lambda item: item.vin and item.state in OPEN_STATES):
+            other = self.sudo().search([
+                ("id", "!=", record.id), ("vin", "=", record.vin), ("state", "in", OPEN_STATES),
+            ], limit=1)
+            if other:
+                raise ValidationError(_(
+                    "VIN %(vin)s already has an open inspection (%(other)s). "
+                    "Finish or cancel it before opening another.",
+                    vin=record.vin, other=other.name))
 
     def action_generate_vin(self):
         for record in self:
@@ -349,7 +411,17 @@ class TrailerInspection(models.Model):
             for requirement in requirements
         ]
 
+    def _require_group(self, group, message):
+        """Button visibility is not a permission: re-check it server-side."""
+        if not self.env.su and not self.env.user.has_group("trailer_inspection_saso.%s" % group):
+            raise AccessError(message)
+
+    def _require_state(self, states, message):
+        if self.filtered(lambda record: record.state not in states):
+            raise UserError(message)
+
     def action_prepare_checklist(self):
+        self._require_group("group_trailer_manager", _("Only an inspection manager can regenerate the checklist."))
         for record in self:
             if record.state != "draft":
                 raise UserError(_("The checklist can only be regenerated in draft state."))
@@ -372,12 +444,15 @@ class TrailerInspection(models.Model):
         )
 
     def action_schedule(self):
+        self._require_group("group_trailer_inspector", _("Only an inspector can schedule an inspection."))
+        self._require_state(("draft",), _("Only a draft inspection can be scheduled."))
         for record in self:
             if not record.scheduled_datetime:
                 raise UserError(_("Set the scheduled date and time first."))
-            record.state = "scheduled"
+            record._workflow_write({"state": "scheduled"})
 
     def action_start(self):
+        self._require_state(("draft", "scheduled"), _("Only a draft or scheduled inspection can be started."))
         for record in self:
             if record.inspector_id != self.env.user and not self.env.user.has_group(
                 "trailer_inspection_saso.group_trailer_manager"
@@ -388,11 +463,13 @@ class TrailerInspection(models.Model):
             if not record.impartiality_confirmed:
                 raise UserError(_("Confirm the impartiality and conflict-of-interest check first."))
             authorization = record.authorization_id or record._find_valid_authorization()
-            if not authorization or not authorization.authorizes(record.category, record.inspection_date):
+            if (not authorization or authorization.user_id != record.inspector_id
+                    or not authorization.authorizes(record.category, record.inspection_date)):
                 raise UserError(_("The assigned inspector has no valid authorization for this category."))
             if not record.line_ids:
                 record._prepare_checklist()
-            record.write({"authorization_id": authorization.id, "state": "in_progress"})
+            record.write({"authorization_id": authorization.id})
+            record._workflow_write({"state": "in_progress"})
 
     def _clause_list(self, lines, limit=8):
         refs = [ref for ref in lines.mapped("clause_ref") if ref][:limit]
@@ -449,6 +526,7 @@ class TrailerInspection(models.Model):
             record.submission_ready = record.state == "in_progress" and not blockers
 
     def action_submit(self):
+        self._require_state(("in_progress",), _("Only an inspection in progress can be submitted for review."))
         for record in self:
             if record.inspector_id != self.env.user and not self.env.user.has_group(
                 "trailer_inspection_saso.group_trailer_manager"
@@ -461,7 +539,7 @@ class TrailerInspection(models.Model):
                 raise UserError(_("This inspection is not ready for review:\n\n%s",
                                   "\n".join("• %s" % b for b in blockers)))
             record._synchronize_nonconformities()
-            record.state = "technical_review"
+            record._workflow_write({"state": "technical_review"})
 
     def action_approve(self):
         for record in self:
@@ -475,7 +553,7 @@ class TrailerInspection(models.Model):
                 raise UserError(_("Inspector and reviewer signatures are required before approval."))
             if record.line_ids.filtered(lambda line: line.result == "no" and line.criticality == "critical"):
                 raise UserError(_("The report cannot be approved while a critical nonconformity remains."))
-            record.write({
+            record._workflow_write({
                 "state": "approved",
                 "approved_on": fields.Datetime.now(),
                 "report_valid_until": record.report_valid_until or fields.Date.add(record.inspection_date, years=1),
@@ -494,6 +572,7 @@ class TrailerInspection(models.Model):
             record.message_post(body=_("Source document queued for OCR extraction."), subtype_xmlid="mail.mt_note")
 
     def action_reject(self):
+        self._require_state(("technical_review",), _("Only an inspection under technical review can be rejected."))
         for record in self:
             if record.reviewer_id != self.env.user and not self.env.user.has_group(
                 "trailer_inspection_saso.group_trailer_manager"
@@ -501,25 +580,34 @@ class TrailerInspection(models.Model):
                 raise UserError(_("Only the assigned technical reviewer or an inspection manager can reject this inspection."))
             if not record.review_notes:
                 raise UserError(_("Record the technical review notes before rejection."))
-            record.state = "rejected"
+            record._workflow_write({"state": "rejected"})
 
     def action_return_to_inspector(self):
+        self._require_state(("technical_review",), _("Only an inspection under technical review can be returned."))
         for record in self:
             if record.reviewer_id != self.env.user and not self.env.user.has_group(
                 "trailer_inspection_saso.group_trailer_manager"
             ):
                 raise UserError(_("Only the assigned technical reviewer or an inspection manager can return this inspection."))
-        self.write({"state": "in_progress"})
+        # The findings may now change, so neither signature still vouches for them.
+        self._workflow_write(dict(SIGNATURE_RESET, state="in_progress"))
+        for record in self:
+            record.message_post(body=_("Returned to the inspector; both signatures were withdrawn."),
+                                subtype_xmlid="mail.mt_note")
 
     def action_cancel(self):
-        self.write({"state": "cancelled"})
+        self._require_group("group_trailer_manager", _("Only an inspection manager can cancel an inspection."))
+        self._require_state(OPEN_STATES + ("rejected",), _("An approved inspection cannot be cancelled."))
+        self._workflow_write({"state": "cancelled"})
 
     def action_reset_draft(self):
-        self.write({
-            "state": "draft", "approved_on": False, "access_token": str(uuid.uuid4()),
-            "inspector_signature": False, "inspector_signed_by": False, "inspector_signed_on": False, "inspector_signature_ip": False,
-            "reviewer_signature": False, "reviewer_signed_by": False, "reviewer_signed_on": False, "reviewer_signature_ip": False,
-        })
+        self._require_group("group_trailer_manager", _("Only an inspection manager can reset an inspection."))
+        self._require_state(("rejected", "cancelled"), _("Only a rejected or cancelled inspection can be reset to draft."))
+        for record in self:
+            record._workflow_write(dict(
+                SIGNATURE_RESET, state="draft", approved_on=False, access_token=str(uuid.uuid4()),
+                inspector_signature=False, reviewer_signature=False,
+            ))
 
     def _client_ip(self):
         try:
@@ -539,7 +627,7 @@ class TrailerInspection(models.Model):
                 raise UserError(_("Only the assigned inspector can sign this report."))
             if not record.inspector_signature:
                 raise UserError(_("Upload the inspector signature first."))
-            record.write({
+            record._workflow_write({
                 "inspector_signed_by": self.env.user.id,
                 "inspector_signed_on": fields.Datetime.now(),
                 "inspector_signature_ip": record._client_ip(),
@@ -555,7 +643,7 @@ class TrailerInspection(models.Model):
                 raise UserError(_("Only the assigned technical reviewer can sign this report."))
             if not record.reviewer_signature:
                 raise UserError(_("Upload the reviewer signature first."))
-            record.write({
+            record._workflow_write({
                 "reviewer_signed_by": self.env.user.id,
                 "reviewer_signed_on": fields.Datetime.now(),
                 "reviewer_signature_ip": record._client_ip(),
@@ -589,9 +677,23 @@ class TrailerInspection(models.Model):
                     existing[line.id].write(values)
                 else:
                     nc_model.create(values)
+            # A requirement re-examined and met before approval no longer has a
+            # finding. Close the untouched record rather than deleting it, so
+            # the history of what was once found stays with the inspection.
+            resolved = record.nonconformity_ids.filtered(
+                lambda nc: nc.state == "open" and nc.line_id not in failed_lines)
+            if resolved:
+                resolved._workflow_write({"state": "closed"})
+                for nc in resolved:
+                    nc.message_post(body=_("Closed automatically: the requirement was re-examined "
+                                           "and met before the report was submitted."),
+                                    subtype_xmlid="mail.mt_note")
 
     def action_create_reinspection(self):
         self.ensure_one()
+        self._require_group("group_trailer_inspector", _("Only an inspector can create a reinspection."))
+        self._require_state(("approved", "rejected"),
+                            _("A reinspection follows an approved or rejected inspection."))
         failed_lines = self.line_ids.filtered(lambda line: line.result == "no")
         if not failed_lines:
             raise UserError(_("A reinspection requires at least one nonconforming checklist item."))
@@ -602,6 +704,9 @@ class TrailerInspection(models.Model):
             "state": "draft",
             "inspection_date": fields.Date.context_today(self),
             "approved_on": False,
+            # The same trailer comes back: it keeps its identity.
+            "vin": self.vin,
+            "vin_source": self.vin_source,
             "line_ids": [Command.clear()] + [
                 Command.create({
                     "requirement_id": line.requirement_id.id,
@@ -708,10 +813,11 @@ class TrailerInspection(models.Model):
             lambda line: line.equipment_required and not line.equipment_id)
         if not targets:
             raise UserError(_("Every measurement requirement already names its equipment."))
-        targets.write({"equipment_id": self.bulk_equipment_id.id})
+        equipment = self.bulk_equipment_id
+        targets.write({"equipment_id": equipment.id})
         self.write({"bulk_equipment_id": False})
         self.message_post(body=_("%(equipment)s recorded on %(count)s requirement(s).",
-                                 equipment=self.bulk_equipment_id.display_name,
+                                 equipment=equipment.display_name,
                                  count=len(targets)))
         return len(targets)
 
@@ -761,8 +867,43 @@ class TrailerInspection(models.Model):
         }
 
 
+class TrailerInspectionLockedChild(models.AbstractModel):
+    """Records that make up an inspection's findings.
+
+    Editing them directly (inline, or over RPC on the child model) must obey
+    the same lock as the inspection itself; otherwise a signed or approved
+    report could be altered one line at a time.
+    """
+    _name = "trailer.inspection.locked.child"
+    _description = "Inspection Finding Lock"
+
+    # Fields the post-approval workflow still maintains on a locked record.
+    _lock_exempt_fields = frozenset()
+
+    def _check_inspection_editable(self, inspections):
+        if inspections.filtered(lambda inspection: inspection.state not in EDITABLE_STATES):
+            raise UserError(_("The findings of this inspection are locked. "
+                              "They can only change while the inspection is open."))
+
+    @api.model_create_multi
+    def create(self, vals_list):
+        self._check_inspection_editable(self.env["trailer.inspection"].browse(
+            {vals["inspection_id"] for vals in vals_list if vals.get("inspection_id")}))
+        return super().create(vals_list)
+
+    def write(self, vals):
+        if set(vals) - self._lock_exempt_fields:
+            self._check_inspection_editable(self.inspection_id)
+        return super().write(vals)
+
+    def unlink(self):
+        self._check_inspection_editable(self.inspection_id)
+        return super().unlink()
+
+
 class TrailerInspectionAxle(models.Model):
     _name = "trailer.inspection.axle"
+    _inherit = ["trailer.inspection.locked.child"]
     _description = "Trailer Inspection Axle"
     _order = "sequence, id"
 
@@ -782,8 +923,11 @@ class TrailerInspectionAxle(models.Model):
 
 class TrailerInspectionLine(models.Model):
     _name = "trailer.inspection.line"
+    _inherit = ["trailer.inspection.locked.child"]
     _description = "Trailer Inspection Checklist Line"
     _order = "section_id, sequence, id"
+    # Closing a nonconformity after approval marks its line.
+    _lock_exempt_fields = frozenset({"nc_closed"})
 
     inspection_id = fields.Many2one("trailer.inspection", required=True, ondelete="cascade", index=True)
     requirement_id = fields.Many2one("trailer.inspection.requirement", required=True, ondelete="restrict")
@@ -893,12 +1037,13 @@ class TrailerInspectionLine(models.Model):
         for line in self:
             if line.result == "no" and not line.observation:
                 raise ValidationError(_("A nonconforming result requires an observation."))
-            if line.equipment_id and line.equipment_id.calibration_status == "expired":
+            if line.equipment_id and line.equipment_id._is_calibration_expired():
                 raise ValidationError(_("Expired measuring equipment cannot be used."))
 
 
 class TrailerInspectionPhoto(models.Model):
     _name = "trailer.inspection.photo"
+    _inherit = ["trailer.inspection.locked.child"]
     _description = "Trailer Inspection Photo"
     _order = "sequence, id"
 
@@ -926,6 +1071,7 @@ class TrailerInspectionPhoto(models.Model):
 
 class TrailerInspectionEquipmentUse(models.Model):
     _name = "trailer.inspection.equipment.use"
+    _inherit = ["trailer.inspection.locked.child"]
     _description = "Trailer Inspection Equipment Use"
 
     inspection_id = fields.Many2one("trailer.inspection", required=True, ondelete="cascade")
@@ -938,7 +1084,7 @@ class TrailerInspectionEquipmentUse(models.Model):
     @api.constrains("equipment_id")
     def _check_equipment_validity(self):
         for record in self:
-            if record.equipment_id.calibration_status == "expired":
+            if record.equipment_id._is_calibration_expired():
                 raise ValidationError(_("Expired measuring equipment cannot be assigned."))
 
 
@@ -968,24 +1114,48 @@ class TrailerInspectionNonconformity(models.Model):
     def create(self, vals_list):
         sequence = self.env["ir.sequence"]
         for vals in vals_list:
+            if not self.env.su and (vals.get("state", "open") != "open"
+                                    or vals.get("verified_by") or vals.get("verified_on")):
+                raise AccessError(_("A nonconformity is always raised open."))
             if vals.get("name", "New") == "New":
                 vals["name"] = sequence.next_by_code("trailer.inspection.nc") or "New"
         return super().create(vals_list)
 
+    _workflow_fields = frozenset({"state", "verified_by", "verified_on"})
+
+    def _workflow_write(self, vals):
+        return super(TrailerInspectionNonconformity, self).write(vals)
+
+    def write(self, vals):
+        workflow = self._workflow_fields.intersection(vals)
+        if workflow and not self.env.su:
+            raise AccessError(_("%s can only be changed through the nonconformity workflow buttons.",
+                                ", ".join(sorted(workflow))))
+        return super().write(vals)
+
     def action_submit(self):
         for record in self:
+            if record.state != "open":
+                raise UserError(_("Only an open nonconformity can be submitted."))
             if not record.root_cause or not record.corrective_action:
                 raise UserError(_("Root cause and corrective action are required."))
-            record.state = "submitted"
+            record._workflow_write({"state": "submitted"})
 
     def action_verify(self):
-        self.write({"state": "verified", "verified_by": self.env.user.id, "verified_on": fields.Datetime.now()})
+        # Verifying one's own corrective action is not verification.
+        if not self.env.su and not self.env.user.has_group("trailer_inspection_saso.group_trailer_reviewer"):
+            raise AccessError(_("Only a technical reviewer or manager can verify a corrective action."))
+        if self.filtered(lambda record: record.state != "submitted"):
+            raise UserError(_("Only a submitted corrective action can be verified."))
+        self._workflow_write({"state": "verified", "verified_by": self.env.user.id, "verified_on": fields.Datetime.now()})
 
     def action_close(self):
+        if not self.env.su and not self.env.user.has_group("trailer_inspection_saso.group_trailer_reviewer"):
+            raise AccessError(_("Only a technical reviewer or manager can close a nonconformity."))
         for record in self:
             if record.state != "verified":
                 raise UserError(_("Verify the corrective action before closure."))
-            record.write({"state": "closed"})
+            record._workflow_write({"state": "closed"})
             record.line_id.write({"nc_closed": True})
 
     @api.model

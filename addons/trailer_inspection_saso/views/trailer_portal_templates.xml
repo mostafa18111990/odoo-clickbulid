@@ -39,7 +39,8 @@
                         <div class="ti-ref fs-4" t-field="inspection.name"/>
                     </div>
                     <div class="d-flex flex-column align-items-end gap-2">
-                        <span class="ti-seal"><i class="fa fa-check-circle"/> صالح / Verified</span>
+                        <span t-if="expired" class="ti-seal ti-seal--expired"><i class="fa fa-clock-o"/> منتهي الصلاحية / Expired</span>
+                        <span t-else="" class="ti-seal"><i class="fa fa-check-circle"/> صالح / Verified</span>
                         <a class="ti-dl" t-att-href="'/trailer-inspection/verify/%s/report' % inspection.access_token">
                             <i class="fa fa-download me-1"/>تحميل التقرير PDF
                         </a>

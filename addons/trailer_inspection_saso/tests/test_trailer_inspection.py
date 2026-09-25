@@ -127,11 +127,14 @@ class TestTrailerInspection(TransactionCase):
         failed_line.write({"result": "no", "observation": "Brake result outside limit"})
         inspection._synchronize_nonconformities()
         self.assertEqual(len(inspection.nonconformity_ids), 1)
+        # A reinspection follows a decided report.
+        inspection.state = "approved"
         action = inspection.action_create_reinspection()
         reinspection = self.env["trailer.inspection"].browse(action["res_id"])
         self.assertEqual(reinspection.inspection_type, "reinspection")
         self.assertEqual(reinspection.parent_inspection_id, inspection)
         self.assertEqual(len(reinspection.line_ids), 1)
+        self.assertEqual(reinspection.vin, inspection.vin, "the same trailer came back")
 
     def test_approved_report_is_locked(self):
         inspection = self.env["trailer.inspection"].create(self._inspection_values())

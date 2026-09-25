@@ -1,6 +1,6 @@
 import re
 
-from odoo import http
+from odoo import fields, http
 from odoo.http import content_disposition, request
 
 REPORT = "trailer_inspection_saso.action_report_trailer_inspection"
@@ -47,9 +47,15 @@ class TrailerInspectionPortal(http.Controller):
         inspection = request.env["trailer.inspection"].sudo().search(
             [("access_token", "=", token), ("state", "=", "approved")], limit=1
         )
+        # A genuine report past its validity must not read as currently valid
+        # to whoever scans the QR code at a checkpoint.
+        expired = bool(
+            inspection and inspection.report_valid_until
+            and inspection.report_valid_until < fields.Date.context_today(inspection)
+        )
         return request.render(
             "trailer_inspection_saso.portal_trailer_verification",
-            {"inspection": inspection, "valid": bool(inspection),
+            {"inspection": inspection, "valid": bool(inspection), "expired": expired,
              **self._branding(inspection)},
         )
 

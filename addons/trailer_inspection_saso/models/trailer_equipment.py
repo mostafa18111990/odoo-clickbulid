@@ -58,8 +58,29 @@ class TrailerInspectionEquipment(models.Model):
             if record.calibrated_on and record.calibration_due_date <= record.calibrated_on:
                 raise ValidationError("Calibration due date must be after the calibration date.")
 
+    def _is_calibration_expired(self, on_date=None):
+        """Decided from the due date itself: the stored status is only as
+        fresh as the last refresh, and time passes without any write."""
+        self.ensure_one()
+        on_date = on_date or fields.Date.context_today(self)
+        return not self.calibration_due_date or self.calibration_due_date < on_date
+
+    @api.model
+    def _refresh_date_dependent_states(self):
+        """Stored statuses that depend on today's date go stale overnight.
+
+        Marking the due dates modified recomputes every status derived from
+        them, including the copies stored on equipment-use records.
+        """
+        equipment = self.with_context(active_test=False).search([])
+        equipment.modified(["calibration_due_date"])
+        authorizations = self.env["trailer.inspector.authorization"].search([])
+        authorizations.modified(["valid_from"])
+        self.env.flush_all()
+
     @api.model
     def _cron_deadline_alerts(self):
+        self._refresh_date_dependent_states()
         today = fields.Date.today()
         manager_group = self.env.ref("trailer_inspection_saso.group_trailer_manager")
         managers = self.env["res.users"].search([("all_group_ids", "in", manager_group.id)])
