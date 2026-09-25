@@ -28,6 +28,10 @@ CORE_MODULES="base,web,mail,contacts,calendar,account,base_accounting_kit,l10n_s
 echo "$(date -Is) === building template $TEMPLATE_DB ===" | tee -a "$LOG"
 
 # 1. Drop the old template (never in use — invisible to the app servers).
+# A database flagged IS_TEMPLATE cannot be dropped until the flag is cleared.
+if [ -n "$(docker exec "$PG" psql -U odoo -Atc "select 1 from pg_database where datname='$TEMPLATE_DB'")" ]; then
+    docker exec "$PG" psql -U odoo -c "ALTER DATABASE $TEMPLATE_DB IS_TEMPLATE false" >> "$LOG" 2>&1
+fi
 docker exec "$PG" psql -U odoo -c "DROP DATABASE IF EXISTS $TEMPLATE_DB" >> "$LOG" 2>&1
 
 # 2. Create owned by 'odoo' so odoo_community's db list never shows it.
@@ -79,4 +83,9 @@ INSTALLED=$(docker exec "$PG" psql -U odoo -d "$TEMPLATE_DB" -tc \
     "select count(*) from ir_module_module where state='installed'" | tr -d ' ')
 SIZE=$(docker exec "$PG" psql -U odoo -tc \
     "select pg_size_pretty(pg_database_size('$TEMPLATE_DB'))" | tr -d ' ')
+
+# 6. Flag as a template: Odoo cron workers poll every DB list_dbs returns
+# (dbfilter does not apply to cron), and list_dbs skips datistemplate. An idle
+# cron connection would otherwise make every clone fail with "being accessed".
+docker exec "$PG" psql -U odoo -c "ALTER DATABASE $TEMPLATE_DB IS_TEMPLATE true" >> "$LOG" 2>&1
 echo "$(date -Is) DONE: $TEMPLATE_DB ready ($INSTALLED modules installed, $SIZE)" | tee -a "$LOG"

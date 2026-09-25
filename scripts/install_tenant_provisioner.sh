@@ -279,6 +279,11 @@ print(','.join([m for m in requested if m not in installed]))")
             docker exec "$ODOO_CONTAINER" sh -c \
                 "rm -rf /var/lib/odoo/filestore/$CACHE_DB && cp -a /var/lib/odoo/filestore/$DB /var/lib/odoo/filestore/$CACHE_DB" \
                 >>"$LOG" 2>&1 || true
+            # Odoo cron workers poll every DB list_dbs returns; flagging the cache
+            # as a template hides it (list_dbs skips datistemplate), so no idle
+            # connection can block a later CREATE DATABASE ... TEMPLATE.
+            docker exec odoo_saas_postgres psql -U odoo -d postgres -c \
+                "ALTER DATABASE \"$CACHE_DB\" IS_TEMPLATE true;" >>"$LOG" 2>&1
             echo "$(date -Is) enterprise cache created: $CACHE_DB" >>"$LOG"
         elif db_exists "$CACHE_DB"; then
             echo "$(date -Is) enterprise cache created by concurrent request: $CACHE_DB" >>"$LOG"

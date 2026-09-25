@@ -28,6 +28,10 @@ drop_db() {
     docker exec "$PG" psql -U odoo -d postgres -v ON_ERROR_STOP=1 -c \
         "select pg_terminate_backend(pid) from pg_stat_activity where datname='$db' and pid <> pg_backend_pid();" \
         >>"$LOG" 2>&1
+    if [ -n "$(docker exec "$PG" psql -At -U odoo -d postgres -c "select 1 from pg_database where datname='$db'")" ]; then
+        docker exec "$PG" psql -U odoo -d postgres -v ON_ERROR_STOP=1 -c \
+            "ALTER DATABASE \"$db\" IS_TEMPLATE false;" >>"$LOG" 2>&1
+    fi
     docker exec "$PG" dropdb -U odoo --if-exists "$db" >>"$LOG" 2>&1
     docker exec "$ODOO" rm -rf "/var/lib/odoo/filestore/$db" >>"$LOG" 2>&1 || true
 }
@@ -113,3 +117,9 @@ clone_template "$BUSINESS_DB" "$FULL_DB" "$FULL_DELTA"
 validate_template "$FULL_DB" "$STARTER_MODULES,$BUSINESS_DELTA,$FULL_DELTA"
 
 log "Enterprise templates ready"
+
+# Hide templates from Odoo cron workers (Odoo list_dbs skips datistemplate).
+for db in "$STARTER_DB" "$BUSINESS_DB" "$FULL_DB"; do
+    docker exec "$PG" psql -U odoo -d postgres -v ON_ERROR_STOP=1 -c \
+        "ALTER DATABASE \"$db\" IS_TEMPLATE true;" >>"$LOG" 2>&1
+done
