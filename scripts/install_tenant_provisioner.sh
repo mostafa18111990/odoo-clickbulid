@@ -600,7 +600,13 @@ for req in "$REQ_DIR"/*.seats.req; do
     sub=$(echo "$sub" | tr -cd 'a-z0-9-')
     [ -z "$sub" ] && { rm -f "$req"; continue; }
     limit=$(python3 -c "import json; print(int(json.load(open('$req')).get('max_users', 0)))" 2>/dev/null || echo 0)
-    if docker exec -e SEATS_DB="$sub" -e SEATS_LIMIT="$limit" odoo_saas_app python3 -c '
+    # Apply it from the container of the tenant's edition: the Community role
+    # has no rights on Enterprise databases ("permission denied for schema").
+    seats_owner=$(docker exec odoo_saas_postgres psql -U odoo -d postgres -Atc \
+        "select pg_get_userbyid(datdba) from pg_database where datname='$sub'" 2>/dev/null)
+    seats_container=odoo_saas_app
+    [ "$seats_owner" = "odoo_enterprise" ] && seats_container=odoo_saas_ent
+    if docker exec -e SEATS_DB="$sub" -e SEATS_LIMIT="$limit" "$seats_container" python3 -c '
 import os, odoo
 from odoo.tools import config
 config.parse_config(["-c", "/etc/odoo/odoo.conf"])
