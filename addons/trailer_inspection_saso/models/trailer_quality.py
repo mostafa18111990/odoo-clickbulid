@@ -137,7 +137,7 @@ class TrailerInspectionImport(models.TransientModel):
 
     def action_import(self):
         self.ensure_one()
-        content = base64.b64decode(self.file)
+        content = self.file.content
         extension = (self.filename.rsplit(".", 1)[-1] or "").lower()
         if extension == "csv":
             rows = self._rows_from_csv(content)

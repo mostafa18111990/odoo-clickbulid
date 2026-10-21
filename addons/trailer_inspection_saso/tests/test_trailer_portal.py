@@ -272,11 +272,11 @@ class TestBulkEvidenceAndEquipment(TrailerCase):
         if not needing:
             self.skipTest("the standard data asks for no evidence")
         already = needing[0]
-        already.write({"evidence_attachment": base64.b64encode(b"kept"),
+        already.write({"evidence_attachment": base64.b64encode(b"kept").decode(),
                        "evidence_filename": "kept.pdf"})
 
         self.inspection.write({
-            "bulk_evidence": base64.b64encode(b"%PDF-1.4 shared"),
+            "bulk_evidence": base64.b64encode(b"%PDF-1.4 shared").decode(),
             "bulk_evidence_filename": "shared.pdf"})
         touched = self.inspection.action_apply_bulk_evidence()
 
@@ -309,8 +309,8 @@ class TestBulkEvidenceAndEquipment(TrailerCase):
     def test_nothing_to_do_is_reported(self):
         import base64
         self.inspection.line_ids.filtered("evidence_required").write(
-            {"evidence_attachment": base64.b64encode(b"x"), "evidence_filename": "x"})
-        self.inspection.write({"bulk_evidence": base64.b64encode(b"y"),
+            {"evidence_attachment": base64.b64encode(b"x").decode(), "evidence_filename": "x"})
+        self.inspection.write({"bulk_evidence": base64.b64encode(b"y").decode(),
                                "bulk_evidence_filename": "y"})
         with self.assertRaises(UserError):
             self.inspection.action_apply_bulk_evidence()
@@ -325,7 +325,7 @@ class TestVinAllocation(TrailerCase):
             "name": "Allocation profile", "manufacturer_id": maker.id,
             "wmi": "SA9", "vds": "TRL01", "plant_code": "R",
             "wmi_certificate_number": "WMI-1",
-            "wmi_certificate": b"Y2VydA==",
+            "wmi_certificate": "Y2VydA==",
             "wmi_certificate_filename": "wmi.pdf",
             "assignment_authority_confirmed": True,
         })

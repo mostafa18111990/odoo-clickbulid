@@ -12,7 +12,7 @@ def _vin(base17):
     return base17[:8] + calculate_vin_check_digit(base17) + base17[9:]
 
 
-EVIDENCE = base64.b64encode(b"evidence")
+EVIDENCE = base64.b64encode(b"evidence").decode()
 
 
 class IntegrityCase(TransactionCase):

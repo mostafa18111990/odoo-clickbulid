@@ -229,7 +229,7 @@ class TrailerInspection(models.Model):
                 qr_png = report_service.barcode(
                     "QR", record.verification_url, width=150, height=150
                 )
-                record.verification_qr = base64.b64encode(qr_png)
+                record.verification_qr = base64.b64encode(qr_png).decode()
             except Exception:
                 _logger.exception("Unable to generate verification QR for %s", record.display_name)
 
