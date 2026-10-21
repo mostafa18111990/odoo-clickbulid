@@ -27,7 +27,7 @@ class SaasTenantPortal(models.Model):
             user = self.env['res.users'].sudo().with_context(no_reset_password=True).create({
                 'name': self.customer_name or self.name, 'login': self.customer_email,
                 'email': self.customer_email, 'saas_tenant_id': self.id,
-                'groups_id': [(6, 0, [portal_group.id])], 'company_id': self.env.company.id})
+                'group_ids': [(6, 0, [portal_group.id])], 'company_id': self.env.company.id})
         self.write({'portal_user_id': user.id, 'portal_access_granted': True})
         try:
             user.sudo().action_reset_password()

@@ -118,7 +118,7 @@ class SaasReseller(models.Model):
             groups.append(reseller_group.id)
         user = self.env['res.users'].sudo().with_context(no_reset_password=True).create({
             'name': self.contact_name or self.name, 'login': self.contact_email,
-            'email': self.contact_email, 'groups_id': [(6, 0, groups)]})
+            'email': self.contact_email, 'group_ids': [(6, 0, groups)]})
         self.portal_user_id = user.id
         try:
             user.action_reset_password()
