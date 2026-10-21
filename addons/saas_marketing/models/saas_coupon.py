@@ -38,7 +38,10 @@ class SaasCoupon(models.Model):
                                      string='Redemptions')
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [('code_unique', 'UNIQUE(code)', 'Coupon code must be unique.')]
+    _code_unique = models.Constraint(
+        'UNIQUE(code)',
+        "Coupon code must be unique.",
+    )
 
     @api.constrains('discount_type', 'discount_value')
     def _check_value(self):

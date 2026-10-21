@@ -13,7 +13,7 @@ class SaasDemoTelegram(http.Controller):
                 methods=['POST'], csrf=False, sitemap=False)
     def telegram_webhook(self, **kw):
         params = request.env['ir.config_parameter'].sudo()
-        expected = params.get_param('saas_demo.telegram_webhook_secret') or ''
+        expected = params.get_str('saas_demo.telegram_webhook_secret') or ''
         supplied = request.httprequest.headers.get('X-Telegram-Bot-Api-Secret-Token', '')
         if not expected or supplied != expected:
             return request.make_json_response({'ok': False}, status=403)
@@ -30,7 +30,7 @@ class SaasDemoTelegram(http.Controller):
             return request.make_json_response({'ok': True})
         actor_id = str((callback.get('from') or {}).get('id') or '')
         allowed = {item.strip() for item in (
-            params.get_param('saas_demo.telegram_allowed_user_ids') or '').split(',') if item.strip()}
+            params.get_str('saas_demo.telegram_allowed_user_ids') or '').split(',') if item.strip()}
         demo = request.env['saas.demo.request'].sudo().browse(int(parts[2])).exists()
         answer = 'تعذر تنفيذ الإجراء'
         if not demo or actor_id not in allowed:

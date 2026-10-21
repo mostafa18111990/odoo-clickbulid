@@ -29,4 +29,7 @@ class SaasAiProvider(models.Model):
                                      currency_field='currency_id', default=0.0)
     notes = fields.Text(string='Notes')
 
-    _sql_constraints = [('name_unique', 'UNIQUE(name)', 'Provider name must be unique.')]
+    _name_unique = models.Constraint(
+        'UNIQUE(name)',
+        "Provider name must be unique.",
+    )

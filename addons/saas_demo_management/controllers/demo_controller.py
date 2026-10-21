@@ -84,12 +84,12 @@ class SaasDemoWebsite(http.Controller):
 
         remote = request.httprequest.headers.get('X-Forwarded-For', '').split(',')[0].strip()
         remote = remote or request.httprequest.remote_addr or 'unknown'
-        secret = request.env['ir.config_parameter'].sudo().get_param(
+        secret = request.env['ir.config_parameter'].sudo().get_str(
             'database.secret') or request.env.cr.dbname
         fingerprint = hashlib.sha256(('%s:%s' % (secret, remote)).encode()).hexdigest()
         Demo = request.env['saas.demo.request'].sudo()
         cutoff = fields.Datetime.now() - timedelta(minutes=15)
-        raw_limit = request.env['ir.config_parameter'].sudo().get_param(
+        raw_limit = request.env['ir.config_parameter'].sudo().get_str(
             'saas_demo.max_requests_per_15_minutes', '3')
         try:
             limit_value = max(1, min(int(raw_limit), 20))

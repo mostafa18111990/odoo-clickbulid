@@ -41,8 +41,10 @@ class SaasTenantApp(models.Model):
     error_message = fields.Text(string='Error')
     external_job_id = fields.Char(string='FastAPI Job ID')
 
-    _sql_constraints = [('tenant_app_unique', 'UNIQUE(tenant_id, app_id)',
-                         'This app is already registered for this tenant.')]
+    _tenant_app_unique = models.Constraint(
+        'UNIQUE(tenant_id, app_id)',
+        "This app is already registered for this tenant.",
+    )
 
     def mark_installed(self):
         self.write({'state': 'installed', 'installed_at': fields.Datetime.now(), 'error_message': False})

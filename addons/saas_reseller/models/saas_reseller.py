@@ -48,7 +48,10 @@ class SaasReseller(models.Model):
     commission_ids = fields.One2many('saas.reseller.commission', 'reseller_id', string='Commissions')
     payout_ids = fields.One2many('saas.reseller.payout', 'reseller_id', string='Payouts')
 
-    _sql_constraints = [('code_unique', 'UNIQUE(code)', 'Reseller code must be unique.')]
+    _code_unique = models.Constraint(
+        'UNIQUE(code)',
+        "Reseller code must be unique.",
+    )
 
     @api.depends('tenant_ids', 'tenant_ids.state')
     def _compute_customer_count(self):

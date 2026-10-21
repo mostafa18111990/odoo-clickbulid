@@ -42,8 +42,10 @@ class SaasPaymentTransaction(models.Model):
     confirmed_at = fields.Datetime(string='Confirmed At', readonly=True)
     expires_at = fields.Datetime(string='Expires At')
 
-    _sql_constraints = [('gateway_tx_ref_unique', 'UNIQUE(gateway_tx_ref)',
-                         'Gateway transaction reference must be unique.')]
+    _gateway_tx_ref_unique = models.Constraint(
+        'UNIQUE(gateway_tx_ref)',
+        "Gateway transaction reference must be unique.",
+    )
 
     @api.depends('amount', 'amount_refunded')
     def _compute_amount_net(self):

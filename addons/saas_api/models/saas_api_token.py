@@ -29,8 +29,10 @@ class SaasApiToken(models.Model):
     revoked_at = fields.Datetime(string='Revoked At', readonly=True)
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [('hash_unique', 'UNIQUE(token_hash)',
-                         'Token hash collision (unexpected).')]
+    _hash_unique = models.Constraint(
+        'UNIQUE(token_hash)',
+        "Token hash collision (unexpected).",
+    )
 
     @api.model_create_multi
     def create(self, vals_list):

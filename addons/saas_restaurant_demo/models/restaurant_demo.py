@@ -234,8 +234,8 @@ class SaasRestaurantDemoSeed(models.AbstractModel):
             return super().seed(sector)
         params = self.env['ir.config_parameter'].sudo()
         key = 'saas.restaurant.demo.seed.version'
-        if params.get_param(key) == RESTAURANT_SEED_VERSION:
-            raw = params.get_param('saas.restaurant.demo.seed.summary') or '{}'
+        if params.get_str(key) == RESTAURANT_SEED_VERSION:
+            raw = params.get_str('saas.restaurant.demo.seed.summary') or '{}'
             try:
                 summary = json.loads(raw)
             except (TypeError, ValueError):
@@ -253,8 +253,8 @@ class SaasRestaurantDemoSeed(models.AbstractModel):
             'version': RESTAURANT_SEED_VERSION,
             'sector': sector,
         })
-        params.set_param(key, RESTAURANT_SEED_VERSION)
-        params.set_param(
+        params.set_str(key, RESTAURANT_SEED_VERSION)
+        params.set_str(
             'saas.restaurant.demo.seed.summary',
             json.dumps(result, ensure_ascii=False))
         return result
@@ -362,7 +362,7 @@ class SaasRestaurantDemoSeed(models.AbstractModel):
             'partner_id': company.partner_id.id,
             'company_id': company.id,
         })
-        env['ir.config_parameter'].sudo().set_param(
+        env['ir.config_parameter'].sudo().set_str(
             'saas.restaurant.demo.legal_disclaimer',
             'كل البيانات القانونية والمالية والشخصية في هذا الديمو تجريبية.')
 

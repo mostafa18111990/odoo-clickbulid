@@ -98,13 +98,13 @@ class SaasDemoSeed(models.AbstractModel):
     @api.model
     def seed_demo_cycle(self, sector='other'):
         params = self.env['ir.config_parameter'].sudo()
-        demo_mode = (params.get_param('saas.demo_mode') or '').strip().lower()
+        demo_mode = (params.get_str('saas.demo_mode') or '').strip().lower()
         if demo_mode not in ('1', 'true', 'yes'):
             raise UserError(_('Sample operations can only be created in an isolated demo database.'))
 
-        previous = params.get_param('saas.demo.seed.version')
+        previous = params.get_str('saas.demo.seed.version')
         if previous == SEED_VERSION:
-            raw_summary = params.get_param('saas.demo.seed.summary') or '{}'
+            raw_summary = params.get_str('saas.demo.seed.summary') or '{}'
             try:
                 summary = json.loads(raw_summary)
             except (TypeError, ValueError):
@@ -328,8 +328,8 @@ class SaasDemoSeed(models.AbstractModel):
             'tasks': len(tasks),
         }
         summary = self._seed_sector_pack(sector, summary)
-        params.set_param('saas.demo.seed.version', SEED_VERSION)
-        params.set_param('saas.demo.seed.summary', json.dumps(summary, ensure_ascii=False))
+        params.set_str('saas.demo.seed.version', SEED_VERSION)
+        params.set_str('saas.demo.seed.summary', json.dumps(summary, ensure_ascii=False))
         return summary
 
     @api.model
@@ -370,7 +370,7 @@ class SaasDemoSeed(models.AbstractModel):
                 'saas.demo.seed.sector.operations'].sudo().seed(sector)
         summary = dict(summary)
         summary[sector] = sector_summary
-        self.env['ir.config_parameter'].sudo().set_param(
+        self.env['ir.config_parameter'].sudo().set_str(
             'saas.demo.seed.summary', json.dumps(summary, ensure_ascii=False))
         return summary
 

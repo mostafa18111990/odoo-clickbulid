@@ -15,7 +15,7 @@ class SaasDemoSeedManufacturing(models.AbstractModel):
     @api.model
     def seed(self):
         params = self.env['ir.config_parameter'].sudo()
-        if params.get_param('saas.demo.seed.manufacturing.version') == MANUFACTURING_PACK_VERSION:
+        if params.get_str('saas.demo.seed.manufacturing.version') == MANUFACTURING_PACK_VERSION:
             return self._summary('already_seeded')
 
         env = self.env(context=dict(self.env.context, **DEMO_CONTEXT))
@@ -237,7 +237,7 @@ class SaasDemoSeedManufacturing(models.AbstractModel):
         })
         manual_check.do_fail()
 
-        params.set_param(
+        params.set_str(
             'saas.demo.seed.manufacturing.version', MANUFACTURING_PACK_VERSION)
         return {
             'status': 'seeded',

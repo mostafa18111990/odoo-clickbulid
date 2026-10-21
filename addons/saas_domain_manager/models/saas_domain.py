@@ -42,7 +42,10 @@ class SaasDomain(models.Model):
     activated_at = fields.Datetime(string='Activated At', readonly=True)
     verification_ids = fields.One2many('saas.domain.verification', 'domain_id', string='Verification Log')
 
-    _sql_constraints = [('domain_unique', 'UNIQUE(domain)', 'This domain is already registered.')]
+    _domain_unique = models.Constraint(
+        'UNIQUE(domain)',
+        "This domain is already registered.",
+    )
 
     @api.depends('ssl_expires_at')
     def _compute_ssl_days_left(self):
@@ -55,7 +58,7 @@ class SaasDomain(models.Model):
     def _compute_dns_instructions(self):
         config = self.env['saas.config'].sudo()._get_config()
         platform_domain = config.platform_domain
-        platform_ip = self.env['ir.config_parameter'].sudo().get_param('saas_domain.platform_ip', '129.121.98.243')
+        platform_ip = self.env['ir.config_parameter'].sudo().get_str('saas_domain.platform_ip', '129.121.98.243')
         for rec in self:
             rec.txt_record_name = f'_clickbuild-verify.{rec.domain}' if rec.domain else ''
             if rec.routing_type == 'cname' and rec.tenant_id:

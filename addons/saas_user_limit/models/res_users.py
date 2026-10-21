@@ -7,7 +7,7 @@ class ResUsers(models.Model):
 
     def _saas_max_users(self):
         """Plan user limit set by the ClickBuild provisioner. 0 = unlimited."""
-        val = self.env['ir.config_parameter'].sudo().get_param('saas.max_users', '0')
+        val = self.env['ir.config_parameter'].sudo().get_str('saas.max_users', '0')
         try:
             return int(val)
         except (TypeError, ValueError):

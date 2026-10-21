@@ -210,7 +210,7 @@ class TrailerInspection(models.Model):
 
     @api.depends("access_token")
     def _compute_verification_url(self):
-        base_url = self.env["ir.config_parameter"].sudo().get_param("web.base.url", "")
+        base_url = self.env["ir.config_parameter"].sudo().get_str("web.base.url", "")
         for record in self:
             record.verification_url = (
                 f"{base_url}/trailer-inspection/verify/{record.access_token}"

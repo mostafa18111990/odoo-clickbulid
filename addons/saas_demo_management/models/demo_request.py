@@ -205,7 +205,7 @@ class SaasDemoRequest(models.Model):
         self.ensure_one()
         if self.state != 'approved':
             raise UserError(_('Approve the demo request before provisioning.'))
-        enabled = self.env['ir.config_parameter'].sudo().get_param(
+        enabled = self.env['ir.config_parameter'].sudo().get_str(
             'saas_demo.provision_enabled', 'False')
         if str(enabled).lower() not in ('true', '1', 'yes'):
             raise UserError(_('Enterprise demo provisioning is disabled in this environment.'))
@@ -397,9 +397,9 @@ class SaasDemoRequest(models.Model):
 
     def _whatsapp_api(self, payload):
         params = self.env['ir.config_parameter'].sudo()
-        token = params.get_param('saas_demo.whatsapp_access_token') or ''
-        phone_number_id = params.get_param('saas_demo.whatsapp_phone_number_id') or ''
-        api_version = params.get_param('saas_demo.whatsapp_api_version') or 'v23.0'
+        token = params.get_str('saas_demo.whatsapp_access_token') or ''
+        phone_number_id = params.get_str('saas_demo.whatsapp_phone_number_id') or ''
+        api_version = params.get_str('saas_demo.whatsapp_api_version') or 'v23.0'
         if not token or not phone_number_id:
             raise UserError(_('WhatsApp Cloud API credentials are not configured.'))
         if not re.fullmatch(r'v\d+\.\d+', api_version):
@@ -433,8 +433,8 @@ class SaasDemoRequest(models.Model):
     def _whatsapp_template_payload(self):
         self.ensure_one()
         params = self.env['ir.config_parameter'].sudo()
-        template_name = params.get_param('saas_demo.whatsapp_template_name') or ''
-        language = params.get_param('saas_demo.whatsapp_template_language') or 'ar'
+        template_name = params.get_str('saas_demo.whatsapp_template_name') or ''
+        language = params.get_str('saas_demo.whatsapp_template_language') or 'ar'
         tenant = self.tenant_id
         if not template_name:
             raise UserError(_('The approved WhatsApp template name is not configured.'))
@@ -466,7 +466,7 @@ class SaasDemoRequest(models.Model):
     def _send_whatsapp_credentials(self, force=False):
         self.ensure_one()
         params = self.env['ir.config_parameter'].sudo()
-        enabled = params.get_param('saas_demo.whatsapp_enabled', 'False')
+        enabled = params.get_str('saas_demo.whatsapp_enabled', 'False')
         if str(enabled).lower() not in ('true', '1', 'yes'):
             if self.whatsapp_status != 'sent':
                 self.whatsapp_status = 'disabled'
@@ -511,7 +511,7 @@ class SaasDemoRequest(models.Model):
 
     def _callback_signature(self, action):
         self.ensure_one()
-        secret = self.env['ir.config_parameter'].sudo().get_param(
+        secret = self.env['ir.config_parameter'].sudo().get_str(
             'saas_demo.callback_signing_secret') or ''
         payload = '%s:%s' % (self.id, action)
         return hmac.new(secret.encode(), payload.encode(), hashlib.sha256).hexdigest()[:16] if secret else ''
@@ -528,7 +528,7 @@ class SaasDemoRequest(models.Model):
         )
 
     def _telegram_api(self, method, payload):
-        token = self.env['ir.config_parameter'].sudo().get_param(
+        token = self.env['ir.config_parameter'].sudo().get_str(
             'saas_demo.telegram_bot_token') or ''
         if not token:
             raise UserError(_('Telegram bot token is not configured.'))
@@ -556,8 +556,8 @@ class SaasDemoRequest(models.Model):
     def _notify_telegram(self):
         self.ensure_one()
         params = self.env['ir.config_parameter'].sudo()
-        enabled = params.get_param('saas_demo.telegram_enabled', 'False')
-        chat_id = params.get_param('saas_demo.telegram_chat_id') or ''
+        enabled = params.get_str('saas_demo.telegram_enabled', 'False')
+        chat_id = params.get_str('saas_demo.telegram_chat_id') or ''
         if str(enabled).lower() not in ('true', '1', 'yes') or not chat_id:
             self.telegram_status = 'disabled'
             return False

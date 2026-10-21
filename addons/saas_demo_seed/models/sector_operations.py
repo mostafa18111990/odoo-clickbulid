@@ -20,7 +20,7 @@ class SaasDemoSeedSectorOperations(models.AbstractModel):
             return {'status': 'not_applicable', 'version': SECTOR_PACK_VERSION}
         params = self.env['ir.config_parameter'].sudo()
         key = 'saas.demo.seed.sector.%s.version' % sector
-        if params.get_param(key) == SECTOR_PACK_VERSION:
+        if params.get_str(key) == SECTOR_PACK_VERSION:
             return {
                 'status': 'already_seeded',
                 'version': SECTOR_PACK_VERSION,
@@ -32,7 +32,7 @@ class SaasDemoSeedSectorOperations(models.AbstractModel):
             'version': SECTOR_PACK_VERSION,
             'sector': sector,
         })
-        params.set_param(key, SECTOR_PACK_VERSION)
+        params.set_str(key, SECTOR_PACK_VERSION)
         return result
 
     @api.model
