@@ -22,14 +22,14 @@
                                 record.state.raw_value === 'technical_review' ? 'review' :
                                 'progress' }}">
                             <div class="d-flex justify-content-between align-items-start gap-2">
-                                <span class="ti-k-title" t-esc="record.name.value"/>
+                                <span class="ti-k-title" t-out="record.name.value"/>
                                 <span t-attf-class="ti-badge ti-badge--{{
                                         record.overall_result.raw_value === 'compliant' ? 'pass' :
                                         record.overall_result.raw_value === 'non_compliant' ? 'fail' :
                                         'none' }}"
-                                      t-esc="record.overall_result.value"/>
+                                      t-out="record.overall_result.value"/>
                             </div>
-                            <div class="ti-k-vin" t-esc="record.vin.value or '—'"/>
+                            <div class="ti-k-vin" t-out="record.vin.value or '—'"/>
                             <div class="mt-2 small">
                                 <div><i class="fa fa-building-o me-1 text-muted" title="Customer"/><field name="partner_id"/></div>
                                 <div><i class="fa fa-truck me-1 text-muted" title="Trailer"/><field name="trailer_type"/>
@@ -44,7 +44,7 @@
                                 <span t-if="record.nonconformity_count.raw_value > 0"
                                       class="ti-badge ti-badge--fail">
                                     <i class="fa fa-exclamation-triangle me-1"/>
-                                    <t t-esc="record.nonconformity_count.value"/>
+                                    <t t-out="record.nonconformity_count.value"/>
                                 </span>
                             </div>
                         </div>
