@@ -1,7 +1,12 @@
 import re
 
 from odoo import fields, http
-from odoo.http import content_disposition, request
+from odoo.http import request
+
+try:  # Odoo 20 moved the helper into odoo.http.stream
+    from odoo.http.stream import content_disposition
+except ImportError:  # Odoo 19
+    from odoo.http import content_disposition
 
 REPORT = "trailer_inspection_saso.action_report_trailer_inspection"
 
