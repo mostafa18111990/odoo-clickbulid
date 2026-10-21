@@ -1,6 +1,6 @@
 {
     'name': 'SaaS External Servers',
-    'version': '19.0.2.0.0',
+    'version': '20.0.2.0.0',
     'category': 'SaaS',
     'summary': 'Provision and manage tenants on external (customer-owned) servers over SSH',
     'description': """
@@ -12,7 +12,7 @@ SSH, managed from the same SaaS backend as local tenants.
     'website': 'https://clickbuild.com',
     'depends': ['saas_core', 'saas_tenant_manager'],
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'views/saas_external_server_views.xml',
         'views/saas_tenant_deploy_views.xml',
         'wizards/server_credentials_wizard_views.xml',

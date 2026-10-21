@@ -1,6 +1,6 @@
 {
     "name": "Trailer Inspection - SASO",
-    "version": "19.0.4.2.1",
+    "version": "20.0.4.2.1",
     "category": "Operations/Inspections",
     "summary": "Trailer and semi-trailer inspections against SASO requirements",
     "description": """
@@ -13,7 +13,7 @@ and bilingual inspection reports.
     "depends": ["base", "mail", "web"],
     "data": [
         "security/trailer_inspection_security.xml",
-        "security/ir.model.access.csv",
+        "security/ir.access.csv",
         "data/trailer_inspection_sequence.xml",
         "data/trailer_standard_data.xml",
         "data/trailer.inspection.requirement.csv",

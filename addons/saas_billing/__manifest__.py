@@ -1,13 +1,13 @@
 {
     'name': 'SaaS Billing',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'SaaS',
     'summary': 'Invoice engine, PDF generation, VAT/tax management, credit notes',
     'author': 'ClickBuild',
     'website': 'https://clickbuild.com',
     'depends': ['saas_subscription'],
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'data/saas_invoice_sequence.xml',
         'data/saas_tax_data.xml',
         'data/saas_billing_cron.xml',

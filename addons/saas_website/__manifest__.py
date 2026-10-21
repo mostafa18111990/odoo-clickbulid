@@ -1,13 +1,13 @@
 {
     'name': 'SaaS Website',
-    'version': '19.0.1.1.15',
+    'version': '20.0.1.1.15',
     'category': 'SaaS',
     'summary': 'Public marketing website for ClickBuild SaaS platform',
     'author': 'ClickBuild',
     'website': 'https://clickbuild.com',
     'depends': ['saas_core', 'website'],
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'data/faq_data.xml',
         'data/website_menu_data.xml',
         'data/welcome_email_template.xml',

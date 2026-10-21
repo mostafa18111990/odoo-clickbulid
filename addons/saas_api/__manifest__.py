@@ -1,13 +1,13 @@
 {
     'name': 'SaaS REST API',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'SaaS',
     'summary': 'Token-based REST API for the platform',
     'author': 'ClickBuild',
     'website': 'https://clickbuild.com',
     'depends': ['saas_reporting', 'saas_portal'],
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'data/saas_api_cron.xml',
         'views/saas_api_token_views.xml',
         'views/saas_api_request_log_views.xml',

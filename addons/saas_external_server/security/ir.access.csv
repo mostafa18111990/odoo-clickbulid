@@ -1,0 +1,4 @@
+id,name,model_id/id,group_id/id,operation,domain
+access_saas_external_server_super_admin,saas.external.server.super.admin,model_saas_external_server,saas_core.group_saas_super_admin,crud,
+access_saas_remote_customer_wizard_super_admin,saas.remote.customer.wizard.super.admin,model_saas_remote_customer_wizard,saas_core.group_saas_super_admin,crud,
+access_saas_server_credentials_wizard_super_admin,saas.server.credentials.wizard.super.admin,model_saas_server_credentials_wizard,saas_core.group_saas_super_admin,crud,

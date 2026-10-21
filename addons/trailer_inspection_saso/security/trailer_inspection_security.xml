@@ -43,39 +43,6 @@
         <field name="user_ids" eval="[(4, ref('base.user_admin'))]"/>
     </record>
 
-    <record id="rule_trailer_inspection_company" model="ir.rule">
-        <field name="name">Trailer inspections by company</field>
-        <field name="model_id" ref="model_trailer_inspection"/>
-        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
-        <field name="groups" eval="[(4, ref('group_trailer_inspection_user'))]"/>
-    </record>
 
-    <record id="rule_trailer_equipment_company" model="ir.rule">
-        <field name="name">Trailer equipment by company</field>
-        <field name="model_id" ref="model_trailer_inspection_equipment"/>
-        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
-        <field name="groups" eval="[(4, ref('group_trailer_inspection_user'))]"/>
-    </record>
 
-    <record id="rule_trailer_authorization_company" model="ir.rule">
-        <field name="name">Inspector authorizations by company</field>
-        <field name="model_id" ref="model_trailer_inspector_authorization"/>
-        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
-        <field name="groups" eval="[(4, ref('group_trailer_inspection_user'))]"/>
-    </record>
-    <record id="rule_trailer_nc_company" model="ir.rule">
-        <field name="name">Trailer nonconformities by company</field><field name="model_id" ref="model_trailer_inspection_nonconformity"/><field name="domain_force">[('inspection_id.company_id', 'in', company_ids)]</field><field name="groups" eval="[(4, ref('group_trailer_inspection_user'))]"/>
-    </record>
-    <record id="rule_trailer_quality_document_company" model="ir.rule">
-        <field name="name">Trailer quality documents by company</field><field name="model_id" ref="model_trailer_quality_document"/><field name="domain_force">[('company_id', 'in', company_ids)]</field><field name="groups" eval="[(4, ref('group_trailer_inspection_user'))]"/>
-    </record>
-    <record id="rule_trailer_quality_complaint_company" model="ir.rule">
-        <field name="name">Trailer complaints by company</field><field name="model_id" ref="model_trailer_quality_complaint"/><field name="domain_force">[('company_id', 'in', company_ids)]</field><field name="groups" eval="[(4, ref('group_trailer_inspection_user'))]"/>
-    </record>
-    <record id="rule_trailer_vin_profile_company" model="ir.rule">
-        <field name="name">Trailer VIN profiles by company</field><field name="model_id" ref="model_trailer_vin_profile"/><field name="domain_force">[('company_id', 'in', company_ids)]</field><field name="groups" eval="[(4, ref('group_trailer_inspection_user'))]"/>
-    </record>
-    <record id="rule_trailer_vin_sequence_company" model="ir.rule">
-        <field name="name">Trailer VIN sequences by company</field><field name="model_id" ref="model_trailer_vin_sequence"/><field name="domain_force">[('profile_id.company_id', 'in', company_ids)]</field><field name="groups" eval="[(4, ref('group_trailer_manager'))]"/>
-    </record>
 </odoo>

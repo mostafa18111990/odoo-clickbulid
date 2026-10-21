@@ -1,6 +1,6 @@
 {
     'name': 'Saudi Restaurant Enterprise Demo',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'Industries/Restaurants',
     'summary': 'Integrated Saudi restaurant operations and demo data',
     'author': 'Click Build Information Technology Company',
@@ -35,7 +35,7 @@
         'product_expiry',
     ],
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'views/restaurant_demo_views.xml',
     ],
     'installable': True,

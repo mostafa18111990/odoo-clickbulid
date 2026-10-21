@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Enterprise Demo Management',
-    'version': '19.0.1.6.0',
+    'version': '20.0.1.6.0',
     'category': 'SaaS',
     'summary': 'Enterprise demos with Telegram approvals and WhatsApp delivery',
     'author': 'Click Build Information Technology Company',
@@ -8,7 +8,7 @@
     'depends': ['saas_website', 'mail', 'base_setup'],
     'data': [
         'security/saas_demo_security.xml',
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'data/saas_demo_sequence.xml',
         'data/saas_demo_template_data.xml',
         'data/saas_demo_cron.xml',

@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Odoo Partner Link',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'SaaS',
     'summary': 'Link the platform to your Odoo partner Enterprise subscription',
     'description': """

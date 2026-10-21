@@ -1,0 +1,8 @@
+id,name,model_id/id,group_id/id,operation,domain
+access_ai_provider_admin,saas.ai.provider admin,model_saas_ai_provider,saas_tenant_manager.group_saas_admin,crud,
+access_ai_provider_user,saas.ai.provider user,model_saas_ai_provider,base.group_user,r,
+access_ai_usage_admin,saas.ai.usage admin,model_saas_ai_usage,saas_tenant_manager.group_saas_admin,crud,
+access_ai_usage_user,saas.ai.usage user,model_saas_ai_usage,base.group_user,cr,
+access_ai_usage_portal,saas.ai.usage portal,model_saas_ai_usage,base.group_portal,r,
+access_ai_prompt_admin,saas.ai.prompt.template admin,model_saas_ai_prompt_template,saas_tenant_manager.group_saas_admin,crud,
+access_ai_prompt_user,saas.ai.prompt.template user,model_saas_ai_prompt_template,base.group_user,r,
