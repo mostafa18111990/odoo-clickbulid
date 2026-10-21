@@ -1,9 +1,10 @@
 /** @odoo-module **/
 
-import { Component, onWillStart, useState } from "@odoo/owl";
+import { Component, onWillStart, proxy, usePlugin } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
+import { ActionManagerPlugin } from "@web/webclient/actions/action_plugin";
 
 /**
  * Landing screen for the inspection app. It carries the operator's own
@@ -16,8 +17,8 @@ export class TrailerHome extends Component {
 
     setup() {
         this.orm = useService("orm");
-        this.action = useService("action");
-        this.state = useState({ loaded: false, company: {}, kpi: {}, standard: "" });
+        this.action = usePlugin(ActionManagerPlugin);
+        this.state = proxy({ loaded: false, company: {}, kpi: {}, standard: "" });
 
         onWillStart(async () => {
             const data = await this.orm.call("trailer.inspection", "get_home_overview", []);
