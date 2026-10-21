@@ -80,7 +80,7 @@ jobs:
           PY
 
   # ════════════════════════════════════════════════════════════════
-  # 2. SMOKE INSTALL — boots Odoo 19 in a service container and
+  # 2. SMOKE INSTALL — boots Odoo 20 in a service container and
   # installs the leaf module, which transitively pulls all 19.
   # Skips if the saas_tenant_manager base module secrets aren't set.
   # ════════════════════════════════════════════════════════════════
@@ -90,7 +90,7 @@ jobs:
     needs: lint
     services:
       postgres:
-        image: postgres:15-alpine
+        image: postgres:16-alpine
         env:
           POSTGRES_USER: odoo
           POSTGRES_PASSWORD: odoo
@@ -102,7 +102,7 @@ jobs:
           --health-timeout 5s
           --health-retries 10
     container:
-      image: odoo:19.0
+      image: odoo:20.0
       options: --user root
     steps:
       - uses: actions/checkout@v4
