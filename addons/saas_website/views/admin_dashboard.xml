@@ -13,7 +13,7 @@
           </h1>
           <span class="badge bg-primary fs-6">
             <i class="fa fa-clock me-1"/>
-            <t t-esc="context_today()"/>
+            <t t-out="context_today()"/>
           </span>
         </div>
 
@@ -22,7 +22,7 @@
           <div class="col-sm-6 col-lg-3">
             <div class="card border-0 shadow-sm h-100">
               <div class="card-body text-center py-4">
-                <div style="font-size:2.5rem;font-weight:900;color:#6d28d9;" t-esc="total_tenants"/>
+                <div style="font-size:2.5rem;font-weight:900;color:#6d28d9;" t-out="total_tenants"/>
                 <div class="text-muted mt-1">إجمالي المستأجرين</div>
               </div>
             </div>
@@ -30,7 +30,7 @@
           <div class="col-sm-6 col-lg-3">
             <div class="card border-0 shadow-sm h-100">
               <div class="card-body text-center py-4">
-                <div style="font-size:2.5rem;font-weight:900;color:#16a34a;" t-esc="by_state.get('trial',0)"/>
+                <div style="font-size:2.5rem;font-weight:900;color:#16a34a;" t-out="by_state.get('trial',0)"/>
                 <div class="text-muted mt-1">في التجربة المجانية</div>
               </div>
             </div>
@@ -38,7 +38,7 @@
           <div class="col-sm-6 col-lg-3">
             <div class="card border-0 shadow-sm h-100">
               <div class="card-body text-center py-4">
-                <div style="font-size:2.5rem;font-weight:900;color:#0891b2;" t-esc="new_30d"/>
+                <div style="font-size:2.5rem;font-weight:900;color:#0891b2;" t-out="new_30d"/>
                 <div class="text-muted mt-1">جديد (30 يوم)</div>
               </div>
             </div>
@@ -67,11 +67,11 @@
               <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center mb-3">
                   <span><i class="fa fa-cube me-2" style="color:#6d28d9;"/>Community</span>
-                  <span class="badge bg-secondary fs-6" t-esc="by_edition.get('community',0)"/>
+                  <span class="badge bg-secondary fs-6" t-out="by_edition.get('community',0)"/>
                 </div>
                 <div class="d-flex justify-content-between align-items-center">
                   <span><i class="fa fa-rocket me-2" style="color:#dc2626;"/>Enterprise</span>
-                  <span class="badge bg-danger fs-6" t-esc="by_edition.get('enterprise',0)"/>
+                  <span class="badge bg-danger fs-6" t-out="by_edition.get('enterprise',0)"/>
                 </div>
               </div>
             </div>
@@ -84,8 +84,8 @@
               <div class="card-body">
                 <t t-foreach="by_state.items()" t-as="item">
                   <div class="d-flex justify-content-between mb-2">
-                    <span t-esc="item[0]"/>
-                    <span class="badge bg-primary" t-esc="item[1]"/>
+                    <span t-out="item[0]"/>
+                    <span class="badge bg-primary" t-out="item[1]"/>
                   </div>
                 </t>
               </div>
@@ -98,7 +98,7 @@
               <div class="card-header bg-white fw-bold border-0 pt-3">
                 ⚠️ Provision Errors
                 <t t-if="failed_provisions">
-                  <span class="badge bg-danger ms-2" t-esc="len(failed_provisions)"/>
+                  <span class="badge bg-danger ms-2" t-out="len(failed_provisions)"/>
                 </t>
               </div>
               <div class="card-body">
@@ -107,9 +107,9 @@
                 </t>
                 <t t-foreach="failed_provisions" t-as="fp">
                   <div class="alert alert-warning p-2 mb-2 small">
-                    <strong t-esc="fp['sub']"/><br/>
-                    محاولات: <t t-esc="fp['retries']"/> |
-                    منذ: <t t-esc="fp['age_min']"/> دقيقة
+                    <strong t-out="fp['sub']"/><br/>
+                    محاولات: <t t-out="fp['retries']"/> |
+                    منذ: <t t-out="fp['age_min']"/> دقيقة
                   </div>
                 </t>
               </div>
@@ -128,15 +128,15 @@
               <tbody>
                 <t t-foreach="trial_tenants" t-as="t">
                   <tr>
-                    <td t-esc="t.customer_name"/>
-                    <td><a t-att-href="'mailto:'+t.customer_email" t-esc="t.customer_email"/></td>
-                    <td><a t-att-href="t.tenant_url" target="_blank" t-esc="t.subdomain"/></td>
+                    <td t-out="t.customer_name"/>
+                    <td><a t-att-href="'mailto:'+t.customer_email" t-out="t.customer_email"/></td>
+                    <td><a t-att-href="t.tenant_url" target="_blank" t-out="t.subdomain"/></td>
                     <td>
                       <span t-if="t.edition=='enterprise'" class="badge bg-danger">Enterprise</span>
                       <span t-else="" class="badge bg-secondary">Community</span>
                     </td>
-                    <td t-esc="t.create_date" t-options='{"widget":"date"}'/>
-                    <td t-esc="t.trial_end" t-options='{"widget":"date"}'/>
+                    <td t-out="t.create_date" t-options='{"widget":"date"}'/>
+                    <td t-out="t.trial_end" t-options='{"widget":"date"}'/>
                   </tr>
                 </t>
               </tbody>
@@ -153,10 +153,10 @@
               <tbody>
                 <t t-foreach="plans" t-as="p">
                   <tr>
-                    <td t-esc="p.name"/>
-                    <td><code t-esc="p.code"/></td>
-                    <td t-esc="p.edition"/>
-                    <td><t t-esc="'%.0f' % p.monthly_price"/> ريال</td>
+                    <td t-out="p.name"/>
+                    <td><code t-out="p.code"/></td>
+                    <td t-out="p.edition"/>
+                    <td><t t-out="'%.0f' % p.monthly_price"/> ريال</td>
                     <td><span class="badge bg-success">فعّالة</span></td>
                   </tr>
                 </t>
@@ -175,8 +175,8 @@
                 <t t-foreach="industry_stats" t-as="ind">
                   <div class="col-6 col-md-4 col-lg-3">
                     <div class="d-flex align-items-center justify-content-between p-2 rounded" style="background:#f8f9fa;">
-                      <span class="fw-semibold small" t-esc="ind['label']"/>
-                      <span class="badge bg-primary rounded-pill" t-esc="ind['count']"/>
+                      <span class="fw-semibold small" t-out="ind['label']"/>
+                      <span class="badge bg-primary rounded-pill" t-out="ind['count']"/>
                     </div>
                   </div>
                 </t>

@@ -16,7 +16,7 @@
                         </div>
                         <t t-if="errors">
                             <div class="alert alert-danger"><ul class="mb-0">
-                                <t t-foreach="errors" t-as="err"><li t-esc="err"/></t></ul></div>
+                                <t t-foreach="errors" t-as="err"><li t-out="err"/></t></ul></div>
                         </t>
                         <form method="post" action="/get-started/register" id="signupForm">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -70,13 +70,13 @@
                                                     t-att-data-flat-price="'%.2f' % (plan.monthly_price or 0)"
                                                     t-att-data-max-users="plan.max_users or 0"
                                                     t-att-selected="'selected' if (selected_plan and plan.id == selected_plan.id) else None">
-                                                <t t-esc="plan.name"/> -
+                                                <t t-out="plan.name"/> -
                                                 <t t-if="plan.pricing_mode == 'per_user'">
-                                                    <t t-esc="'%.0f' % plan.price_per_user"/>
+                                                    <t t-out="'%.0f' % plan.price_per_user"/>
                                                     <t t-if="lang_is_ar"> ريال/مستخدم/شهر</t><t t-else=""> SAR/user/month</t>
                                                 </t>
                                                 <t t-else="">
-                                                    <t t-esc="'%.0f' % plan.monthly_price"/>
+                                                    <t t-out="'%.0f' % plan.monthly_price"/>
                                                     <t t-if="lang_is_ar"> ريال/شهر</t><t t-else=""> SAR/month</t>
                                                 </t></option>
                                         </t>
@@ -91,13 +91,13 @@
                                                     t-att-data-flat-price="'%.2f' % (plan.monthly_price or 0)"
                                                     t-att-data-max-users="plan.max_users or 0"
                                                     t-att-selected="'selected' if (selected_plan and plan.id == selected_plan.id) else None">
-                                                <t t-esc="plan.name"/> -
+                                                <t t-out="plan.name"/> -
                                                 <t t-if="plan.pricing_mode == 'per_user'">
-                                                    <t t-esc="'%.0f' % plan.price_per_user"/>
+                                                    <t t-out="'%.0f' % plan.price_per_user"/>
                                                     <t t-if="lang_is_ar"> ريال/مستخدم/شهر</t><t t-else=""> SAR/user/month</t>
                                                 </t>
                                                 <t t-else="">
-                                                    <t t-esc="'%.0f' % plan.monthly_price"/>
+                                                    <t t-out="'%.0f' % plan.monthly_price"/>
                                                     <t t-if="lang_is_ar"> ريال/شهر</t><t t-else=""> SAR/month</t>
                                                 </t></option>
                                         </t>
@@ -129,7 +129,7 @@
                                 <div class="input-group">
                                     <input type="text" name="subdomain" id="subdomainInput" class="form-control"
                                            placeholder="my-company" required="required"/>
-                                    <span class="input-group-text">.<t t-esc="platform_domain or 'odoo.clickbulid.com'"/></span>
+                                    <span class="input-group-text">.<t t-out="platform_domain or 'odoo.clickbulid.com'"/></span>
                                 </div>
                                 <div id="subdomainFeedback" class="form-text"></div></div>
                             <div class="row">
@@ -176,7 +176,7 @@
                                         <t t-else="">— Choose industry (optional) —</t></option>
                                     <t t-foreach="industry_options" t-as="opt">
                                         <option t-att-value="opt[0]" t-att-selected="'selected' if ind == opt[0] else None">
-                                            <t t-if="lang_is_ar" t-esc="opt[1]"/><t t-else="" t-esc="opt[2]"/></option>
+                                            <t t-if="lang_is_ar" t-out="opt[1]"/><t t-else="" t-out="opt[2]"/></option>
                                     </t>
                                 </select>
                                 <div class="form-text">
@@ -327,15 +327,15 @@
                                         <td><a id="saas_tenant_url"
                                                t-att-href="tenant_url or ('https://' + subdomain + '.' + (platform_domain or 'odoo.clickbulid.com'))"
                                                target="_blank" class="disabled"
-                                               style="pointer-events:none; opacity:0.5;"><t t-esc="tenant_url or (subdomain + '.' + (platform_domain or 'odoo.clickbulid.com'))"/></a></td></tr>
+                                               style="pointer-events:none; opacity:0.5;"><t t-out="tenant_url or (subdomain + '.' + (platform_domain or 'odoo.clickbulid.com'))"/></a></td></tr>
                                     <tr><td class="fw-bold">
                                         <t t-if="lang_is_ar">البريد:</t><t t-else="">Email:</t></td>
-                                        <td><code class="cb-copy" style="cursor:pointer;" t-att-data-copy="admin_email" t-esc="admin_email"/>
+                                        <td><code class="cb-copy" style="cursor:pointer;" t-att-data-copy="admin_email" t-out="admin_email"/>
                                             <span class="cb-copied small text-success ms-2" style="display:none;">
                                                 <i class="fa fa-check"/> <t t-if="lang_is_ar">نُسخ</t><t t-else="">copied</t></span></td></tr>
                                     <tr><td class="fw-bold">
                                         <t t-if="lang_is_ar">كلمة المرور:</t><t t-else="">Password:</t></td>
-                                        <td><code class="cb-copy user-select-all" style="cursor:pointer;" t-att-data-copy="admin_password" t-esc="admin_password"/>
+                                        <td><code class="cb-copy user-select-all" style="cursor:pointer;" t-att-data-copy="admin_password" t-out="admin_password"/>
                                             <span class="cb-copied small text-success ms-2" style="display:none;">
                                                 <i class="fa fa-check"/> <t t-if="lang_is_ar">نُسخ</t><t t-else="">copied</t></span></td></tr>
                                 </table>
@@ -397,8 +397,8 @@
 
                         <script type="text/javascript">
                             (function() {
-                                var subdomain = "<t t-esc="subdomain or ''"/>";
-                                var lang_is_ar = <t t-esc="'true' if lang_is_ar else 'false'"/>;
+                                var subdomain = "<t t-out="subdomain or ''"/>";
+                                var lang_is_ar = <t t-out="'true' if lang_is_ar else 'false'"/>;
                                 if (!subdomain) return;
                                 var btn = document.getElementById('saas_login_btn');
                                 var tenantUrl = document.getElementById('saas_tenant_url');

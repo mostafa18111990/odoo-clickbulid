@@ -31,23 +31,23 @@
                                         <div class="cb-slide-copy">
                                             <span class="cb-slide-brand"><t t-if="lang_is_ar">شركة كليك بيلد لتقنية المعلومات</t><t t-else="">Click Build Information Technology Company</t></span>
                                             <span class="cb-slide-eyebrow">
-                                                <t t-esc="banner.eyebrow_ar if lang_is_ar else banner.eyebrow"/>
+                                                <t t-out="banner.eyebrow_ar if lang_is_ar else banner.eyebrow"/>
                                             </span>
                                             <h1 t-if="banner_first">
-                                                <t t-esc="banner.title_ar if lang_is_ar else banner.title"/>
+                                                <t t-out="banner.title_ar if lang_is_ar else banner.title"/>
                                             </h1>
                                             <h2 t-else="">
-                                                <t t-esc="banner.title_ar if lang_is_ar else banner.title"/>
+                                                <t t-out="banner.title_ar if lang_is_ar else banner.title"/>
                                             </h2>
-                                            <p><t t-esc="banner.subtitle_ar if lang_is_ar else banner.subtitle"/></p>
+                                            <p><t t-out="banner.subtitle_ar if lang_is_ar else banner.subtitle"/></p>
                                             <div class="cb-v2-actions">
                                                 <a t-att-href="banner.cta_url" class="btn btn-primary btn-lg">
-                                                    <t t-esc="banner.cta_label_ar if lang_is_ar else banner.cta_label"/>
+                                                    <t t-out="banner.cta_label_ar if lang_is_ar else banner.cta_label"/>
                                                     <i t-attf-class="fa #{'fa-arrow-left' if lang_is_ar else 'fa-arrow-right'}"/>
                                                 </a>
                                                 <a t-if="banner.secondary_url" t-att-href="banner.secondary_url"
                                                    class="btn btn-outline-light btn-lg">
-                                                    <t t-esc="banner.secondary_label_ar if lang_is_ar else banner.secondary_label"/>
+                                                    <t t-out="banner.secondary_label_ar if lang_is_ar else banner.secondary_label"/>
                                                 </a>
                                                 <a t-if="not banner.secondary_url" href="/contact"
                                                    class="btn btn-outline-light btn-lg">
@@ -323,10 +323,10 @@
                                                 <t t-if="lang_is_ar">الأكثر اختياراً</t><t t-else="">Most Popular</t>
                                             </div>
                                         </t>
-                                        <h3 t-esc="plan.name"/>
+                                        <h3 t-out="plan.name"/>
                                         <t t-set="home_per_user" t-value="plan.pricing_mode == 'per_user' and plan.price_per_user > 0"/>
                                         <div class="cb-v2-plan-price">
-                                            <strong t-esc="'%.0f' % (plan.price_per_user if home_per_user else plan.monthly_price)"/>
+                                            <strong t-out="'%.0f' % (plan.price_per_user if home_per_user else plan.monthly_price)"/>
                                             <span>
                                                 <t t-if="home_per_user">
                                                     <t t-if="lang_is_ar">ريال / مستخدم / شهرياً</t><t t-else="">SAR / user / month</t>
@@ -337,8 +337,8 @@
                                             </span>
                                         </div>
                                         <div class="text-muted small mb-3">
-                                            <t t-if="lang_is_ar">تُدفع سنويًا: <strong t-esc="'%.2f' % ((plan.price_per_user * 12) if home_per_user else plan.get_effective_yearly_price())"/> ريال<t t-if="home_per_user"> / مستخدم</t> — لا يتوفر دفع شهري</t>
-                                            <t t-else="">Billed annually: <strong t-esc="'%.2f' % ((plan.price_per_user * 12) if home_per_user else plan.get_effective_yearly_price())"/> SAR<t t-if="home_per_user"> / user</t> — monthly payment unavailable</t>
+                                            <t t-if="lang_is_ar">تُدفع سنويًا: <strong t-out="'%.2f' % ((plan.price_per_user * 12) if home_per_user else plan.get_effective_yearly_price())"/> ريال<t t-if="home_per_user"> / مستخدم</t> — لا يتوفر دفع شهري</t>
+                                            <t t-else="">Billed annually: <strong t-out="'%.2f' % ((plan.price_per_user * 12) if home_per_user else plan.get_effective_yearly_price())"/> SAR<t t-if="home_per_user"> / user</t> — monthly payment unavailable</t>
                                         </div>
                                         <ul>
                                             <li>
@@ -348,14 +348,14 @@
                                                 </t>
                                                 <t t-else="">
                                                     <t t-if="lang_is_ar and plan.max_users == 1">مستخدم واحد</t>
-                                                    <t t-elif="lang_is_ar">حتى <t t-esc="plan.max_users"/> مستخدمين</t>
+                                                    <t t-elif="lang_is_ar">حتى <t t-out="plan.max_users"/> مستخدمين</t>
                                                     <t t-elif="plan.max_users == 1">One user</t>
-                                                    <t t-else="">Up to <t t-esc="plan.max_users"/> users</t>
+                                                    <t t-else="">Up to <t t-out="plan.max_users"/> users</t>
                                                 </t>
                                             </li>
                                             <li>
                                                 <i class="fa fa-check"/>
-                                                <t t-esc="round(plan.max_storage_mb/1024, 1)"/> GB
+                                                <t t-out="round(plan.max_storage_mb/1024, 1)"/> GB
                                                 <t t-if="lang_is_ar"> تخزين</t><t t-else=""> Storage</t>
                                             </li>
                                             <li>

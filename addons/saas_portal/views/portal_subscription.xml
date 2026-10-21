@@ -6,18 +6,18 @@
             <t t-if="sub.get('has_subscription')">
                 <t t-if="sub.get('cancel_at_period_end')">
                     <div class="alert alert-danger"><i class="fa fa-exclamation-triangle me-2"/>
-                        Your subscription will be cancelled on <strong t-esc="sub['current_period_end']"/>.</div>
+                        Your subscription will be cancelled on <strong t-out="sub['current_period_end']"/>.</div>
                 </t>
                 <div class="card border-0 shadow-sm mb-4"><div class="card-body"><div class="row">
                     <div class="col-md-6"><dl class="row mb-0">
-                        <dt class="col-5 text-muted">Plan</dt><dd class="col-7" t-esc="sub['plan_name']"/>
-                        <dt class="col-5 text-muted">Status</dt><dd class="col-7 text-capitalize" t-esc="sub['status']"/>
-                        <dt class="col-5 text-muted">Billing</dt><dd class="col-7 text-capitalize" t-esc="sub['billing_cycle']"/>
+                        <dt class="col-5 text-muted">Plan</dt><dd class="col-7" t-out="sub['plan_name']"/>
+                        <dt class="col-5 text-muted">Status</dt><dd class="col-7 text-capitalize" t-out="sub['status']"/>
+                        <dt class="col-5 text-muted">Billing</dt><dd class="col-7 text-capitalize" t-out="sub['billing_cycle']"/>
                     </dl></div>
                     <div class="col-md-6"><dl class="row mb-0">
-                        <dt class="col-5 text-muted">Amount</dt><dd class="col-7"><t t-esc="'%.2f' % sub['total_amount']"/> <t t-esc="sub['currency']"/></dd>
-                        <dt class="col-5 text-muted">Next Renewal</dt><dd class="col-7" t-esc="sub['next_renewal_date']"/>
-                        <dt class="col-5 text-muted">Credit</dt><dd class="col-7"><t t-esc="'%.2f' % sub['credit_balance']"/> <t t-esc="sub['currency']"/></dd>
+                        <dt class="col-5 text-muted">Amount</dt><dd class="col-7"><t t-out="'%.2f' % sub['total_amount']"/> <t t-out="sub['currency']"/></dd>
+                        <dt class="col-5 text-muted">Next Renewal</dt><dd class="col-7" t-out="sub['next_renewal_date']"/>
+                        <dt class="col-5 text-muted">Credit</dt><dd class="col-7"><t t-out="'%.2f' % sub['credit_balance']"/> <t t-out="sub['currency']"/></dd>
                     </dl></div>
                 </div></div></div>
                 <div class="d-flex gap-2 flex-wrap mb-4">
@@ -41,13 +41,13 @@
                 <t t-foreach="plans" t-as="plan">
                     <div class="col-md-4"><div t-attf-class="card h-100 #{'border-primary' if plan['is_recommended'] else 'border-0'} shadow-sm">
                         <div class="card-body text-center">
-                            <h4 t-esc="plan['name']"/>
-                            <div class="my-3"><span class="display-6 fw-bold" t-esc="'%.0f' % plan['monthly_price']"/><span class="text-muted">SAR/mo</span></div>
-                            <div class="small text-muted mb-3">Billed annually: <strong t-esc="'%.2f' % plan['yearly_price']"/> SAR — الفوترة سنوية فقط</div>
+                            <h4 t-out="plan['name']"/>
+                            <div class="my-3"><span class="display-6 fw-bold" t-out="'%.0f' % plan['monthly_price']"/><span class="text-muted">SAR/mo</span></div>
+                            <div class="small text-muted mb-3">Billed annually: <strong t-out="'%.2f' % plan['yearly_price']"/> SAR — الفوترة سنوية فقط</div>
                             <ul class="list-unstyled text-start small mb-4">
-                                <li><i class="fa fa-check text-success me-2"/><t t-esc="plan['max_users']"/> users</li>
-                                <li><i class="fa fa-check text-success me-2"/><t t-esc="plan['max_storage_gb']"/> GB storage</li>
-                                <li><i class="fa fa-check text-success me-2"/><t t-esc="plan['max_companies']"/> companies</li>
+                                <li><i class="fa fa-check text-success me-2"/><t t-out="plan['max_users']"/> users</li>
+                                <li><i class="fa fa-check text-success me-2"/><t t-out="plan['max_storage_gb']"/> GB storage</li>
+                                <li><i class="fa fa-check text-success me-2"/><t t-out="plan['max_companies']"/> companies</li>
                             </ul>
                             <t t-if="plan['is_current']"><button class="btn btn-secondary w-100" disabled="disabled">Current Plan</button></t>
                             <t t-elif="plan['is_upgrade']">
@@ -82,7 +82,7 @@
                     <div class="mb-3"><label class="form-label">Reason for cancelling</label>
                         <select name="reason_code" class="form-select" required="required">
                             <option value="">-- Select a reason --</option>
-                            <t t-foreach="reasons" t-as="reason"><option t-att-value="reason.code" t-esc="reason.name"/></t>
+                            <t t-foreach="reasons" t-as="reason"><option t-att-value="reason.code" t-out="reason.name"/></t>
                         </select></div>
                     <div class="mb-3"><label class="form-label">Additional feedback (optional)</label>
                         <textarea name="note" class="form-control" rows="3"/></div>

@@ -24,8 +24,8 @@
                         <t t-foreach="categories" t-as="cat">
                             <a t-attf-href="/my/saas/marketplace/category/#{cat.code}"
                                t-attf-class="list-group-item list-group-item-action #{'active' if current_category == cat.code else ''}">
-                                <i t-attf-class="fa #{cat.icon} me-2"/><t t-esc="cat.name"/>
-                                <span class="badge bg-secondary float-end" t-esc="cat.app_count"/></a>
+                                <i t-attf-class="fa #{cat.icon} me-2"/><t t-out="cat.name"/>
+                                <span class="badge bg-secondary float-end" t-out="cat.app_count"/></a>
                         </t>
                     </div>
                 </div>
@@ -38,13 +38,13 @@
                                         <i t-attf-class="fa #{app['icon']}"/></div>
                                     <div class="flex-grow-1">
                                         <div class="d-flex justify-content-between">
-                                            <h6 class="fw-bold mb-1" t-esc="app['name']"/>
+                                            <h6 class="fw-bold mb-1" t-out="app['name']"/>
                                             <t t-if="app['is_popular']"><span class="badge bg-warning text-dark">Popular</span></t>
                                         </div>
-                                        <p class="text-muted small mb-2" t-esc="app['short_desc']"/>
+                                        <p class="text-muted small mb-2" t-out="app['short_desc']"/>
                                         <div class="d-flex justify-content-between align-items-center">
                                             <span t-attf-class="badge #{'bg-success' if app['pricing_model'] == 'free' else 'bg-primary'}"
-                                                  t-esc="app['price_label']"/>
+                                                  t-out="app['price_label']"/>
                                             <t t-if="app['installed']">
                                                 <span class="text-success small"><i class="fa fa-check"/> Installed</span>
                                             </t>
@@ -75,10 +75,10 @@
                     <div class="me-4" style="font-size:4rem; color:#6d28d9;">
                         <i t-attf-class="fa #{app.icon}"/></div>
                     <div class="flex-grow-1">
-                        <h2 class="fw-bold" t-esc="app.name"/>
-                        <p class="text-muted" t-esc="app.short_description"/>
+                        <h2 class="fw-bold" t-out="app.name"/>
+                        <p class="text-muted" t-out="app.short_description"/>
                         <span t-attf-class="badge #{'bg-success' if app.pricing_model == 'free' else 'bg-primary'} fs-6"
-                              t-esc="app.price_label"/>
+                              t-out="app.price_label"/>
                     </div>
                 </div>
                 <t t-if="app.description"><div class="mb-4" t-out="app.description"/></t>
@@ -86,7 +86,7 @@
                     <div class="alert alert-success"><i class="fa fa-check-circle me-2"/> This app is installed.</div>
                 </t>
                 <t t-elif="not eligible">
-                    <div class="alert alert-warning"><i class="fa fa-lock me-2"/> <t t-esc="reason"/>
+                    <div class="alert alert-warning"><i class="fa fa-lock me-2"/> <t t-out="reason"/>
                         <a href="/my/saas/subscription/plans" class="alert-link ms-2">Upgrade</a></div>
                 </t>
                 <t t-else="">
@@ -96,7 +96,7 @@
                         <button type="submit" class="btn btn-primary btn-lg">
                             <t t-if="app.pricing_model == 'free'"><i class="fa fa-download me-1"/> Install</t>
                             <t t-else=""><i class="fa fa-credit-card me-1"/>
-                                Subscribe - <t t-esc="app.price_label"/></t>
+                                Subscribe - <t t-out="app.price_label"/></t>
                         </button>
                     </form>
                     <t t-if="app.pricing_model != 'free'">
@@ -123,10 +123,10 @@
                         <thead><tr><th>App</th><th>Status</th><th>Billing</th><th></th></tr></thead>
                         <tbody><t t-foreach="apps" t-as="ta"><tr>
                             <td><i t-attf-class="fa #{ta.app_id.icon} me-2" style="color:#6d28d9;"/>
-                                <strong t-esc="ta.app_id.name"/></td>
-                            <td><span t-attf-class="badge #{'bg-success' if ta.state == 'installed' else 'bg-warning' if ta.state == 'installing' else 'bg-danger'}" t-esc="ta.state"/></td>
+                                <strong t-out="ta.app_id.name"/></td>
+                            <td><span t-attf-class="badge #{'bg-success' if ta.state == 'installed' else 'bg-warning' if ta.state == 'installing' else 'bg-danger'}" t-out="ta.state"/></td>
                             <td><t t-if="ta.addon_id">
-                                    <t t-esc="'%.0f' % ta.addon_id.price"/> <t t-esc="ta.addon_id.currency"/>/mo
+                                    <t t-out="'%.0f' % ta.addon_id.price"/> <t t-out="ta.addon_id.currency"/>/mo
                                 </t><t t-else="">Free</t></td>
                             <td><t t-if="ta.state == 'installed'">
                                 <form method="post" action="/my/saas/marketplace/uninstall" onsubmit="return confirm('Uninstall this app?');">

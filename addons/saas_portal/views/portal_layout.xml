@@ -6,8 +6,8 @@
                 <div class="col-md-3 mb-4">
                     <div class="saas-portal-sidebar">
                         <div class="p-3 mb-3" style="background:linear-gradient(135deg,#6d28d9,#9333ea); color:white; border-radius:8px;">
-                            <h5 class="mb-1"><t t-esc="tenant.name"/></h5>
-                            <small style="opacity:0.85;"><t t-esc="tenant.subdomain"/>.clickbuild.com</small>
+                            <h5 class="mb-1"><t t-out="tenant.name"/></h5>
+                            <small style="opacity:0.85;"><t t-out="tenant.subdomain"/>.clickbuild.com</small>
                         </div>
                         <div class="list-group">
                             <a href="/my/saas" t-attf-class="list-group-item list-group-item-action #{'active' if page_name == 'saas_dashboard' else ''}">

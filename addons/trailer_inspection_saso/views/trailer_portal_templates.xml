@@ -17,7 +17,7 @@
                         <img t-if="company" class="ti-p-logo"
                              t-att-src="'/web/image/res.company/%s/logo/104x104' % company.id" alt=""/>
                         <div>
-                            <h1 t-esc="company.name if company else ''"/>
+                            <h1 t-out="company.name if company else ''"/>
                             <p class="ti-p-sub">بوابة تقارير فحص المقطورات — Trailer Inspection Reports</p>
                         </div>
                     </div>
@@ -119,7 +119,7 @@
         <t t-call="trailer_inspection_saso.portal_trailer_shell">
             <div class="ti-card mb-3">
                 <div class="ti-label">فحوصاتي / My inspections</div>
-                <div class="ti-value fs-5"><t t-esc="len(inspections)"/> تقرير</div>
+                <div class="ti-value fs-5"><t t-out="len(inspections)"/> تقرير</div>
             </div>
 
             <div t-if="inspections" class="row g-3">

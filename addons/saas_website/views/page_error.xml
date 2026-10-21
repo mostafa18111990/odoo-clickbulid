@@ -8,10 +8,10 @@
                         <div class="col-md-8 text-center">
                             <div class="alert alert-danger" role="alert">
                                 <h1 class="display-4">⚠️ خطأ</h1>
-                                <p class="lead mt-3" t-esc="error_message"/>
+                                <p class="lead mt-3" t-out="error_message"/>
                                 <hr/>
                                 <p class="text-muted">
-                                    رمز الخطأ: <code t-esc="error_code"/>
+                                    رمز الخطأ: <code t-out="error_code"/>
                                 </p>
                                 <div class="mt-4">
                                     <a href="/" class="btn btn-primary btn-lg">

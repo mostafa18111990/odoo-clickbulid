@@ -31,12 +31,12 @@
                                     <a href="/"><t t-if="lang_is_ar">الرئيسية</t><t t-else="">Home</t></a>
                                 </li>
                                 <li class="breadcrumb-item active" t-att-aria-current="'page'">
-                                    <t t-esc="page_title"/>
+                                    <t t-out="page_title"/>
                                 </li>
                             </ol>
                         </nav>
 
-                        <h1 class="display-6 fw-bold mb-2"><t t-esc="page_title"/></h1>
+                        <h1 class="display-6 fw-bold mb-2"><t t-out="page_title"/></h1>
                         <p class="text-muted mb-5">
                             <t t-if="lang_is_ar">آخر تحديث: يوليو 2026</t>
                             <t t-else="">Last updated: July 2026</t>
