@@ -73,7 +73,7 @@ class SaasWebsiteBanner(models.Model):
     @api.model
     def get_published_banners(self):
         now = fields.Datetime.now()
-        website = self.env['website'].get_current_website()
+        website = self.env.website
         return self.sudo().search([
             ('active', '=', True),
             ('website_id', 'in', [False, website.id]),
