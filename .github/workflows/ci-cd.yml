@@ -82,7 +82,6 @@ jobs:
   # ════════════════════════════════════════════════════════════════
   # 2. SMOKE INSTALL — boots Odoo 20 in a service container and
   # installs the leaf module, which transitively pulls all 19.
-  # Skips if the saas_tenant_manager base module secrets aren't set.
   # ════════════════════════════════════════════════════════════════
   smoke-install:
     name: Odoo Smoke Install
@@ -112,45 +111,22 @@ jobs:
           pip install --break-system-packages dnspython paramiko requests || \
           pip install dnspython paramiko requests
 
-      - name: Fetch base module (saas_tenant_manager) via SCP
-        env:
-          SAAS_BASE_SSH_HOST: ${{ secrets.SAAS_BASE_SSH_HOST }}
-          SAAS_BASE_SSH_PATH: ${{ vars.SAAS_BASE_SSH_PATH }}
-          SAAS_BASE_SSH_KEY: ${{ secrets.SAAS_BASE_SSH_KEY }}
-        run: |
-          if [ -z "$SAAS_BASE_SSH_HOST" ] || [ -z "$SAAS_BASE_SSH_KEY" ]; then
-            echo "::warning::SAAS_BASE_SSH_HOST / SAAS_BASE_SSH_KEY not configured — skipping smoke install"
-            echo "SKIP_SMOKE=1" >> $GITHUB_ENV
-            exit 0
-          fi
-          mkdir -p ~/.ssh && chmod 700 ~/.ssh
-          printf '%s\n' "$SAAS_BASE_SSH_KEY" > ~/.ssh/id_base
-          chmod 600 ~/.ssh/id_base
-          host_only="${SAAS_BASE_SSH_HOST##*@}"
-          ssh-keyscan -H "$host_only" >> ~/.ssh/known_hosts 2>/dev/null || true
-          chmod +x scripts/ci_fetch_base_module.sh
-          ./scripts/ci_fetch_base_module.sh
-
       - name: Stage addons
-        if: env.SKIP_SMOKE != '1'
         run: |
           mkdir -p /tmp/extra-addons
-          cp -r vendor/saas_tenant_manager /tmp/extra-addons/ 2>/dev/null || true
           cp -r addons/saas_* /tmp/extra-addons/
 
       - name: Boot Odoo and install leaf module
-        if: env.SKIP_SMOKE != '1'
         run: |
           odoo \
             --db_host=postgres --db_user=odoo --db_password=odoo \
             --addons-path=/usr/lib/python3/dist-packages/odoo/addons,/tmp/extra-addons \
             -d ci_test_db \
             --init=saas_monitoring \
-            --without-demo=all \
+            --without-demo \
             --no-http --stop-after-init 2>&1 | tee odoo_install.log
 
       - name: Fail on any error in install log
-        if: env.SKIP_SMOKE != '1'
         run: |
           if grep -E "ERROR|CRITICAL|Traceback" odoo_install.log; then
             echo "Install log shows errors"; exit 1

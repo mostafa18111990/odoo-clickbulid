@@ -227,7 +227,7 @@ run_odoo_install() {
     attempt_log=$(mktemp)
     while [ "$attempt" -le 3 ]; do
         local args=(--config=/etc/odoo/odoo.conf -d "$DB" -i "$modules"
-                    --without-demo=all --no-http --stop-after-init)
+                    --without-demo --no-http --stop-after-init)
         [ "$load_language" = "1" ] && args+=(--load-language=ar_001)
         if docker exec "$ODOO_CONTAINER" odoo "${args[@]}" >"$attempt_log" 2>&1; then
             cat "$attempt_log" >>"$LOG"

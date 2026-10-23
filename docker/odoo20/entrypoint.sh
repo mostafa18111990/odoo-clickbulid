@@ -20,7 +20,7 @@ if [ "${INIT_DB:-false}" = "true" ]; then
     odoo --config=/etc/odoo/odoo.conf \
         --database="${DB_NAME}" \
         --init="${ODOO_MODULES:-base,web}" \
-        --without-demo="${WITHOUT_DEMO:-all}" \
+        --without-demo \
         --load-language="${ODOO_LANG:-ar_001,en_US}" \
         --stop-after-init
 

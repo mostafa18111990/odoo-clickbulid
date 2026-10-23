@@ -38,7 +38,7 @@ docker exec "$ODOO_CONTAINER" odoo \
     --config=/etc/odoo/odoo.conf \
     -d "$TEMPLATE_DB" \
     -i "$CORE_MODULES" \
-    --without-demo=all \
+    --without-demo \
     --load-language=ar_001 \
     --no-http --stop-after-init >> "$LOG" 2>&1 || {
         echo "$(date -Is) TEMPLATE BUILD FAILED — see $LOG" | tee -a "$LOG"

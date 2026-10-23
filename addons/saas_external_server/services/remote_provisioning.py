@@ -102,7 +102,7 @@ class RemoteProvisioningService:
 
         # 2. init odoo with the module set.
         server.run_ssh(self._docker_odoo(
-            server, sub, f'-i {shlex.quote(",".join(modules))} --without-demo=all --load-language=ar_001'))
+            server, sub, f'-i {shlex.quote(",".join(modules))} --without-demo --load-language=ar_001'))
 
         # 3. configure the admin user + company via a remote python one-liner.
         py = (
@@ -238,7 +238,7 @@ server {{
             "config.parse_config(['-c','/etc/odoo/odoo.conf']);"
             "reg=odoo.modules.registry.Registry(os.environ['D']);"
             "cr=reg.cursor();env=odoo.api.Environment(cr,1,{});"
-            "env['ir.config_parameter'].sudo().set_param('saas.max_users',os.environ['L']);"
+            "env['ir.config_parameter'].sudo().set_str('saas.max_users',os.environ['L']);"
             "cr.commit();print('SEATS_OK')")
         cmd = (f'docker exec -e D={shlex.quote(sub)} -e L={shlex.quote(str(int(limit)))} '
                f'{server.odoo_container} python3 -c {shlex.quote(py)}')

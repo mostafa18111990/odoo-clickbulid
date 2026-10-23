@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- List View -->
+    <record id="view_saas_tenant_list" model="ir.ui.view">
+        <field name="name">saas.tenant.list</field>
+        <field name="model">saas.tenant</field>
+        <field name="arch" type="xml">
+            <list string="Tenants"
+                  decoration-success="state == 'active'"
+                  decoration-warning="state == 'suspended'"
+                  decoration-danger="state in ('expired','cancelled')"
+                  decoration-muted="state == 'draft'">
+                <field name="name"/>
+                <field name="customer_name"/>
+                <field name="subdomain"/>
+                <field name="plan_id"/>
+                <field name="state" widget="badge"
+                    decoration-success="state == 'active'"
+                    decoration-warning="state == 'suspended'"
+                    decoration-danger="state in ('expired','cancelled')"/>
+                <field name="expiry_date"/>
+                <field name="disk_usage_mb" string="DB (MB)"/>
+                <field name="users_count" string="Users"/>
+                <button name="action_suspend" type="object" string="Suspend"
+                    icon="fa-pause" invisible="state != 'active'"/>
+                <button name="action_activate" type="object" string="Activate"
+                    icon="fa-play" invisible="state != 'suspended'"/>
+            </list>
+        </field>
+    </record>
+
+    <!-- Form View -->
+    <record id="view_saas_tenant_form" model="ir.ui.view">
+        <field name="name">saas.tenant.form</field>
+        <field name="model">saas.tenant</field>
+        <field name="arch" type="xml">
+            <form string="Tenant">
+                <header>
+                    <button name="action_provision" type="object"
+                        string="Provision Tenant" class="btn-primary"
+                        invisible="state != 'draft'"/>
+                    <button name="action_suspend" type="object"
+                        string="Suspend" class="btn-warning"
+                        invisible="state != 'active'"/>
+                    <button name="action_activate" type="object"
+                        string="Reactivate" class="btn-success"
+                        invisible="state != 'suspended'"/>
+                    <button name="action_backup" type="object"
+                        string="Backup Now"
+                        invisible="state not in ('active', 'suspended')"/>
+                    <button name="action_update_stats" type="object"
+                        string="Refresh Stats"
+                        invisible="not db_name"/>
+                    <button name="action_cancel" type="object"
+                        string="Cancel"
+                        invisible="state in ('draft', 'cancelled')"/>
+                    <field name="state" widget="statusbar"
+                        statusbar_visible="draft,active,suspended,expired,cancelled"/>
+                </header>
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button class="oe_stat_button" type="object"
+                            name="action_view_backups" icon="fa-archive">
+                            <field name="backup_count" widget="statinfo" string="Backups"/>
+                        </button>
+                    </div>
+                    <div class="oe_title">
+                        <h1><field name="name" placeholder="Tenant Name"/></h1>
+                        <div invisible="not tenant_url">
+                            <field name="tenant_url" widget="url"/>
+                        </div>
+                    </div>
+
+                    <group>
+                        <group string="Customer Info">
+                            <field name="customer_name"/>
+                            <field name="customer_email"/>
+                            <field name="phone"/>
+                            <field name="company_name"/>
+                        </group>
+                        <group string="Subscription">
+                            <field name="plan_id"/>
+                            <field name="expiry_date"/>
+                            <field name="template_db"/>
+                        </group>
+                    </group>
+
+                    <group string="Domain and Database">
+                        <group>
+                            <field name="subdomain"/>
+                            <field name="custom_domain"/>
+                        </group>
+                        <group>
+                            <field name="db_name" readonly="1"/>
+                            <field name="db_user" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <group string="Admin Credentials">
+                        <field name="admin_login"/>
+                        <field name="admin_password" password="True"/>
+                    </group>
+
+                    <group string="Stats" invisible="not db_name">
+                        <group>
+                            <field name="disk_usage_mb" readonly="1"/>
+                            <field name="users_count" readonly="1"/>
+                        </group>
+                        <group>
+                            <field name="last_backup" readonly="1"/>
+                        </group>
+                    </group>
+
+                    <notebook>
+                        <page string="Backup History">
+                            <field name="backup_ids" mode="list">
+                                <list>
+                                    <field name="backup_date"/>
+                                    <field name="size_mb"/>
+                                    <field name="state" widget="badge"/>
+                                    <button name="action_restore" type="object"
+                                        string="Restore" icon="fa-undo"
+                                        invisible="state == 'deleted'"/>
+                                </list>
+                            </field>
+                        </page>
+                        <page string="Notes">
+                            <field name="notes"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <!-- Search View -->
+    <record id="view_saas_tenant_search" model="ir.ui.view">
+        <field name="name">saas.tenant.search</field>
+        <field name="model">saas.tenant</field>
+        <field name="arch" type="xml">
+            <search string="Search Tenants">
+                <field name="name"/>
+                <field name="customer_name"/>
+                <field name="customer_email"/>
+                <field name="subdomain"/>
+                <field name="plan_id"/>
+                <separator/>
+                <filter name="filter_active" string="Active" domain="[('state','=','active')]"/>
+                <filter name="filter_suspended" string="Suspended" domain="[('state','=','suspended')]"/>
+                <filter name="filter_expired" string="Expired" domain="[('state','=','expired')]"/>
+                <filter name="filter_draft" string="Draft" domain="[('state','=','draft')]"/>
+                <group name="group_by">
+                    <filter name="group_plan" string="Plan" context="{'group_by': 'plan_id'}"/>
+                    <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+
+    <!-- Action -->
+    <record id="action_saas_tenant" model="ir.actions.act_window">
+        <field name="name">Tenants</field>
+        <field name="res_model">saas.tenant</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_saas_tenant_search"/>
+        <field name="context">{'search_default_filter_active': 1}</field>
+    </record>
+</odoo>

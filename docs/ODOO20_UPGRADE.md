@@ -3,7 +3,7 @@
 Branch: `codex/odoo20-readiness`. **This branch is Odoo 20 only** (`ir.access`, `get_str`,
 `env.website`, `BinaryValue` do not exist in 19). Production stays on 19 until the gates below pass.
 
-## 1. What was verified (2026-10-21)
+## 1. What was verified (2026-10-23)
 
 | Fact | Evidence |
 |---|---|
@@ -11,7 +11,7 @@ Branch: `codex/odoo20-readiness`. **This branch is Odoo 20 only** (`ir.access`, 
 | Python 3.12 - 3.14 | `MIN_PY_VERSION`/`MAX_PY_VERSION` in `release.py` |
 | **PostgreSQL 16+ required** | Fresh DB on PG 15 fails (`any_value` does not exist); warning "Postgres version is 150019, lower than minimum required 160000" |
 | **No Community 19->20 database migration path yet** | OCA/OpenUpgrade branch `20.0` has a single "Initial commit" (2026-09-28), no migration scripts; coverage page stops at 18->19 |
-| Enterprise path (upgrade.odoo.com) | **Not verified** - the docs page could not be read in full. Needs an Enterprise subscription check by the account owner |
+| Enterprise path (upgrade.odoo.com) | The official CLI was exercised against an isolated Enterprise copy without its filestore. The database has no embedded subscription code. A valid reference from the account's Odoo order was accepted, but Odoo classified it as `hosting: saas` and rejected target `20.0` for an external test upgrade. An Enterprise **On-Premise** contract, or written guidance from Odoo for this subscription, is required |
 
 Changing the image tag and running `-u` does **not** migrate a database across major versions.
 
@@ -37,36 +37,40 @@ Each item was found by installing on `odoo:20.0` (fresh DB, PG 16) and fixed wit
 
 | Check | Result |
 |---|---|
-| Install 27 modules (26 in repo minus `saas_restaurant_demo`, plus trailer and external `saas_tenant_manager`) on fresh Odoo 20 DB | **passes**, no ERROR/CRITICAL |
+| Restore a real isolated Enterprise copy from PG 15 into staging PG 16 | **passes**: 629 public tables and 128 installed modules; production was not restarted or modified |
+| Install 26 root custom modules, including the newly imported `saas_tenant_manager`, on a fresh Odoo 20 DB (`saas_restaurant_demo` excluded because it requires Enterprise) | **passes**, no ERROR/CRITICAL/Traceback and no targeted Odoo 20 compatibility warnings |
 | `trailer_inspection_saso` tests on Odoo 20 | **79/79 pass** (76 existing + 3 new isolation tests) |
-| HTTP smoke on Odoo 20: `/`, `/get-started`, `/web/login`, `/pricing`, `/faq`, `/about`, `/features`, `/contact` | 200 |
+| HTTP smoke on Odoo 20: `/`, `/get-started`, `/web/login`, `/pricing`, `/faq`, `/about`, `/features`, `/contact`, `/apps`, `/industries`, `/industries/restaurants-cafes` | all 200; first CSS asset also 200; web log has no errors |
 | Backend bundle compiles, includes trailer OWL code | yes |
-| Docker image `docker/odoo20` builds | yes |
+| Docker image `docker/odoo20` builds | yes; includes `envsubst` and keeps Odoo's patched `wkhtmltopdf 0.12.6.1` |
+| Desktop browser render of the restaurant industry page | page, hero image and assets render successfully on Odoo 20 |
 
 **Not tested / not done** (do not read this branch as "upgrade complete"):
 
-- Upgrading any existing database (no supported Community path; Enterprise path unverified).
+- Completing an existing-database upgrade: Community has no supported path, while the available Odoo
+  subscription is an Online/SaaS contract and cannot authorize this external database upgrade.
 - `saas_restaurant_demo` (needs Enterprise `account_accountant`); Enterprise image (`docker/enterprise`).
 - Tests of the other 26 modules (they have none or were not run), portal isolation behaviour for
   `saas_portal`/`saas_reseller` beyond the converted CSV, payment/ZATCA/billing flows.
-- OWL home screen and RTL/mobile layout in a real browser (browser pane was unavailable).
-- `/solutions` returns 404 and `/trailer/verify` 404 on the smoke DB; not checked against Odoo 19 behaviour.
-- **`saas_tenant_manager` is not in this repo** (lives only on the server). It must get the same
-  `ir.access` conversion and `_sql_constraints` fix before Odoo 20 can load `saas_core`.
-- `saas_website/views/page_about.xml` and `page_solutions.xml` had uncommitted edits at the time and were
-  left alone: `page_solutions.xml` still contains 28 `t-esc`, which Odoo 20 silently ignores. Commit those
-  edits, then run `sed -i 's/ t-esc=/ t-out=/g'` on them.
-- Host scripts and provisioner under `scripts/` (they `docker exec ... odoo -u`, call `set_param`, use
-  `odoo:19` images, PG 15) and `remote_provisioning.py` line 241 (`set_param` sent to remote tenants).
+- Final RTL/mobile browser inspection. Arabic was loaded and attached to the isolated staging website, but
+  the controlled browser session ended before the final responsive-layout capture.
+- `/solutions` returns 404 on both the Odoo 20 smoke DB and the Odoo 19 production site, so it is not an
+  Odoo 20 regression. `/trailer/verify` remains outside this smoke scope.
+- `saas_website/views/page_about.xml` and `page_solutions.xml` contain unrelated user edits. The Odoo 20
+  `t-esc` replacements were tested in staging, but those files must be reviewed/staged without absorbing
+  unrelated work.
+- Full provisioning integration tests. The known Odoo 20 API/CLI changes in host scripts and
+  `remote_provisioning.py` were fixed, but no live tenant was provisioned from this branch.
 - `Always-true` rule `Config: Super Admin Only` never restricted managers; that behaviour is preserved.
   Decide whether it should really be restricted.
 
 ## 4. Gates before any deployment
 
-1. A supported database migration path for **every** tenant edition (Community and Enterprise), proven on a
-   restored copy of real data in staging. Today none exists for Community.
+1. A supported database migration path for **every** tenant edition, proven on restored copies in staging.
+   Today none exists for Community. Enterprise additionally requires an On-Premise contract accepted by
+   `upgrade.odoo.com`; the available Online/SaaS subscription is not sufficient.
 2. PostgreSQL 16+ in staging and production (separate, reversible migration: `pg_upgrade` or dump/restore).
-3. `saas_tenant_manager` ported and in git.
+3. `saas_tenant_manager` port reviewed, committed and covered by the same isolation checks as `saas_core`.
 4. Staging smoke: public routes, login, Odoo logs, assets, Arabic/RTL, mobile, integrations, tenant isolation.
 5. Explicit user approval **and** GitHub `production` environment approval (a merge is not approval).
 

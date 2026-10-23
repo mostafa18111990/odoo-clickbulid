@@ -28,14 +28,6 @@ class SaasTenant(models.Model):
     _inherit = ['saas.tenant', 'saas.mixin']
     _description = 'SaaS Tenant (Extended)'
 
-    state = fields.Selection(
-        selection=[
-            ('lead', 'Lead'), ('trial', 'Trial'), ('pending_payment', 'Pending Payment'),
-            ('active', 'Active'), ('grace_period', 'Grace Period'), ('suspended', 'Suspended'),
-            ('cancelled', 'Cancelled'), ('archived', 'Archived'), ('deleted', 'Deleted'),
-        ],
-        string='Status', default='lead', tracking=True, required=True, index=True)
-
     lead_source = fields.Selection(
         selection=[('website', 'Website'), ('google_ads', 'Google Ads'), ('referral', 'Referral'),
                    ('reseller', 'Reseller'), ('direct', 'Direct Sales'), ('api', 'API'), ('other', 'Other')],

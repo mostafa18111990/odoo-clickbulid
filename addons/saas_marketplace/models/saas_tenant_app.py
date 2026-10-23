@@ -27,7 +27,7 @@ class SaasTenantApp(models.Model):
     app_id = fields.Many2one('saas.marketplace.app', string='App', required=True,
                              ondelete='restrict', index=True)
     state = fields.Selection(selection=APP_STATES, string='Status', default='draft',
-                             required=True, tracking=True, index=True)
+                             required=True, index=True)
     addon_id = fields.Many2one('saas.subscription.addon', string='Subscription Add-on',
                                ondelete='set null')
     pricing_model = fields.Selection(related='app_id.pricing_model', string='Pricing', store=False)

@@ -36,7 +36,7 @@ class SaasSubscription(models.Model):
     tenant_id = fields.Many2one('saas.tenant', string='Tenant', required=True, ondelete='cascade', index=True)
     plan_id = fields.Many2one('saas.plan', string='Plan', required=True, ondelete='restrict')
     status = fields.Selection(selection=SUB_STATUS, string='Status', default='trial',
-                              required=True, tracking=True, index=True)
+                              required=True, index=True)
     is_current = fields.Boolean(string='Current Subscription', default=True, index=True)
     billing_cycle = fields.Selection(selection=BILLING_CYCLES, string='Billing Cycle',
                                      required=True, default='yearly')

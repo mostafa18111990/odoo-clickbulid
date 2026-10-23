@@ -11,8 +11,6 @@ class SaasTenantSubscription(models.Model):
     subscription_count = fields.Integer(string='Subscriptions', compute='_compute_subscription_count')
 
     sub_status = fields.Selection(
-        selection=[('trial', 'Trial'), ('active', 'Active'), ('past_due', 'Past Due'),
-                   ('paused', 'Paused'), ('cancelled', 'Cancelled'), ('expired', 'Expired')],
         string='Subscription Status', related='current_subscription_id.status', store=True, index=True)
     sub_next_renewal = fields.Date(string='Next Renewal', related='current_subscription_id.next_renewal_date', store=True)
     sub_total_amount = fields.Float(string='Monthly Charge', related='current_subscription_id.total_amount',

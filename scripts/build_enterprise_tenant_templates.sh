@@ -39,7 +39,7 @@ run_install() {
     docker exec "$ODOO" odoo \
         --config=/etc/odoo/odoo.conf \
         -d "$db" -i "$modules" \
-        --without-demo=all --no-http --stop-after-init "$@" \
+        --without-demo --no-http --stop-after-init "$@" \
         >>"$LOG" 2>&1
 }
 

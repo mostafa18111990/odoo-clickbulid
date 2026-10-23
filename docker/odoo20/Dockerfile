@@ -8,8 +8,7 @@ USER root
 # ─── System Dependencies ──────────────────────────────────────────────────────
 RUN apt-get update && apt-get install -y --no-install-recommends \
     postgresql-client \
-    curl wget \
-    wkhtmltopdf \
+    curl wget gettext-base \
     fonts-noto-cjk \
     fonts-noto \
     && rm -rf /var/lib/apt/lists/*
