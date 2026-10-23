@@ -35,8 +35,8 @@ RUN pip3 install --break-system-packages --no-cache-dir \
     paramiko
 
 # ─── Odoo Config Template ─────────────────────────────────────────────────────
-COPY odoo.conf.template /etc/odoo/odoo.conf.template
-COPY entrypoint.sh /entrypoint.sh
+COPY docker/odoo20/odoo.conf.template /etc/odoo/odoo.conf.template
+COPY docker/odoo20/entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # ─── Custom Addons Directory ──────────────────────────────────────────────────
