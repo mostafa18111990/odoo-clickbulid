@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Support',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'SaaS',
     'summary': 'Help desk: tickets, SLA tracking, assignment',
     'author': 'ClickBuild',
@@ -8,7 +8,7 @@
     'depends': ['saas_reseller', 'mail'],
     'data': [
         'security/saas_support_security.xml',
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'data/saas_ticket_sequence_data.xml',
         'data/saas_ticket_priorities_data.xml',
         'data/saas_ticket_categories_data.xml',

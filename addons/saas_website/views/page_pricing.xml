@@ -89,36 +89,36 @@
                                         <t t-if="lang_is_ar">⭐ الأكثر شيوعاً</t>
                                         <t t-else="">⭐ Most popular</t></div>
                                 </t>
-                                <h4 class="fw-bold text-center mb-2" t-esc="plan.name"/>
-                                <p class="text-center text-muted small mb-4" t-esc="plan.description or ''"/>
+                                <h4 class="fw-bold text-center mb-2" t-out="plan.name"/>
+                                <p class="text-center text-muted small mb-4" t-out="plan.description or ''"/>
 
                                 <div class="text-center mb-3">
                                     <span class="price js-price"
                                           t-att-data-monthly="monthly_price"
                                           t-att-data-yearly="yearly_per_month"
-                                          t-esc="monthly_price"/>
+                                          t-out="monthly_price"/>
                                     <t t-set="suffix_text" t-value="'ريال / شهر' if lang_is_ar else 'SAR / month'"/>
                                     <span class="price-suffix js-price-suffix"
                                           t-att-data-monthly-text="suffix_text"
                                           t-att-data-yearly-text="suffix_text"
-                                          t-esc="suffix_text"/>
+                                          t-out="suffix_text"/>
                                 </div>
                                 <div class="js-yearly-note text-center small text-success mb-3" style="display:none;">
-                                    <t t-if="lang_is_ar">يُحصَّل سنوياً: <strong t-esc="yearly_total"/> ريال</t>
-                                    <t t-else="">Billed yearly: <strong t-esc="yearly_total"/> SAR</t>
+                                    <t t-if="lang_is_ar">يُحصَّل سنوياً: <strong t-out="yearly_total"/> ريال</t>
+                                    <t t-else="">Billed yearly: <strong t-out="yearly_total"/> SAR</t>
                                 </div>
 
                                 <ul class="list-unstyled mb-4">
-                                    <li><i class="fa fa-check me-2"/><strong t-esc="plan.max_users"/>
+                                    <li><i class="fa fa-check me-2"/><strong t-out="plan.max_users"/>
                                         <t t-if="lang_is_ar"> مستخدمون</t><t t-else=""> users</t></li>
-                                    <li><i class="fa fa-check me-2"/><strong t-esc="round(plan.max_storage_mb/1024, 1)"/>
+                                    <li><i class="fa fa-check me-2"/><strong t-out="round(plan.max_storage_mb/1024, 1)"/>
                                         <t t-if="lang_is_ar"> جيجابايت تخزين</t><t t-else=""> GB storage</t></li>
-                                    <li><i class="fa fa-check me-2"/><strong t-esc="plan.max_companies"/>
+                                    <li><i class="fa fa-check me-2"/><strong t-out="plan.max_companies"/>
                                         <t t-if="lang_is_ar"> شركة</t><t t-else=""> companies</t></li>
                                     <li t-if="plan.extra_user_price">
                                         <i class="fa fa-plus me-2"/>
-                                        <t t-if="lang_is_ar">مستخدم إضافي: <t t-esc="'%.0f' % plan.extra_user_price"/> ريال</t>
-                                        <t t-else="">Extra user: <t t-esc="'%.0f' % plan.extra_user_price"/> SAR</t>
+                                        <t t-if="lang_is_ar">مستخدم إضافي: <t t-out="'%.0f' % plan.extra_user_price"/> ريال</t>
+                                        <t t-else="">Extra user: <t t-out="'%.0f' % plan.extra_user_price"/> SAR</t>
                                     </li>
                                     <li><i class="fa fa-check me-2"/>
                                         <t t-if="lang_is_ar">محاسبة + ZATCA</t><t t-else="">Accounting + ZATCA</t></li>
@@ -198,7 +198,7 @@
                                     <t t-if="lang_is_ar">المميزات</t><t t-else="">Features</t></th>
                                 <t t-foreach="plans" t-as="p">
                                     <th t-attf-class="fw-bold #{'text-primary' if p.is_recommended else ''}">
-                                        <t t-esc="p.name"/>
+                                        <t t-out="p.name"/>
                                         <t t-if="p.is_recommended">
                                             <span class="d-block small text-warning">
                                                 <t t-if="lang_is_ar">⭐ موصى به</t><t t-else="">⭐ Recommended</t></span>
@@ -212,24 +212,24 @@
                                 <td class="text-start fw-bold">
                                     <t t-if="lang_is_ar">السعر الشهري</t><t t-else="">Monthly price</t></td>
                                 <t t-foreach="plans" t-as="p">
-                                    <td><strong t-esc="'%.0f' % p.monthly_price"/>
+                                    <td><strong t-out="'%.0f' % p.monthly_price"/>
                                         <t t-if="lang_is_ar"> ريال</t><t t-else=""> SAR</t></td>
                                 </t>
                             </tr>
                             <tr>
                                 <td class="text-start fw-bold">
                                     <t t-if="lang_is_ar">عدد المستخدمين</t><t t-else="">Users</t></td>
-                                <t t-foreach="plans" t-as="p"><td><strong t-esc="p.max_users"/></td></t>
+                                <t t-foreach="plans" t-as="p"><td><strong t-out="p.max_users"/></td></t>
                             </tr>
                             <tr>
                                 <td class="text-start fw-bold">
                                     <t t-if="lang_is_ar">مساحة التخزين</t><t t-else="">Storage</t></td>
-                                <t t-foreach="plans" t-as="p"><td><strong t-esc="round(p.max_storage_mb/1024, 1)"/> GB</td></t>
+                                <t t-foreach="plans" t-as="p"><td><strong t-out="round(p.max_storage_mb/1024, 1)"/> GB</td></t>
                             </tr>
                             <tr>
                                 <td class="text-start fw-bold">
                                     <t t-if="lang_is_ar">عدد الشركات</t><t t-else="">Companies</t></td>
-                                <t t-foreach="plans" t-as="p"><td><strong t-esc="p.max_companies"/></td></t>
+                                <t t-foreach="plans" t-as="p"><td><strong t-out="p.max_companies"/></td></t>
                             </tr>
                             <tr>
                                 <td class="text-start fw-bold">

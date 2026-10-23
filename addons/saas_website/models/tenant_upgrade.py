@@ -25,7 +25,7 @@ class SaasTenantUpgrade(models.Model):
         ('completed', 'مكتمل'),
         ('failed', 'فشل'),
         ('rejected', 'مرفوض'),
-    ], default='pending', index=True, track_visibility='onchange')
+    ], default='pending', index=True)
 
     requested_date = fields.Datetime('تاريخ الطلب', default=datetime.now())
     requested_by = fields.Many2one('res.users', 'طلبه من قبل')

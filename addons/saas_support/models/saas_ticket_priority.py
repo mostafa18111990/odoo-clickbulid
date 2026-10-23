@@ -16,4 +16,7 @@ class SaasTicketPriority(models.Model):
     resolution_hours = fields.Integer(string='Resolution Time (hours)', default=24)
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [('code_unique', 'UNIQUE(code)', 'Priority code must be unique.')]
+    _code_unique = models.Constraint(
+        'UNIQUE(code)',
+        "Priority code must be unique.",
+    )

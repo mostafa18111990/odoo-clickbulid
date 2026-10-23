@@ -25,7 +25,10 @@ class SaasReferral(models.Model):
     expires_at = fields.Datetime(string='Expires At')
     notes = fields.Text(string='Notes')
 
-    _sql_constraints = [('code_unique', 'UNIQUE(name)', 'Referral code must be unique.')]
+    _code_unique = models.Constraint(
+        'UNIQUE(name)',
+        "Referral code must be unique.",
+    )
 
     @api.model_create_multi
     def create(self, vals_list):

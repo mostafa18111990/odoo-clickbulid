@@ -17,6 +17,7 @@ class SaasReportCohort(models.Model):
     currency_id = fields.Many2one('res.currency', string='Currency',
                                   default=lambda self: self.env.company.currency_id)
 
-    _sql_constraints = [('cohort_offset_unique',
-                         'UNIQUE(cohort_month, month_offset)',
-                         'One row per cohort/offset.')]
+    _cohort_offset_unique = models.Constraint(
+        'UNIQUE(cohort_month, month_offset)',
+        "One row per cohort/offset.",
+    )

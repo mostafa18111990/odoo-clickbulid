@@ -21,7 +21,7 @@ class SaasPaymentTransaction(models.Model):
                            default=lambda self: self.env['ir.sequence'].next_by_code('saas.payment.tx'))
     tx_type = fields.Selection(selection=TX_TYPES, string='Type', default='checkout', required=True, index=True)
     status = fields.Selection(selection=TX_STATUS, string='Status', default='pending',
-                              required=True, tracking=True, index=True)
+                              required=True, index=True)
     tenant_id = fields.Many2one('saas.tenant', string='Tenant', required=True, ondelete='restrict', index=True)
     subscription_id = fields.Many2one('saas.subscription', string='Subscription', ondelete='set null', index=True)
     invoice_id = fields.Many2one('saas.invoice', string='Invoice', ondelete='set null', index=True)
@@ -42,8 +42,10 @@ class SaasPaymentTransaction(models.Model):
     confirmed_at = fields.Datetime(string='Confirmed At', readonly=True)
     expires_at = fields.Datetime(string='Expires At')
 
-    _sql_constraints = [('gateway_tx_ref_unique', 'UNIQUE(gateway_tx_ref)',
-                         'Gateway transaction reference must be unique.')]
+    _gateway_tx_ref_unique = models.Constraint(
+        'UNIQUE(gateway_tx_ref)',
+        "Gateway transaction reference must be unique.",
+    )
 
     @api.depends('amount', 'amount_refunded')
     def _compute_amount_net(self):

@@ -30,7 +30,10 @@ class SaasHealthCheck(models.Model):
     uptime_pct_24h = fields.Float(string='Uptime % (24h)', compute='_compute_uptime')
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [('code_unique', 'UNIQUE(code)', 'Check code must be unique.')]
+    _code_unique = models.Constraint(
+        'UNIQUE(code)',
+        "Check code must be unique.",
+    )
 
     def _compute_uptime(self):
         from datetime import timedelta

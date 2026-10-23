@@ -22,7 +22,10 @@ class SaasKbCategory(models.Model):
     article_count = fields.Integer(string='Articles', compute='_compute_article_count')
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [('slug_unique', 'UNIQUE(slug)', 'Slug must be unique.')]
+    _slug_unique = models.Constraint(
+        'UNIQUE(slug)',
+        "Slug must be unique.",
+    )
 
     def _compute_article_count(self):
         for rec in self:

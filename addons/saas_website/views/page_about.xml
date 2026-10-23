@@ -15,12 +15,12 @@
 
                         <p class="lead mb-4">
                             <t t-if="lang_is_ar">
-                                ClickBuild منصة SaaS سحابية متكاملة مبنية على Odoo 19،
+                                ClickBuild منصة SaaS سحابية متكاملة مبنية على Odoo 20،
                                 تُمكّن الشركات في المملكة العربية السعودية ومنطقة الشرق الأوسط
                                 من إدارة جميع عملياتها من مكان واحد.
                             </t>
                             <t t-else="">
-                                ClickBuild is a fully managed SaaS platform built on Odoo 19,
+                                ClickBuild is a fully managed SaaS platform built on Odoo 20,
                                 empowering businesses across Saudi Arabia and the Middle East
                                 to run all their operations from a single place.
                             </t>

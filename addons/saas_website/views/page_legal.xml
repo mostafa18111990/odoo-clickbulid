@@ -31,12 +31,12 @@
                                     <a href="/"><t t-if="lang_is_ar">الرئيسية</t><t t-else="">Home</t></a>
                                 </li>
                                 <li class="breadcrumb-item active" t-att-aria-current="'page'">
-                                    <t t-esc="page_title"/>
+                                    <t t-out="page_title"/>
                                 </li>
                             </ol>
                         </nav>
 
-                        <h1 class="display-6 fw-bold mb-2"><t t-esc="page_title"/></h1>
+                        <h1 class="display-6 fw-bold mb-2"><t t-out="page_title"/></h1>
                         <p class="text-muted mb-5">
                             <t t-if="lang_is_ar">آخر تحديث: يونيو 2026</t>
                             <t t-else="">Last updated: June 2026</t>
@@ -49,7 +49,7 @@
                                 <p>باستخدامك لمنصة ClickBuild، فإنك توافق على الالتزام بهذه الشروط والأحكام. إذا كنت لا توافق على هذه الشروط، يُرجى عدم استخدام الخدمة.</p>
 
                                 <h2 class="h5 fw-bold mt-4">2. وصف الخدمة</h2>
-                                <p>ClickBuild توفر منصة ERP سحابية مبنية على Odoo 19، تشمل إدارة المحاسبة، المبيعات، المخزون، الموارد البشرية، وغيرها. تُقدَّم الخدمة بشكل اشتراك شهري أو سنوي.</p>
+                                <p>ClickBuild توفر منصة ERP سحابية مبنية على Odoo 20، تشمل إدارة المحاسبة، المبيعات، المخزون، الموارد البشرية، وغيرها. تُقدَّم الخدمة بشكل اشتراك شهري أو سنوي.</p>
 
                                 <h2 class="h5 fw-bold mt-4">3. حساب المستخدم</h2>
                                 <p>أنت مسؤول عن الحفاظ على سرية بيانات تسجيل الدخول الخاصة بك. يجب إبلاغنا فوراً عن أي استخدام غير مصرح به لحسابك.</p>
@@ -68,7 +68,7 @@
                                 <p>By using ClickBuild, you agree to be bound by these Terms of Service. If you do not agree, please do not use the service.</p>
 
                                 <h2 class="h5 fw-bold mt-4">2. Service Description</h2>
-                                <p>ClickBuild provides a cloud ERP platform built on Odoo 19, including accounting, sales, inventory, HR, and more. The service is offered on a monthly or annual subscription basis.</p>
+                                <p>ClickBuild provides a cloud ERP platform built on Odoo 20, including accounting, sales, inventory, HR, and more. The service is offered on a monthly or annual subscription basis.</p>
 
                                 <h2 class="h5 fw-bold mt-4">3. User Account</h2>
                                 <p>You are responsible for maintaining the confidentiality of your login credentials. You must notify us immediately of any unauthorized use of your account.</p>

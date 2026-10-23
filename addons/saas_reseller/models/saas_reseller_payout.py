@@ -15,7 +15,7 @@ class SaasResellerPayout(models.Model):
     reseller_id = fields.Many2one('saas.reseller', string='Reseller', required=True,
                                   ondelete='restrict', index=True)
     state = fields.Selection(selection=PAYOUT_STATES, string='Status', default='draft',
-                             required=True, tracking=True, index=True)
+                             required=True, index=True)
     amount = fields.Float(string='Amount', digits=(10, 2))
     currency = fields.Char(string='Currency', default='SAR')
     commission_ids = fields.One2many('saas.reseller.commission', 'payout_id', string='Commissions')

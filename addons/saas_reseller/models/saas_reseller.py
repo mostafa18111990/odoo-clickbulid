@@ -48,7 +48,10 @@ class SaasReseller(models.Model):
     commission_ids = fields.One2many('saas.reseller.commission', 'reseller_id', string='Commissions')
     payout_ids = fields.One2many('saas.reseller.payout', 'reseller_id', string='Payouts')
 
-    _sql_constraints = [('code_unique', 'UNIQUE(code)', 'Reseller code must be unique.')]
+    _code_unique = models.Constraint(
+        'UNIQUE(code)',
+        "Reseller code must be unique.",
+    )
 
     @api.depends('tenant_ids', 'tenant_ids.state')
     def _compute_customer_count(self):
@@ -118,7 +121,7 @@ class SaasReseller(models.Model):
             groups.append(reseller_group.id)
         user = self.env['res.users'].sudo().with_context(no_reset_password=True).create({
             'name': self.contact_name or self.name, 'login': self.contact_email,
-            'email': self.contact_email, 'groups_id': [(6, 0, groups)]})
+            'email': self.contact_email, 'group_ids': [(6, 0, groups)]})
         self.portal_user_id = user.id
         try:
             user.action_reset_password()

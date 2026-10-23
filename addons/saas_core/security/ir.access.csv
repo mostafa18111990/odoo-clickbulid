@@ -1,0 +1,10 @@
+id,name,model_id/id,group_id/id,operation,domain
+access_saas_config_admin,saas.config admin,model_saas_config,saas_core.group_saas_super_admin,crud,
+access_saas_config_user,saas.config user,model_saas_config,saas_tenant_manager.group_saas_manager,r,
+access_saas_event_admin,saas.event admin,model_saas_event,saas_tenant_manager.group_saas_admin,cr,
+access_saas_event_support,saas.event support,model_saas_event,saas_core.group_saas_support,r,
+access_saas_event_analyst,saas.event analyst,model_saas_event,saas_core.group_saas_analyst,r,
+access_saas_audit_log_admin,saas.audit.log admin,model_saas_audit_log,saas_tenant_manager.group_saas_admin,cr,
+access_saas_audit_log_analyst,saas.audit.log analyst,model_saas_audit_log,saas_core.group_saas_analyst,r,
+access_saas_provisioning_job_admin,saas.provisioning.job admin,model_saas_provisioning_job,saas_tenant_manager.group_saas_admin,crud,
+access_saas_provisioning_job_system,saas.provisioning.job system,model_saas_provisioning_job,base.group_system,cru,

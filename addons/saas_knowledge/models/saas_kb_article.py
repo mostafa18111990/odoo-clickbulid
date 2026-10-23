@@ -33,7 +33,10 @@ class SaasKbArticle(models.Model):
     related_ticket_count = fields.Integer(string='Related Tickets', compute='_compute_related_tickets')
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [('slug_unique', 'UNIQUE(slug)', 'Slug must be unique.')]
+    _slug_unique = models.Constraint(
+        'UNIQUE(slug)',
+        "Slug must be unique.",
+    )
 
     def _compute_related_tickets(self):
         for rec in self:

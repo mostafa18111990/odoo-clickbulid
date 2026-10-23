@@ -54,13 +54,13 @@
                             </div>
                         </div>
                         <div class="col-md-6 p-md-4">
-                            <h3 class="fw-bold mb-3" t-esc="f['t']"/>
-                            <p class="text-muted lead mb-4" t-esc="f['d']"/>
+                            <h3 class="fw-bold mb-3" t-out="f['t']"/>
+                            <p class="text-muted lead mb-4" t-out="f['d']"/>
                             <div class="d-flex flex-wrap gap-2">
                                 <t t-foreach="f['bullets']" t-as="b">
                                     <span class="badge rounded-pill px-3 py-2"
                                           style="background:#f5f3ff; color:#6d28d9; font-weight:500;">
-                                        <i class="fa fa-check me-1"/><t t-esc="b"/>
+                                        <i class="fa fa-check me-1"/><t t-out="b"/>
                                     </span>
                                 </t>
                             </div>

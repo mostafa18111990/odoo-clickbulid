@@ -24,5 +24,7 @@ class SaasAiPromptTemplate(models.Model):
     description = fields.Text(string='Description')
     active = fields.Boolean(default=True)
 
-    _sql_constraints = [('code_lang_unique', 'UNIQUE(code, language)',
-                         'Template code + language must be unique.')]
+    _code_lang_unique = models.Constraint(
+        'UNIQUE(code, language)',
+        "Template code + language must be unique.",
+    )

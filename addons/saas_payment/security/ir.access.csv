@@ -1,0 +1,8 @@
+id,name,model_id/id,group_id/id,operation,domain
+access_saas_gateway_super,saas.payment.gateway super,model_saas_payment_gateway,saas_core.group_saas_super_admin,crud,
+access_saas_gateway_admin,saas.payment.gateway admin,model_saas_payment_gateway,saas_tenant_manager.group_saas_admin,r,
+access_saas_tx_admin,saas.payment.transaction admin,model_saas_payment_transaction,saas_tenant_manager.group_saas_admin,cru,
+access_saas_tx_system,saas.payment.transaction system,model_saas_payment_transaction,base.group_system,cru,
+access_saas_tx_analyst,saas.payment.transaction analyst,model_saas_payment_transaction,saas_core.group_saas_analyst,r,
+access_saas_pm_admin,saas.payment.method admin,model_saas_payment_method,saas_tenant_manager.group_saas_admin,cru,
+access_saas_pm_system,saas.payment.method system,model_saas_payment_method,base.group_system,cru,

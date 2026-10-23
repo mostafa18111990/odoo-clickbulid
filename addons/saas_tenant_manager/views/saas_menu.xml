@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!-- Root menu -->
+    <menuitem id="menu_saas_root"
+        name="SaaS Management"
+        web_icon="saas_tenant_manager,static/description/icon.png"
+        sequence="1"/>
+
+    <!-- Dashboard -->
+    <menuitem id="menu_saas_dashboard"
+        name="Dashboard"
+        parent="menu_saas_root"
+        action="action_saas_tenant"
+        sequence="1"/>
+
+    <!-- Tenants -->
+    <menuitem id="menu_saas_tenants"
+        name="Tenants"
+        parent="menu_saas_root"
+        action="action_saas_tenant"
+        sequence="2"/>
+
+    <!-- Plans -->
+    <menuitem id="menu_saas_plans"
+        name="Subscription Plans"
+        parent="menu_saas_root"
+        action="action_saas_plan"
+        sequence="3"/>
+
+    <!-- Backups -->
+    <menuitem id="menu_saas_backups"
+        name="Tenant Backups"
+        parent="menu_saas_root"
+        action="action_saas_backup"
+        sequence="4"/>
+
+    <!-- New Tenant Wizard -->
+    <menuitem id="menu_saas_new_tenant"
+        name="New Tenant"
+        parent="menu_saas_root"
+        action="action_create_tenant_wizard"
+        sequence="5"/>
+</odoo>

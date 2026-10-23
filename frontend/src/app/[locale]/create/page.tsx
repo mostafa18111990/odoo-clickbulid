@@ -91,7 +91,7 @@ export default function CreateInstancePage() {
       <div className="max-w-2xl mx-auto px-4">
 
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-black text-gray-900 mb-2">إنشاء بيئة Odoo 19</h1>
+          <h1 className="text-3xl font-black text-gray-900 mb-2">إنشاء بيئة Odoo 20</h1>
           <p className="text-gray-500">14 يوم مجاناً • لا يلزم بطاقة ائتمان</p>
         </div>
 
