@@ -3,6 +3,28 @@
 Branch: `codex/odoo20-readiness`. **This branch is Odoo 20 only** (`ir.access`, `get_str`,
 `env.website`, `BinaryValue` do not exist in 19). Production stays on 19 until the gates below pass.
 
+## Fresh tenants do not require a database upgrade
+
+The existing customer databases are test data, so the supported first rollout is an isolated
+**new-tenant plane** rather than an in-place major-version migration:
+
+- the existing Odoo 19 control plane can keep accepting signups;
+- `saas-tenant-provisioner.sh` creates every new tenant in `odoo_saas_postgres20` (PostgreSQL 16+);
+- Community requests run in `odoo_saas_20_community`;
+- Enterprise requests run in `odoo_saas_20_enterprise`, with an Odoo 20 Enterprise source mount;
+- the generated certificate request carries `odoo_version=20`, so Nginx selects the Odoo 20 upstream;
+- legacy certificate requests without a version continue to use their Odoo 19 upstream.
+
+The Odoo 20 tenant plane is defined in `docker/odoo20/docker-compose.tenants.yml`. Copy
+`docker/odoo20/.env.example` to a server-only `.env`, provide strong generated secrets, the existing
+Docker network name, and the licensed Enterprise 20 source path. Install the four Odoo 20 Nginx
+upstreams with `scripts/patch_nginx_odoo20_upstreams.sh`, then install the updated host provisioner.
+The provisioner fails closed if the selected container is not Odoo 20 or PostgreSQL is below 16.
+
+Activation must first be tested with a disposable signup on staging. Production activation still
+requires explicit approval; it does not require uploading test customer databases to Odoo's upgrade
+service.
+
 ## 1. What was verified (2026-10-23)
 
 | Fact | Evidence |

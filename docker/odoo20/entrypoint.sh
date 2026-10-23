@@ -4,6 +4,12 @@
 
 set -e
 
+if [ "${REQUIRE_ENTERPRISE:-false}" = "true" ] \
+        && [ ! -f /mnt/enterprise/web_studio/__manifest__.py ]; then
+    echo "Enterprise 20 source is missing or invalid at /mnt/enterprise" >&2
+    exit 2
+fi
+
 # ─── توليد Config من Template ────────────────────────────────────────────────
 envsubst < /etc/odoo/odoo.conf.template > /etc/odoo/odoo.conf
 
@@ -61,5 +67,5 @@ PYEOF
 fi
 
 # ─── تشغيل Odoo ──────────────────────────────────────────────────────────────
-echo "🚀 بدء تشغيل Odoo ${ODOO_VERSION:-19}..."
+echo "🚀 بدء تشغيل Odoo ${ODOO_VERSION:-20}..."
 exec odoo --config=/etc/odoo/odoo.conf "$@"

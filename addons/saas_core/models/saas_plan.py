@@ -9,9 +9,9 @@ class SaasPlan(models.Model):
 
     # ─── Edition selector ───────────────────────────────────────────────────
     # Determines which Odoo image hosts new tenants on this plan:
-    #   community  → odoo_saas_app container (LGPL, no extra license cost)
-    #   enterprise → odoo_saas_ent container (Studio, Helpdesk Pro, Subscriptions,
-    #                Field Service, Documents, Sign, MRP Plan, etc.)
+    #   community  → odoo_saas_20_community (LGPL, no extra license cost)
+    #   enterprise → odoo_saas_20_enterprise (Studio, Helpdesk Pro,
+    #                Subscriptions, Field Service, Documents, Sign, etc.)
     edition = fields.Selection(
         selection=[('community', 'Community'), ('enterprise', 'Enterprise')],
         string='Odoo Edition', default='community', required=True, index=True,

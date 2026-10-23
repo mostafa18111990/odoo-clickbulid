@@ -40,7 +40,8 @@ COPY entrypoint.sh /entrypoint.sh
 RUN chmod +x /entrypoint.sh
 
 # ─── Custom Addons Directory ──────────────────────────────────────────────────
-RUN mkdir -p /mnt/extra-addons && chown odoo:odoo /mnt/extra-addons
+RUN mkdir -p /mnt/extra-addons /mnt/enterprise \
+    && chown odoo:odoo /mnt/extra-addons /mnt/enterprise
 
 # ─── Healthcheck ──────────────────────────────────────────────────────────────
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \

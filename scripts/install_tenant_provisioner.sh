@@ -37,11 +37,22 @@ ADMIN_PASSWORD=$(read_json admin_password)
 COMPANY=$(read_json company_name)
 LANG=$(read_json language)
 EDITION=$(read_json edition)
-# Pick the right container based on edition. Community tenants run on the
-# existing odoo_saas_app; Enterprise tenants run on the new odoo_saas_ent.
+ODOO_VERSION=$(read_json odoo_version)
+ODOO_VERSION="${ODOO_VERSION:-20}"
+DB_CONTAINER="${SAAS_ODOO20_DB_CONTAINER:-odoo_saas_postgres20}"
+MASTER_ODOO_CONTAINER="${SAAS_MASTER_ODOO_CONTAINER:-odoo_saas_app}"
+COMMUNITY_CONTAINER="${SAAS_ODOO20_COMMUNITY_CONTAINER:-odoo_saas_20_community}"
+ENTERPRISE_CONTAINER="${SAAS_ODOO20_ENTERPRISE_CONTAINER:-odoo_saas_20_enterprise}"
+
+[ "$ODOO_VERSION" = "20" ] || {
+    echo "$(date -Is) FAIL unsupported tenant Odoo version: $ODOO_VERSION" >> "$LOG"
+    exit 3
+}
+
+# New tenants always run on the isolated Odoo 20 tenant plane.
 case "$EDITION" in
-    enterprise) ODOO_CONTAINER=odoo_saas_ent ;;
-    *)          ODOO_CONTAINER=odoo_saas_app ;;
+    enterprise) ODOO_CONTAINER="$ENTERPRISE_CONTAINER" ;;
+    *)          ODOO_CONTAINER="$COMMUNITY_CONTAINER" ;;
 esac
 # Modules to install at first boot. Comma-joined for the -i flag.
 MODULES_JSON=$(python3 -c "import json; d=json.load(open('$REQ')); print(','.join(d.get('modules', []) or ['base']))")
@@ -54,14 +65,32 @@ if ! echo "$SUB" | grep -qE '^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$'; then
 fi
 
 DB="$SUB"
-echo "$(date -Is) === provisioning $DB (edition=$EDITION, container=$ODOO_CONTAINER) ===" >> "$LOG"
+echo "$(date -Is) === provisioning $DB (odoo=$ODOO_VERSION, edition=$EDITION, container=$ODOO_CONTAINER) ===" >> "$LOG"
+
+docker inspect "$DB_CONTAINER" >/dev/null 2>&1 || {
+    echo "$(date -Is) FAIL Odoo 20 PostgreSQL container missing: $DB_CONTAINER" >> "$LOG"
+    exit 4
+}
+docker inspect "$ODOO_CONTAINER" >/dev/null 2>&1 || {
+    echo "$(date -Is) FAIL Odoo 20 application container missing: $ODOO_CONTAINER" >> "$LOG"
+    exit 4
+}
+docker exec "$ODOO_CONTAINER" odoo --version 2>/dev/null | grep -q 'Odoo Server 20' || {
+    echo "$(date -Is) FAIL $ODOO_CONTAINER is not Odoo 20" >> "$LOG"
+    exit 4
+}
+PG_VERSION_NUM=$(docker exec "$DB_CONTAINER" psql -U odoo -d postgres -Atc 'show server_version_num')
+[ "${PG_VERSION_NUM:-0}" -ge 160000 ] || {
+    echo "$(date -Is) FAIL PostgreSQL 16+ required, got ${PG_VERSION_NUM:-unknown}" >> "$LOG"
+    exit 4
+}
 
 # 1. Check if DB exists already
-if docker exec odoo_saas_postgres psql -U odoo -lqt 2>/dev/null \
+if docker exec "$DB_CONTAINER" psql -U odoo -lqt 2>/dev/null \
         | cut -d'|' -f1 | tr -d ' ' | grep -qx "$DB"; then
     echo "$(date -Is) DB $DB already exists, skipping createdb" >> "$LOG"
 else
-    docker exec odoo_saas_postgres createdb -U odoo -O odoo "$DB" >> "$LOG" 2>&1
+    docker exec "$DB_CONTAINER" createdb -U odoo -O odoo "$DB" >> "$LOG" 2>&1
     echo "$(date -Is) created DB $DB" >> "$LOG"
 fi
 
@@ -73,7 +102,7 @@ docker exec "$ODOO_CONTAINER" odoo \
     --config=/etc/odoo/odoo.conf \
     -d "$DB" \
     -i "$INIT_MODULES" \
-    --without-demo=all \
+    --without-demo \
     --load-language=ar_001 \
     --no-http --stop-after-init >> "$LOG" 2>&1 || {
         echo "$(date -Is) FAIL: odoo init failed for $DB (container=$ODOO_CONTAINER)" >> "$LOG"
@@ -111,7 +140,7 @@ with reg.cursor() as cr:
 docker exec \
     -e SAAS_TENANT_ID="$TENANT_ID" \
     -e SAAS_DB="$DB" \
-    odoo_saas_app python3 -c '
+    "$MASTER_ODOO_CONTAINER" python3 -c '
 import os, odoo
 from odoo.tools import config
 config.parse_config(["-c", "/etc/odoo/odoo.conf"])
@@ -142,6 +171,7 @@ REQ_DIR=$(dirname "$REQ")
     echo "tenant_id=$TENANT_ID"
     echo "subdomain=$SUB"
     echo "edition=$EDITION"
+    echo "odoo_version=$ODOO_VERSION"
 } > "$REQ_DIR/$SUB.req"
 echo "$(date -Is) DONE $DB" >> "$LOG"
 PROV

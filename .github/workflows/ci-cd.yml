@@ -79,6 +79,23 @@ jobs:
           sys.exit(1 if errors else 0)
           PY
 
+      - name: Validate Odoo 20 tenant-plane scripts and Compose
+        env:
+          ODOO20_DB_PASSWORD: validation-only
+          ODOO20_MASTER_PASSWORD: validation-only
+          ODOO20_ENTERPRISE_PATH: /tmp/enterprise20
+          ODOO_NETWORK: validation-network
+        run: |
+          bash -n scripts/install_tenant_provisioner.sh
+          bash -n scripts/provision_tenant_cert.sh
+          bash -n scripts/patch_nginx_odoo20_upstreams.sh
+          bash -n docker/odoo20/entrypoint.sh
+          docker compose \
+            -f docker/odoo20/docker-compose.tenants.yml \
+            config --quiet
+          grep -q "ODOO_VERSION:-20" docker/odoo20/entrypoint.sh
+          grep -q "odoo_saas_postgres20" scripts/install_tenant_provisioner.sh
+
   # ════════════════════════════════════════════════════════════════
   # 2. SMOKE INSTALL — boots Odoo 20 in a service container and
   # installs the leaf module, which transitively pulls all 19.
