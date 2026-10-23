@@ -21,6 +21,13 @@ Docker network name, and the licensed Enterprise 20 source path. Install the fou
 upstreams with `scripts/patch_nginx_odoo20_upstreams.sh`, then install the updated host provisioner.
 The provisioner fails closed if the selected container is not Odoo 20 or PostgreSQL is below 16.
 
+Keep the licensed Enterprise source outside Git and outside deployment archives. After downloading
+the official Odoo 20 Enterprise source directly to the server, run
+`scripts/install_odoo20_enterprise_staging.sh /path/to/archive-or-extracted-directory`. The script
+validates `web_studio`, `web_enterprise`, and `account_accountant`, installs the add-ons at the
+server-only path `/opt/odoo-saas/enterprise20`, starts the isolated Enterprise container, and verifies
+the Enterprise modules in a disposable database before removing it.
+
 Activation must first be tested with a disposable signup on staging. Production activation still
 requires explicit approval; it does not require uploading test customer databases to Odoo's upgrade
 service.
