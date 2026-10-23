@@ -68,4 +68,9 @@ fi
 
 # ─── تشغيل Odoo ──────────────────────────────────────────────────────────────
 echo "🚀 بدء تشغيل Odoo ${ODOO_VERSION:-20}..."
+# Docker appends CMD ["odoo"] to this custom entrypoint.  Drop that launcher
+# token because this script invokes the Odoo executable itself.
+if [ "${1:-}" = "odoo" ]; then
+    shift
+fi
 exec odoo --config=/etc/odoo/odoo.conf "$@"
