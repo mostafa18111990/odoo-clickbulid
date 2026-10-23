@@ -55,6 +55,10 @@ if [ -d "$SOURCE_PATH" ]; then
 else
     TEMP_DIR=$(mktemp -d /tmp/odoo20-enterprise.XXXXXX)
     case "$SOURCE_PATH" in
+        *.deb)
+            command -v dpkg-deb >/dev/null || fail "dpkg-deb is required for a Debian package"
+            dpkg-deb -x "$SOURCE_PATH" "$TEMP_DIR"
+            ;;
         *.zip)
             command -v unzip >/dev/null || fail "unzip is required for a ZIP archive"
             unzip -q "$SOURCE_PATH" -d "$TEMP_DIR"
@@ -63,7 +67,7 @@ else
             tar -xf "$SOURCE_PATH" -C "$TEMP_DIR"
             ;;
         *)
-            fail "use an extracted directory, .zip, .tar.gz, .tgz, .tar.bz2, or .tar.xz archive"
+            fail "use an extracted directory, .deb, .zip, .tar.gz, .tgz, .tar.bz2, or .tar.xz archive"
             ;;
     esac
     SEARCH_ROOT="$TEMP_DIR"
