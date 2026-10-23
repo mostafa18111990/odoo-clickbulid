@@ -21,7 +21,9 @@ fail() {
 
 cleanup_smoke() {
     if [ "$SMOKE_CREATED" = "1" ]; then
-        if ! docker exec "$DB_CONTAINER" dropdb -U odoo --if-exists "$SMOKE_DB" >/dev/null 2>&1; then
+        # The web-route probe can leave a worker connection open briefly.
+        # --force terminates only sessions attached to this disposable database.
+        if ! docker exec "$DB_CONTAINER" dropdb -U odoo --force --if-exists "$SMOKE_DB" >/dev/null 2>&1; then
             echo "WARN: could not remove disposable smoke database $SMOKE_DB" >&2
         fi
         if ! docker exec "$ODOO_CONTAINER" rm -rf "/var/lib/odoo/filestore/$SMOKE_DB" >/dev/null 2>&1; then
