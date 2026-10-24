@@ -127,10 +127,13 @@ done
 (cd "$BACKUP_DIR" && sha256sum -c SHA256SUMS)
 
 tar -xzf "$RELEASE_ARCHIVE" -C "$RELEASE_DIR"
-test -f "$RELEASE_DIR/docker/odoo20/docker-compose.tenants.yml"
-test -x "$RELEASE_DIR/scripts/install_tenant_provisioner.sh"
-test -x "$RELEASE_DIR/scripts/patch_nginx_odoo20_upstreams.sh"
-test -x "$RELEASE_DIR/scripts/provision_tenant_cert.sh"
+for required_file in \
+    docker/odoo20/docker-compose.tenants.yml \
+    scripts/install_tenant_provisioner.sh \
+    scripts/patch_nginx_odoo20_upstreams.sh \
+    scripts/provision_tenant_cert.sh; do
+    [ -f "$RELEASE_DIR/$required_file" ] || fail "release file missing: $required_file"
+done
 
 ENV_SOURCE=${ODOO20_ENV_SOURCE:-/opt/odoo20-staging/repo/docker/odoo20/.env}
 [ -f "$ENV_SOURCE" ] || fail "Odoo 20 environment file missing: $ENV_SOURCE"
