@@ -14,6 +14,7 @@
                 <field name="customer_name"/>
                 <field name="subdomain"/>
                 <field name="plan_id"/>
+                <field name="business_sector"/>
                 <field name="state" widget="badge"
                     decoration-success="state == 'active'"
                     decoration-warning="state == 'suspended'"
@@ -77,6 +78,7 @@
                             <field name="customer_email"/>
                             <field name="phone"/>
                             <field name="company_name"/>
+                            <field name="business_sector"/>
                         </group>
                         <group string="Subscription">
                             <field name="plan_id"/>
@@ -149,6 +151,7 @@
                 <field name="customer_email"/>
                 <field name="subdomain"/>
                 <field name="plan_id"/>
+                <field name="business_sector"/>
                 <separator/>
                 <filter name="filter_active" string="Active" domain="[('state','=','active')]"/>
                 <filter name="filter_suspended" string="Suspended" domain="[('state','=','suspended')]"/>
@@ -156,6 +159,7 @@
                 <filter name="filter_draft" string="Draft" domain="[('state','=','draft')]"/>
                 <group name="group_by">
                     <filter name="group_plan" string="Plan" context="{'group_by': 'plan_id'}"/>
+                    <filter name="group_sector" string="Business Sector" context="{'group_by': 'business_sector'}"/>
                     <filter name="group_state" string="Status" context="{'group_by': 'state'}"/>
                 </group>
             </search>

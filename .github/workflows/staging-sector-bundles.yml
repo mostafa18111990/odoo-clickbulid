@@ -1,0 +1,67 @@
+name: Staging — Odoo 20 sector bundles
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type TEST-SECTOR-BUNDLES to continue
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: staging-sector-bundles
+  cancel-in-progress: false
+
+jobs:
+  sector-smoke:
+    if: ${{ inputs.confirmation == 'TEST-SECTOR-BUNDLES' }}
+    runs-on: [self-hosted, Linux, X64, clickbuild-production]
+    environment: staging
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate Odoo 20 sector application bundles
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test "${GITHUB_REF_NAME}" = main
+          db_container=odoo_saas_postgres20
+          prefix="cbsector${GITHUB_RUN_ID}"
+          databases=(
+            "${prefix}restaurant"
+            "${prefix}manufacturing"
+            "${prefix}manufacturingee"
+            "${prefix}servicesee"
+          )
+          cleanup() {
+            for database in "${databases[@]}"; do
+              docker exec "$db_container" dropdb -U odoo --if-exists --force "$database"
+            done
+          }
+          trap cleanup EXIT
+
+          smoke_bundle() {
+            local container=$1 database=$2 modules=$3
+            docker exec "$db_container" createdb -U odoo -O odoo "$database"
+            docker exec "$container" odoo \
+              --config=/etc/odoo/odoo.conf \
+              -d "$database" -i "$modules" \
+              --without-demo --load-language=ar_001 \
+              --no-http --stop-after-init
+            docker exec "$db_container" psql -U odoo -d "$database" -Atc \
+              "select count(*) from ir_module_module where state='installed'" \
+              | grep -Eq '^[1-9][0-9]*$'
+          }
+
+          smoke_bundle odoo_saas_20_community "${databases[0]}" \
+            "base,web,point_of_sale,pos_restaurant,purchase,stock,account"
+          smoke_bundle odoo_saas_20_community "${databases[1]}" \
+            "base,web,mrp,stock,purchase,sale_management,maintenance,account"
+          smoke_bundle odoo_saas_20_enterprise "${databases[2]}" \
+            "base,web,mrp,stock,purchase,sale_management,maintenance,account,quality"
+          smoke_bundle odoo_saas_20_enterprise "${databases[3]}" \
+            "base,web,project,sale_management,hr_timesheet,account,helpdesk,planning"

@@ -10,6 +10,7 @@
                     <field name="customer_email"/>
                     <field name="company_name"/>
                     <field name="phone"/>
+                    <field name="business_sector"/>
                 </group>
                 <group string="Domain">
                     <field name="subdomain"/>

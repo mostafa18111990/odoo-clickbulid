@@ -1,6 +1,7 @@
 import logging
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError
+from ..models.sector_catalog import BUSINESS_SECTOR_SELECTION
 
 _logger = logging.getLogger(__name__)
 
@@ -14,6 +15,9 @@ class CreateTenantWizard(models.TransientModel):
     customer_email = fields.Char(string='Customer Email', required=True)
     company_name = fields.Char(string='Company Name', required=True)
     phone = fields.Char(string='Phone')
+    business_sector = fields.Selection(
+        selection=BUSINESS_SECTOR_SELECTION, string='Business Sector',
+        default='general', required=True)
 
     # Step 2: Domain
     subdomain = fields.Char(string='Subdomain', required=True,
@@ -61,6 +65,7 @@ class CreateTenantWizard(models.TransientModel):
             'customer_email': self.customer_email,
             'company_name': self.company_name,
             'phone': self.phone,
+            'business_sector': self.business_sector,
             'subdomain': self.subdomain,
             'custom_domain': self.custom_domain,
             'plan_id': self.plan_id.id,

@@ -37,6 +37,7 @@ ADMIN_PASSWORD=$(read_json admin_password)
 COMPANY=$(read_json company_name)
 LANG=$(read_json language)
 EDITION=$(read_json edition)
+BUSINESS_SECTOR=$(read_json business_sector)
 REQUESTED_ODOO_VERSION=$(read_json odoo_version)
 # The control plane still runs on Odoo 19 and older deployed code can include
 # odoo_version=19 in its request. This host-side provisioner is the production
@@ -67,7 +68,7 @@ if ! echo "$SUB" | grep -qE '^[a-z0-9][a-z0-9-]{1,61}[a-z0-9]$'; then
 fi
 
 DB="$SUB"
-echo "$(date -Is) === provisioning $DB (odoo=$ODOO_VERSION, edition=$EDITION, container=$ODOO_CONTAINER) ===" >> "$LOG"
+echo "$(date -Is) === provisioning $DB (odoo=$ODOO_VERSION, edition=$EDITION, sector=${BUSINESS_SECTOR:-general}, container=$ODOO_CONTAINER) ===" >> "$LOG"
 
 docker inspect "$DB_CONTAINER" >/dev/null 2>&1 || {
     echo "$(date -Is) FAIL Odoo 20 PostgreSQL container missing: $DB_CONTAINER" >> "$LOG"

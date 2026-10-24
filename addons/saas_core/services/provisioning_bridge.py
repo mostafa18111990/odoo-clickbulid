@@ -53,10 +53,17 @@ class ProvisioningBridgeService:
             allowed_modules = [m.strip() for m in tenant.plan_id.allowed_modules.split(',') if m.strip()]
         if not allowed_modules:
             allowed_modules = ['base', 'web']
+        edition = (getattr(tenant, 'edition', None)
+                   or (tenant.plan_id.edition if tenant.plan_id else None)
+                   or 'community')
+        for module in tenant.get_sector_modules(edition):
+            if module not in allowed_modules:
+                allowed_modules.append(module)
         return {'subdomain': tenant.subdomain, 'modules': allowed_modules, 'language': 'ar',
-                'odoo_version': '20', 'saas_tenant_id': tenant.id,
+                'odoo_version': '20', 'edition': edition, 'saas_tenant_id': tenant.id,
                 'customer_email': tenant.customer_email,
-                'company_name': tenant.company_name or tenant.customer_name}
+                'company_name': tenant.company_name or tenant.customer_name,
+                'business_sector': tenant.business_sector or 'general'}
 
     def _call_provision_api(self, tenant):
         if not self.config.use_api_bridge:
@@ -165,6 +172,7 @@ class ProvisioningBridgeService:
             'company_name': tenant.company_name or tenant.customer_name or sub,
             'admin_password': admin_password,
             'plan_code': tenant.plan_id.code if tenant.plan_id else 'starter',
+            'business_sector': tenant.business_sector or 'general',
             'modules': modules,
             'language': 'ar_001',
             # NEW — host sweeper routes the docker exec to the right container

@@ -2,6 +2,7 @@ from odoo import _
 from odoo.exceptions import ValidationError, UserError
 import re
 import logging
+from odoo.addons.saas_tenant_manager.models.sector_catalog import is_valid_business_sector
 
 _logger = logging.getLogger(__name__)
 
@@ -39,10 +40,13 @@ class SignupService:
         name = (data.get('name') or '').strip()
         email = (data.get('email') or '').strip().lower()
         subdomain = (data.get('subdomain') or '').strip().lower()
+        business_sector = (data.get('business_sector') or '').strip()
         if len(name) < 2:
             errors.append(_('Please enter your name.'))
         if not EMAIL_RE.match(email):
             errors.append(_('Please enter a valid email address.'))
+        if not is_valid_business_sector(business_sector):
+            errors.append(_('Please select a valid business sector.'))
         check = self.check_subdomain(subdomain)
         if not check.get('available'):
             errors.append(check.get('reason', {}).get('en', 'Invalid subdomain.'))
@@ -63,6 +67,7 @@ class SignupService:
         company = (data.get('company') or '').strip()
         phone = (data.get('phone') or '').strip()
         country = (data.get('country') or 'SA').strip()
+        business_sector = data['business_sector'].strip()
         try:
             plan_id = int(data['plan_id']) if data.get('plan_id') else None
         except (ValueError, TypeError):
@@ -84,6 +89,7 @@ class SignupService:
         try:
             tenant = svc.create_lead(subdomain=subdomain, customer_name=name, customer_email=email,
                 plan_id=plan_id, lead_source='website', phone=phone, company_name=company,
+                business_sector=business_sector,
                 coupon_code=data.get('coupon_code'), referral_code=data.get('referral_code'))
             # Country is preserved via the subscription currency derived below.
             # (saas.tenant has no customer_country field in the current base module.)

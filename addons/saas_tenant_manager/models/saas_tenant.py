@@ -7,6 +7,7 @@ from datetime import date, timedelta
 from odoo import models, fields, api, _
 from odoo.exceptions import ValidationError, UserError
 from odoo.tools import config
+from .sector_catalog import BUSINESS_SECTOR_SELECTION, get_sector_modules
 
 _logger = logging.getLogger(__name__)
 
@@ -28,6 +29,12 @@ class SaasTenant(models.Model):
     customer_email  = fields.Char(string='Customer Email', required=True, tracking=True)
     company_name    = fields.Char(string='Company Name', required=True)
     phone           = fields.Char(string='Phone')
+    business_sector = fields.Selection(
+        selection=BUSINESS_SECTOR_SELECTION,
+        string='Business Sector', default='general', required=True, index=True,
+        tracking=True,
+        help='Controls which sector-specific Odoo apps are installed when the '
+             'tenant database is provisioned.')
 
     # Domain
     subdomain     = fields.Char(string='Subdomain', required=True)
@@ -127,6 +134,10 @@ class SaasTenant(models.Model):
     def _get_filestore_path(self, db_name):
         data_dir = config.get('data_dir', '/var/lib/odoo')
         return os.path.join(data_dir, 'filestore', db_name)
+
+    def get_sector_modules(self, edition='community'):
+        self.ensure_one()
+        return get_sector_modules(self.business_sector, edition)
 
     def action_provision(self):
         self.ensure_one()
