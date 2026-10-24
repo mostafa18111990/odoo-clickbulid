@@ -26,12 +26,25 @@ PREVIOUS_RELEASE=''
 ODOO19_VERSION=''
 TENANT_CONFIG_CHECKSUM=''
 
-fail() { printf 'FAIL: %s\n' "$*" >&2; exit 1; }
+fail() { printf 'FAIL: %s\n' "$*" >&2; return 1; }
 need_container() { docker inspect "$1" >/dev/null 2>&1 || fail "missing container: $1"; }
 container_healthy() {
     local state
     state=$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$1")
     [ "$state" = healthy ] || [ "$state" = running ] || fail "$1 is not healthy (state=$state)"
+}
+wait_container_healthy() {
+    local container=$1 state deadline
+    deadline=$((SECONDS + 180))
+    while [ "$SECONDS" -lt "$deadline" ]; do
+        state=$(docker inspect --format '{{if .State.Health}}{{.State.Health.Status}}{{else}}{{.State.Status}}{{end}}' "$container")
+        case "$state" in
+            healthy|running) return 0 ;;
+            unhealthy|exited|dead) fail "$container failed while waiting for health (state=$state)" ;;
+        esac
+        sleep 3
+    done
+    fail "$container did not become healthy within 180 seconds (state=$state)"
 }
 
 rollback() {
@@ -148,9 +161,9 @@ ln -sfn "$RELEASE_DIR" "$CURRENT_LINK"
 
 export ODOO20_ENTERPRISE_PATH="$ENTERPRISE20_PATH"
 docker compose -p "$ODOO20_COMPOSE_PROJECT" -f "$RELEASE_DIR/docker/odoo20/docker-compose.tenants.yml" --env-file "$RELEASE_DIR/docker/odoo20/.env" up -d --build
-container_healthy odoo_saas_postgres20
-container_healthy odoo_saas_20_community
-container_healthy odoo_saas_20_enterprise
+wait_container_healthy odoo_saas_postgres20
+wait_container_healthy odoo_saas_20_community
+wait_container_healthy odoo_saas_20_enterprise
 
 # Disposable database smoke tests both editions; cleanup failure also fails deployment.
 for edition in community enterprise; do
