@@ -1,0 +1,94 @@
+name: Activate Odoo 20 for new tenants
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type ACTIVATE-ODOO20 to continue
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-odoo20-activation
+  cancel-in-progress: false
+
+jobs:
+  activate:
+    name: Protected production activation
+    if: ${{ inputs.confirmation == 'ACTIVATE-ODOO20' }}
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate release source
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF_NAME}" = main
+          bash -n scripts/activate_odoo20_new_tenants.sh
+          bash -n scripts/install_tenant_provisioner.sh
+          bash -n scripts/provision_tenant_cert.sh
+          bash -n scripts/patch_nginx_odoo20_upstreams.sh
+
+      - name: Build immutable release archive
+        run: |
+          set -euo pipefail
+          tar -czf /tmp/clickbuild-odoo20-release.tar.gz \
+            addons docker/odoo20 \
+            scripts/install_tenant_provisioner.sh \
+            scripts/provision_tenant_cert.sh \
+            scripts/patch_nginx_odoo20_upstreams.sh
+          sha256sum /tmp/clickbuild-odoo20-release.tar.gz
+
+      - name: Configure protected SSH credentials
+        env:
+          SSH_PRIVATE_KEY_B64: ${{ secrets.PRODUCTION_SSH_KEY_B64 }}
+          SSH_KNOWN_HOSTS: ${{ secrets.PRODUCTION_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          install -d -m 700 ~/.ssh
+          printf '%s' "$SSH_PRIVATE_KEY_B64" | base64 --decode > ~/.ssh/production_key
+          chmod 600 ~/.ssh/production_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+          ssh-keygen -y -f ~/.ssh/production_key >/dev/null
+
+      - name: Upload release without Enterprise source or runtime secrets
+        env:
+          HOST: ${{ secrets.PRODUCTION_HOST }}
+          PORT: ${{ secrets.PRODUCTION_PORT }}
+          USER: ${{ secrets.PRODUCTION_USER }}
+        run: |
+          set -euo pipefail
+          scp -i ~/.ssh/production_key -P "$PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            /tmp/clickbuild-odoo20-release.tar.gz \
+            scripts/activate_odoo20_new_tenants.sh \
+            "$USER@$HOST:/tmp/"
+
+      - name: Back up, activate, smoke test, or roll back
+        env:
+          HOST: ${{ secrets.PRODUCTION_HOST }}
+          PORT: ${{ secrets.PRODUCTION_PORT }}
+          USER: ${{ secrets.PRODUCTION_USER }}
+        run: |
+          set -euo pipefail
+          ssh -i ~/.ssh/production_key -p "$PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$USER@$HOST" \
+            "bash /tmp/activate_odoo20_new_tenants.sh /tmp/clickbuild-odoo20-release.tar.gz '$GITHUB_SHA'"
+
+      - name: Remove temporary remote artifacts
+        if: always()
+        env:
+          HOST: ${{ secrets.PRODUCTION_HOST }}
+          PORT: ${{ secrets.PRODUCTION_PORT }}
+          USER: ${{ secrets.PRODUCTION_USER }}
+        run: |
+          ssh -i ~/.ssh/production_key -p "$PORT" \
+            -o BatchMode=yes -o IdentitiesOnly=yes -o StrictHostKeyChecking=yes \
+            "$USER@$HOST" \
+            'rm -f /tmp/clickbuild-odoo20-release.tar.gz /tmp/activate_odoo20_new_tenants.sh'

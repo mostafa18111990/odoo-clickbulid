@@ -37,17 +37,19 @@ ADMIN_PASSWORD=$(read_json admin_password)
 COMPANY=$(read_json company_name)
 LANG=$(read_json language)
 EDITION=$(read_json edition)
-ODOO_VERSION=$(read_json odoo_version)
-ODOO_VERSION="${ODOO_VERSION:-20}"
+REQUESTED_ODOO_VERSION=$(read_json odoo_version)
+# The control plane still runs on Odoo 19 and older deployed code can include
+# odoo_version=19 in its request. This host-side provisioner is the production
+# boundary for NEW tenants, so every consumed request is pinned to Odoo 20.
+ODOO_VERSION=20
 DB_CONTAINER="${SAAS_ODOO20_DB_CONTAINER:-odoo_saas_postgres20}"
 MASTER_ODOO_CONTAINER="${SAAS_MASTER_ODOO_CONTAINER:-odoo_saas_app}"
 COMMUNITY_CONTAINER="${SAAS_ODOO20_COMMUNITY_CONTAINER:-odoo_saas_20_community}"
 ENTERPRISE_CONTAINER="${SAAS_ODOO20_ENTERPRISE_CONTAINER:-odoo_saas_20_enterprise}"
 
-[ "$ODOO_VERSION" = "20" ] || {
-    echo "$(date -Is) FAIL unsupported tenant Odoo version: $ODOO_VERSION" >> "$LOG"
-    exit 3
-}
+if [ -n "$REQUESTED_ODOO_VERSION" ] && [ "$REQUESTED_ODOO_VERSION" != "20" ]; then
+    echo "$(date -Is) overriding requested Odoo $REQUESTED_ODOO_VERSION with Odoo 20 for new tenant $SUB" >> "$LOG"
+fi
 
 # New tenants always run on the isolated Odoo 20 tenant plane.
 case "$EDITION" in
@@ -96,8 +98,8 @@ fi
 
 # 2. Initialize Odoo with the requested module set into the new DB.
 # Use --no-http to avoid port conflicts; --stop-after-init exits when done.
-# For Enterprise tenants this runs inside odoo_saas_ent so Studio/Helpdesk
-# etc. become available; for Community it runs inside odoo_saas_app.
+# Enterprise requests run in the isolated Odoo 20 Enterprise container;
+# Community requests run in the isolated Odoo 20 Community container.
 docker exec "$ODOO_CONTAINER" odoo \
     --config=/etc/odoo/odoo.conf \
     -d "$DB" \
@@ -225,7 +227,7 @@ SWEEP
 chmod +x "$SWEEPER"
 echo "[provisioner] updated $SWEEPER to handle both .provision.req and .req"
 
-# 3. Touch the systemd timer just in case
-systemctl restart saas-cert-sweeper.timer 2>/dev/null || true
+# 3. Restart and verify the systemd timer. Failure must stop activation.
+systemctl restart saas-cert-sweeper.timer
 echo "[provisioner] timer state:"
-systemctl is-active saas-cert-sweeper.timer
+test "$(systemctl is-active saas-cert-sweeper.timer)" = "active"

@@ -87,6 +87,7 @@ jobs:
           ODOO_NETWORK: validation-network
         run: |
           bash -n scripts/install_tenant_provisioner.sh
+          bash -n scripts/activate_odoo20_new_tenants.sh
           bash -n scripts/provision_tenant_cert.sh
           bash -n scripts/patch_nginx_odoo20_upstreams.sh
           bash -n docker/odoo20/entrypoint.sh
@@ -95,6 +96,7 @@ jobs:
             config --quiet
           grep -q "ODOO_VERSION:-20" docker/odoo20/entrypoint.sh
           grep -q "odoo_saas_postgres20" scripts/install_tenant_provisioner.sh
+          grep -q '^ODOO_VERSION=20$' scripts/install_tenant_provisioner.sh
 
   # ════════════════════════════════════════════════════════════════
   # 2. SMOKE INSTALL — boots Odoo 20 in a service container and
