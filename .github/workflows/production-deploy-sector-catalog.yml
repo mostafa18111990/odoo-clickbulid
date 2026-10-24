@@ -1,0 +1,57 @@
+name: Deploy business-sector catalog
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type DEPLOY-SECTOR-CATALOG to continue
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-sector-catalog
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Protected production deployment
+    if: ${{ inputs.confirmation == 'DEPLOY-SECTOR-CATALOG' }}
+    runs-on: [self-hosted, Linux, X64, clickbuild-production]
+    timeout-minutes: 180
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate release source and privilege boundary
+        run: |
+          set -euo pipefail
+          test "${GITHUB_REF_NAME}" = main
+          test "$(id -un)" = github-runner
+          sudo -n -l /usr/local/sbin/clickbuild-sector-production-wrapper >/dev/null
+          bash -n scripts/deploy_sector_catalog_production.sh
+
+      - name: Build reviewed module archive
+        run: |
+          set -euo pipefail
+          rm -f /tmp/clickbuild-sector-production.tar.gz
+          tar -czf /tmp/clickbuild-sector-production.tar.gz \
+            addons/saas_tenant_manager \
+            addons/saas_core \
+            addons/saas_website
+          sha256sum /tmp/clickbuild-sector-production.tar.gz
+
+      - name: Back up, rehearse, deploy, smoke test, or roll back
+        run: |
+          set -euo pipefail
+          sudo -n /usr/local/sbin/clickbuild-sector-production-wrapper \
+            "$GITHUB_WORKSPACE/scripts/deploy_sector_catalog_production.sh" \
+            /tmp/clickbuild-sector-production.tar.gz \
+            "$GITHUB_SHA"
+
+      - name: Remove temporary release archive
+        if: always()
+        run: rm -f /tmp/clickbuild-sector-production.tar.gz
+
