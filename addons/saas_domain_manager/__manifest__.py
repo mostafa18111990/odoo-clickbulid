@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Domain Manager',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'SaaS',
     'summary': 'Custom domain mapping with DNS verification and automated SSL',
     'author': 'ClickBuild',
@@ -8,7 +8,7 @@
     'depends': ['saas_portal'],
     'data': [
         'security/saas_domain_security.xml',
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'data/saas_domain_cron.xml',
         'views/saas_domain_views.xml',
         'views/saas_domain_menu.xml',

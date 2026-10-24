@@ -22,4 +22,7 @@ class SaasTicketCategory(models.Model):
         for rec in self:
             rec.ticket_count = self.env['saas.ticket'].search_count([('category_id', '=', rec.id)])
 
-    _sql_constraints = [('code_unique', 'UNIQUE(code)', 'Category code must be unique.')]
+    _code_unique = models.Constraint(
+        'UNIQUE(code)',
+        "Category code must be unique.",
+    )

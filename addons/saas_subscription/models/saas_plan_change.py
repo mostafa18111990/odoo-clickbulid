@@ -28,7 +28,7 @@ class SaasPlanChange(models.Model):
     subscription_id = fields.Many2one('saas.subscription', string='Subscription', required=True, ondelete='cascade')
     change_type = fields.Selection(selection=CHANGE_TYPES, string='Change Type', required=True, index=True)
     status = fields.Selection(selection=CHANGE_STATUS, string='Status', default='pending',
-                              required=True, tracking=True, index=True)
+                              required=True, index=True)
     from_plan_id = fields.Many2one('saas.plan', string='From Plan')
     to_plan_id = fields.Many2one('saas.plan', string='To Plan', required=True)
     from_cycle = fields.Selection(BILLING_CYCLES, string='From Cycle')

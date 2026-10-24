@@ -1,13 +1,13 @@
 {
     'name': 'SaaS Monitoring',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'SaaS',
     'summary': 'Health checks, Prometheus metrics, uptime monitoring',
     'author': 'ClickBuild',
     'website': 'https://clickbuild.com',
     'depends': ['saas_ai'],
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'data/saas_health_check_data.xml',
         'data/saas_monitoring_cron.xml',
         'views/saas_health_check_views.xml',

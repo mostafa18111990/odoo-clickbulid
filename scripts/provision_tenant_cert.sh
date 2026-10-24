@@ -27,23 +27,39 @@ FQDN="${SUB}.${PARENT}"
 
 # Determine the tenant's Odoo edition.
 # Source of truth: the .req file the sweeper left for us (key edition=...).
-# Fall back to `community` if not set (legacy tenants pre-Phase-D).
+# Legacy certificate requests without odoo_version keep their old Odoo 19
+# upstream; every new provisioning request explicitly writes version 20.
 EDITION=community
+ODOO_VERSION=19
 if [ -f "$REQ_DIR/$SUB.req" ]; then
     val=$(grep -E '^edition=' "$REQ_DIR/$SUB.req" | head -1 | cut -d'=' -f2-)
     [ -n "$val" ] && EDITION="$val"
+    val=$(grep -E '^odoo_version=' "$REQ_DIR/$SUB.req" | head -1 | cut -d'=' -f2-)
+    [ -n "$val" ] && ODOO_VERSION="$val"
 fi
-case "$EDITION" in
-    enterprise)
+case "$ODOO_VERSION:$EDITION" in
+    20:enterprise)
+        NGINX_BACKEND=odoo20_ent_backend
+        NGINX_WEBSOCKET=odoo20_ent_longpolling
+        ;;
+    20:*)
+        NGINX_BACKEND=odoo20_backend
+        NGINX_WEBSOCKET=odoo20_longpolling
+        ;;
+    19:enterprise)
         NGINX_BACKEND=odoo_ent_backend
         NGINX_WEBSOCKET=odoo_ent_longpolling
         ;;
-    *)
+    19:*)
         NGINX_BACKEND=odoo_backend
         NGINX_WEBSOCKET=odoo_longpolling
         ;;
+    *)
+        echo "FAIL: unsupported Odoo version in request: $ODOO_VERSION"
+        exit 4
+        ;;
 esac
-echo "[provision] edition=$EDITION → backend=$NGINX_BACKEND, ws=$NGINX_WEBSOCKET"
+echo "[provision] odoo=$ODOO_VERSION edition=$EDITION → backend=$NGINX_BACKEND, ws=$NGINX_WEBSOCKET"
 
 echo "[provision] checking DNS for $FQDN..."
 if command -v dig >/dev/null 2>&1; then

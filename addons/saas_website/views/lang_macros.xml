@@ -15,7 +15,7 @@
     -->
 
     <!-- Sets `lang_is_ar` based on the current request language.
-         request.env.lang is the canonical place in Odoo 19 (returns the
+         request.env.lang is the canonical place in Odoo 20 (returns the
          lang code as a string e.g. 'ar_001' or 'en_US'). -->
     <template id="lang_helper" name="Language Helper">
         <t t-set="lang_code" t-value="request.env.lang or request.env.context.get('lang') or 'ar_001'"/>

@@ -14,7 +14,7 @@
                         </div>
                         <t t-if="errors">
                             <div class="alert alert-danger"><ul class="mb-0">
-                                <t t-foreach="errors" t-as="err"><li t-esc="err"/></t></ul></div>
+                                <t t-foreach="errors" t-as="err"><li t-out="err"/></t></ul></div>
                         </t>
                         <form method="post" action="/get-started/register" id="signupForm">
                             <input type="hidden" name="csrf_token" t-att-value="request.csrf_token()"/>
@@ -61,7 +61,7 @@
                                             <option t-att-value="plan.id"
                                                     t-att-data-edition="plan.edition or 'community'"
                                                     t-att-selected="'selected' if (selected_plan and plan.id == selected_plan.id) else None">
-                                                <t t-esc="plan.name"/> - <t t-esc="'%.0f' % plan.monthly_price"/>
+                                                <t t-out="plan.name"/> - <t t-out="'%.0f' % plan.monthly_price"/>
                                                 <t t-if="lang_is_ar"> ريال/شهر</t><t t-else=""> SAR/month</t></option>
                                         </t>
                                     </optgroup>
@@ -70,7 +70,7 @@
                                             <option t-att-value="plan.id"
                                                     t-att-data-edition="plan.edition"
                                                     t-att-selected="'selected' if (selected_plan and plan.id == selected_plan.id) else None">
-                                                <t t-esc="plan.name"/> - <t t-esc="'%.0f' % plan.monthly_price"/>
+                                                <t t-out="plan.name"/> - <t t-out="'%.0f' % plan.monthly_price"/>
                                                 <t t-if="lang_is_ar"> ريال/شهر</t><t t-else=""> SAR/month</t></option>
                                         </t>
                                     </optgroup>
@@ -81,7 +81,7 @@
                                 <div class="input-group">
                                     <input type="text" name="subdomain" id="subdomainInput" class="form-control"
                                            placeholder="my-company" required="required"/>
-                                    <span class="input-group-text">.<t t-esc="platform_domain or 'odoo.clickbulid.com'"/></span>
+                                    <span class="input-group-text">.<t t-out="platform_domain or 'odoo.clickbulid.com'"/></span>
                                 </div>
                                 <div id="subdomainFeedback" class="form-text"></div></div>
                             <div class="row">
@@ -201,15 +201,15 @@
                                     <tr><td class="fw-bold" style="width:140px">
                                         <t t-if="lang_is_ar">الرابط:</t><t t-else="">URL:</t></td>
                                         <td><a t-att-href="tenant_url or ('https://' + subdomain + '.' + (platform_domain or 'odoo.clickbulid.com'))"
-                                               target="_blank"><t t-esc="tenant_url or (subdomain + '.' + (platform_domain or 'odoo.clickbulid.com'))"/></a></td></tr>
+                                               target="_blank"><t t-out="tenant_url or (subdomain + '.' + (platform_domain or 'odoo.clickbulid.com'))"/></a></td></tr>
                                     <tr><td class="fw-bold">
                                         <t t-if="lang_is_ar">البريد:</t><t t-else="">Email:</t></td>
-                                        <td><code class="cb-copy" style="cursor:pointer;" t-att-data-copy="admin_email" t-esc="admin_email"/>
+                                        <td><code class="cb-copy" style="cursor:pointer;" t-att-data-copy="admin_email" t-out="admin_email"/>
                                             <span class="cb-copied small text-success ms-2" style="display:none;">
                                                 <i class="fa fa-check"/> <t t-if="lang_is_ar">نُسخ</t><t t-else="">copied</t></span></td></tr>
                                     <tr><td class="fw-bold">
                                         <t t-if="lang_is_ar">كلمة المرور:</t><t t-else="">Password:</t></td>
-                                        <td><code class="cb-copy user-select-all" style="cursor:pointer;" t-att-data-copy="admin_password" t-esc="admin_password"/>
+                                        <td><code class="cb-copy user-select-all" style="cursor:pointer;" t-att-data-copy="admin_password" t-out="admin_password"/>
                                             <span class="cb-copied small text-success ms-2" style="display:none;">
                                                 <i class="fa fa-check"/> <t t-if="lang_is_ar">نُسخ</t><t t-else="">copied</t></span></td></tr>
                                 </table>
@@ -271,8 +271,8 @@
 
                         <script type="text/javascript">
                             (function() {
-                                var subdomain = "<t t-esc="subdomain or ''"/>";
-                                var lang_is_ar = <t t-esc="'true' if lang_is_ar else 'false'"/>;
+                                var subdomain = "<t t-out="subdomain or ''"/>";
+                                var lang_is_ar = <t t-out="'true' if lang_is_ar else 'false'"/>;
                                 if (!subdomain) return;
                                 var btn = document.getElementById('saas_login_btn');
                                 var box = document.getElementById('saas_status_box');

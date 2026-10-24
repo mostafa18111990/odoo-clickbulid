@@ -1,6 +1,6 @@
-name: ClickBuild SaaS — CI/CD
+name: ClickBuild SaaS — CI
 
-# Lint → Test (19 Odoo modules + FastAPI) → Deploy via rsync+SSH
+# CI only. Deployment is intentionally separate and protected.
 on:
   push:
     branches: [main, staging]
@@ -8,16 +8,19 @@ on:
     branches: [main]
   workflow_dispatch:
 
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 env:
   ODOO_MODULES: >-
     saas_core saas_lifecycle saas_subscription saas_billing saas_payment
     saas_portal saas_website saas_domain_manager saas_notifications
     saas_marketplace saas_reseller saas_support saas_knowledge saas_marketing
     saas_reporting saas_api saas_security saas_ai saas_monitoring
-  # Real production state — set to whatever the server actually uses.
-  PROD_DB: odoo
-  PROD_DOMAIN: odoo.clickbulid.com
-  PROD_MONITORING_PORT: 9181
 
 jobs:
   # ════════════════════════════════════════════════════════════════
@@ -76,10 +79,28 @@ jobs:
           sys.exit(1 if errors else 0)
           PY
 
+      - name: Validate Odoo 20 tenant-plane scripts and Compose
+        env:
+          ODOO20_DB_PASSWORD: validation-only
+          ODOO20_MASTER_PASSWORD: validation-only
+          ODOO20_ENTERPRISE_PATH: /tmp/enterprise20
+          ODOO_NETWORK: validation-network
+        run: |
+          bash -n scripts/install_tenant_provisioner.sh
+          bash -n scripts/activate_odoo20_new_tenants.sh
+          bash -n scripts/provision_tenant_cert.sh
+          bash -n scripts/patch_nginx_odoo20_upstreams.sh
+          bash -n docker/odoo20/entrypoint.sh
+          docker compose \
+            -f docker/odoo20/docker-compose.tenants.yml \
+            config --quiet
+          grep -q "ODOO_VERSION:-20" docker/odoo20/entrypoint.sh
+          grep -q "odoo_saas_postgres20" scripts/install_tenant_provisioner.sh
+          grep -q '^ODOO_VERSION=20$' scripts/install_tenant_provisioner.sh
+
   # ════════════════════════════════════════════════════════════════
-  # 2. SMOKE INSTALL — boots Odoo 19 in a service container and
+  # 2. SMOKE INSTALL — boots Odoo 20 in a service container and
   # installs the leaf module, which transitively pulls all 19.
-  # Skips if the saas_tenant_manager base module secrets aren't set.
   # ════════════════════════════════════════════════════════════════
   smoke-install:
     name: Odoo Smoke Install
@@ -87,7 +108,7 @@ jobs:
     needs: lint
     services:
       postgres:
-        image: postgres:15-alpine
+        image: postgres:16-alpine
         env:
           POSTGRES_USER: odoo
           POSTGRES_PASSWORD: odoo
@@ -99,7 +120,7 @@ jobs:
           --health-timeout 5s
           --health-retries 10
     container:
-      image: odoo:19.0
+      image: odoo:20.0
       options: --user root
     steps:
       - uses: actions/checkout@v4
@@ -109,45 +130,22 @@ jobs:
           pip install --break-system-packages dnspython paramiko requests || \
           pip install dnspython paramiko requests
 
-      - name: Fetch base module (saas_tenant_manager) via SCP
-        env:
-          SAAS_BASE_SSH_HOST: ${{ secrets.SAAS_BASE_SSH_HOST }}
-          SAAS_BASE_SSH_PATH: ${{ vars.SAAS_BASE_SSH_PATH }}
-          SAAS_BASE_SSH_KEY: ${{ secrets.SAAS_BASE_SSH_KEY }}
-        run: |
-          if [ -z "$SAAS_BASE_SSH_HOST" ] || [ -z "$SAAS_BASE_SSH_KEY" ]; then
-            echo "::warning::SAAS_BASE_SSH_HOST / SAAS_BASE_SSH_KEY not configured — skipping smoke install"
-            echo "SKIP_SMOKE=1" >> $GITHUB_ENV
-            exit 0
-          fi
-          mkdir -p ~/.ssh && chmod 700 ~/.ssh
-          printf '%s\n' "$SAAS_BASE_SSH_KEY" > ~/.ssh/id_base
-          chmod 600 ~/.ssh/id_base
-          host_only="${SAAS_BASE_SSH_HOST##*@}"
-          ssh-keyscan -H "$host_only" >> ~/.ssh/known_hosts 2>/dev/null || true
-          chmod +x scripts/ci_fetch_base_module.sh
-          ./scripts/ci_fetch_base_module.sh
-
       - name: Stage addons
-        if: env.SKIP_SMOKE != '1'
         run: |
           mkdir -p /tmp/extra-addons
-          cp -r vendor/saas_tenant_manager /tmp/extra-addons/ 2>/dev/null || true
           cp -r addons/saas_* /tmp/extra-addons/
 
       - name: Boot Odoo and install leaf module
-        if: env.SKIP_SMOKE != '1'
         run: |
           odoo \
             --db_host=postgres --db_user=odoo --db_password=odoo \
             --addons-path=/usr/lib/python3/dist-packages/odoo/addons,/tmp/extra-addons \
             -d ci_test_db \
             --init=saas_monitoring \
-            --without-demo=all \
+            --without-demo \
             --no-http --stop-after-init 2>&1 | tee odoo_install.log
 
       - name: Fail on any error in install log
-        if: env.SKIP_SMOKE != '1'
         run: |
           if grep -E "ERROR|CRITICAL|Traceback" odoo_install.log; then
             echo "Install log shows errors"; exit 1
@@ -158,66 +156,3 @@ jobs:
         with:
           name: odoo-install-log
           path: odoo_install.log
-
-  # ════════════════════════════════════════════════════════════════
-  # 3. DEPLOY — production (manual approval on main)
-  # rsync addons → server, then docker exec to update modules.
-  # ════════════════════════════════════════════════════════════════
-  deploy-production:
-    name: Deploy → Production
-    runs-on: ubuntu-latest
-    needs: [lint]
-    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
-    environment: production
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Set up SSH
-        env:
-          PROD_HOST: ${{ secrets.PROD_HOST }}
-          PROD_USER: ${{ secrets.PROD_USER }}
-          PROD_SSH_KEY: ${{ secrets.PROD_SSH_KEY }}
-        run: |
-          mkdir -p ~/.ssh && chmod 700 ~/.ssh
-          printf '%s\n' "$PROD_SSH_KEY" > ~/.ssh/id_prod
-          chmod 600 ~/.ssh/id_prod
-          ssh-keyscan -H "$PROD_HOST" >> ~/.ssh/known_hosts 2>/dev/null || true
-          cat > ~/.ssh/config <<EOF
-          Host prod
-            HostName $PROD_HOST
-            User $PROD_USER
-            IdentityFile ~/.ssh/id_prod
-            StrictHostKeyChecking accept-new
-          EOF
-
-      - name: Backup DB on server
-        run: |
-          ssh prod "docker exec odoo_saas_postgres pg_dump -U odoo -Fc $PROD_DB > /opt/backups/prod_$(date +%F_%H%M).dump || true"
-
-      - name: Rsync addons to server
-        run: |
-          rsync -avz --delete \
-            -e "ssh -i ~/.ssh/id_prod" \
-            --include='saas_*/***' --exclude='*' \
-            addons/ prod:/opt/odoo-saas/addons/
-
-      - name: Update leaf module (cascades to all dependents)
-        run: |
-          ssh prod "docker exec odoo_saas_app odoo \
-            --config=/etc/odoo/odoo.conf \
-            -d $PROD_DB -u saas_monitoring \
-            --no-http --stop-after-init 2>&1 | tail -50"
-
-      - name: Restart Odoo workers
-        run: ssh prod "docker restart odoo_saas_app"
-
-      - name: Smoke test
-        run: |
-          ssh prod "sleep 8 && \
-            curl -sf http://127.0.0.1:${PROD_MONITORING_PORT}/healthz && echo && \
-            curl -sf http://127.0.0.1:${PROD_MONITORING_PORT}/readyz && echo && \
-            curl -sf -I https://${PROD_DOMAIN}/web/login | head -1"
-
-      - name: Notify on failure
-        if: failure()
-        run: echo "::error::Production deploy failed — restore from /opt/backups/prod_*.dump"

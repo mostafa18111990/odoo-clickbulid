@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="plan_starter" model="saas.plan">
+        <field name="name">Starter</field>
+        <field name="code">STARTER</field>
+        <field name="max_users">5</field>
+        <field name="max_storage_mb">1024</field>
+        <field name="monthly_price">299</field>
+        <field name="yearly_price">2990</field>
+        <field name="trial_days">14</field>
+        <field name="allowed_modules">base,mail,account,sale,purchase</field>
+        <field name="color">10</field>
+    </record>
+
+    <record id="plan_business" model="saas.plan">
+        <field name="name">Business</field>
+        <field name="code">BUSINESS</field>
+        <field name="max_users">25</field>
+        <field name="max_storage_mb">5120</field>
+        <field name="monthly_price">899</field>
+        <field name="yearly_price">8990</field>
+        <field name="trial_days">14</field>
+        <field name="allowed_modules">base,mail,account,sale,purchase,stock,mrp,hr</field>
+        <field name="color">4</field>
+    </record>
+
+    <record id="plan_enterprise" model="saas.plan">
+        <field name="name">Enterprise</field>
+        <field name="code">ENTERPRISE</field>
+        <field name="max_users">999</field>
+        <field name="max_storage_mb">51200</field>
+        <field name="monthly_price">2499</field>
+        <field name="yearly_price">24990</field>
+        <field name="trial_days">30</field>
+        <field name="allowed_modules">base,mail,account,sale,purchase,stock,mrp,hr,project,helpdesk,website</field>
+        <field name="color">1</field>
+    </record>
+</odoo>

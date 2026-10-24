@@ -35,10 +35,10 @@
                                 </t>
                             </h1>
                             <p class="lead mb-4" style="opacity:0.92; max-width:560px;">
-                                <t t-if="lang_is_ar">ClickBuild منصة Odoo 19 سحابية متكاملة باللغة العربية.
+                                <t t-if="lang_is_ar">ClickBuild منصة Odoo 20 سحابية متكاملة باللغة العربية.
                                 محاسبة معتمدة من ZATCA، مبيعات، مخزون، موارد بشرية،
                                 ونقاط بيع — كلها من مكان واحد.</t>
-                                <t t-else="">ClickBuild is a complete cloud Odoo 19 platform for Arabic-speaking
+                                <t t-else="">ClickBuild is a complete cloud Odoo 20 platform for Arabic-speaking
                                 businesses. ZATCA-compliant accounting, sales, inventory, HR
                                 and POS — all in one place.</t>
                             </p>
@@ -168,8 +168,8 @@
                                 <div class="cb-feature-icon">
                                     <i t-attf-class="fa #{feat['icon']}"/>
                                 </div>
-                                <h5 class="fw-bold" t-esc="feat['title']"/>
-                                <p class="text-muted mb-0" t-esc="feat['desc']"/>
+                                <h5 class="fw-bold" t-out="feat['title']"/>
+                                <p class="text-muted mb-0" t-out="feat['desc']"/>
                             </div></div>
                         </div>
                     </t>
@@ -230,18 +230,18 @@
                                     <div class="featured-ribbon">
                                         <t t-if="lang_is_ar">⭐ الأكثر شيوعاً</t><t t-else="">⭐ Most popular</t></div>
                                 </t>
-                                <h4 class="fw-bold text-center mb-3" t-esc="plan.name"/>
+                                <h4 class="fw-bold text-center mb-3" t-out="plan.name"/>
                                 <div class="text-center mb-3">
-                                    <span class="price" t-esc="'%.0f' % plan.monthly_price"/>
+                                    <span class="price" t-out="'%.0f' % plan.monthly_price"/>
                                     <span class="price-suffix">
                                         <t t-if="lang_is_ar">ريال / شهر</t><t t-else="">SAR / month</t></span>
                                 </div>
                                 <ul class="list-unstyled mb-4">
-                                    <li><i class="fa fa-check me-2"/><t t-esc="plan.max_users"/>
+                                    <li><i class="fa fa-check me-2"/><t t-out="plan.max_users"/>
                                         <t t-if="lang_is_ar"> مستخدمون</t><t t-else=""> users</t></li>
-                                    <li><i class="fa fa-check me-2"/><t t-esc="round(plan.max_storage_mb/1024, 1)"/>
+                                    <li><i class="fa fa-check me-2"/><t t-out="round(plan.max_storage_mb/1024, 1)"/>
                                         <t t-if="lang_is_ar"> جيجابايت</t><t t-else=""> GB storage</t></li>
-                                    <li><i class="fa fa-check me-2"/><t t-esc="plan.max_companies"/>
+                                    <li><i class="fa fa-check me-2"/><t t-out="plan.max_companies"/>
                                         <t t-if="lang_is_ar"> شركة</t><t t-else=""> companies</t></li>
                                     <li><i class="fa fa-check me-2"/>
                                         <t t-if="lang_is_ar">دعم بالعربية</t><t t-else="">Arabic &amp; English support</t></li>
@@ -280,12 +280,12 @@
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button"
                                             data-bs-toggle="collapse" t-attf-data-bs-target="#faq#{faq.id}">
-                                        <t t-esc="faq.question"/>
+                                        <t t-out="faq.question"/>
                                     </button>
                                 </h2>
                                 <div t-attf-id="faq#{faq.id}" class="accordion-collapse collapse"
                                      data-bs-parent="#homeFaq">
-                                    <div class="accordion-body text-muted"><t t-esc="faq.answer"/></div>
+                                    <div class="accordion-body text-muted"><t t-out="faq.answer"/></div>
                                 </div>
                             </div>
                         </t>

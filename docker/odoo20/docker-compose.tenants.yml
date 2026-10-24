@@ -1,0 +1,84 @@
+name: clickbuild-odoo20-tenants
+
+services:
+  postgres20:
+    image: postgres:16-alpine
+    container_name: odoo_saas_postgres20
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: odoo
+      POSTGRES_PASSWORD: ${ODOO20_DB_PASSWORD:?Set ODOO20_DB_PASSWORD}
+      POSTGRES_DB: postgres
+    volumes:
+      - odoo20-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U odoo -d postgres"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+    networks: [platform]
+
+  odoo20-community:
+    build:
+      context: ../..
+      dockerfile: docker/odoo20/Dockerfile
+    image: clickbuild/odoo20:20.0
+    container_name: odoo_saas_20_community
+    restart: unless-stopped
+    depends_on:
+      postgres20:
+        condition: service_healthy
+    environment: &odoo20-environment
+      ODOO_VERSION: "20"
+      DB_HOST: postgres20
+      DB_PORT: "5432"
+      DB_USER: odoo
+      DB_PASSWORD: ${ODOO20_DB_PASSWORD:?Set ODOO20_DB_PASSWORD}
+      DB_NAME: ""
+      MASTER_PASSWORD: ${ODOO20_MASTER_PASSWORD:?Set ODOO20_MASTER_PASSWORD}
+      SMTP_HOST: ${SMTP_HOST:-localhost}
+      SMTP_PORT: ${SMTP_PORT:-25}
+      SMTP_SSL: ${SMTP_SSL:-False}
+      SMTP_USER: ${SMTP_USER:-}
+      SMTP_PASSWORD: ${SMTP_PASSWORD:-}
+      EMAIL_FROM: ${EMAIL_FROM:-noreply@clickbulid.com}
+    volumes:
+      - ../../addons:/mnt/extra-addons:ro
+      - odoo20-community-data:/var/lib/odoo
+      - odoo20-community-logs:/var/log/odoo
+    networks:
+      platform:
+        aliases: [odoo20_community]
+
+  odoo20-enterprise:
+    image: clickbuild/odoo20:20.0
+    container_name: odoo_saas_20_enterprise
+    restart: unless-stopped
+    depends_on:
+      postgres20:
+        condition: service_healthy
+      odoo20-community:
+        condition: service_started
+    environment:
+      <<: *odoo20-environment
+      REQUIRE_ENTERPRISE: "true"
+    volumes:
+      - ../../addons:/mnt/extra-addons:ro
+      - ${ODOO20_ENTERPRISE_PATH:?Set ODOO20_ENTERPRISE_PATH}:/mnt/enterprise:ro
+      - odoo20-enterprise-data:/var/lib/odoo
+      - odoo20-enterprise-logs:/var/log/odoo
+    networks:
+      platform:
+        aliases: [odoo20_enterprise]
+
+volumes:
+  odoo20-postgres-data:
+  odoo20-community-data:
+  odoo20-community-logs:
+  odoo20-enterprise-data:
+  odoo20-enterprise-logs:
+
+networks:
+  platform:
+    external: true
+    name: ${ODOO_NETWORK:?Set ODOO_NETWORK}

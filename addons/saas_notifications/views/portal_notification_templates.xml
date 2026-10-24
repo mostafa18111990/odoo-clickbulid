@@ -15,9 +15,9 @@
                                 <i t-attf-class="fa fa-#{'bell' if not notif.read_inapp else 'bell-o'} fa-lg" style="color:#6d28d9;"/>
                             </div>
                             <div class="flex-grow-1">
-                                <strong t-esc="notif.subject"/>
-                                <p class="mb-1 text-muted small" t-esc="notif.body"/>
-                                <small class="text-muted" t-esc="notif.create_date"/>
+                                <strong t-out="notif.subject"/>
+                                <p class="mb-1 text-muted small" t-out="notif.body"/>
+                                <small class="text-muted" t-out="notif.create_date"/>
                                 <t t-if="notif.cta_url">
                                     <a t-att-href="notif.cta_url" class="d-block small">View</a>
                                 </t>

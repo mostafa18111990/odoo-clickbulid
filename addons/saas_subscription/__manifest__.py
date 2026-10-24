@@ -1,13 +1,13 @@
 {
     'name': 'SaaS Subscription',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.3.0',
     'category': 'SaaS',
     'summary': 'Subscription management: upgrades, downgrades, proration, renewals',
     'author': 'ClickBuild',
     'website': 'https://clickbuild.com',
     'depends': ['saas_lifecycle'],
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'data/saas_subscription_cron.xml',
         'views/saas_subscription_history_views.xml',
         'views/saas_plan_change_views.xml',

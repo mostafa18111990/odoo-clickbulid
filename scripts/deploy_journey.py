@@ -828,12 +828,12 @@ export default function OnboardingPage() {
             <div className="bg-white/10 rounded-2xl p-6 max-w-sm mx-auto text-start space-y-3">
               {(isAr ? [
                 ["✅", "تم إنشاء قاعدة البيانات"],
-                [instanceStatus !== "provisioning" ? "✅" : "⏳", "تثبيت Odoo 19"],
+                [instanceStatus !== "provisioning" ? "✅" : "⏳", "تثبيت Odoo 20"],
                 [instanceStatus === "running" ? "✅" : "⏳", "تهيئة النظام"],
                 ["⏳", "نشر الوحدات المختارة"],
               ] : [
                 ["✅", "Database created"],
-                [instanceStatus !== "provisioning" ? "✅" : "⏳", "Installing Odoo 19"],
+                [instanceStatus !== "provisioning" ? "✅" : "⏳", "Installing Odoo 20"],
                 [instanceStatus === "running" ? "✅" : "⏳", "System configuration"],
                 ["⏳", "Deploying selected modules"],
               ]).map(([icon, label], i) => (

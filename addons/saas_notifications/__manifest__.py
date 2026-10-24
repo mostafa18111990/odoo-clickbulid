@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Notifications',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'SaaS',
     'summary': 'Centralized multi-channel notification engine for ClickBuild',
     'author': 'ClickBuild',
@@ -8,7 +8,7 @@
     'depends': ['saas_domain_manager', 'mail'],
     'data': [
         'security/saas_notifications_security.xml',
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'data/saas_notification_types_data.xml',
         'data/saas_notification_templates_data.xml',
         'data/saas_notifications_cron.xml',

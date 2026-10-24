@@ -24,7 +24,7 @@ class SaasProvisioningJob(models.Model):
 
     job_type = fields.Selection(selection=JOB_TYPES, string='Job Type', required=True, index=True)
     state = fields.Selection(selection=JOB_STATES, string='State', default='pending',
-                             required=True, index=True, tracking=True)
+                             required=True, index=True)
     tenant_id = fields.Many2one('saas.tenant', string='Tenant', required=True, ondelete='cascade', index=True)
     external_job_id = fields.Char(string='FastAPI Job ID', index=True)
     attempt_count = fields.Integer(string='Attempts', default=0)

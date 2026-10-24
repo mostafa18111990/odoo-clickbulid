@@ -32,8 +32,10 @@ class SaasReportSnapshot(models.Model):
                                   default=lambda self: self.env.company.currency_id)
     notes = fields.Text(string='Notes')
 
-    _sql_constraints = [('date_unique', 'UNIQUE(snapshot_date)',
-                         'Only one snapshot per date.')]
+    _date_unique = models.Constraint(
+        'UNIQUE(snapshot_date)',
+        "Only one snapshot per date.",
+    )
 
     @api.depends('new_mrr', 'expansion_mrr', 'contraction_mrr', 'churned_mrr')
     def _compute_net_mrr(self):

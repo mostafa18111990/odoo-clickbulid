@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Marketplace',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'SaaS',
     'summary': 'App marketplace: browse, install, and subscribe to add-ons',
     'author': 'ClickBuild',
@@ -8,7 +8,7 @@
     'depends': ['saas_notifications'],
     'data': [
         'security/saas_marketplace_security.xml',
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'data/saas_marketplace_categories_data.xml',
         'data/saas_marketplace_apps_data.xml',
         'data/saas_marketplace_cron.xml',

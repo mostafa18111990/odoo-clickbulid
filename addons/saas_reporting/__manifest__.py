@@ -1,13 +1,13 @@
 {
     'name': 'SaaS Reporting & Analytics',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'SaaS',
     'summary': 'MRR/ARR/LTV/Churn analytics',
     'author': 'ClickBuild',
     'website': 'https://clickbuild.com',
     'depends': ['saas_marketing'],
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'data/saas_reporting_cron.xml',
         'views/saas_report_snapshot_views.xml',
         'views/saas_report_cohort_views.xml',

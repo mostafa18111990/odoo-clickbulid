@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_backup_list" model="ir.ui.view">
+        <field name="name">saas.backup.list</field>
+        <field name="model">saas.backup</field>
+        <field name="arch" type="xml">
+            <list string="Backups" decoration-muted="state == 'deleted'">
+                <field name="tenant_id"/>
+                <field name="backup_date"/>
+                <field name="size_mb"/>
+                <field name="db_dump_path"/>
+                <field name="state" widget="badge"
+                    decoration-success="state == 'done'"
+                    decoration-info="state == 'restored'"
+                    decoration-danger="state == 'deleted'"/>
+                <button name="action_restore" type="object" string="Restore"
+                    icon="fa-undo" invisible="state == 'deleted'"/>
+                <button name="action_delete_backup" type="object" string="Delete"
+                    icon="fa-trash" invisible="state == 'deleted'"/>
+            </list>
+        </field>
+    </record>
+
+    <record id="view_saas_backup_form" model="ir.ui.view">
+        <field name="name">saas.backup.form</field>
+        <field name="model">saas.backup</field>
+        <field name="arch" type="xml">
+            <form string="Backup">
+                <header>
+                    <button name="action_restore" type="object" string="Restore"
+                        class="btn-primary"
+                        invisible="state == 'deleted'"/>
+                    <button name="action_delete_backup" type="object"
+                        string="Delete Files" class="btn-danger"
+                        invisible="state == 'deleted'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <group>
+                        <field name="tenant_id"/>
+                        <field name="backup_date"/>
+                        <field name="size_mb"/>
+                        <field name="db_dump_path"/>
+                        <field name="filestore_path"/>
+                        <field name="notes"/>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="action_saas_backup" model="ir.actions.act_window">
+        <field name="name">Tenant Backups</field>
+        <field name="res_model">saas.backup</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

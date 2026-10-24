@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Core',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.5.1',
     'category': 'SaaS',
     'summary': 'Core foundation for ClickBuild SaaS Platform',
     'description': 'Core foundation: event bus, audit trail, lifecycle FSM, provisioning bridge.',
@@ -13,7 +13,7 @@
     ],
     'data': [
         'security/saas_core_security.xml',
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'data/saas_config_data.xml',
         'data/saas_plan_data.xml',
         'data/saas_cron.xml',

@@ -8,18 +8,18 @@
                     <table width="100%" style="margin-bottom:20px; border-bottom:3px solid #6d28d9;">
                         <tr>
                             <td width="50%" style="vertical-align:top;">
-                                <h2 style="color:#6d28d9; margin:0;"><t t-esc="invoice.company_name"/></h2>
-                                <div style="color:#666; font-size:10pt;"><t t-esc="invoice.company_address"/></div>
+                                <h2 style="color:#6d28d9; margin:0;"><t t-out="invoice.company_name"/></h2>
+                                <div style="color:#666; font-size:10pt;"><t t-out="invoice.company_address"/></div>
                                 <t t-if="invoice.company_vat">
-                                    <div style="font-size:9pt; color:#888;">VAT: <t t-esc="invoice.company_vat"/></div>
+                                    <div style="font-size:9pt; color:#888;">VAT: <t t-out="invoice.company_vat"/></div>
                                 </t>
                             </td>
                             <td width="50%" style="text-align:right; vertical-align:top;">
                                 <h1 style="color:#1e1b4b; margin:0; font-size:22pt;">INVOICE / فاتورة</h1>
                                 <div style="font-size:10pt; margin-top:8px;">
-                                    No: <strong t-esc="invoice.number"/><br/>
-                                    Date: <t t-esc="invoice.invoice_date"/><br/>
-                                    Due: <span style="color:#dc2626;"><t t-esc="invoice.due_date"/></span>
+                                    No: <strong t-out="invoice.number"/><br/>
+                                    Date: <t t-out="invoice.invoice_date"/><br/>
+                                    Due: <span style="color:#dc2626;"><t t-out="invoice.due_date"/></span>
                                 </div>
                             </td>
                         </tr>
@@ -29,19 +29,19 @@
                         <tr>
                             <td width="60%" style="background:#f5f3ff; padding:12px;">
                                 <div style="font-size:9pt; color:#7c3aed; font-weight:bold;">BILL TO / فاتورة إلى</div>
-                                <div style="font-weight:bold;"><t t-esc="invoice.customer_name"/></div>
+                                <div style="font-weight:bold;"><t t-out="invoice.customer_name"/></div>
                                 <t t-if="invoice.customer_email">
-                                    <div style="font-size:9pt; color:#555;"><t t-esc="invoice.customer_email"/></div>
+                                    <div style="font-size:9pt; color:#555;"><t t-out="invoice.customer_email"/></div>
                                 </t>
                                 <t t-if="invoice.customer_vat">
-                                    <div style="font-size:9pt;">VAT: <t t-esc="invoice.customer_vat"/></div>
+                                    <div style="font-size:9pt;">VAT: <t t-out="invoice.customer_vat"/></div>
                                 </t>
                             </td>
                             <td width="40%" style="text-align:right; vertical-align:top;">
                                 <t t-if="invoice.zatca_qr_code">
                                     <div style="font-size:8pt; color:#888;">ZATCA QR</div>
                                     <div style="font-size:7pt; word-break:break-all; max-width:200px; color:#aaa;">
-                                        <t t-esc="invoice.zatca_qr_code[:40]"/>...
+                                        <t t-out="invoice.zatca_qr_code[:40]"/>...
                                     </div>
                                 </t>
                             </td>
@@ -61,22 +61,22 @@
                             <t t-foreach="invoice.line_ids" t-as="line">
                                 <tr style="border-bottom:1px solid #e5e7eb;">
                                     <td style="padding:8px;">
-                                        <div><t t-esc="line.name"/></div>
+                                        <div><t t-out="line.name"/></div>
                                         <t t-if="line.name_ar">
                                             <div style="font-size:9pt; color:#888; direction:rtl; text-align:right;">
-                                                <t t-esc="line.name_ar"/></div>
+                                                <t t-out="line.name_ar"/></div>
                                         </t>
                                     </td>
                                     <td style="padding:8px; text-align:center;">
-                                        <t t-if="line.line_type != 'tax'"><t t-esc="'%.2f' % line.quantity"/></t>
+                                        <t t-if="line.line_type != 'tax'"><t t-out="'%.2f' % line.quantity"/></t>
                                     </td>
                                     <td style="padding:8px; text-align:right;">
-                                        <t t-if="line.line_type != 'tax'"><t t-esc="'%.2f' % line.unit_price"/></t>
+                                        <t t-if="line.line_type != 'tax'"><t t-out="'%.2f' % line.unit_price"/></t>
                                     </td>
                                     <td style="padding:8px; text-align:right;">
-                                        <t t-if="line.line_type == 'tax'"><t t-esc="'%.2f' % line.tax_amount"/></t>
-                                        <t t-else=""><t t-esc="'%.2f' % line.subtotal"/></t>
-                                        <span style="font-size:8pt; color:#888;"><t t-esc="invoice.currency"/></span>
+                                        <t t-if="line.line_type == 'tax'"><t t-out="'%.2f' % line.tax_amount"/></t>
+                                        <t t-else=""><t t-out="'%.2f' % line.subtotal"/></t>
+                                        <span style="font-size:8pt; color:#888;"><t t-out="invoice.currency"/></span>
                                     </td>
                                 </tr>
                             </t>
@@ -91,19 +91,19 @@
                                     <tr style="background:#f9f7ff;">
                                         <td style="padding:8px 12px;">Subtotal</td>
                                         <td style="padding:8px 12px; text-align:right;">
-                                            <t t-esc="'%.2f %s' % (invoice.amount_subtotal, invoice.currency)"/></td>
+                                            <t t-out="'%.2f %s' % (invoice.amount_subtotal, invoice.currency)"/></td>
                                     </tr>
                                     <t t-if="invoice.amount_tax > 0">
                                         <tr>
-                                            <td style="padding:8px 12px;">VAT (<t t-esc="invoice.tax_rate_pct"/>%)</td>
+                                            <td style="padding:8px 12px;">VAT (<t t-out="invoice.tax_rate_pct"/>%)</td>
                                             <td style="padding:8px 12px; text-align:right;">
-                                                <t t-esc="'%.2f %s' % (invoice.amount_tax, invoice.currency)"/></td>
+                                                <t t-out="'%.2f %s' % (invoice.amount_tax, invoice.currency)"/></td>
                                         </tr>
                                     </t>
                                     <tr style="background:#6d28d9; color:white;">
                                         <td style="padding:10px 12px; font-weight:bold;">TOTAL DUE</td>
                                         <td style="padding:10px 12px; text-align:right; font-weight:bold; font-size:13pt;">
-                                            <t t-esc="'%.2f %s' % (invoice.amount_total, invoice.currency)"/></td>
+                                            <t t-out="'%.2f %s' % (invoice.amount_total, invoice.currency)"/></td>
                                     </tr>
                                 </table>
                             </td>
@@ -111,7 +111,7 @@
                     </table>
 
                     <div style="border-top:2px solid #6d28d9; margin-top:16px; padding-top:8px; text-align:center; font-size:8pt; color:#888;">
-                        <t t-esc="invoice.company_name"/> · clickbuild.com · support@clickbuild.com
+                        <t t-out="invoice.company_name"/> · clickbuild.com · support@clickbuild.com
                     </div>
                 </div>
             </t>

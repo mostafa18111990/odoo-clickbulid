@@ -54,7 +54,7 @@ class ProvisioningBridgeService:
         if not allowed_modules:
             allowed_modules = ['base', 'web']
         return {'subdomain': tenant.subdomain, 'modules': allowed_modules, 'language': 'ar',
-                'odoo_version': '19', 'saas_tenant_id': tenant.id,
+                'odoo_version': '20', 'saas_tenant_id': tenant.id,
                 'customer_email': tenant.customer_email,
                 'company_name': tenant.company_name or tenant.customer_name}
 
@@ -120,7 +120,7 @@ class ProvisioningBridgeService:
 
         The sweeper performs three steps for each request:
           1. createdb <subdomain> on the postgres container
-          2. docker exec odoo_saas_app odoo -d <sub> -i base,web ...
+          2. docker exec odoo_saas_20_community odoo -d <sub> -i base,web ...
           3. write a cert-request so HTTPS gets provisioned
 
         Returns a stub response so the calling code treats it as 'queued'.
@@ -169,6 +169,7 @@ class ProvisioningBridgeService:
             'language': 'ar_001',
             # NEW — host sweeper routes the docker exec to the right container
             # and the cert provisioner picks the right nginx upstream.
+            'odoo_version': '20',
             'edition': edition,
         }
         with open(req_path, 'w') as f:

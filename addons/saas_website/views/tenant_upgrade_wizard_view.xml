@@ -23,7 +23,7 @@
                     <group>
                         <field name="coupon_code" placeholder="Optional discount code"/>
                         <field name="approve_immediately" widget="boolean"/>
-                        <label for="approve_immediately">Approve & execute immediately</label>
+                        <label for="approve_immediately">Approve &amp; execute immediately</label>
                     </group>
 
                     <footer>

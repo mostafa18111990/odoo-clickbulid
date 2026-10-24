@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Tenant Login Helper',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'SaaS',
     'summary': 'Pre-fills login email from URL hash + paste-password banner',
     'description': '''

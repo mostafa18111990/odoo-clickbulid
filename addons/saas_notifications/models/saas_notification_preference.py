@@ -19,7 +19,10 @@ class SaasNotificationPreference(models.Model):
     marketing_sms = fields.Boolean(string='Marketing SMS', default=False)
     digest_mode = fields.Boolean(string='Daily Digest', default=False)
 
-    _sql_constraints = [('tenant_unique', 'UNIQUE(tenant_id)', 'One preference set per tenant.')]
+    _tenant_unique = models.Constraint(
+        'UNIQUE(tenant_id)',
+        "One preference set per tenant.",
+    )
 
     @api.model
     def get_or_create(self, tenant):

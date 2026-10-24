@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Portal',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.2.0',
     'category': 'SaaS',
     'summary': 'Customer self-service portal for ClickBuild SaaS',
     'author': 'ClickBuild',
@@ -8,7 +8,7 @@
     'depends': ['saas_payment', 'portal', 'website'],
     'data': [
         'security/saas_portal_security.xml',
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'views/portal_layout.xml',
         'views/portal_dashboard.xml',
         'views/portal_subscription.xml',

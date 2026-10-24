@@ -1,13 +1,13 @@
 {
     'name': 'SaaS Lifecycle',
-    'version': '19.0.1.0.0',
+    'version': '20.0.1.0.0',
     'category': 'SaaS',
     'summary': 'Automated lifecycle management: dunning, churn, win-back',
     'author': 'ClickBuild',
     'website': 'https://clickbuild.com',
     'depends': ['saas_core'],
     'data': [
-        'security/ir.model.access.csv',
+        'security/ir.access.csv',
         'data/saas_dunning_data.xml',
         'data/saas_lifecycle_rules_data.xml',
         'data/saas_lifecycle_cron.xml',

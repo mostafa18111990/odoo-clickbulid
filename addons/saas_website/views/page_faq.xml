@@ -17,9 +17,9 @@
                                 <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button"
                                             data-bs-toggle="collapse" t-attf-data-bs-target="#faqq#{faq.id}">
-                                        <t t-esc="faq.question"/></button></h2>
+                                        <t t-out="faq.question"/></button></h2>
                                 <div t-attf-id="faqq#{faq.id}" class="accordion-collapse collapse" data-bs-parent="#faqAccordion">
-                                    <div class="accordion-body text-muted"><t t-esc="faq.answer"/></div>
+                                    <div class="accordion-body text-muted"><t t-out="faq.answer"/></div>
                                 </div>
                             </div>
                         </t>

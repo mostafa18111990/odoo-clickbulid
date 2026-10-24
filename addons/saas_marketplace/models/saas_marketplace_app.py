@@ -37,7 +37,10 @@ class SaasMarketplaceApp(models.Model):
     screenshot_url = fields.Char(string='Screenshot URL')
     install_count = fields.Integer(string='Installs', compute='_compute_install_count')
 
-    _sql_constraints = [('code_unique', 'UNIQUE(code)', 'App code must be unique.')]
+    _code_unique = models.Constraint(
+        'UNIQUE(code)',
+        "App code must be unique.",
+    )
 
     @api.depends('pricing_model', 'price')
     def _compute_price_label(self):

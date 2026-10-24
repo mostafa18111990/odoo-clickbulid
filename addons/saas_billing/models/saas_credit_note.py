@@ -13,7 +13,7 @@ class SaasCreditNote(models.Model):
 
     number = fields.Char(string='Credit Note Number', readonly=True, copy=False, index=True, default='CN-Draft')
     status = fields.Selection(selection=CN_STATUS, string='Status', default='draft',
-                              required=True, tracking=True, index=True)
+                              required=True, index=True)
     cn_type = fields.Selection(selection=CN_TYPES, string='Type', default='full_credit', required=True)
     invoice_id = fields.Many2one('saas.invoice', string='Original Invoice', required=True,
                                  ondelete='restrict', index=True)

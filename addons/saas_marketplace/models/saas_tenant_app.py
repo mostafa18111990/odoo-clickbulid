@@ -27,7 +27,7 @@ class SaasTenantApp(models.Model):
     app_id = fields.Many2one('saas.marketplace.app', string='App', required=True,
                              ondelete='restrict', index=True)
     state = fields.Selection(selection=APP_STATES, string='Status', default='draft',
-                             required=True, tracking=True, index=True)
+                             required=True, index=True)
     addon_id = fields.Many2one('saas.subscription.addon', string='Subscription Add-on',
                                ondelete='set null')
     pricing_model = fields.Selection(related='app_id.pricing_model', string='Pricing', store=False)
@@ -41,8 +41,10 @@ class SaasTenantApp(models.Model):
     error_message = fields.Text(string='Error')
     external_job_id = fields.Char(string='FastAPI Job ID')
 
-    _sql_constraints = [('tenant_app_unique', 'UNIQUE(tenant_id, app_id)',
-                         'This app is already registered for this tenant.')]
+    _tenant_app_unique = models.Constraint(
+        'UNIQUE(tenant_id, app_id)',
+        "This app is already registered for this tenant.",
+    )
 
     def mark_installed(self):
         self.write({'state': 'installed', 'installed_at': fields.Datetime.now(), 'error_message': False})

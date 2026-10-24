@@ -19,7 +19,10 @@ class SaasUser2fa(models.Model):
     enabled_at = fields.Datetime(string='Enabled At', readonly=True)
     last_verified_at = fields.Datetime(string='Last Verified', readonly=True)
 
-    _sql_constraints = [('user_unique', 'UNIQUE(user_id)', 'One 2FA record per user.')]
+    _user_unique = models.Constraint(
+        'UNIQUE(user_id)',
+        "One 2FA record per user.",
+    )
 
     def action_enable(self):
         codes = [secrets.token_hex(4) for _ in range(8)]

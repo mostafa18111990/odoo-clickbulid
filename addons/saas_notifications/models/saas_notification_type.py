@@ -27,7 +27,10 @@ class SaasNotificationType(models.Model):
     is_critical = fields.Boolean(string='Critical (Cannot Disable)', default=False)
     template_ids = fields.One2many('saas.notification.template', 'notification_type_id', string='Templates')
 
-    _sql_constraints = [('code_unique', 'UNIQUE(code)', 'Notification type code must be unique.')]
+    _code_unique = models.Constraint(
+        'UNIQUE(code)',
+        "Notification type code must be unique.",
+    )
 
     @api.model
     def get_by_code(self, code):

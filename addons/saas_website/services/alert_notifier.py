@@ -98,7 +98,7 @@ class AlertNotifier:
         """Send alert to external webhook if configured."""
         try:
             config = request.env['ir.config_parameter'].sudo()
-            webhook_url = config.get_param('saas.alert_webhook_url')
+            webhook_url = config.get_str('saas.alert_webhook_url')
 
             if not webhook_url:
                 return
