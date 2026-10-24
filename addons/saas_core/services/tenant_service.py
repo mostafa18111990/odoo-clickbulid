@@ -17,7 +17,7 @@ class TenantService:
 
     def create_lead(self, subdomain, customer_name, customer_email, plan_id,
                     lead_source='website', referral_code=None, coupon_code=None,
-                    phone=None, company_name=None):
+                    phone=None, company_name=None, business_sector='general'):
         if self.repo.find_by_subdomain(subdomain):
             raise ValidationError(_('Subdomain "%s" is already taken.', subdomain))
         plan = self.env['saas.plan'].browse(plan_id)
@@ -29,13 +29,15 @@ class TenantService:
             'plan_id': plan_id, 'state': 'lead', 'lead_source': lead_source,
             'referral_code': referral_code, 'coupon_code': coupon_code,
             'phone': phone, 'company_name': company_name,
+            'business_sector': business_sector,
             # Carry the edition over from the chosen plan so the provisioner
             # routes correctly even if the plan is unlinked later.
             'edition': plan.edition or 'community',
         })
         self.events.publish('tenant.lead.created', payload={
             'tenant_id': tenant.id, 'subdomain': subdomain, 'email': customer_email,
-            'plan': plan.code, 'lead_source': lead_source}, tenant_id=tenant.id)
+            'plan': plan.code, 'lead_source': lead_source,
+            'business_sector': business_sector}, tenant_id=tenant.id)
         _logger.info('TenantService: lead created %s (%s)', subdomain, customer_email)
         return tenant
 

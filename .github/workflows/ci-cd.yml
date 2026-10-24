@@ -143,6 +143,7 @@ jobs:
             -d ci_test_db \
             --init=saas_monitoring \
             --without-demo \
+            --test-enable --test-tags=/saas_tenant_manager,/saas_core \
             --no-http --stop-after-init 2>&1 | tee odoo_install.log
 
       - name: Fail on any error in install log

@@ -26,6 +26,7 @@ class SaasWebsiteSignup(http.Controller):
                 type='http', auth='public', website=True, sitemap=True)
     @ErrorHandler.handle_request_error
     def get_started(self, plan_code=None, **kw):
+        from odoo.addons.saas_tenant_manager.models.sector_catalog import get_business_sector_options
         plans = request.env['website'].get_saas_plans()
         selected_plan = None
         if plan_code:
@@ -34,6 +35,7 @@ class SaasWebsiteSignup(http.Controller):
         platform_domain = request.env['saas.config'].sudo()._get_config().platform_domain
         return request.render('saas_website.page_signup',
                               {'plans': plans, 'selected_plan': selected_plan,
+                               'business_sectors': get_business_sector_options(),
                                'coupon': kw.get('coupon', ''),
                                'platform_domain': platform_domain})
 
@@ -108,18 +110,21 @@ class SaasWebsiteSignup(http.Controller):
                 website=True, methods=['POST'], csrf=True)
     @ErrorHandler.handle_request_error
     def register(self, **post):
+        from odoo.addons.saas_tenant_manager.models.sector_catalog import get_business_sector_options
         ip = request.httprequest.environ.get('HTTP_X_FORWARDED_FOR',
                                              request.httprequest.remote_addr).split(',')[0].strip()
         platform_domain = request.env['saas.config'].sudo()._get_config().platform_domain
         if not self._check_rate_limit(ip):
             return request.render('saas_website.page_signup', {
                 'plans': request.env['website'].get_saas_plans(),
+                'business_sectors': get_business_sector_options(),
                 'platform_domain': platform_domain,
                 'errors': [_('Too many attempts. Please try again in a few minutes.')], 'form_data': post})
         from odoo.addons.saas_website.services.signup_service import SignupService
         result = SignupService(request.env).register({
             'name': post.get('name'), 'email': post.get('email'), 'subdomain': post.get('subdomain'),
             'company': post.get('company'), 'phone': post.get('phone'), 'country': post.get('country', 'SA'),
+            'business_sector': post.get('business_sector'),
             'plan_id': post.get('plan_id'), 'coupon_code': post.get('coupon_code'),
             'referral_code': post.get('referral_code')})
         if result.get('success'):
@@ -134,6 +139,7 @@ class SaasWebsiteSignup(http.Controller):
             return request.redirect(result.get('redirect', '/get-started/success'))
         return request.render('saas_website.page_signup', {
             'plans': request.env['website'].get_saas_plans(),
+            'business_sectors': get_business_sector_options(),
             'platform_domain': platform_domain,
             'errors': result.get('errors', []), 'form_data': post})
 

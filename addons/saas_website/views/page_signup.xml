@@ -76,6 +76,29 @@
                                     </optgroup>
                                 </select>
                             </div>
+                            <div class="mb-3">
+                                <label class="form-label fw-bold">
+                                    <t t-if="lang_is_ar">ما هو قطاع نشاطك؟</t>
+                                    <t t-else="">What is your business sector?</t>
+                                </label>
+                                <select name="business_sector" class="form-select" required="required">
+                                    <option value="" disabled="disabled"
+                                            t-att-selected="'selected' if not (form_data and form_data.get('business_sector')) else None">
+                                        <t t-if="lang_is_ar">اختر القطاع لتجهيز التطبيقات المناسبة</t>
+                                        <t t-else="">Choose a sector to prepare the right apps</t>
+                                    </option>
+                                    <t t-foreach="business_sectors" t-as="sector">
+                                        <option t-att-value="sector['code']"
+                                                t-att-selected="'selected' if (form_data and form_data.get('business_sector') == sector['code']) else None">
+                                            <t t-out="sector['label_ar'] if lang_is_ar else sector['label_en']"/>
+                                        </option>
+                                    </t>
+                                </select>
+                                <div class="form-text">
+                                    <t t-if="lang_is_ar">سنثبت تطبيقات قطاعك تلقائيًا ويمكنك إضافة المزيد لاحقًا.</t>
+                                    <t t-else="">We will install your sector apps automatically; you can add more later.</t>
+                                </div>
+                            </div>
                             <div class="mb-3"><label class="form-label fw-bold">
                                 <t t-if="lang_is_ar">اسم مساحة العمل</t><t t-else="">Workspace name</t></label>
                                 <div class="input-group">
@@ -97,10 +120,12 @@
                             <div class="row">
                                 <div class="col-md-6 mb-3"><label class="form-label fw-bold">
                                     <t t-if="lang_is_ar">اسم الشركة</t><t t-else="">Company name</t></label>
-                                    <input type="text" name="company" class="form-control"/></div>
+                                    <input type="text" name="company" class="form-control"
+                                           t-att-value="form_data.get('company') if form_data else ''"/></div>
                                 <div class="col-md-6 mb-3"><label class="form-label fw-bold">
                                     <t t-if="lang_is_ar">الجوال</t><t t-else="">Phone</t></label>
-                                    <input type="tel" name="phone" class="form-control"/></div>
+                                    <input type="tel" name="phone" class="form-control"
+                                           t-att-value="form_data.get('phone') if form_data else ''"/></div>
                             </div>
                             <div class="mb-3"><label class="form-label fw-bold">
                                 <t t-if="lang_is_ar">الدولة</t><t t-else="">Country</t></label>

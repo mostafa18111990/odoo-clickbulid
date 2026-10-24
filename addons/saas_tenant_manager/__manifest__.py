@@ -1,6 +1,6 @@
 {
     'name': 'SaaS Tenant Manager',
-    'version': '20.0.1.0.0',
+    'version': '20.0.1.1.0',
     'category': 'Administration',
     'summary': 'Multi-tenant SaaS management for Odoo',
     'description': 'Complete SaaS management module for Odoo Community.',
