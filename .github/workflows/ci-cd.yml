@@ -88,6 +88,8 @@ jobs:
         run: |
           bash -n scripts/install_tenant_provisioner.sh
           bash -n scripts/activate_odoo20_new_tenants.sh
+          bash -n scripts/deploy_sector_catalog_production.sh
+          bash -n scripts/install_sector_production_wrapper.sh
           bash -n scripts/provision_tenant_cert.sh
           bash -n scripts/patch_nginx_odoo20_upstreams.sh
           bash -n docker/odoo20/entrypoint.sh
