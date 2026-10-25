@@ -11,9 +11,11 @@ PG_CONTAINER=${PG_CONTAINER:-odoo_saas_postgres}
 APP_CONTAINER=${APP_CONTAINER:-odoo_saas_app}
 ENTERPRISE_CONTAINER=${ENTERPRISE_CONTAINER:-odoo_saas_ent}
 CONTROL_DB=${CONTROL_DB:-odoo}
+FILESTORE_ROOT=/var/lib/odoo/filestore
 STAMP=$(date -u +%Y%m%dT%H%M%SZ)
 BACKUP_DIR="$BACKUP_ROOT/pre-sector-catalog-$STAMP"
 SCRATCH_DB="cbsectorpre${STAMP//[^0-9]/}"
+SCRATCH_FILESTORE="$FILESTORE_ROOT/$SCRATCH_DB"
 LOCK_FILE=/run/lock/clickbuild-sector-production.lock
 MODULES=(saas_tenant_manager saas_core saas_website)
 DEPLOY_STARTED=0
@@ -47,6 +49,31 @@ drop_scratch() {
     if docker inspect "$PG_CONTAINER" >/dev/null 2>&1; then
         docker exec "$PG_CONTAINER" dropdb -U odoo --if-exists --force "$SCRATCH_DB"
     fi
+    if docker inspect "$APP_CONTAINER" >/dev/null 2>&1; then
+        docker exec "$APP_CONTAINER" sh -c '
+            set -eu
+            target=$1
+            case "$target" in
+                /var/lib/odoo/filestore/cbsectorpre[0-9]*) ;;
+                *) printf "Refusing unsafe scratch filestore path: %s\n" "$target" >&2; exit 64 ;;
+            esac
+            if [ -d "$target" ]; then
+                find "$target" -mindepth 1 -delete
+                rmdir "$target"
+            fi
+        ' sh "$SCRATCH_FILESTORE"
+    fi
+}
+prepare_scratch_filestore() {
+    docker exec "$APP_CONTAINER" sh -c '
+        set -eu
+        source=$1
+        target=$2
+        [ -d "$source" ] || { printf "Missing control filestore: %s\n" "$source" >&2; exit 1; }
+        [ ! -e "$target" ] || { printf "Scratch filestore already exists: %s\n" "$target" >&2; exit 1; }
+        mkdir "$target"
+        cp -a "$source/." "$target/"
+    ' sh "$FILESTORE_ROOT/$CONTROL_DB" "$SCRATCH_FILESTORE"
 }
 restore_filestore() {
     docker exec "$APP_CONTAINER" sh -c 'find /var/lib/odoo/filestore -mindepth 1 -maxdepth 1 -exec rm -rf -- {} +'
@@ -164,6 +191,7 @@ for module in "${MODULES[@]}"; do
 done
 
 # Rehearse the exact module upgrade on the restored control database first.
+prepare_scratch_filestore
 docker run --rm --network "$APP_NETWORK" --volumes-from "$APP_CONTAINER" \
     -v "$WORK_DIR/release/addons:/mnt/candidate:ro" "$APP_IMAGE" odoo \
     --config=/etc/odoo/odoo.conf \
