@@ -7,6 +7,7 @@ BACKUP_ROOT=${BACKUP_ROOT:-/opt/backups}
 DATE=$(date +%Y-%m-%d)
 STAMP=$(date +%Y-%m-%d-%H%M%S)
 RETENTION_DAYS=${SAAS_BACKUP_RETENTION_DAYS:-7}
+VALIDATE_ONLY=${SAAS_BACKUP_VALIDATE_ONLY:-0}
 PG19=${MASTER_PG_CONTAINER:-odoo_saas_postgres}
 PG20=${ODOO20_PG_CONTAINER:-odoo_saas_postgres20}
 PG_USER=${PG_USER:-odoo}
@@ -27,7 +28,10 @@ flock -n 9 || {
     exit 75
 }
 
-cleanup() { rm -rf -- "$WORK"; }
+cleanup() {
+    [[ "$WORK" == "$BACKUP_ROOT"/.daily-* ]] || return 1
+    rm -rf -- "$WORK"
+}
 trap cleanup EXIT
 log() { printf '%s %s\n' "$(date -Is)" "$*" | tee -a "$LOG"; }
 
@@ -56,7 +60,6 @@ archive_filestore() {
     tar -tzf "$WORK/$output_name" >/dev/null
 }
 
-install -d -m 700 "$WORK/databases"
 log "full Odoo 19/20 backup starting retention_days=$RETENTION_DAYS"
 
 mapfile -t tenant_dbs < <(
@@ -69,6 +72,31 @@ mapfile -t tenant_dbs < <(
           order by api_instance_id"
 )
 
+if [[ "$VALIDATE_ONLY" == "1" ]]; then
+    odoo19_count=1
+    odoo20_count=0
+    for db in "${tenant_dbs[@]}"; do
+        [[ "$db" =~ ^[A-Za-z0-9_-]+$ ]] || exit 21
+        if db_exists "$PG20" "$db"; then
+            odoo20_count=$((odoo20_count + 1))
+        elif db_exists "$PG19" "$db"; then
+            odoo19_count=$((odoo19_count + 1))
+        else
+            log "FAILED tracked database is unavailable on both PostgreSQL planes: $db"
+            exit 22
+        fi
+    done
+    for volume in \
+        "$ODOO19_COMMUNITY_VOLUME" "$ODOO19_ENTERPRISE_VOLUME" \
+        "$ODOO20_COMMUNITY_VOLUME" "$ODOO20_ENTERPRISE_VOLUME"; do
+        root=$(docker volume inspect "$volume" -f '{{.Mountpoint}}')
+        test -d "$root/filestore"
+    done
+    echo "BACKUP_VALIDATION_OK odoo19=$odoo19_count odoo20=$odoo20_count"
+    exit 0
+fi
+
+install -d -m 700 "$WORK/databases"
 dump_verified "$PG19" "$MASTER_DB"
 odoo19_count=1
 odoo20_count=0
