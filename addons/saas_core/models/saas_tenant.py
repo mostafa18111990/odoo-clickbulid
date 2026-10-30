@@ -434,10 +434,14 @@ class SaasTenant(models.Model):
                                                'db_name': self.db_name})
         self._queue_physical_destruction()
 
-    def _queue_physical_destruction(self):
+    def _queue_physical_destruction(self, strict=False):
         """Ask the host sweeper to permanently destroy the tenant database
         (final backup kept in /opt/backups/deleted, then dropdb + filestore +
-        nginx vhost + SSL cert removal)."""
+        nginx vhost + SSL cert removal).
+
+        With ``strict`` a failure to queue raises instead of only being logged,
+        so the caller can refuse to drop the record while its database lives on.
+        """
         from odoo.addons.saas_core.services.provisioning_bridge import ProvisioningBridgeService
         bridge = ProvisioningBridgeService(self.env)
         for tenant in self:
@@ -446,9 +450,24 @@ class SaasTenant(models.Model):
                     from odoo.addons.saas_external_server.services.remote_provisioning import RemoteProvisioningService
                     RemoteProvisioningService(self.env).delete(tenant)
                 else:
-                    bridge.delete(tenant)
+                    bridge.delete(tenant, strict=strict)
             except Exception as e:
                 _logger.error('Failed to queue destruction for %s: %s', tenant.subdomain, e)
+                if strict:
+                    raise UserError(_(
+                        'Could not queue the destruction of tenant "%(sub)s": %(err)s. '
+                        'The record was not deleted.', sub=tenant.subdomain, err=e))
+
+    def unlink(self):
+        """Deleting a tenant record also destroys the tenant everywhere.
+
+        Without this the ORM removed only the row and left the database,
+        filestore and nginx vhost orphaned on the host. The destroyer keeps a
+        verified final backup in /opt/backups/deleted before dropping anything.
+        """
+        to_destroy = self.filtered(lambda t: t.state != 'lead' and t.subdomain)
+        to_destroy._queue_physical_destruction(strict=True)
+        return super().unlink()
 
     def action_destroy_permanently(self):
         """One-click hard delete from any state (admin only, confirmed in the

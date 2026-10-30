@@ -267,7 +267,7 @@ class ProvisioningBridgeService:
         _logger.info('Tenant %s queued for %s', sub, kind)
         return {'status': f'{kind}_queued', 'subdomain': sub}
 
-    def delete(self, tenant):
+    def delete(self, tenant, strict=False):
         if not self.config.use_api_bridge:
             # Local mode: queue a destruction request for the host sweeper.
             return self._queue_local_delete(tenant)
@@ -280,6 +280,8 @@ class ProvisioningBridgeService:
             return resp.json()
         except Exception as e:
             _logger.error('Bridge delete failed for %s: %s', tenant.subdomain, e)
+            if strict:
+                raise
 
     def _queue_local_delete(self, tenant):
         """Queue permanent tenant destruction for the host sweeper.
