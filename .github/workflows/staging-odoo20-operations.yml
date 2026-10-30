@@ -1,0 +1,45 @@
+name: Staging — Odoo 20 operations repair
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type TEST-ODOO20-OPERATIONS to continue
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: staging-odoo20-operations-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  validate:
+    if: ${{ inputs.confirmation == 'TEST-ODOO20-OPERATIONS' }}
+    runs-on: [self-hosted, Linux, X64, clickbuild-production]
+    environment: staging
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require protected main branch
+        run: test "${GITHUB_REF_NAME}" = main
+
+      - name: Validate shell scripts
+        run: |
+          set -Eeuo pipefail
+          bash -n scripts/saas_backup_all.sh
+          bash -n scripts/saas-sync-tenant-metrics.sh
+          bash -n scripts/install_saas_metrics.sh
+
+      - name: Validate Odoo 19 and Odoo 20 inventory without writes
+        env:
+          DRY_RUN: "1"
+          SAAS_BACKUP_VALIDATE_ONLY: "1"
+          SAAS_BACKUP_LOG: /tmp/clickbuild-staging-backup-validation.log
+        run: |
+          set -Eeuo pipefail
+          bash scripts/saas-sync-tenant-metrics.sh
+          bash scripts/saas_backup_all.sh

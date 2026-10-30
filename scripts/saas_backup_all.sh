@@ -1,80 +1,196 @@
-#!/bin/bash
-# ClickBuild SaaS — daily backup of master + all tenant databases.
-# Designed to run from /etc/cron.daily/saas-backup (via systemd timer).
-#
-# Per database, produces:
-#   /opt/backups/<date>/<db>.dump  (pg_dump custom format, restorable via pg_restore)
-#
-# Retention: keeps the last N days (default 7), deletes older directories.
-# Logs to /var/log/saas-backup.log
-#
-# Master DB (odoo) is always included. Tenant DBs are discovered from the
-# saas.tenant table so newly provisioned tenants are picked up automatically.
-set -euo pipefail
+#!/usr/bin/env bash
+# Atomic, verified backup of the Odoo 19 control plane and Odoo 19/20 tenants.
+set -eEuo pipefail
+umask 077
 
-BACKUP_ROOT=/opt/backups
+BACKUP_ROOT=${BACKUP_ROOT:-/opt/backups}
 DATE=$(date +%Y-%m-%d)
-LOG=/var/log/saas-backup.log
+STAMP=$(date +%Y-%m-%d-%H%M%S)
 RETENTION_DAYS=${SAAS_BACKUP_RETENTION_DAYS:-7}
-PG_CONTAINER=odoo_saas_postgres
-PG_USER=odoo
-MASTER_DB=odoo
+VALIDATE_ONLY=${SAAS_BACKUP_VALIDATE_ONLY:-0}
+PG19=${MASTER_PG_CONTAINER:-odoo_saas_postgres}
+PG20=${ODOO20_PG_CONTAINER:-odoo_saas_postgres20}
+PG_USER=${PG_USER:-odoo}
+MASTER_DB=${MASTER_DB:-odoo}
+LOG=${SAAS_BACKUP_LOG:-/var/log/saas-backup.log}
+LOCK=${SAAS_BACKUP_LOCK:-/run/lock/saas-backup.lock}
+WORK="$BACKUP_ROOT/.daily-$STAMP-$$"
+FINAL="$BACKUP_ROOT/$DATE"
+PREVIOUS="$BACKUP_ROOT/.previous-$DATE-$$"
+ODOO19_COMMUNITY_VOLUME=${ODOO19_COMMUNITY_VOLUME:-odoo-saas_odoo_data}
+ODOO19_ENTERPRISE_VOLUME=${ODOO19_ENTERPRISE_VOLUME:-odoo-saas_odoo_ent_data}
+ODOO20_COMMUNITY_VOLUME=${ODOO20_COMMUNITY_VOLUME:-clickbuild-odoo20-tenants_odoo20-community-data}
+ODOO20_ENTERPRISE_VOLUME=${ODOO20_ENTERPRISE_VOLUME:-clickbuild-odoo20-tenants_odoo20-enterprise-data}
 
-mkdir -p "$BACKUP_ROOT/$DATE"
-
-log() { echo "$(date -Is) $*" | tee -a "$LOG"; }
-
-log "=== SaaS backup starting (retention $RETENTION_DAYS days) ==="
-
-dump_db() {
-    local db="$1"
-    local out="$BACKUP_ROOT/$DATE/$db.dump"
-    log "dumping $db -> $out"
-    if docker exec "$PG_CONTAINER" pg_dump -U "$PG_USER" -Fc "$db" > "$out" 2>>"$LOG"; then
-        local size=$(stat -c%s "$out" 2>/dev/null || echo 0)
-        log "  done $db ($(numfmt --to=iec --suffix=B "$size" 2>/dev/null || echo "$size bytes"))"
-    else
-        log "  FAILED $db"
-        rm -f "$out"
-        return 1
-    fi
+exec 9>"$LOCK"
+flock -n 9 || {
+    echo "$(date -Is) another backup is already running" >&2
+    exit 75
 }
 
-# 1) Always back up the master DB
-dump_db "$MASTER_DB" || log "WARN: master backup failed"
+cleanup() {
+    [[ "$WORK" == "$BACKUP_ROOT"/.daily-* ]] || return 1
+    rm -rf -- "$WORK"
+}
+trap cleanup EXIT
+log() { printf '%s %s\n' "$(date -Is)" "$*" | tee -a "$LOG"; }
 
-# 2) Discover tenant databases from saas.tenant (excludes archived / cancelled)
-log "discovering tenant DBs..."
-TENANT_DBS=$(docker exec odoo_saas_app python3 -c "
-import odoo
-from odoo.tools import config
-config.parse_config(['-c', '/etc/odoo/odoo.conf'])
-reg = odoo.modules.registry.Registry('odoo')
-with reg.cursor() as cr:
-    env = odoo.api.Environment(cr, 1, {})
-    ts = env['saas.tenant'].sudo().search([
-        ('state', 'not in', ['cancelled', 'archived', 'deleted']),
-        ('api_instance_id', '!=', False)])
-    print('\n'.join(t.api_instance_id for t in ts
-                    if t.api_instance_id and not t.api_instance_id.startswith('pending:')))
-" 2>/dev/null)
+db_exists() {
+    local container="$1" db="$2"
+    docker inspect "$container" >/dev/null 2>&1 &&
+        docker exec "$container" psql -U "$PG_USER" -d postgres -Atc \
+            "select 1 from pg_database where datname='$db'" 2>/dev/null | grep -qx 1
+}
 
-# Sanity check: only dump DBs that actually exist
-EXISTING_DBS=$(docker exec "$PG_CONTAINER" psql -U "$PG_USER" -lAt | cut -d'|' -f1)
+dump_verified() {
+    local container="$1" db="$2" output="$WORK/databases/$db.dump"
+    log "dumping database=$db plane=$container"
+    docker exec "$container" pg_dump -U "$PG_USER" -Fc "$db" >"$output"
+    test -s "$output"
+    docker exec -i "$container" pg_restore --list <"$output" >/dev/null
+}
 
-for db in $TENANT_DBS; do
-    if echo "$EXISTING_DBS" | grep -qx "$db"; then
-        dump_db "$db" || true
+archive_filestore() {
+    local volume="$1" output_name="$2" root
+    root=$(docker volume inspect "$volume" -f '{{.Mountpoint}}')
+    test -d "$root/filestore"
+    log "archiving filestore volume=$volume"
+    tar -C "$root" -czf "$WORK/$output_name" filestore
+    test -s "$WORK/$output_name"
+    tar -tzf "$WORK/$output_name" >/dev/null
+}
+
+log "full Odoo 19/20 backup starting retention_days=$RETENTION_DAYS"
+
+mapfile -t tenant_dbs < <(
+    docker exec "$PG19" psql -U "$PG_USER" -d "$MASTER_DB" -Atc \
+        "select distinct api_instance_id
+           from saas_tenant
+          where state not in ('cancelled','archived','deleted')
+            and api_instance_id is not null
+            and api_instance_id not like 'pending:%'
+          order by api_instance_id"
+)
+
+if [[ "$VALIDATE_ONLY" == "1" ]]; then
+    odoo19_count=1
+    odoo20_count=0
+    for db in "${tenant_dbs[@]}"; do
+        [[ "$db" =~ ^[A-Za-z0-9_-]+$ ]] || exit 21
+        if db_exists "$PG20" "$db"; then
+            odoo20_count=$((odoo20_count + 1))
+        elif db_exists "$PG19" "$db"; then
+            odoo19_count=$((odoo19_count + 1))
+        else
+            log "FAILED tracked database is unavailable on both PostgreSQL planes: $db"
+            exit 22
+        fi
+    done
+    for volume in \
+        "$ODOO19_COMMUNITY_VOLUME" "$ODOO19_ENTERPRISE_VOLUME" \
+        "$ODOO20_COMMUNITY_VOLUME" "$ODOO20_ENTERPRISE_VOLUME"; do
+        root=$(docker volume inspect "$volume" -f '{{.Mountpoint}}')
+        test -d "$root/filestore"
+    done
+    echo "BACKUP_VALIDATION_OK odoo19=$odoo19_count odoo20=$odoo20_count"
+    exit 0
+fi
+
+install -d -m 700 "$WORK/databases"
+dump_verified "$PG19" "$MASTER_DB"
+odoo19_count=1
+odoo20_count=0
+for db in "${tenant_dbs[@]}"; do
+    [[ "$db" =~ ^[A-Za-z0-9_-]+$ ]] || {
+        log "FAILED invalid database identifier"
+        exit 21
+    }
+    if db_exists "$PG20" "$db"; then
+        dump_verified "$PG20" "$db"
+        odoo20_count=$((odoo20_count + 1))
+    elif db_exists "$PG19" "$db"; then
+        dump_verified "$PG19" "$db"
+        odoo19_count=$((odoo19_count + 1))
     else
-        log "WARN: tenant DB $db listed in saas.tenant but does not exist on Postgres — skipping"
+        log "FAILED tracked database is unavailable on both PostgreSQL planes: $db"
+        exit 22
     fi
 done
 
-# 3) Apply retention — delete directories older than $RETENTION_DAYS
-log "applying retention ($RETENTION_DAYS days)..."
-find "$BACKUP_ROOT" -mindepth 1 -maxdepth 1 -type d -mtime "+$RETENTION_DAYS" -print -exec rm -rf {} + \
-    2>>"$LOG" | sed 's/^/  pruned: /' | tee -a "$LOG"
+archive_filestore "$ODOO19_COMMUNITY_VOLUME" community-filestore.tar.gz
+archive_filestore "$ODOO19_ENTERPRISE_VOLUME" enterprise-filestore.tar.gz
+archive_filestore "$ODOO20_COMMUNITY_VOLUME" odoo20-community-filestore.tar.gz
+archive_filestore "$ODOO20_ENTERPRISE_VOLUME" odoo20-enterprise-filestore.tar.gz
 
-TOTAL_SIZE=$(du -sh "$BACKUP_ROOT/$DATE" 2>/dev/null | cut -f1)
-DB_COUNT=$(ls -1 "$BACKUP_ROOT/$DATE"/*.dump 2>/dev/null | wc -l)
-log "=== SaaS backup finished: $DB_COUNT dumps, total $TOTAL_SIZE ==="
+config_list="$WORK/platform-config-files.list"
+for path in \
+    /opt/odoo-saas/addons \
+    /opt/odoo-saas/config \
+    /opt/odoo-saas/docker \
+    /opt/odoo-saas/docker-community-external \
+    /opt/odoo-saas/docker-enterprise \
+    /opt/odoo-saas/nginx-tenants \
+    /opt/odoo-saas/scripts \
+    /opt/odoo-saas/secrets \
+    /opt/odoo-saas/docker-compose.yml \
+    /etc/systemd/system \
+    /etc/letsencrypt \
+    /usr/local/bin/saas-backup-all.sh \
+    /usr/local/bin/saas-sync-tenant-metrics.sh \
+    /usr/local/bin/saas-tenant-provisioner.sh \
+    /usr/local/bin/saas-warm-pool.sh \
+    /usr/local/bin/saas-demo-maintenance.sh; do
+    [[ -e "$path" ]] && printf '%s\n' "${path#/}" >>"$config_list"
+done
+tar -C / -czf "$WORK/platform-config-and-addons.tar.gz" -T "$config_list"
+
+for archive in "$WORK"/*.tar.gz; do
+    test -s "$archive"
+    tar -tzf "$archive" >/dev/null
+done
+
+cat >"$WORK/MANIFEST.txt" <<EOF
+created_at=$STAMP
+odoo19_database_count=$odoo19_count
+odoo20_database_count=$odoo20_count
+includes_odoo19_community_filestore=yes
+includes_odoo19_enterprise_filestore=yes
+includes_odoo20_community_filestore=yes
+includes_odoo20_enterprise_filestore=yes
+includes_platform_config_and_addons=yes
+retention_days=$RETENTION_DAYS
+EOF
+
+(
+    cd "$WORK"
+    find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum >SHA256SUMS
+    sha256sum -c SHA256SUMS >/dev/null
+)
+
+if [[ -d "$FINAL" ]]; then
+    mv -- "$FINAL" "$PREVIOUS"
+fi
+mv -- "$WORK" "$FINAL"
+trap - EXIT
+rm -rf -- "$PREVIOUS"
+chmod -R go-rwx "$FINAL"
+
+# Delete date-named daily backups only; pre-deployment snapshots are preserved.
+find "$BACKUP_ROOT" -mindepth 1 -maxdepth 1 -type d \
+    -regextype posix-extended \
+    -regex "$BACKUP_ROOT/[0-9]{4}-[0-9]{2}-[0-9]{2}" \
+    -mtime "+$RETENTION_DAYS" -print -exec rm -rf -- {} + \
+    | sed 's/^/pruned_daily=/' | tee -a "$LOG"
+
+if mountpoint -q /mnt/odoo-backups-offsite; then
+    install -d -m 700 "/mnt/odoo-backups-offsite/$DATE"
+    rsync -a --delete "$FINAL/" "/mnt/odoo-backups-offsite/$DATE/"
+    log "offsite copy completed"
+else
+    log "WARN offsite mount not configured; local verified copy retained"
+fi
+
+size=$(du -sh "$FINAL" | awk '{print $1}')
+total_count=$((odoo19_count + odoo20_count))
+log "full daily backup finished databases=$total_count odoo19=$odoo19_count odoo20=$odoo20_count size=$size"
+echo "BACKUP_OK path=$FINAL databases=$total_count odoo20=$odoo20_count size=$size"
