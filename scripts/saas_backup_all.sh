@@ -44,7 +44,9 @@ db_exists() {
 }
 
 dump_verified() {
-    local container="$1" db="$2" output="$WORK/databases/$db.dump"
+    local container="$1"
+    local db="$2"
+    local output="$WORK/databases/$db.dump"
     log "dumping database=$db plane=$container"
     docker exec "$container" pg_dump -U "$PG_USER" -Fc "$db" >"$output"
     test -s "$output"
