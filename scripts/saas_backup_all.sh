@@ -8,6 +8,7 @@ DATE=$(date +%Y-%m-%d)
 STAMP=$(date +%Y-%m-%d-%H%M%S)
 RETENTION_DAYS=${SAAS_BACKUP_RETENTION_DAYS:-7}
 VALIDATE_ONLY=${SAAS_BACKUP_VALIDATE_ONLY:-0}
+SKIP_OFFSITE=${SAAS_BACKUP_SKIP_OFFSITE:-0}
 PG19=${MASTER_PG_CONTAINER:-odoo_saas_postgres}
 PG20=${ODOO20_PG_CONTAINER:-odoo_saas_postgres20}
 PG_USER=${PG_USER:-odoo}
@@ -182,11 +183,11 @@ find "$BACKUP_ROOT" -mindepth 1 -maxdepth 1 -type d \
     -mtime "+$RETENTION_DAYS" -print -exec rm -rf -- {} + \
     | sed 's/^/pruned_daily=/' | tee -a "$LOG"
 
-if mountpoint -q /mnt/odoo-backups-offsite; then
+if [[ "$SKIP_OFFSITE" != "1" ]] && mountpoint -q /mnt/odoo-backups-offsite; then
     install -d -m 700 "/mnt/odoo-backups-offsite/$DATE"
     rsync -a --delete "$FINAL/" "/mnt/odoo-backups-offsite/$DATE/"
     log "offsite copy completed"
-else
+elif [[ "$SKIP_OFFSITE" != "1" ]]; then
     log "WARN offsite mount not configured; local verified copy retained"
 fi
 

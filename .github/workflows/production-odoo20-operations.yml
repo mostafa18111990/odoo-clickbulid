@@ -1,0 +1,35 @@
+name: Production — Odoo 20 monitoring and backups
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type DEPLOY-ODOO20-OPERATIONS to continue
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: production-odoo20-operations
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: ${{ inputs.confirmation == 'DEPLOY-ODOO20-OPERATIONS' }}
+    runs-on: [self-hosted, Linux, X64, clickbuild-production]
+    environment: production
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require protected main branch
+        run: test "${GITHUB_REF_NAME}" = main
+
+      - name: Deploy verified Odoo 19/20 operations services
+        run: |
+          set -Eeuo pipefail
+          sudo -n -l /usr/local/sbin/clickbuild-odoo20-operations-production-wrapper >/dev/null
+          sudo -n /usr/local/sbin/clickbuild-odoo20-operations-production-wrapper \
+            "${GITHUB_SHA}" "${GITHUB_RUN_ID}"
