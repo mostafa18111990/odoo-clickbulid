@@ -1,15 +1,12 @@
 name: Staging — Odoo 20 operations repair
 
 on:
-  pull_request:
-    branches: [main]
-    paths:
-      - "scripts/saas_backup_all.sh"
-      - "scripts/saas-sync-tenant-metrics.sh"
-      - "scripts/install_saas_metrics.sh"
-      - "scripts/saas-metrics-sync.service"
-      - "scripts/saas-metrics-sync.timer"
-      - ".github/workflows/staging-odoo20-operations.yml"
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type TEST-ODOO20-OPERATIONS to continue
+        required: true
+        type: string
 
 permissions:
   contents: read
@@ -20,11 +17,15 @@ concurrency:
 
 jobs:
   validate:
+    if: ${{ inputs.confirmation == 'TEST-ODOO20-OPERATIONS' }}
     runs-on: [self-hosted, Linux, X64, clickbuild-production]
     environment: staging
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
+
+      - name: Require protected main branch
+        run: test "${GITHUB_REF_NAME}" = main
 
       - name: Validate shell scripts
         run: |
