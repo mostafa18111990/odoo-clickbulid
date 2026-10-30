@@ -35,11 +35,8 @@ jobs:
           bash -n scripts/install_saas_metrics.sh
 
       - name: Validate Odoo 19 and Odoo 20 inventory without writes
-        env:
-          DRY_RUN: "1"
-          SAAS_BACKUP_VALIDATE_ONLY: "1"
-          SAAS_BACKUP_LOG: /tmp/clickbuild-staging-backup-validation.log
         run: |
           set -Eeuo pipefail
-          bash scripts/saas-sync-tenant-metrics.sh
-          bash scripts/saas_backup_all.sh
+          sudo -n -l /usr/local/sbin/clickbuild-odoo20-operations-staging-wrapper >/dev/null
+          sudo -n /usr/local/sbin/clickbuild-odoo20-operations-staging-wrapper \
+            "${GITHUB_SHA}" "${GITHUB_RUN_ID}"
