@@ -20,6 +20,16 @@ config_value() {
     sed -n "s/^[[:space:]]*${key}[[:space:]]*=[[:space:]]*//p" "$file" | head -n 1
 }
 
+replace_config_credential_if_active() {
+    local file=$1 key=$2 old_value=$3 new_value=$4 current
+    current=$(config_value "$file" "$key")
+    case "$current" in
+        "$old_value") replace_literal "$file" "$old_value" "$new_value" ;;
+        ''|False|false|None|null) return 0 ;;
+        *) fail "unexpected $key credential source in $file" ;;
+    esac
+}
+
 alter_role_password() {
     local container=$1 password=$2 escaped
     escaped=${password//\'/\'\'}
@@ -223,11 +233,16 @@ rehearse() {
     rehearsal_db_auth_works "$network" "$pg20" "$old20" || fail 'PostgreSQL 16 rehearsal did not start'
 
     printf 'db_password = %s\nadmin_passwd = old-master-19\n' "$old19" >"$root/odoo19.conf"
+    printf 'db_password = False\nadmin_passwd = old-master-19\n' >"$root/odoo19-env-password.conf"
     printf 'ODOO20_DB_PASSWORD=%s\nODOO20_MASTER_PASSWORD=old-master-20\n' "$old20" >"$root/odoo20.env"
     cp -a "$root/odoo19.conf" "$root/odoo19.conf.before"
     cp -a "$root/odoo20.env" "$root/odoo20.env.before"
 
     replace_literal "$root/odoo19.conf" "$old19" "$new19"
+    replace_config_credential_if_active \
+        "$root/odoo19-env-password.conf" db_password "$old19" "$new19"
+    [[ "$(config_value "$root/odoo19-env-password.conf" db_password)" == False ]] \
+        || fail 'environment-sourced Odoo database password was unexpectedly changed'
     replace_literal "$root/odoo19.conf" old-master-19 new-master-19
     set_env_key "$root/odoo20.env" ODOO20_DB_PASSWORD "$new20"
     set_env_key "$root/odoo20.env" ODOO20_MASTER_PASSWORD new-master-20
@@ -386,9 +401,9 @@ production() {
     mutation_started=1
 
     replace_literal "$compose19" "$old_db19" "$new_db19"
-    replace_literal "$conf19" "$old_db19" "$new_db19"
+    replace_config_credential_if_active "$conf19" db_password "$old_db19" "$new_db19"
     replace_literal "$conf19" "$old_master19" "$new_master19"
-    replace_literal "$conf19_ent" "$old_db19" "$new_db19"
+    replace_config_credential_if_active "$conf19_ent" db_password "$old_db19" "$new_db19"
     replace_literal "$conf19_ent" "$old_master19_ent" "$new_master19_ent"
     for file in "$env20_source" "$env20_current"; do
         set_env_key "$file" ODOO20_DB_PASSWORD "$new_db20"
