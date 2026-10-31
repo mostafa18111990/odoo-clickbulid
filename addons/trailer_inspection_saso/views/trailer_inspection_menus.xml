@@ -29,7 +29,5 @@
     <menuitem id="menu_trailer_configuration" name="Standards" parent="menu_trailer_root" sequence="30" groups="trailer_inspection_saso.group_trailer_manager"/>
     <menuitem id="menu_trailer_standards" name="Standards and Regulations" parent="menu_trailer_configuration" action="action_trailer_standard" sequence="10"/>
     <menuitem id="menu_trailer_requirements" name="Inspection Requirements" parent="menu_trailer_configuration" action="action_trailer_requirement" sequence="20"/>
-    <menuitem id="menu_trailer_vin_profiles" name="VIN Manufacturer Profiles" parent="menu_trailer_configuration" action="action_trailer_vin_profile" sequence="25"/>
-    <menuitem id="menu_trailer_vin_sequences" name="VIN Production Sequences" parent="menu_trailer_configuration" action="action_trailer_vin_sequence" sequence="26"/>
     <menuitem id="menu_trailer_import" name="Import Inspections" parent="menu_trailer_configuration" action="action_trailer_inspection_import" sequence="30"/>
 </odoo>

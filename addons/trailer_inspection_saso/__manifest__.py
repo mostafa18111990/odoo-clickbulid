@@ -1,6 +1,6 @@
 {
     "name": "Trailer Inspection - SASO",
-    "version": "20.0.4.2.1",
+    "version": "20.0.4.3.0",
     "category": "Operations/Inspections",
     "summary": "Trailer and semi-trailer inspections against SASO requirements",
     "description": """

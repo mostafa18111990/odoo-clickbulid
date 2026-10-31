@@ -343,26 +343,6 @@ class TrailerInspection(models.Model):
                     "Finish or cancel it before opening another.",
                     vin=record.vin, other=other.name))
 
-    def action_generate_vin(self):
-        for record in self:
-            if record.state != "draft":
-                raise UserError(_("VIN can only be generated while the inspection is in draft state."))
-            if record.vin:
-                raise UserError(_("A VIN already exists. Clear it explicitly before generating another VIN."))
-            if not record.vin_profile_id:
-                raise UserError(_("Select an approved VIN manufacturer profile first."))
-            if not record.manufacture_year:
-                raise UserError(_("Set the model/manufacture year before generating the VIN."))
-            generated_vin = record.vin_profile_id.generate_vin(record.manufacture_year)
-            record.write({
-                "vin": generated_vin,
-                "vin_source": "generated",
-                "vin_generated_by": self.env.user.id,
-                "vin_generated_on": fields.Datetime.now(),
-                "manufacturer_name": record.vin_profile_id.manufacturer_id.name,
-                "wmi_certificate_number": record.wmi_certificate_number or record.vin_profile_id.wmi_certificate_number,
-            })
-
     @api.constrains("manufacture_month", "manufacture_year")
     def _check_manufacture_date(self):
         current_year = fields.Date.context_today(self).year
@@ -466,7 +446,7 @@ class TrailerInspection(models.Model):
             ):
                 raise UserError(_("Only the assigned inspector or an inspection manager can start this inspection."))
             if not record.vin:
-                raise UserError(_("Enter or generate a valid VIN before starting the inspection."))
+                raise UserError(_("Enter a valid VIN before starting the inspection."))
             if not record.impartiality_confirmed:
                 raise UserError(_("Confirm the impartiality and conflict-of-interest check first."))
             authorization = record.authorization_id or record._find_valid_authorization()

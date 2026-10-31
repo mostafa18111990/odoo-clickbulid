@@ -35,7 +35,6 @@
             <form>
                 <header>
                     <button name="action_schedule" type="object" string="Schedule" class="btn-primary" invisible="state != 'draft'" groups="trailer_inspection_saso.group_trailer_inspector"/>
-                    <button name="action_generate_vin" type="object" string="Generate VIN" class="btn-secondary" invisible="state != 'draft' or vin" groups="trailer_inspection_saso.group_trailer_inspector"/>
                     <button name="action_start" type="object" string="Start Inspection" class="btn-primary" invisible="state not in ('draft','scheduled')" groups="trailer_inspection_saso.group_trailer_inspector"/>
                     <button name="action_submit" type="object" string="Submit for Review" class="btn-primary" invisible="state != 'in_progress'" groups="trailer_inspection_saso.group_trailer_inspector"/>
                     <button name="action_approve" type="object" string="Approve" class="btn-primary" invisible="state != 'technical_review'" groups="trailer_inspection_saso.group_trailer_reviewer"/>
@@ -84,7 +83,7 @@
                     <notebook>
                         <page string="Trailer Data">
                             <group>
-                                <group><field name="product_description"/><field name="trailer_type"/><field name="category"/><field name="vin_profile_id" domain="[('state','=','approved'),('company_id','=',company_id)]" options="{'no_create': True}"/><field name="vin"/><field name="vin_source" readonly="1"/><field name="vin_generated_by" readonly="1" invisible="vin_source != 'generated'"/><field name="vin_generated_on" readonly="1" invisible="vin_source != 'generated'"/><field name="manufacturer_name"/><field name="brand_name"/><field name="model_name"/></group>
+                                <group><field name="product_description"/><field name="trailer_type"/><field name="category"/><field name="vin"/><field name="vin_source" readonly="1" invisible="vin_source != 'generated'"/><field name="vin_generated_by" readonly="1" invisible="vin_source != 'generated'"/><field name="vin_generated_on" readonly="1" invisible="vin_source != 'generated'"/><field name="manufacturer_name"/><field name="brand_name"/><field name="model_name"/></group>
                                 <group><field name="origin_country_id"/><field name="manufacture_year"/><field name="manufacture_month"/><field name="length_m"/><field name="width_m"/><field name="height_m"/><field name="gross_weight_kg"/><field name="compliance_plate_present"/></group>
                             </group>
                             <group string="Certificates and Technical File"><field name="wmi_certificate_number"/><field name="conformity_certificate_number"/><field name="barrier_certificate_number"/><field name="shipment_certificate_number"/><field name="technical_file_reference"/><field name="source_filename" invisible="1"/><field name="source_file" filename="source_filename"/><button name="action_queue_document_extraction" type="object" string="Queue OCR" class="btn-secondary" invisible="not source_file or extraction_state == 'pending'"/><field name="extraction_state"/><field name="extraction_notes" invisible="extraction_state == 'none'"/></group>

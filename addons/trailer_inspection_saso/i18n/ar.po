@@ -889,8 +889,8 @@ msgstr "العنوان بالإنجليزية"
 #. module: trailer_inspection_saso
 #. odoo-python
 #: code:addons/trailer_inspection_saso/models/trailer_inspection.py:0
-msgid "Enter or generate a valid VIN before starting the inspection."
-msgstr "أدخل أو ولّد VIN صحيحًا قبل بدء الفحص."
+msgid "Enter a valid VIN before starting the inspection."
+msgstr "أدخل رقم VIN صحيحًا قبل بدء الفحص."
 
 #. module: trailer_inspection_saso
 #: model:ir.model.fields.selection,name:trailer_inspection_saso.selection__trailer_inspection__vin_source__manual

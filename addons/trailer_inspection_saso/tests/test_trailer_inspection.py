@@ -149,3 +149,23 @@ class TestTrailerInspection(TransactionCase):
             numeric_line.write({"measured_value": numeric_line.maximum_value + 1})
             numeric_line._evaluate_measurements()
             self.assertEqual(numeric_line.result, "no")
+
+    # The VIN is always typed in from the trailer's plate; it is never generated.
+    def test_entered_vin_is_recorded_as_manual(self):
+        inspection = self.env["trailer.inspection"].create(self._inspection_values())
+        self.assertEqual(inspection.vin_source, "manual")
+
+    def test_system_can_no_longer_generate_a_vin(self):
+        inspection = self.env["trailer.inspection"].create(self._inspection_values())
+        self.assertFalse(hasattr(inspection, "action_generate_vin"))
+        self.assertNotIn(
+            "action_generate_vin",
+            self.env.ref("trailer_inspection_saso.view_trailer_inspection_form").arch,
+        )
+
+    def test_inspection_cannot_start_without_a_vin(self):
+        values = self._inspection_values()
+        values.pop("vin")
+        inspection = self.env["trailer.inspection"].with_user(self.inspector).create(values)
+        with self.assertRaisesRegex(UserError, "Enter a valid VIN"):
+            inspection.action_start()
