@@ -150,4 +150,29 @@ done
     exit 11
 }
 
+# Identify the host files that contain the active Odoo 19 DB credential. Only
+# paths and a count are logged; the credential value never leaves this process.
+active_db19=$(docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' odoo_saas_postgres \
+    | sed -n 's/^POSTGRES_PASSWORD=//p' | head -n 1)
+[[ -n "$active_db19" ]] || {
+    echo 'FAIL: active Odoo 19 database credential is unavailable' >&2
+    exit 12
+}
+source_count=0
+while IFS= read -r -d '' candidate; do
+    [[ -f "$candidate" ]] || continue
+    if grep -Fq -- "$active_db19" "$candidate" 2>/dev/null; then
+        printf 'credential_source plane=odoo19-db path=%s\n' "$candidate"
+        source_count=$((source_count + 1))
+    fi
+done < <(
+    find /opt/odoo-saas -xdev -maxdepth 4 -type f -size -10M -print0
+    find /opt/actions-runner-odoo20 -xdev -maxdepth 3 -type f \
+        \( -name '*.env' -o -name '*.service' -o -name '*.conf' \) -size -10M -print0
+    find /etc/systemd/system /etc/default -xdev -maxdepth 3 -type f -size -10M -print0
+    [[ -f /etc/environment ]] && printf '%s\0' /etc/environment
+)
+unset active_db19
+printf 'credential_sources plane=odoo19-db count=%s\n' "$source_count"
+
 printf 'RUNTIME_CREDENTIAL_TOPOLOGY_END containers=%s\n' "$found"
