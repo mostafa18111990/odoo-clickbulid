@@ -182,51 +182,13 @@ chmod +x "$PROVISIONER"
 echo "[provisioner] installed $PROVISIONER"
 
 # 2. Extend the existing sweeper to also handle *.provision.req
-cat > "$SWEEPER" << 'SWEEP'
-#!/bin/bash
-# Unified sweeper:
-#   *.provision.req → run saas-tenant-provisioner.sh (creates DB + Odoo + cert)
-#   *.req           → run /opt/odoo-saas/provision_tenant_cert.sh (HTTPS only)
-set -e
-REQ_DIR=/opt/odoo-saas/cert-requests
-LOG=/var/log/saas-cert-sweeper.log
-
-shopt -s nullglob
-
-# --- Tenant DB provisioning (priority) ---
-for req in "$REQ_DIR"/*.provision.req; do
-    sub=$(basename "$req" .provision.req)
-    sub=$(echo "$sub" | tr -cd 'a-z0-9-')
-    [ -z "$sub" ] && { rm -f "$req"; continue; }
-    echo "$(date -Is) sweeping provision $sub" >> "$LOG"
-    if bash /usr/local/bin/saas-tenant-provisioner.sh "$req" >> "$LOG" 2>&1; then
-        mv "$req" "$REQ_DIR/$sub.provision.done"
-        echo "$(date -Is) PROVISION DONE $sub" >> "$LOG"
-    else
-        mv "$req" "$REQ_DIR/$sub.provision.error"
-        echo "$(date -Is) PROVISION ERROR $sub" >> "$LOG"
-    fi
-done
-
-# --- HTTPS cert provisioning (after DB exists) ---
-for req in "$REQ_DIR"/*.req; do
-    # Skip .provision.req which we matched above already
-    [[ "$req" == *.provision.req ]] && continue
-    sub=$(basename "$req" .req)
-    sub=$(echo "$sub" | tr -cd 'a-z0-9-')
-    [ -z "$sub" ] && { rm -f "$req"; continue; }
-    echo "$(date -Is) sweeping cert $sub" >> "$LOG"
-    if bash /opt/odoo-saas/provision_tenant_cert.sh "$sub" >> "$LOG" 2>&1; then
-        mv "$req" "$REQ_DIR/$sub.done"
-        echo "$(date -Is) CERT DONE $sub" >> "$LOG"
-    else
-        mv "$req" "$REQ_DIR/$sub.error"
-        echo "$(date -Is) CERT ERROR $sub" >> "$LOG"
-    fi
-done
-SWEEP
-chmod +x "$SWEEPER"
-echo "[provisioner] updated $SWEEPER to handle both .provision.req and .req"
+# Install the repo's sweeper (provision + delete + cert requests) and the
+# destroyer it dispatches to. An embedded copy here once silently replaced the
+# fixed sweeper on every activation, so *.delete.req was ignored again.
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+install -m 0755 "$HERE/saas-cert-sweeper.sh" "$SWEEPER"
+install -m 0755 "$HERE/saas-tenant-destroyer.sh" /usr/local/bin/saas-tenant-destroyer.sh
+echo "[provisioner] installed $SWEEPER (provision, delete and cert requests)"
 
 # 3. Restart and verify the systemd timer. Failure must stop activation.
 systemctl restart saas-cert-sweeper.timer

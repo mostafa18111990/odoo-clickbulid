@@ -143,6 +143,8 @@ tar -xzf "$RELEASE_ARCHIVE" -C "$RELEASE_DIR"
 for required_file in \
     docker/odoo20/docker-compose.tenants.yml \
     scripts/install_tenant_provisioner.sh \
+    scripts/saas-cert-sweeper.sh \
+    scripts/saas-tenant-destroyer.sh \
     scripts/patch_nginx_odoo20_upstreams.sh \
     scripts/provision_tenant_cert.sh; do
     [ -f "$RELEASE_DIR/$required_file" ] || fail "release file missing: $required_file"
