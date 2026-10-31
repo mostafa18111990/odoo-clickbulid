@@ -1,0 +1,131 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo noupdate="1">
+    <record id="standard_saso_tr_trailers_v1a1" model="trailer.inspection.standard">
+        <field name="name">SASO Trailer Technical Regulation V1 A1</field>
+        <field name="code">MA-162-17-04-01</field>
+        <field name="title_ar">اللائحة الفنية للمقطورات ونصف المقطورات - الإصدار الأول - التعديل الأول</field>
+        <field name="title_en">Technical Regulation for Trailers and Semi-Trailers - Version 1 - Amendment 1</field>
+        <field name="edition">V1-A1</field>
+        <field name="authority">saso</field>
+        <field name="document_type">technical_regulation</field>
+        <field name="publication_date">2018-01-05</field>
+        <field name="status">current</field>
+        <field name="source_url">https://www.saso.gov.sa/ar/Laws-And-Regulations/Technical_regulations/Pages/regulation18.aspx</field>
+    </record>
+
+    <record id="standard_saso_2910_2022" model="trailer.inspection.standard">
+        <field name="name">SASO 2910:2022</field>
+        <field name="code">SASO 2910</field>
+        <field name="title_ar">المقطورات - المتطلبات العامة</field>
+        <field name="title_en">Trailers - General Requirements</field>
+        <field name="edition">2022</field>
+        <field name="authority">saso</field>
+        <field name="document_type">standard</field>
+        <field name="status">current</field>
+    </record>
+
+    <record id="standard_gso_1780_2010" model="trailer.inspection.standard">
+        <field name="name">GSO 1780:2010</field>
+        <field name="code">GSO 1780</field>
+        <field name="title_ar">السيارات - الرقم المميز للمركبة - المتطلبات</field>
+        <field name="title_en">Motor Vehicle - Vehicle Identification Number (VIN) - Requirements</field>
+        <field name="edition">2010</field>
+        <field name="authority">gso</field>
+        <field name="document_type">technical_regulation</field>
+        <field name="publication_date">2010-11-03</field>
+        <field name="status">current</field>
+        <field name="source_url">https://www.gso.org.sa/</field>
+    </record>
+
+    <record id="standard_iso_17020_2026" model="trailer.inspection.standard">
+        <field name="name">ISO/IEC 17020:2026</field>
+        <field name="code">ISO/IEC 17020</field>
+        <field name="title_ar">تقييم المطابقة - متطلبات جهات التفتيش</field>
+        <field name="title_en">Conformity assessment - Requirements for bodies performing inspection</field>
+        <field name="edition">2026</field>
+        <field name="authority">iso</field>
+        <field name="document_type">standard</field>
+        <field name="publication_date">2026-03-27</field>
+        <field name="status">current</field>
+        <field name="source_url">https://www.iso.org/standard/17020</field>
+    </record>
+
+    <record id="standard_iso_17020_2012" model="trailer.inspection.standard">
+        <field name="name">ISO/IEC 17020:2012</field>
+        <field name="code">ISO/IEC 17020</field>
+        <field name="title_ar">تقييم المطابقة - متطلبات جهات التفتيش</field>
+        <field name="title_en">Conformity assessment - Requirements for bodies performing inspection</field>
+        <field name="edition">2012</field>
+        <field name="authority">iso</field>
+        <field name="document_type">standard</field>
+        <field name="status">superseded</field>
+        <field name="superseded_by_id" ref="standard_iso_17020_2026"/>
+        <field name="source_url">https://www.iso.org/standard/52994.html</field>
+    </record>
+
+    <record id="standard_iso_19011_2026" model="trailer.inspection.standard">
+        <field name="name">ISO 19011:2026</field>
+        <field name="code">ISO 19011</field>
+        <field name="title_ar">إرشادات تدقيق نظم الإدارة</field>
+        <field name="title_en">Guidelines for auditing management systems</field>
+        <field name="edition">2026</field>
+        <field name="authority">iso</field>
+        <field name="document_type">guideline</field>
+        <field name="publication_date">2026-05-27</field>
+        <field name="status">current</field>
+        <field name="source_url">https://www.iso.org/standard/19011</field>
+    </record>
+
+    <record id="standard_iso_19011_2011" model="trailer.inspection.standard">
+        <field name="name">ISO 19011:2011</field>
+        <field name="code">ISO 19011</field>
+        <field name="title_ar">إرشادات تدقيق نظم الإدارة</field>
+        <field name="title_en">Guidelines for auditing management systems</field>
+        <field name="edition">2011</field>
+        <field name="authority">iso</field>
+        <field name="document_type">guideline</field>
+        <field name="status">superseded</field>
+        <field name="superseded_by_id" ref="standard_iso_19011_2026"/>
+        <field name="source_url">https://www.iso.org/standard/50675.html</field>
+    </record>
+
+    <record id="section_dimensions" model="trailer.inspection.section">
+        <field name="name">04 - Dimensions</field><field name="name_ar">الأبعاد</field><field name="name_en">Dimensions</field><field name="code">04</field><field name="sequence">40</field>
+    </record>
+    <record id="section_clearance" model="trailer.inspection.section">
+        <field name="name">05 - Road Clearance</field><field name="name_ar">الحد الأدنى لخلوص الطريق</field><field name="name_en">Minimum Road Clearance</field><field name="code">05</field><field name="sequence">50</field>
+    </record>
+    <record id="section_weight" model="trailer.inspection.section">
+        <field name="name">06 - Weight</field><field name="name_ar">الوزن المحوري والإجمالي</field><field name="name_en">Gross Vehicle and Axle Weight</field><field name="code">06</field><field name="sequence">60</field>
+    </record>
+    <record id="section_stability" model="trailer.inspection.section">
+        <field name="name">07 - Stability</field><field name="name_ar">الاتزان والمناورة</field><field name="name_en">Stability and Manoeuvrability</field><field name="code">07</field><field name="sequence">70</field>
+    </record>
+    <record id="section_electrical" model="trailer.inspection.section">
+        <field name="name">08 - Electrical System</field><field name="name_ar">النظام الكهربائي</field><field name="name_en">Electrical System</field><field name="code">08</field><field name="sequence">80</field>
+    </record>
+    <record id="section_brakes" model="trailer.inspection.section">
+        <field name="name">09 - Braking System</field><field name="name_ar">نظام الفرامل</field><field name="name_en">Braking System</field><field name="code">09</field><field name="sequence">90</field>
+    </record>
+    <record id="section_suspension" model="trailer.inspection.section">
+        <field name="name">10 - Suspension</field><field name="name_ar">نظام التعليق</field><field name="name_en">Suspension System</field><field name="code">10</field><field name="sequence">100</field>
+    </record>
+    <record id="section_frame" model="trailer.inspection.section">
+        <field name="name">11 - Frame and Body</field><field name="name_ar">الهيكل والجسم</field><field name="name_en">Frame and Body</field><field name="code">11</field><field name="sequence">110</field>
+    </record>
+    <record id="section_coupling" model="trailer.inspection.section">
+        <field name="name">12 - Coupling</field><field name="name_ar">أجهزة التوصيل وطرق الجر</field><field name="name_en">Coupling Devices and Towing</field><field name="code">12</field><field name="sequence">120</field>
+    </record>
+    <record id="section_wheels" model="trailer.inspection.section">
+        <field name="name">13 - Wheels</field><field name="name_ar">العجلات والإطارات</field><field name="name_en">Wheels, Tyres and Rims</field><field name="code">13</field><field name="sequence">130</field>
+    </record>
+    <record id="section_lighting" model="trailer.inspection.section">
+        <field name="name">14 - Lighting</field><field name="name_ar">معدات الإضاءة</field><field name="name_en">Lighting Equipment</field><field name="code">14</field><field name="sequence">140</field>
+    </record>
+    <record id="section_vin" model="trailer.inspection.section">
+        <field name="name">16 - VIN</field><field name="name_ar">الرقم المميز للمركبة</field><field name="name_en">Vehicle Identification Number</field><field name="code">16</field><field name="sequence">160</field>
+    </record>
+    <record id="section_plate" model="trailer.inspection.section">
+        <field name="name">17 - Compliance Plate</field><field name="name_ar">بطاقة البيانات</field><field name="name_en">Compliance Plate</field><field name="code">17</field><field name="sequence">170</field>
+    </record>
+</odoo>
