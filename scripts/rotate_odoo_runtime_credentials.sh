@@ -329,9 +329,9 @@ production() {
     )
 
     local backup_script=${SAAS_BACKUP_SCRIPT:-/usr/local/bin/saas-backup-all.sh}
-    [[ -x "$backup_script" ]] || fail 'verified backup script is unavailable'
+    [[ -f "$backup_script" ]] || fail 'verified backup script is unavailable'
     BACKUP_ROOT="$snapshot/full" SAAS_BACKUP_LOG="$snapshot/backup.log" \
-        SAAS_BACKUP_SKIP_OFFSITE=1 "$backup_script"
+        SAAS_BACKUP_SKIP_OFFSITE=1 bash "$backup_script"
     backup_day="$snapshot/full/$(date +%Y-%m-%d)"
     [[ -s "$backup_day/MANIFEST.txt" && -s "$backup_day/SHA256SUMS" ]] || fail 'verified backup manifest is missing'
     (cd "$backup_day" && sha256sum -c SHA256SUMS >/dev/null)
