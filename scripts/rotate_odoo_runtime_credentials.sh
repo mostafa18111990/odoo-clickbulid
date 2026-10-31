@@ -191,7 +191,7 @@ raise SystemExit(0 if valid else 1)
 rehearse() {
     [[ "$(id -u)" == 0 ]] || fail 'rehearsal must run as root'
     [[ "$run_id" =~ ^[0-9]{1,20}$ ]] || fail 'invalid rehearsal run id'
-    local root network pg19 pg20 old19 old20 new19 new20
+    local root network pg19 pg20 old19 old20 new19 new20 cleanup_trap
     root=$(mktemp -d "/run/clickbuild-credential-rehearsal-${run_id}.XXXXXX")
     network="cb_cred_net_${run_id}"
     pg19="cb_cred_pg15_${run_id}"
@@ -199,11 +199,14 @@ rehearse() {
     old19=$(random_secret); old20=$(random_secret)
     new19=$(random_secret); new20=$(random_secret)
     cleanup_rehearsal() {
-        docker rm -f "$pg19" "$pg20" >/dev/null 2>&1 || :
-        docker network rm "$network" >/dev/null 2>&1 || :
-        [[ "$root" == /run/clickbuild-credential-rehearsal-* ]] && rm -rf -- "$root"
+        local cleanup_root=$1 cleanup_network=$2 cleanup_pg19=$3 cleanup_pg20=$4
+        docker rm -f "$cleanup_pg19" "$cleanup_pg20" >/dev/null 2>&1 || :
+        docker network rm "$cleanup_network" >/dev/null 2>&1 || :
+        [[ "$cleanup_root" == /run/clickbuild-credential-rehearsal-* ]] || return 1
+        rm -rf -- "$cleanup_root"
     }
-    trap cleanup_rehearsal EXIT
+    printf -v cleanup_trap 'cleanup_rehearsal %q %q %q %q' "$root" "$network" "$pg19" "$pg20"
+    trap "$cleanup_trap" EXIT
 
     printf 'POSTGRES_USER=odoo\nPOSTGRES_DB=postgres\nPOSTGRES_PASSWORD=%s\n' "$old19" >"$root/pg15.env"
     printf 'POSTGRES_USER=odoo\nPOSTGRES_DB=postgres\nPOSTGRES_PASSWORD=%s\n' "$old20" >"$root/pg16.env"
@@ -248,6 +251,8 @@ rehearse() {
         || rehearsal_db_auth_works "$network" "$pg20" "$new20"; then
         fail 'a rehearsal password remained valid after rollback'
     fi
+    cleanup_rehearsal "$root" "$network" "$pg19" "$pg20"
+    trap - EXIT
     echo 'CREDENTIAL_ROTATION_REHEARSAL_OK postgres15=yes postgres16=yes rollback=yes'
 }
 
