@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 """SSH Helper - ينفذ أوامر على السيرفر ويطبع النتيجة"""
+from _ssh_credentials import SSH_PASSWORD
 import paramiko
 import sys
 import time
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 
 def run(commands, timeout=300):
     client = paramiko.SSHClient()

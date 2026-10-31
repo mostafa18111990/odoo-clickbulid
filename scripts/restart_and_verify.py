@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+from _ssh_credentials import SSH_PASSWORD
 import paramiko, time, sys
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 
 def run(c, cmd, timeout=60):
     print(f"\n$ {cmd[:100]}")
@@ -39,7 +40,7 @@ def main():
     print("\nFull platform status:")
     run(c, "systemctl is-active clickbuild-api clickbuild-worker clickbuild-beat | paste - - -")
     run(c, "docker ps --format 'table {{.Names}}\t{{.Status}}' 2>/dev/null | grep -v NAMES")
-    run(c, 'PGPASSWORD="CB_pg_S3cur3_2024!" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "SELECT (SELECT COUNT(*) FROM slo_definitions) slos, (SELECT COUNT(*) FROM compliance_checks) controls, (SELECT COUNT(*) FROM runbooks) runbooks, (SELECT COUNT(*) FROM support_tickets) tickets, (SELECT COUNT(*) FROM audit_logs) audit_events;"')
+    run(c, 'PGPASSWORD="$CLICKBUILD_POSTGRES_PASSWORD" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "SELECT (SELECT COUNT(*) FROM slo_definitions) slos, (SELECT COUNT(*) FROM compliance_checks) controls, (SELECT COUNT(*) FROM runbooks) runbooks, (SELECT COUNT(*) FROM support_tickets) tickets, (SELECT COUNT(*) FROM audit_logs) audit_events;"')
 
     c.close()
 

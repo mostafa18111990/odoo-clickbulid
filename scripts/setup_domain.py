@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 """Setup odoo.clickbulid.com domain with SSL"""
+from _ssh_credentials import SSH_PASSWORD
+import os
 import paramiko, sys, time
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
+ODOO_DB_PASSWORD = os.environ["CLICKBUILD_ODOO_DB_PASSWORD"]
+ODOO_MASTER_PASSWORD = os.environ["CLICKBUILD_ODOO_MASTER_PASSWORD"]
+
+
+def render_credentials(content):
+    return (content
+            .replace('__CLICKBUILD_ODOO_DB_PASSWORD__', ODOO_DB_PASSWORD)
+            .replace('__CLICKBUILD_ODOO_MASTER_PASSWORD__', ODOO_MASTER_PASSWORD))
+
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh.connect('129.121.98.243', username='root', password='Mh@01007121878')
+ssh.connect('129.121.98.243', username='root', password=SSH_PASSWORD)
 
 def run(cmd, timeout=120):
     _, o, e = ssh.exec_command(cmd, timeout=timeout)
@@ -167,7 +178,7 @@ COMPOSE = """services:
     restart: always
     environment:
       POSTGRES_USER: odoo
-      POSTGRES_PASSWORD: odoo_pg_pass_2024
+      POSTGRES_PASSWORD: __CLICKBUILD_ODOO_DB_PASSWORD__
       POSTGRES_DB: postgres
     volumes:
       - postgres_data:/var/lib/postgresql/data
@@ -199,7 +210,7 @@ COMPOSE = """services:
       - HOST=postgres
       - PORT=5432
       - USER=odoo
-      - PASSWORD=odoo_pg_pass_2024
+      - PASSWORD=__CLICKBUILD_ODOO_DB_PASSWORD__
     networks:
       - odoo_net
 
@@ -245,14 +256,14 @@ ODOO_CONF = """[options]
 db_host = postgres
 db_port = 5432
 db_user = odoo
-db_password = odoo_pg_pass_2024
+db_password = __CLICKBUILD_ODOO_DB_PASSWORD__
 db_name = False
 
 ; subdomain -> DB name: odoo.clickbulid.com -> DB: odoo
 ;                       client1.clickbulid.com -> DB: client1
 dbfilter = ^%d$
 
-admin_passwd = SaaS_Master_2024!
+admin_passwd = __CLICKBUILD_ODOO_MASTER_PASSWORD__
 proxy_mode = True
 list_db = True
 
@@ -275,8 +286,8 @@ longpolling_port = 8072
 # ── Upload all ──
 print('── Uploading configs ──')
 upload('/opt/odoo-saas/config/nginx.conf', NGINX)
-upload('/opt/odoo-saas/docker-compose.yml', COMPOSE)
-upload('/opt/odoo-saas/config/odoo.conf', ODOO_CONF)
+upload('/opt/odoo-saas/docker-compose.yml', render_credentials(COMPOSE))
+upload('/opt/odoo-saas/config/odoo.conf', render_credentials(ODOO_CONF))
 
 # ── Stop nginx to free port 80 for certbot ──
 print('\n── Getting SSL certificate ──')

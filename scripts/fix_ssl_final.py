@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+from _ssh_credentials import SSH_PASSWORD
 import paramiko, time, sys
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 EMAIL = "mostafahelmy1995@gmail.com"
 
 def connect():
@@ -172,7 +173,7 @@ def main():
 
     # ── 2. Get running instances ─────────────────────────────────────────────
     print("\n[2] Getting running instances...")
-    out, _ = run(c, "PGPASSWORD=\"CB_pg_S3cur3_2024!\" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -t -A -F'|' -c \"SELECT subdomain, odoo_port FROM instances WHERE status='RUNNING';\"")
+    out, _ = run(c, "PGPASSWORD=\"$CLICKBUILD_POSTGRES_PASSWORD\" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -t -A -F'|' -c \"SELECT subdomain, odoo_port FROM instances WHERE status='RUNNING';\"")
 
     instances = []
     for line in out.strip().split('\n'):

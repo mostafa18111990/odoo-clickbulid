@@ -6,12 +6,13 @@ Fix SSL for *.odoo.clickbulid.com
 2. Get wildcard cert via certbot DNS challenge
 3. Add HTTPS server block for all subdomains
 """
+from _ssh_credentials import SSH_PASSWORD
 import paramiko, time, sys
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 
 def connect():
     c = paramiko.SSHClient()

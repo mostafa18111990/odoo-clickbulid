@@ -1,12 +1,13 @@
 #!/usr/bin/env python
 """Upload a local addons/<module> directory to the server via SFTP."""
+from _ssh_credentials import SSH_PASSWORD
 import paramiko
 import os
 import sys
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 REMOTE_ADDONS = "/opt/odoo-saas/addons"
 
 

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """Fix Next.js 15 compatibility issues"""
+from _ssh_credentials import SSH_PASSWORD
 import paramiko
 import io
 import sys
@@ -8,7 +9,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='repla
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 
 client = paramiko.SSHClient()
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())

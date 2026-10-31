@@ -8,12 +8,13 @@ Plan:
   3. Patch provisioning.py to auto-issue certs for future instances
   4. Add auto-renew hook
 """
+from _ssh_credentials import SSH_PASSWORD
 import paramiko, time, sys
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 EMAIL = "mostafahelmy1995@gmail.com"
 
 def connect():
@@ -225,7 +226,7 @@ def main():
 
     # ── 2. Get all RUNNING instances ────────────────────────────────────────
     print("\n[2] Getting all running instances...")
-    out, _ = run(c, 'PGPASSWORD="CB_pg_S3cur3_2024!" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -t -c "SELECT subdomain, odoo_port FROM instances WHERE status=\'RUNNING\';"')
+    out, _ = run(c, 'PGPASSWORD="$CLICKBUILD_POSTGRES_PASSWORD" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -t -c "SELECT subdomain, odoo_port FROM instances WHERE status=\'RUNNING\';"')
 
     instances = []
     for line in out.strip().split('\n'):

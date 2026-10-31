@@ -10,6 +10,7 @@ Implements the full enterprise operating model:
   - AI Operations Center foundation
   - Contractor Identity & Procurement Intelligence scaffolding
 """
+from _ssh_credentials import SSH_PASSWORD
 import paramiko
 import time
 import sys
@@ -18,7 +19,7 @@ sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 
 # ─────────────────────────────────────────────────────────────────────────────
 #  SSH HELPERS
@@ -501,7 +502,7 @@ VALUES (
     'odoo',
     'incident',
     'SEV2',
-    E'# Runbook: Odoo Instance Unhealthy\n\n## Detection\nHealth check returns non-2xx for > 3 consecutive checks.\n\n## Triage Steps\n1. Check container status: `docker inspect odoo_{subdomain} --format "{{.State.Status}}"`\n2. Check logs: `docker logs odoo_{subdomain} --tail 50`\n3. Check DB connectivity: `PGPASSWORD=... psql -h 127.0.0.1 -U clickbuild {db_name} -c "SELECT 1"`\n4. Check sessions dir: `docker exec -u root odoo_{subdomain} ls -la /var/lib/odoo/`\n\n## Fix: Sessions Permission Error\n```bash\ndocker exec -u root odoo_{subdomain} mkdir -p /var/lib/odoo/sessions\ndocker exec -u root odoo_{subdomain} chown -R odoo:odoo /var/lib/odoo\ndocker restart odoo_{subdomain}\n```\n\n## Fix: OOM / Memory\n```bash\ndocker restart odoo_{subdomain}\n# If recurring: adjust workers in odoo.conf\n```\n\n## Escalation\nIf not resolved in 30min → SEV1, page incident lead.',
+    E'# Runbook: Odoo Instance Unhealthy\n\n## Detection\nHealth check returns non-2xx for > 3 consecutive checks.\n\n## Triage Steps\n1. Check container status: `docker inspect odoo_{subdomain} --format "{{.State.Status}}"`\n2. Check logs: `docker logs odoo_{subdomain} --tail 50`\n3. Check DB connectivity: `PGPASSWORD=$CLICKBUILD_POSTGRES_PASSWORD psql -h 127.0.0.1 -U clickbuild {db_name} -c "SELECT 1"`\n4. Check sessions dir: `docker exec -u root odoo_{subdomain} ls -la /var/lib/odoo/`\n\n## Fix: Sessions Permission Error\n```bash\ndocker exec -u root odoo_{subdomain} mkdir -p /var/lib/odoo/sessions\ndocker exec -u root odoo_{subdomain} chown -R odoo:odoo /var/lib/odoo\ndocker restart odoo_{subdomain}\n```\n\n## Fix: OOM / Memory\n```bash\ndocker restart odoo_{subdomain}\n# If recurring: adjust workers in odoo.conf\n```\n\n## Escalation\nIf not resolved in 30min → SEV1, page incident lead.',
     'sre'
 ), (
     'api-high-error-rate',
@@ -2018,8 +2019,8 @@ def main():
     # ── 1. Database schema ────────────────────────────────────────────────────
     section("DATABASE: Enterprise Schema")
     upload(c, '/tmp/enterprise_schema.sql', DB_SCHEMA)
-    run(c, 'PGPASSWORD="CB_pg_S3cur3_2024!" psql -h 127.0.0.1 -U clickbuild clickbuild_platform < /tmp/enterprise_schema.sql', timeout=30)
-    run(c, 'PGPASSWORD="CB_pg_S3cur3_2024!" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "\\dt" | grep -E "audit|slo|incident|support|contractor|compliance|runbook|tenant_health|ai_audit|change_req|price_intel|vendor|tenant_enc|system_metric|data_ret|sla_pol|postmortem|ticket_msg"')
+    run(c, 'PGPASSWORD="$CLICKBUILD_POSTGRES_PASSWORD" psql -h 127.0.0.1 -U clickbuild clickbuild_platform < /tmp/enterprise_schema.sql', timeout=30)
+    run(c, 'PGPASSWORD="$CLICKBUILD_POSTGRES_PASSWORD" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "\\dt" | grep -E "audit|slo|incident|support|contractor|compliance|runbook|tenant_health|ai_audit|change_req|price_intel|vendor|tenant_enc|system_metric|data_ret|sla_pol|postmortem|ticket_msg"')
 
     # ── 2. Backend services ───────────────────────────────────────────────────
     section("BACKEND: Domain Services")
@@ -2243,7 +2244,7 @@ PYEOF"""
 
     # ── 13. Summary ──────────────────────────────────────────────────────────
     section("DEPLOYMENT COMPLETE")
-    run(c, """PGPASSWORD="CB_pg_S3cur3_2024!" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "
+    run(c, """PGPASSWORD="$CLICKBUILD_POSTGRES_PASSWORD" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "
 SELECT
     (SELECT COUNT(*) FROM slo_definitions) as slos,
     (SELECT COUNT(*) FROM compliance_checks) as compliance_controls,

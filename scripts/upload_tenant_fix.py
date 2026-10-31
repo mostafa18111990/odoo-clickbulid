@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Upload the fixed saas_tenant.py directly via SFTP"""
+from _ssh_credentials import SSH_PASSWORD
 import paramiko, sys, ast
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
@@ -20,7 +21,7 @@ except SyntaxError as e:
 # 2. Upload via SFTP
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh.connect('129.121.98.243', username='root', password='Mh@01007121878')
+ssh.connect('129.121.98.243', username='root', password=SSH_PASSWORD)
 
 sftp = ssh.open_sftp()
 sftp.put(LOCAL_FILE, REMOTE_FILE)

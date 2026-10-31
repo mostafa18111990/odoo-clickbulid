@@ -6,12 +6,13 @@ Platform Restructure Script
 - Rebuild admin panel
 - Update DB plans to SAR
 """
+from _ssh_credentials import SSH_PASSWORD
 import paramiko, sys
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 c = paramiko.SSHClient()
 c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-c.connect('129.121.98.243', username='root', password='Mh@01007121878', timeout=30)
+c.connect('129.121.98.243', username='root', password=SSH_PASSWORD, timeout=30)
 
 def upload(path, content):
     sftp = c.open_sftp()
@@ -55,7 +56,7 @@ for p in REMOVE:
 # 1. UPDATE DB — plans to SAR
 # ─────────────────────────────────────────────────────────────────
 print('\n── Updating plans to SAR ──')
-run("""PGPASSWORD="CB_pg_S3cur3_2024!" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "
+run("""PGPASSWORD="$CLICKBUILD_POSTGRES_PASSWORD" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "
 UPDATE plans SET price_egp=299  WHERE name='STARTER';
 UPDATE plans SET price_egp=899  WHERE name='BUSINESS';
 UPDATE plans SET price_egp=2499 WHERE name='ENTERPRISE';

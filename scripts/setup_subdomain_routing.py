@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Setup subdomain routing and fix instance status."""
+from _ssh_credentials import SSH_PASSWORD
 import paramiko
 import time
 import sys
@@ -8,7 +9,7 @@ sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 
 def run(client, cmd, timeout=60):
     print(f"\n$ {cmd}")
@@ -78,16 +79,16 @@ def main():
 
     # Check enum values
     print("\n[1] Checking instancestatus enum values...")
-    run(client, """PGPASSWORD="CB_pg_S3cur3_2024!" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "SELECT unnest(enum_range(NULL::instancestatus));" """)
+    run(client, """PGPASSWORD="$CLICKBUILD_POSTGRES_PASSWORD" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "SELECT unnest(enum_range(NULL::instancestatus));" """)
 
     # Check current instance record
-    run(client, """PGPASSWORD="CB_pg_S3cur3_2024!" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "SELECT id, subdomain, status, odoo_port, error_message FROM instances;" """)
+    run(client, """PGPASSWORD="$CLICKBUILD_POSTGRES_PASSWORD" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "SELECT id, subdomain, status, odoo_port, error_message FROM instances;" """)
 
     # Update status to correct enum value
     print("\n[2] Updating instance status...")
     # Try common enum values
     for status in ['active', 'running', 'ACTIVE', 'RUNNING']:
-        out, err = run(client, f"""PGPASSWORD="CB_pg_S3cur3_2024!" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "UPDATE instances SET status='{status}', error_message=NULL WHERE subdomain='roaaa';" 2>&1""")
+        out, err = run(client, f"""PGPASSWORD="$CLICKBUILD_POSTGRES_PASSWORD" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "UPDATE instances SET status='{status}', error_message=NULL WHERE subdomain='roaaa';" 2>&1""")
         if 'ERROR' not in out and 'ERROR' not in err:
             print(f"  Status '{status}' worked!")
             break

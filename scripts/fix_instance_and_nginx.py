@@ -7,6 +7,7 @@ We need to either:
   b) Change port 80 subdomain handling to proxy directly (HTTP for now)
 We choose (b) for now — per-instance Nginx direct proxy on port 80.
 """
+from _ssh_credentials import SSH_PASSWORD
 import paramiko
 import time
 import sys
@@ -15,7 +16,7 @@ sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 
 def run(client, cmd, timeout=60):
     print(f"\n$ {cmd}")
@@ -36,7 +37,7 @@ def main():
 
     # ── 1. Fix instance status ────────────────────────────────────────────────
     print("\n[1] Fix instance status to RUNNING...")
-    run(client, """PGPASSWORD="CB_pg_S3cur3_2024!" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "UPDATE instances SET status='RUNNING' WHERE subdomain='roaaa'; SELECT subdomain, status, odoo_port FROM instances;" """)
+    run(client, """PGPASSWORD="$CLICKBUILD_POSTGRES_PASSWORD" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "UPDATE instances SET status='RUNNING' WHERE subdomain='roaaa'; SELECT subdomain, status, odoo_port FROM instances;" """)
 
     # ── 2. Modify Nginx to allow HTTP subdomain access ────────────────────────
     print("\n[2] Reading current Nginx config...")

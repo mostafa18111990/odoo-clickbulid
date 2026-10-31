@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Full end-to-end platform verification."""
+from _ssh_credentials import SSH_PASSWORD
 import paramiko
 import time
 import sys
@@ -8,7 +9,7 @@ sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 
 def run(client, cmd, timeout=60):
     print(f"\n$ {cmd}")
@@ -63,7 +64,7 @@ def main():
 
     # 7. DB state
     print("\n--- Database ---")
-    run(client, """PGPASSWORD="CB_pg_S3cur3_2024!" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "SELECT subdomain, status, odoo_port, is_trial FROM instances; SELECT COUNT(*) as plans FROM plans; SELECT COUNT(*) as users FROM users;" """)
+    run(client, """PGPASSWORD="$CLICKBUILD_POSTGRES_PASSWORD" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "SELECT subdomain, status, odoo_port, is_trial FROM instances; SELECT COUNT(*) as plans FROM plans; SELECT COUNT(*) as users FROM users;" """)
 
     # Summary
     passed = sum(results)

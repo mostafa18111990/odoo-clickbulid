@@ -1,10 +1,11 @@
 #!/usr/bin/env python3
+from _ssh_credentials import SSH_PASSWORD
 import paramiko, sys
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 c = paramiko.SSHClient()
 c.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-c.connect('129.121.98.243', username='root', password='Mh@01007121878', timeout=30)
+c.connect('129.121.98.243', username='root', password=SSH_PASSWORD, timeout=30)
 
 def upload(path, content):
     sftp = c.open_sftp()

@@ -1,11 +1,22 @@
 #!/usr/bin/env python3
 """Part 1 - docker-compose.yml, odoo.conf, nginx.conf"""
+from _ssh_credentials import SSH_PASSWORD
+import os
 import paramiko, sys
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
+ODOO_DB_PASSWORD = os.environ["CLICKBUILD_ODOO_DB_PASSWORD"]
+ODOO_MASTER_PASSWORD = os.environ["CLICKBUILD_ODOO_MASTER_PASSWORD"]
+
+
+def render_credentials(content):
+    return (content
+            .replace('__CLICKBUILD_ODOO_DB_PASSWORD__', ODOO_DB_PASSWORD)
+            .replace('__CLICKBUILD_ODOO_MASTER_PASSWORD__', ODOO_MASTER_PASSWORD))
+
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh.connect('129.121.98.243', username='root', password='Mh@01007121878')
+ssh.connect('129.121.98.243', username='root', password=SSH_PASSWORD)
 
 def upload(path, content):
     sftp = ssh.open_sftp()
@@ -27,7 +38,7 @@ services:
     restart: always
     environment:
       POSTGRES_USER: odoo
-      POSTGRES_PASSWORD: odoo_pg_pass_2024
+      POSTGRES_PASSWORD: __CLICKBUILD_ODOO_DB_PASSWORD__
       POSTGRES_DB: postgres
       PGDATA: /var/lib/postgresql/data/pgdata
     volumes:
@@ -61,7 +72,7 @@ services:
       - HOST=postgres
       - PORT=5432
       - USER=odoo
-      - PASSWORD=odoo_pg_pass_2024
+      - PASSWORD=__CLICKBUILD_ODOO_DB_PASSWORD__
     networks:
       - odoo_net
     command: ["odoo", "--config=/etc/odoo/odoo.conf"]
@@ -107,7 +118,7 @@ ODOO_CONF = '''\
 db_host = postgres
 db_port = 5432
 db_user = odoo
-db_password = odoo_pg_pass_2024
+db_password = __CLICKBUILD_ODOO_DB_PASSWORD__
 db_name = False
 
 ; ── dbfilter: map subdomain to database ──
@@ -116,7 +127,7 @@ db_name = False
 dbfilter = ^%d$
 
 ; ── Master admin password ──
-admin_passwd = SaaS_Master_2024!
+admin_passwd = __CLICKBUILD_ODOO_MASTER_PASSWORD__
 
 ; ── Proxy ──
 proxy_mode = True
@@ -303,8 +314,8 @@ server {
 '''
 
 print('── Uploading infrastructure files ──')
-upload('/opt/odoo-saas/docker-compose.yml', DOCKER_COMPOSE)
-upload('/opt/odoo-saas/config/odoo.conf', ODOO_CONF)
+upload('/opt/odoo-saas/docker-compose.yml', render_credentials(DOCKER_COMPOSE))
+upload('/opt/odoo-saas/config/odoo.conf', render_credentials(ODOO_CONF))
 upload('/opt/odoo-saas/config/nginx.conf', NGINX_CONF)
 print('\n✅ Part 1 done!')
 ssh.close()

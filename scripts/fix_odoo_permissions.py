@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 """Fix Odoo 19 sessions directory permission error + update provisioning to prevent recurrence."""
+from _ssh_credentials import SSH_PASSWORD
 import paramiko
 import time
 import sys
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 
 def run(client, cmd, timeout=60):
     print(f"\n$ {cmd}")

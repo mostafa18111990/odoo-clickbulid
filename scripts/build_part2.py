@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Part 2 - saas_tenant_manager module: __manifest__, __init__, models"""
+from _ssh_credentials import SSH_PASSWORD
 import paramiko, sys
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh.connect('129.121.98.243', username='root', password='Mh@01007121878')
+ssh.connect('129.121.98.243', username='root', password=SSH_PASSWORD)
 
 def upload(path, content):
     sftp = ssh.open_sftp()
@@ -160,7 +161,7 @@ _logger = logging.getLogger(__name__)
 DB_HOST = os.environ.get('HOST', 'postgres')
 DB_PORT = int(os.environ.get('PORT', 5432))
 DB_USER = os.environ.get('USER', 'odoo')
-DB_PASS = os.environ.get('PASSWORD', 'odoo_pg_pass_2024')
+DB_PASS = os.environ['PASSWORD']
 
 
 class SaasTenant(models.Model):
@@ -676,12 +677,12 @@ class SaasBackup(models.Model):
 
         import subprocess
         env = os.environ.copy()
-        env['PGPASSWORD'] = t._get_pg_conn.__func__.__globals__.get('DB_PASS', 'odoo_pg_pass_2024')
+        env['PGPASSWORD'] = t._get_pg_conn.__func__.__globals__['DB_PASS']
 
         db_host = os.environ.get('HOST', 'postgres')
         db_port = os.environ.get('PORT', '5432')
         db_user = os.environ.get('USER', 'odoo')
-        db_pass = os.environ.get('PASSWORD', 'odoo_pg_pass_2024')
+        db_pass = os.environ['PASSWORD']
         env['PGPASSWORD'] = db_pass
 
         # Drop existing and recreate

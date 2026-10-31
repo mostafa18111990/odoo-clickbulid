@@ -13,9 +13,7 @@ _logger = logging.getLogger(__name__)
 DB_HOST = os.environ.get('HOST', 'postgres')
 DB_PORT = int(os.environ.get('PORT', 5432))
 DB_USER = os.environ.get('USER', 'odoo')
-DB_PASS = os.environ.get('PASSWORD', 'odoo_pg_pass_2024')
-
-
+DB_PASS = os.environ['PASSWORD']
 class SaasTenant(models.Model):
     _name = 'saas.tenant'
     _description = 'SaaS Tenant'
