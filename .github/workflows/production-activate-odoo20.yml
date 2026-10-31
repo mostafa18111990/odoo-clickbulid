@@ -35,6 +35,8 @@ jobs:
           bash -n scripts/install_tenant_provisioner.sh
           bash -n scripts/provision_tenant_cert.sh
           bash -n scripts/patch_nginx_odoo20_upstreams.sh
+          bash -n scripts/saas-cert-sweeper.sh
+          bash -n scripts/saas-tenant-destroyer.sh
 
       - name: Build immutable release archive
         run: |
@@ -43,6 +45,8 @@ jobs:
           tar -czf /tmp/clickbuild-odoo20-release.tar.gz \
             addons docker/odoo20 \
             scripts/install_tenant_provisioner.sh \
+            scripts/saas-cert-sweeper.sh \
+            scripts/saas-tenant-destroyer.sh \
             scripts/provision_tenant_cert.sh \
             scripts/patch_nginx_odoo20_upstreams.sh
           sha256sum /tmp/clickbuild-odoo20-release.tar.gz
