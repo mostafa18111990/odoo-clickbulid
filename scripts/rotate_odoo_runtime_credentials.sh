@@ -27,14 +27,34 @@ alter_role_password() {
         | docker exec -i "$container" psql -v ON_ERROR_STOP=1 -U odoo -d postgres >/dev/null
 }
 
-db_auth_works() {
-    local container=$1 password=$2
+rehearsal_db_auth_works() {
+    local network=$1 host=$2 password=$3
     printf '%s\n' "$password" \
-        | docker exec -i "$container" sh -ceu '
+        | docker run --rm -i --network "$network" postgres:16-alpine sh -ceu '
             IFS= read -r PGPASSWORD
             export PGPASSWORD
-            psql -h 127.0.0.1 -U odoo -d postgres -Atc "select 1" 2>/dev/null
-        ' | grep -qx 1
+            psql -h "$1" -U odoo -d postgres -Atc "select 1" 2>/dev/null
+        ' sh "$host" | grep -qx 1
+}
+
+container_db_auth_works() {
+    local container=$1 host_key=$2 port_key=$3 password=$4
+    printf '%s\n' "$password" \
+        | docker exec -i "$container" python3 -c '
+import os
+import sys
+import psycopg2
+
+password = sys.stdin.readline().rstrip("\n")
+connection = psycopg2.connect(
+    host=os.environ[sys.argv[1]],
+    port=os.environ.get(sys.argv[2], "5432"),
+    user=os.environ.get("DB_USER") or os.environ.get("USER"),
+    password=password,
+    dbname="postgres",
+)
+connection.close()
+' "$host_key" "$port_key" >/dev/null 2>&1
 }
 
 odoo_http_works() {
@@ -171,30 +191,33 @@ raise SystemExit(0 if valid else 1)
 rehearse() {
     [[ "$(id -u)" == 0 ]] || fail 'rehearsal must run as root'
     [[ "$run_id" =~ ^[0-9]{1,20}$ ]] || fail 'invalid rehearsal run id'
-    local root pg19 pg20 old19 old20 new19 new20
+    local root network pg19 pg20 old19 old20 new19 new20
     root=$(mktemp -d "/run/clickbuild-credential-rehearsal-${run_id}.XXXXXX")
+    network="cb_cred_net_${run_id}"
     pg19="cb_cred_pg15_${run_id}"
     pg20="cb_cred_pg16_${run_id}"
     old19=$(random_secret); old20=$(random_secret)
     new19=$(random_secret); new20=$(random_secret)
     cleanup_rehearsal() {
         docker rm -f "$pg19" "$pg20" >/dev/null 2>&1 || :
+        docker network rm "$network" >/dev/null 2>&1 || :
         [[ "$root" == /run/clickbuild-credential-rehearsal-* ]] && rm -rf -- "$root"
     }
     trap cleanup_rehearsal EXIT
 
     printf 'POSTGRES_USER=odoo\nPOSTGRES_DB=postgres\nPOSTGRES_PASSWORD=%s\n' "$old19" >"$root/pg15.env"
     printf 'POSTGRES_USER=odoo\nPOSTGRES_DB=postgres\nPOSTGRES_PASSWORD=%s\n' "$old20" >"$root/pg16.env"
-    docker run -d --rm --name "$pg19" --env-file "$root/pg15.env" postgres:15-alpine >/dev/null
-    docker run -d --rm --name "$pg20" --env-file "$root/pg16.env" postgres:16-alpine >/dev/null
+    docker network create "$network" >/dev/null
+    docker run -d --rm --name "$pg19" --network "$network" --env-file "$root/pg15.env" postgres:15-alpine >/dev/null
+    docker run -d --rm --name "$pg20" --network "$network" --env-file "$root/pg16.env" postgres:16-alpine >/dev/null
     for _ in $(seq 1 60); do
         docker exec "$pg19" pg_isready -U odoo -d postgres >/dev/null 2>&1 \
             && docker exec "$pg20" pg_isready -U odoo -d postgres >/dev/null 2>&1 \
             && break
         sleep 2
     done
-    db_auth_works "$pg19" "$old19" || fail 'PostgreSQL 15 rehearsal did not start'
-    db_auth_works "$pg20" "$old20" || fail 'PostgreSQL 16 rehearsal did not start'
+    rehearsal_db_auth_works "$network" "$pg19" "$old19" || fail 'PostgreSQL 15 rehearsal did not start'
+    rehearsal_db_auth_works "$network" "$pg20" "$old20" || fail 'PostgreSQL 16 rehearsal did not start'
 
     printf 'db_password = %s\nadmin_passwd = old-master-19\n' "$old19" >"$root/odoo19.conf"
     printf 'ODOO20_DB_PASSWORD=%s\nODOO20_MASTER_PASSWORD=old-master-20\n' "$old20" >"$root/odoo20.env"
@@ -207,9 +230,10 @@ rehearse() {
     set_env_key "$root/odoo20.env" ODOO20_MASTER_PASSWORD new-master-20
     alter_role_password "$pg19" "$new19"
     alter_role_password "$pg20" "$new20"
-    db_auth_works "$pg19" "$new19" || fail 'PostgreSQL 15 new password failed'
-    db_auth_works "$pg20" "$new20" || fail 'PostgreSQL 16 new password failed'
-    if db_auth_works "$pg19" "$old19" || db_auth_works "$pg20" "$old20"; then
+    rehearsal_db_auth_works "$network" "$pg19" "$new19" || fail 'PostgreSQL 15 new password failed'
+    rehearsal_db_auth_works "$network" "$pg20" "$new20" || fail 'PostgreSQL 16 new password failed'
+    if rehearsal_db_auth_works "$network" "$pg19" "$old19" \
+        || rehearsal_db_auth_works "$network" "$pg20" "$old20"; then
         fail 'an old rehearsal password still works'
     fi
 
@@ -218,9 +242,10 @@ rehearse() {
     cp -a "$root/odoo20.env.before" "$root/odoo20.env"
     alter_role_password "$pg19" "$old19"
     alter_role_password "$pg20" "$old20"
-    db_auth_works "$pg19" "$old19" || fail 'PostgreSQL 15 rollback verification failed'
-    db_auth_works "$pg20" "$old20" || fail 'PostgreSQL 16 rollback verification failed'
-    if db_auth_works "$pg19" "$new19" || db_auth_works "$pg20" "$new20"; then
+    rehearsal_db_auth_works "$network" "$pg19" "$old19" || fail 'PostgreSQL 15 rollback verification failed'
+    rehearsal_db_auth_works "$network" "$pg20" "$old20" || fail 'PostgreSQL 16 rollback verification failed'
+    if rehearsal_db_auth_works "$network" "$pg19" "$new19" \
+        || rehearsal_db_auth_works "$network" "$pg20" "$new20"; then
         fail 'a rehearsal password remained valid after rollback'
     fi
     echo 'CREDENTIAL_ROTATION_REHEARSAL_OK postgres15=yes postgres16=yes rollback=yes'
@@ -271,8 +296,10 @@ production() {
     docker compose -p odoo-saas -f "$compose19" config --quiet
     ODOO20_ENTERPRISE_PATH=/opt/odoo-saas/enterprise20 \
         docker compose -p clickbuild-odoo20-tenants -f "$compose20" --env-file "$env20_current" config --quiet
-    db_auth_works "$pg19" "$old_db19" || fail 'current Odoo 19 database password failed preflight'
-    db_auth_works "$pg20" "$old_db20" || fail 'current Odoo 20 database password failed preflight'
+    container_db_auth_works "$app19" HOST PORT "$old_db19" \
+        || fail 'current Odoo 19 database password failed preflight'
+    container_db_auth_works "$app20" DB_HOST DB_PORT "$old_db20" \
+        || fail 'current Odoo 20 database password failed preflight'
     odoo_http_works "$app19" || fail 'Odoo 19 Community HTTP preflight failed'
     odoo_http_works "$ent19" || fail 'Odoo 19 Enterprise HTTP preflight failed'
     odoo_http_works "$app20" || fail 'Odoo 20 Community HTTP preflight failed'
@@ -329,9 +356,10 @@ production() {
                 docker compose -p clickbuild-odoo20-tenants -f "$compose20" --env-file "$env20_current" \
                     up -d --force-recreate odoo20-community odoo20-enterprise || restore_rc=1
             wait_running "$pg19" "$app19" "$ent19" "$cron19" "$cron19_ent" "$pg20" "$app20" "$ent20" || restore_rc=1
-            db_auth_works "$pg19" "$old_db19" || restore_rc=1
-            db_auth_works "$pg20" "$old_db20" || restore_rc=1
-            if db_auth_works "$pg19" "$new_db19" || db_auth_works "$pg20" "$new_db20"; then
+            container_db_auth_works "$app19" HOST PORT "$old_db19" || restore_rc=1
+            container_db_auth_works "$app20" DB_HOST DB_PORT "$old_db20" || restore_rc=1
+            if container_db_auth_works "$app19" HOST PORT "$new_db19" \
+                || container_db_auth_works "$app20" DB_HOST DB_PORT "$new_db20"; then
                 restore_rc=1
             fi
             [[ "$(container_env "$app19" PASSWORD)" == "$old_db19" ]] || restore_rc=1
@@ -375,9 +403,10 @@ production() {
             up -d --force-recreate postgres20 odoo20-community odoo20-enterprise
     wait_running "$pg19" "$app19" "$ent19" "$cron19" "$cron19_ent" "$pg20" "$app20" "$ent20"
 
-    db_auth_works "$pg19" "$new_db19" || fail 'new Odoo 19 database password failed'
-    db_auth_works "$pg20" "$new_db20" || fail 'new Odoo 20 database password failed'
-    if db_auth_works "$pg19" "$old_db19" || db_auth_works "$pg20" "$old_db20"; then
+    container_db_auth_works "$app19" HOST PORT "$new_db19" || fail 'new Odoo 19 database password failed'
+    container_db_auth_works "$app20" DB_HOST DB_PORT "$new_db20" || fail 'new Odoo 20 database password failed'
+    if container_db_auth_works "$app19" HOST PORT "$old_db19" \
+        || container_db_auth_works "$app20" DB_HOST DB_PORT "$old_db20"; then
         fail 'an old database password remains valid'
     fi
     [[ "$(container_env "$app19" PASSWORD)" == "$new_db19" ]] || fail 'Odoo 19 Community did not receive new credential'
