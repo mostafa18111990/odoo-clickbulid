@@ -324,7 +324,7 @@ production() {
     for file in "${required[@]}"; do cp -a "$file" "$snapshot/files/$(snapshot_name "$file")"; done
     (
         cd "$snapshot/files"
-        find . -type f -print0 | sort -z | xargs -0 sha256sum >SHA256SUMS
+        find . -type f ! -name SHA256SUMS -print0 | sort -z | xargs -0 sha256sum >SHA256SUMS
         sha256sum -c SHA256SUMS >/dev/null
     )
 
