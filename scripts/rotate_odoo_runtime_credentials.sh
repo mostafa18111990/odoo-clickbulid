@@ -233,8 +233,11 @@ rehearse() {
 
     printf 'db_password = %s\nadmin_passwd = old-master-19\n' "$old19" >"$root/odoo19.conf"
     printf 'db_password = stale-nonactive-value\nadmin_passwd = old-master-19\n' >"$root/odoo19-env-password.conf"
+    printf 'CLICKBUILD_ODOO_DB_PASSWORD=%s\nCLICKBUILD_ODOO_MASTER_PASSWORD=old-master-19\n' \
+        "$old19" >"$root/odoo19.env"
     printf 'ODOO20_DB_PASSWORD=%s\nODOO20_MASTER_PASSWORD=old-master-20\n' "$old20" >"$root/odoo20.env"
     cp -a "$root/odoo19.conf" "$root/odoo19.conf.before"
+    cp -a "$root/odoo19.env" "$root/odoo19.env.before"
     cp -a "$root/odoo20.env" "$root/odoo20.env.before"
 
     replace_literal "$root/odoo19.conf" "$old19" "$new19"
@@ -243,6 +246,10 @@ rehearse() {
     [[ "$(config_value "$root/odoo19-env-password.conf" db_password)" == stale-nonactive-value ]] \
         || fail 'nonactive Odoo config password was unexpectedly changed'
     replace_literal "$root/odoo19.conf" old-master-19 new-master-19
+    set_env_key "$root/odoo19.env" CLICKBUILD_ODOO_DB_PASSWORD "$new19"
+    set_env_key "$root/odoo19.env" CLICKBUILD_ODOO_MASTER_PASSWORD new-master-19
+    [[ "$(config_value "$root/odoo19.env" CLICKBUILD_ODOO_DB_PASSWORD)" == "$new19" ]] \
+        || fail 'Odoo 19 Compose env rehearsal update failed'
     set_env_key "$root/odoo20.env" ODOO20_DB_PASSWORD "$new20"
     set_env_key "$root/odoo20.env" ODOO20_MASTER_PASSWORD new-master-20
     alter_role_password "$pg19" "$new19"
@@ -256,7 +263,10 @@ rehearse() {
 
     # Rehearse rollback and prove both old passwords work again.
     cp -a "$root/odoo19.conf.before" "$root/odoo19.conf"
+    cp -a "$root/odoo19.env.before" "$root/odoo19.env"
     cp -a "$root/odoo20.env.before" "$root/odoo20.env"
+    [[ "$(config_value "$root/odoo19.env" CLICKBUILD_ODOO_DB_PASSWORD)" == "$old19" ]] \
+        || fail 'Odoo 19 Compose env rehearsal rollback failed'
     alter_role_password "$pg19" "$old19"
     alter_role_password "$pg20" "$old20"
     rehearsal_db_auth_works "$network" "$pg19" "$old19" || fail 'PostgreSQL 15 rollback verification failed'
@@ -278,6 +288,7 @@ production() {
     local cron19=odoo_saas_cron cron19_ent=odoo_saas_ent_cron
     local app20=odoo_saas_20_community ent20=odoo_saas_20_enterprise
     local compose19=/opt/odoo-saas/docker-compose.yml
+    local env19=/opt/odoo-saas/.env
     local conf19=/opt/odoo-saas/config/odoo.conf
     local conf19_ent=/opt/odoo-saas/docker-enterprise/odoo-enterprise.conf
     local env20_source=/opt/odoo20-staging/repo/docker/odoo20/.env
@@ -285,7 +296,7 @@ production() {
     release20=$(readlink -f /opt/odoo20-releases/current)
     compose20="$release20/docker/odoo20/docker-compose.tenants.yml"
     env20_current="$release20/docker/odoo20/.env"
-    local required=("$compose19" "$conf19" "$conf19_ent" "$env20_source" "$compose20" "$env20_current")
+    local required=("$compose19" "$env19" "$conf19" "$conf19_ent" "$env20_source" "$compose20" "$env20_current")
     local file
     for file in "${required[@]}"; do [[ -f "$file" ]] || fail "missing runtime file: $file"; done
     for file in "$pg19" "$app19" "$ent19" "$cron19" "$cron19_ent" "$pg20" "$app20" "$ent20"; do
@@ -309,6 +320,8 @@ production() {
     [[ "$(container_env "$ent19" PASSWORD)" == "$old_db19" ]] || fail 'Odoo 19 Enterprise DB credential mismatch'
     [[ "$(container_env "$cron19" PASSWORD)" == "$old_db19" ]] || fail 'Odoo 19 Community cron DB credential mismatch'
     [[ "$(container_env "$cron19_ent" PASSWORD)" == "$old_db19" ]] || fail 'Odoo 19 Enterprise cron DB credential mismatch'
+    [[ "$(config_value "$env19" CLICKBUILD_ODOO_DB_PASSWORD)" == "$old_db19" ]] \
+        || fail 'Odoo 19 Compose .env DB credential mismatch'
     [[ "$(container_env "$app20" DB_PASSWORD)" == "$old_db20" ]] || fail 'Odoo 20 Community DB credential mismatch'
     [[ "$(container_env "$ent20" DB_PASSWORD)" == "$old_db20" ]] || fail 'Odoo 20 Enterprise DB credential mismatch'
     [[ "$(container_env "$ent20" MASTER_PASSWORD)" == "$old_master20" ]] || fail 'Odoo 20 master credential mismatch'
@@ -400,6 +413,11 @@ production() {
     mutation_started=1
 
     replace_literal "$compose19" "$old_db19" "$new_db19"
+    set_env_key "$env19" CLICKBUILD_ODOO_DB_PASSWORD "$new_db19"
+    replace_config_credential_if_matching \
+        "$env19" CLICKBUILD_ODOO_MASTER_PASSWORD "$old_master19" "$new_master19"
+    replace_config_credential_if_matching \
+        "$env19" CLICKBUILD_ODOO_MASTER_PASSWORD "$old_master19_ent" "$new_master19_ent"
     replace_config_credential_if_matching "$conf19" db_password "$old_db19" "$new_db19"
     replace_literal "$conf19" "$old_master19" "$new_master19"
     replace_config_credential_if_matching "$conf19_ent" db_password "$old_db19" "$new_db19"
