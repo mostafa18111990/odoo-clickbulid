@@ -92,6 +92,10 @@ jobs:
           bash -n scripts/install_sector_production_wrapper.sh
           bash -n scripts/provision_tenant_cert.sh
           bash -n scripts/patch_nginx_odoo20_upstreams.sh
+          bash -n scripts/saas_backup_all.sh
+          bash -n scripts/rotate_odoo_runtime_credentials.sh
+          bash -n scripts/clickbuild-credential-rotation-production-wrapper.sh
+          bash -n scripts/install_credential_rotation_production_wrapper.sh
           bash -n docker/odoo20/entrypoint.sh
           docker compose \
             -f docker/odoo20/docker-compose.tenants.yml \
@@ -99,6 +103,7 @@ jobs:
           grep -q "ODOO_VERSION:-20" docker/odoo20/entrypoint.sh
           grep -q "odoo_saas_postgres20" scripts/install_tenant_provisioner.sh
           grep -q '^ODOO_VERSION=20$' scripts/install_tenant_provisioner.sh
+          python -c 'from tests.test_no_hardcoded_credentials import test_maintenance_scripts_contain_no_hardcoded_credentials as test; test()'
 
   # ════════════════════════════════════════════════════════════════
   # 2. SMOKE INSTALL — boots Odoo 20 in a service container and

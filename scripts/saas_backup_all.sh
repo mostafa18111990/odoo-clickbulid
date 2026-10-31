@@ -126,6 +126,14 @@ archive_filestore "$ODOO20_COMMUNITY_VOLUME" odoo20-community-filestore.tar.gz
 archive_filestore "$ODOO20_ENTERPRISE_VOLUME" odoo20-enterprise-filestore.tar.gz
 
 config_list="$WORK/platform-config-files.list"
+if ! odoo20_release=$(readlink -f /opt/odoo20-releases/current 2>/dev/null); then
+    log 'FAILED current Odoo 20 release could not be resolved'
+    exit 23
+fi
+if [[ "$odoo20_release" != /opt/odoo20-releases/* ]]; then
+    log 'FAILED resolved Odoo 20 release is outside the releases root'
+    exit 23
+fi
 for path in \
     /opt/odoo-saas/addons \
     /opt/odoo-saas/config \
@@ -135,7 +143,10 @@ for path in \
     /opt/odoo-saas/nginx-tenants \
     /opt/odoo-saas/scripts \
     /opt/odoo-saas/secrets \
+    /opt/odoo-saas/enterprise20 \
     /opt/odoo-saas/docker-compose.yml \
+    /opt/odoo20-staging/repo/docker/odoo20/.env \
+    "$odoo20_release" \
     /etc/systemd/system \
     /etc/letsencrypt \
     /usr/local/bin/saas-backup-all.sh \
@@ -161,6 +172,7 @@ includes_odoo19_enterprise_filestore=yes
 includes_odoo20_community_filestore=yes
 includes_odoo20_enterprise_filestore=yes
 includes_platform_config_and_addons=yes
+includes_deployed_odoo20_release=yes
 retention_days=$RETENTION_DAYS
 EOF
 
