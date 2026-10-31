@@ -110,6 +110,12 @@ finally:
 PY
 }
 
+replace_literal_if_present() {
+    local file=$1 old_value=$2 new_value=$3
+    grep -Fq -- "$old_value" "$file" || return 0
+    replace_literal "$file" "$old_value" "$new_value"
+}
+
 set_env_key() {
     local file=$1 key=$2 value=$3
     ROTATE_FILE="$file" ROTATE_KEY="$key" ROTATE_VALUE="$value" python3 <<'PY'
@@ -233,11 +239,13 @@ rehearse() {
 
     printf 'db_password = %s\nadmin_passwd = old-master-19\n' "$old19" >"$root/odoo19.conf"
     printf 'db_password = stale-nonactive-value\nadmin_passwd = old-master-19\n' >"$root/odoo19-env-password.conf"
-    printf 'CLICKBUILD_ODOO_DB_PASSWORD=%s\nCLICKBUILD_ODOO_MASTER_PASSWORD=old-master-19\n' \
-        "$old19" >"$root/odoo19.env"
+    printf 'services:\n  app:\n    environment:\n      PASSWORD: %s\n      REQUIRED: ${CLICKBUILD_ODOO_DB_PASSWORD:?CLICKBUILD_ODOO_DB_PASSWORD is required}\n      OPTIONAL: ${CLICKBUILD_ODOO_DB_PASSWORD}\n' \
+        "$old19" >"$root/odoo19-compose.yml"
+    printf 'DB_PASSWORD=%s\n' "$old19" >"$root/odoo19-active-script.sh"
     printf 'ODOO20_DB_PASSWORD=%s\nODOO20_MASTER_PASSWORD=old-master-20\n' "$old20" >"$root/odoo20.env"
     cp -a "$root/odoo19.conf" "$root/odoo19.conf.before"
-    cp -a "$root/odoo19.env" "$root/odoo19.env.before"
+    cp -a "$root/odoo19-compose.yml" "$root/odoo19-compose.yml.before"
+    cp -a "$root/odoo19-active-script.sh" "$root/odoo19-active-script.sh.before"
     cp -a "$root/odoo20.env" "$root/odoo20.env.before"
 
     replace_literal "$root/odoo19.conf" "$old19" "$new19"
@@ -246,10 +254,19 @@ rehearse() {
     [[ "$(config_value "$root/odoo19-env-password.conf" db_password)" == stale-nonactive-value ]] \
         || fail 'nonactive Odoo config password was unexpectedly changed'
     replace_literal "$root/odoo19.conf" old-master-19 new-master-19
-    set_env_key "$root/odoo19.env" CLICKBUILD_ODOO_DB_PASSWORD "$new19"
-    set_env_key "$root/odoo19.env" CLICKBUILD_ODOO_MASTER_PASSWORD new-master-19
-    [[ "$(config_value "$root/odoo19.env" CLICKBUILD_ODOO_DB_PASSWORD)" == "$new19" ]] \
-        || fail 'Odoo 19 Compose env rehearsal update failed'
+    replace_literal "$root/odoo19-compose.yml" "$old19" "$new19"
+    replace_literal "$root/odoo19-active-script.sh" "$old19" "$new19"
+    replace_literal_if_present "$root/odoo19-compose.yml" \
+        '${CLICKBUILD_ODOO_DB_PASSWORD:?CLICKBUILD_ODOO_DB_PASSWORD is required}' "$new19"
+    replace_literal_if_present "$root/odoo19-compose.yml" '${CLICKBUILD_ODOO_DB_PASSWORD}' "$new19"
+    grep -Fq -- "$new19" "$root/odoo19-compose.yml" \
+        || fail 'Odoo 19 Compose rehearsal update failed'
+    grep -Fq -- "$new19" "$root/odoo19-active-script.sh" \
+        || fail 'Odoo 19 active credential source rehearsal update failed'
+    if grep -Fq -- "$old19" "$root/odoo19-compose.yml" \
+        || grep -Fq -- 'CLICKBUILD_ODOO_DB_PASSWORD' "$root/odoo19-compose.yml"; then
+        fail 'an Odoo 19 Compose credential source remained after rehearsal update'
+    fi
     set_env_key "$root/odoo20.env" ODOO20_DB_PASSWORD "$new20"
     set_env_key "$root/odoo20.env" ODOO20_MASTER_PASSWORD new-master-20
     alter_role_password "$pg19" "$new19"
@@ -263,10 +280,13 @@ rehearse() {
 
     # Rehearse rollback and prove both old passwords work again.
     cp -a "$root/odoo19.conf.before" "$root/odoo19.conf"
-    cp -a "$root/odoo19.env.before" "$root/odoo19.env"
+    cp -a "$root/odoo19-compose.yml.before" "$root/odoo19-compose.yml"
+    cp -a "$root/odoo19-active-script.sh.before" "$root/odoo19-active-script.sh"
     cp -a "$root/odoo20.env.before" "$root/odoo20.env"
-    [[ "$(config_value "$root/odoo19.env" CLICKBUILD_ODOO_DB_PASSWORD)" == "$old19" ]] \
-        || fail 'Odoo 19 Compose env rehearsal rollback failed'
+    grep -Fq -- "$old19" "$root/odoo19-compose.yml" \
+        || fail 'Odoo 19 Compose rehearsal rollback failed'
+    grep -Fq -- "$old19" "$root/odoo19-active-script.sh" \
+        || fail 'Odoo 19 active credential source rehearsal rollback failed'
     alter_role_password "$pg19" "$old19"
     alter_role_password "$pg20" "$old20"
     rehearsal_db_auth_works "$network" "$pg19" "$old19" || fail 'PostgreSQL 15 rollback verification failed'
@@ -288,7 +308,6 @@ production() {
     local cron19=odoo_saas_cron cron19_ent=odoo_saas_ent_cron
     local app20=odoo_saas_20_community ent20=odoo_saas_20_enterprise
     local compose19=/opt/odoo-saas/docker-compose.yml
-    local env19=/opt/odoo-saas/.env
     local conf19=/opt/odoo-saas/config/odoo.conf
     local conf19_ent=/opt/odoo-saas/docker-enterprise/odoo-enterprise.conf
     local env20_source=/opt/odoo20-staging/repo/docker/odoo20/.env
@@ -296,7 +315,17 @@ production() {
     release20=$(readlink -f /opt/odoo20-releases/current)
     compose20="$release20/docker/odoo20/docker-compose.tenants.yml"
     env20_current="$release20/docker/odoo20/.env"
-    local required=("$compose19" "$env19" "$conf19" "$conf19_ent" "$env20_source" "$compose20" "$env20_current")
+    local credential_files19=(
+        "$compose19"
+        /opt/odoo-saas/addons/saas_tenant_manager/models/saas_backup.py
+        /opt/odoo-saas/addons/saas_tenant_manager/models/saas_tenant.py
+        /opt/odoo-saas/scripts/sync_dbfilters.sh
+        /opt/odoo-saas/scripts/backup_tenant.sh
+        /opt/odoo-saas/scripts/drop_tenant.sh
+        /opt/odoo-saas/scripts/restore_tenant.sh
+        /opt/odoo-saas/scripts/create_tenant.sh
+    )
+    local required=("${credential_files19[@]}" "$conf19" "$conf19_ent" "$env20_source" "$compose20" "$env20_current")
     local file
     for file in "${required[@]}"; do [[ -f "$file" ]] || fail "missing runtime file: $file"; done
     for file in "$pg19" "$app19" "$ent19" "$cron19" "$cron19_ent" "$pg20" "$app20" "$ent20"; do
@@ -320,8 +349,9 @@ production() {
     [[ "$(container_env "$ent19" PASSWORD)" == "$old_db19" ]] || fail 'Odoo 19 Enterprise DB credential mismatch'
     [[ "$(container_env "$cron19" PASSWORD)" == "$old_db19" ]] || fail 'Odoo 19 Community cron DB credential mismatch'
     [[ "$(container_env "$cron19_ent" PASSWORD)" == "$old_db19" ]] || fail 'Odoo 19 Enterprise cron DB credential mismatch'
-    [[ "$(config_value "$env19" CLICKBUILD_ODOO_DB_PASSWORD)" == "$old_db19" ]] \
-        || fail 'Odoo 19 Compose .env DB credential mismatch'
+    for file in "${credential_files19[@]}"; do
+        grep -Fq -- "$old_db19" "$file" || fail "active Odoo 19 credential source mismatch: $file"
+    done
     [[ "$(container_env "$app20" DB_PASSWORD)" == "$old_db20" ]] || fail 'Odoo 20 Community DB credential mismatch'
     [[ "$(container_env "$ent20" DB_PASSWORD)" == "$old_db20" ]] || fail 'Odoo 20 Enterprise DB credential mismatch'
     [[ "$(container_env "$ent20" MASTER_PASSWORD)" == "$old_master20" ]] || fail 'Odoo 20 master credential mismatch'
@@ -412,12 +442,21 @@ production() {
     trap rollback ERR
     mutation_started=1
 
-    replace_literal "$compose19" "$old_db19" "$new_db19"
-    set_env_key "$env19" CLICKBUILD_ODOO_DB_PASSWORD "$new_db19"
-    replace_config_credential_if_matching \
-        "$env19" CLICKBUILD_ODOO_MASTER_PASSWORD "$old_master19" "$new_master19"
-    replace_config_credential_if_matching \
-        "$env19" CLICKBUILD_ODOO_MASTER_PASSWORD "$old_master19_ent" "$new_master19_ent"
+    for file in "${credential_files19[@]}"; do
+        replace_literal "$file" "$old_db19" "$new_db19"
+    done
+    replace_literal_if_present "$compose19" \
+        '${CLICKBUILD_ODOO_DB_PASSWORD:?CLICKBUILD_ODOO_DB_PASSWORD is required}' "$new_db19"
+    replace_literal_if_present "$compose19" '${CLICKBUILD_ODOO_DB_PASSWORD}' "$new_db19"
+    for file in "${credential_files19[@]}"; do
+        grep -Fq -- "$new_db19" "$file" || fail "active Odoo 19 credential source was not updated: $file"
+        if grep -Fq -- "$old_db19" "$file"; then
+            fail "old Odoo 19 credential remains in active source: $file"
+        fi
+    done
+    if grep -Fq -- '${CLICKBUILD_ODOO_DB_PASSWORD' "$compose19"; then
+        fail 'an unresolved Odoo 19 Compose credential source remains'
+    fi
     replace_config_credential_if_matching "$conf19" db_password "$old_db19" "$new_db19"
     replace_literal "$conf19" "$old_master19" "$new_master19"
     replace_config_credential_if_matching "$conf19_ent" db_password "$old_db19" "$new_db19"
