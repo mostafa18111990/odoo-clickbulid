@@ -2,9 +2,9 @@
 # Read-only inventory for planning production credential rotation.
 set -Eeuo pipefail
 
-expected_user=${EXPECTED_RUNNER_USER:-github-runner}
+expected_user=${EXPECTED_EFFECTIVE_USER:-github-runner}
 [[ "$(id -un)" == "$expected_user" ]] || {
-    echo "FAIL: expected runner user $expected_user" >&2
+    echo "FAIL: expected effective user $expected_user" >&2
     exit 10
 }
 
@@ -70,10 +70,4 @@ done
     exit 11
 }
 
-printf 'sudo_noninteractive=' 
-if sudo -n -l >/dev/null 2>&1; then
-    printf 'available\n'
-else
-    printf 'unavailable\n'
-fi
 printf 'RUNTIME_CREDENTIAL_TOPOLOGY_END containers=%s\n' "$found"
