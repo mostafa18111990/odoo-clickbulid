@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Rewrite saas_tenant.py with clean syntax"""
+from _ssh_credentials import SSH_PASSWORD
 import paramiko, sys
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh.connect('129.121.98.243', username='root', password='Mh@01007121878')
+ssh.connect('129.121.98.243', username='root', password=SSH_PASSWORD)
 
 SAAS_TENANT = """import logging
 import re
@@ -22,7 +23,7 @@ _logger = logging.getLogger(__name__)
 DB_HOST = os.environ.get('HOST', 'postgres')
 DB_PORT = int(os.environ.get('PORT', 5432))
 DB_USER = os.environ.get('USER', 'odoo')
-DB_PASS = os.environ.get('PASSWORD', 'odoo_pg_pass_2024')
+DB_PASS = os.environ['PASSWORD']
 
 
 class SaasTenant(models.Model):

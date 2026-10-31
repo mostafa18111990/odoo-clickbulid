@@ -2,10 +2,11 @@
 """
 Deploy Customer Journey: Landing → Pricing → Register → Onboarding → Dashboard → Billing
 """
+from _ssh_credentials import SSH_PASSWORD
 import paramiko, io, sys, time
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
-HOST = "129.121.98.243"; USER = "root"; PASS = "Mh@01007121878"
+HOST = "129.121.98.243"; USER = "root"; PASS = SSH_PASSWORD
 client = paramiko.SSHClient()
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 client.connect(HOST, username=USER, password=PASS, timeout=30)
@@ -290,11 +291,11 @@ END IF;
 END $$;
 """
 
-rp(f"PGPASSWORD='CB_pg_S3cur3_2024!' psql -h localhost -U clickbuild -d clickbuild_platform -c \"{seed_sql.replace(chr(10), ' ').replace('\"', chr(39))}\"", "SEED", timeout=15)
+rp(f"PGPASSWORD='$CLICKBUILD_POSTGRES_PASSWORD' psql -h localhost -U clickbuild -d clickbuild_platform -c \"{seed_sql.replace(chr(10), ' ').replace('\"', chr(39))}\"", "SEED", timeout=15)
 
 # Run via file to avoid quoting issues
 upload("/tmp/seed_plans.sql", seed_sql)
-rp("PGPASSWORD='CB_pg_S3cur3_2024!' psql -h localhost -U clickbuild -d clickbuild_platform -f /tmp/seed_plans.sql", "SEED_PLANS", timeout=15)
+rp("PGPASSWORD='$CLICKBUILD_POSTGRES_PASSWORD' psql -h localhost -U clickbuild -d clickbuild_platform -f /tmp/seed_plans.sql", "SEED_PLANS", timeout=15)
 
 # ─────────────────────────────────────────────────────────────
 # STEP 4: Frontend — Pricing Page
@@ -1333,7 +1334,7 @@ time.sleep(5)
 rp("pm2 list | grep clickbuild-frontend", "FRONTEND_STATUS")
 
 # Verify plans seeded
-rp("PGPASSWORD='CB_pg_S3cur3_2024!' psql -h localhost -U clickbuild -d clickbuild_platform -c 'SELECT name, name_ar, price_egp FROM plans ORDER BY price_egp' 2>&1", "PLANS", timeout=10)
+rp("PGPASSWORD='$CLICKBUILD_POSTGRES_PASSWORD' psql -h localhost -U clickbuild -d clickbuild_platform -c 'SELECT name, name_ar, price_egp FROM plans ORDER BY price_egp' 2>&1", "PLANS", timeout=10)
 
 # Test API
 rp("curl -s http://127.0.0.1:8000/api/v1/plans/ 2>&1 | head -200", "TEST_PLANS_API", timeout=15)

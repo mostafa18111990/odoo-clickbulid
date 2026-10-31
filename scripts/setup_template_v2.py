@@ -3,9 +3,11 @@
 Setup Odoo Template DB v2
 Uses host-gateway so container can reach host PostgreSQL
 """
+import os
+from _ssh_credentials import SSH_PASSWORD
 import paramiko, io, sys, time
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
-HOST = "129.121.98.243"; USER = "root"; PASS = "Mh@01007121878"
+HOST = "129.121.98.243"; USER = "root"; PASS = SSH_PASSWORD
 client = paramiko.SSHClient()
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 client.connect(HOST, username=USER, password=PASS, timeout=30)
@@ -26,8 +28,8 @@ TEMPLATE_DB   = "clickbuild_template"
 TEMPLATE_PORT = 8099
 PG_HOST       = "localhost"
 PG_USER       = "clickbuild"
-PG_PASS       = "CB_pg_S3cur3_2024!"
-MASTER_PASS   = "m-uEzg510Fuqc9apChAXN1aGV4WDHgPk"
+PG_PASS = os.environ["CLICKBUILD_POSTGRES_PASSWORD"]
+MASTER_PASS = os.environ["CLICKBUILD_ODOO_MASTER_PASSWORD"]
 
 print("=" * 60)
 print("Setting up Odoo Template DB v2")
@@ -79,7 +81,7 @@ rp(f"docker run -d --name odoo_template_setup "
    f"-e DB_NAME={TEMPLATE_DB} "
    f"-e MASTER_PASSWORD={MASTER_PASS} "
    f"-e ADMIN_EMAIL=admin@template.local "
-   f"-e ADMIN_PASSWORD=Admin123! "
+   f"-e ADMIN_PASSWORD=$CLICKBUILD_TEMPLATE_ADMIN_PASSWORD "
    f"-e COMPANY_NAME='Template' "
    f"-e ODOO_MODULES=base,web "
    f"-e ODOO_LANG=ar_001,en_US "

@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 """رفع ملفات المشروع للسيرفر"""
+from _ssh_credentials import SSH_PASSWORD
 import paramiko
 import os
 import io
@@ -10,7 +11,7 @@ sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='repla
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 
 BASE_LOCAL  = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 BASE_REMOTE = "/opt/clickbuild"

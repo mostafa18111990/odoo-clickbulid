@@ -4,6 +4,7 @@
 2. Patch provisioning.py to create sessions dir with correct ownership before container start
 3. Configure SMTP with Gmail app password
 """
+from _ssh_credentials import SSH_PASSWORD
 import paramiko
 import time
 import sys
@@ -12,7 +13,7 @@ sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 
 def run(client, cmd, timeout=60):
     print(f"\n$ {cmd}")

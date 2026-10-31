@@ -15,12 +15,28 @@
 set -euo pipefail
 cd /opt/odoo-saas
 
+: "${CLICKBUILD_ODOO_DB_PASSWORD:?CLICKBUILD_ODOO_DB_PASSWORD is required}"
+: "${CLICKBUILD_ODOO_MASTER_PASSWORD:?CLICKBUILD_ODOO_MASTER_PASSWORD is required}"
+
 COMPOSE=/opt/odoo-saas/docker-compose.yml
 
 # 1) Stage Dockerfile + config in /opt/odoo-saas/docker-enterprise/
 mkdir -p docker-enterprise/empty
 cp /tmp/enterprise_Dockerfile             docker-enterprise/Dockerfile
-cp /tmp/enterprise_odoo.conf              docker-enterprise/odoo-enterprise.conf
+python3 - /tmp/enterprise_odoo.conf docker-enterprise/odoo-enterprise.conf <<'PY'
+import os
+from pathlib import Path
+import sys
+
+source = Path(sys.argv[1]).read_text(encoding='utf-8')
+rendered = (source
+            .replace('__CLICKBUILD_ODOO_DB_PASSWORD__',
+                     os.environ['CLICKBUILD_ODOO_DB_PASSWORD'])
+            .replace('__CLICKBUILD_ODOO_MASTER_PASSWORD__',
+                     os.environ['CLICKBUILD_ODOO_MASTER_PASSWORD']))
+Path(sys.argv[2]).write_text(rendered, encoding='utf-8')
+PY
+chmod 600 docker-enterprise/odoo-enterprise.conf
 [ -f docker-enterprise/empty/.keep ] || touch docker-enterprise/empty/.keep
 
 # 2) Pick the enterprise source path: real tree if present, else placeholder.
@@ -72,7 +88,7 @@ new_service = '''
       - HOST=postgres
       - PORT=5432
       - USER=odoo
-      - PASSWORD=odoo_pg_pass_2024
+      - PASSWORD=${CLICKBUILD_ODOO_DB_PASSWORD:?CLICKBUILD_ODOO_DB_PASSWORD is required}
     networks:
       - odoo_net
 '''

@@ -7,10 +7,11 @@ Fix routing once and for all:
 4. Landing page: back to server component (fixes next-intl hydration)
 5. Dashboard: window.location for logout
 """
+from _ssh_credentials import SSH_PASSWORD
 import paramiko, io, sys, time
 sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding='utf-8', errors='replace')
 
-HOST = "129.121.98.243"; USER = "root"; PASS = "Mh@01007121878"
+HOST = "129.121.98.243"; USER = "root"; PASS = SSH_PASSWORD
 client = paramiko.SSHClient()
 client.set_missing_host_key_policy(paramiko.AutoAddPolicy())
 client.connect(HOST, username=USER, password=PASS, timeout=30)

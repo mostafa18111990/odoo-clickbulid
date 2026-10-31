@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 """Part 4 - Shell scripts + static icon + start Docker"""
+from _ssh_credentials import SSH_PASSWORD
 import paramiko, sys
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 ssh = paramiko.SSHClient()
 ssh.set_missing_host_key_policy(paramiko.AutoAddPolicy())
-ssh.connect('129.121.98.243', username='root', password='Mh@01007121878')
+ssh.connect('129.121.98.243', username='root', password=SSH_PASSWORD)
 
 def upload(path, content):
     sftp = ssh.open_sftp()
@@ -37,7 +38,7 @@ DB_NAME="tenant_${SUBDOMAIN}"
 DB_HOST="${DB_HOST:-postgres}"
 DB_PORT="${DB_PORT:-5432}"
 DB_USER="${DB_USER:-odoo}"
-PGPASSWORD="${DB_PASS:-odoo_pg_pass_2024}"
+PGPASSWORD="$CLICKBUILD_ODOO_DB_PASSWORD"
 export PGPASSWORD
 
 echo "Creating tenant: $SUBDOMAIN -> $DB_NAME"
@@ -85,7 +86,7 @@ DB_NAME="${1:?Database name required}"
 DB_HOST="${DB_HOST:-postgres}"
 DB_PORT="${DB_PORT:-5432}"
 DB_USER="${DB_USER:-odoo}"
-PGPASSWORD="${DB_PASS:-odoo_pg_pass_2024}"
+PGPASSWORD="$CLICKBUILD_ODOO_DB_PASSWORD"
 export PGPASSWORD
 
 BACKUP_DIR="/opt/odoo-saas/backups/$DB_NAME"
@@ -121,7 +122,7 @@ BACKUP_FILE="${2:?Backup file required}"
 DB_HOST="${DB_HOST:-postgres}"
 DB_PORT="${DB_PORT:-5432}"
 DB_USER="${DB_USER:-odoo}"
-PGPASSWORD="${DB_PASS:-odoo_pg_pass_2024}"
+PGPASSWORD="$CLICKBUILD_ODOO_DB_PASSWORD"
 export PGPASSWORD
 
 if [ ! -f "$BACKUP_FILE" ]; then
@@ -157,7 +158,7 @@ DB_NAME="${1:?Database name required}"
 DB_HOST="${DB_HOST:-postgres}"
 DB_PORT="${DB_PORT:-5432}"
 DB_USER="${DB_USER:-odoo}"
-PGPASSWORD="${DB_PASS:-odoo_pg_pass_2024}"
+PGPASSWORD="$CLICKBUILD_ODOO_DB_PASSWORD"
 export PGPASSWORD
 
 echo "⚠️  WARNING: This will permanently delete database: $DB_NAME"

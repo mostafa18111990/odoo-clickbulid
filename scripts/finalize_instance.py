@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Update instance status and verify full routing works."""
+from _ssh_credentials import SSH_PASSWORD
 import paramiko
 import time
 import sys
@@ -8,7 +9,7 @@ sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 
 def run(client, cmd, timeout=60):
     print(f"\n$ {cmd}")
@@ -29,7 +30,7 @@ def main():
 
     # Update instance status using host connection
     print("\n[1] Updating instance status...")
-    run(client, """PGPASSWORD="CB_pg_S3cur3_2024!" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "UPDATE instances SET status='running', error_message=NULL WHERE subdomain='roaaa'; SELECT id, subdomain, status, odoo_port FROM instances;" """)
+    run(client, """PGPASSWORD="$CLICKBUILD_POSTGRES_PASSWORD" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "UPDATE instances SET status='running', error_message=NULL WHERE subdomain='roaaa'; SELECT id, subdomain, status, odoo_port FROM instances;" """)
 
     # Check main nginx config
     print("\n[2] Checking Nginx main config for subdomain routing...")

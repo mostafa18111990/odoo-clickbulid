@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Enterprise Frontend Pages Deployment."""
+from _ssh_credentials import SSH_PASSWORD
 import paramiko, time, sys
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 
 def connect():
     c = paramiko.SSHClient()

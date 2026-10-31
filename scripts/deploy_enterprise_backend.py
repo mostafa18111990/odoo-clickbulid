@@ -1,12 +1,13 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
 """Enterprise Platform Backend Deployment."""
+from _ssh_credentials import SSH_PASSWORD
 import paramiko, time, sys
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
 HOST = "129.121.98.243"
 USER = "root"
-PASS = "Mh@01007121878"
+PASS = SSH_PASSWORD
 
 def connect():
     c = paramiko.SSHClient()
@@ -1126,9 +1127,9 @@ def main():
 
     section("1. DATABASE SCHEMA")
     upload(c, '/tmp/enterprise.sql', SQL)
-    run(c, 'PGPASSWORD="CB_pg_S3cur3_2024!" psql -h 127.0.0.1 -U clickbuild clickbuild_platform < /tmp/enterprise.sql', timeout=30)
+    run(c, 'PGPASSWORD="$CLICKBUILD_POSTGRES_PASSWORD" psql -h 127.0.0.1 -U clickbuild clickbuild_platform < /tmp/enterprise.sql', timeout=30)
     # Verify
-    out, _ = run(c, 'PGPASSWORD="CB_pg_S3cur3_2024!" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "SELECT table_name FROM information_schema.tables WHERE table_schema=\'public\' ORDER BY table_name" | grep -E "audit|slo|incident|support|contractor|compliance|runbook|health|ai_audit|change|price_intel|vendor|encrypt|metric|retention|sla_pol|postmortem|ticket_msg"')
+    out, _ = run(c, 'PGPASSWORD="$CLICKBUILD_POSTGRES_PASSWORD" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "SELECT table_name FROM information_schema.tables WHERE table_schema=\'public\' ORDER BY table_name" | grep -E "audit|slo|incident|support|contractor|compliance|runbook|health|ai_audit|change|price_intel|vendor|encrypt|metric|retention|sla_pol|postmortem|ticket_msg"')
 
     section("2. BACKEND SERVICES")
     run(c, "mkdir -p /opt/clickbuild/backend/app/services /opt/clickbuild/backend/app/middleware")
@@ -1208,7 +1209,7 @@ print('Changes:', changes)
         print(f"  [{'OK' if ok else 'FAIL'}] {ep}: {out}")
 
     section("7. DB SUMMARY")
-    run(c, 'PGPASSWORD="CB_pg_S3cur3_2024!" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "SELECT (SELECT COUNT(*) FROM slo_definitions) as slos, (SELECT COUNT(*) FROM compliance_checks) as controls, (SELECT COUNT(*) FROM sla_policies) as sla_policies, (SELECT COUNT(*) FROM runbooks) as runbooks;"')
+    run(c, 'PGPASSWORD="$CLICKBUILD_POSTGRES_PASSWORD" psql -h 127.0.0.1 -U clickbuild clickbuild_platform -c "SELECT (SELECT COUNT(*) FROM slo_definitions) as slos, (SELECT COUNT(*) FROM compliance_checks) as controls, (SELECT COUNT(*) FROM sla_policies) as sla_policies, (SELECT COUNT(*) FROM runbooks) as runbooks;"')
 
     c.close()
     print("\nBackend deployment complete!")

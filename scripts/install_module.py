@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Update module list and install saas_tenant_manager"""
+import os
 import sys, time
 sys.stdout.reconfigure(encoding='utf-8', errors='replace')
 
@@ -11,7 +12,7 @@ except ImportError:
 URL  = 'https://odoo.clickbulid.com'
 DB   = 'odoo'
 USER = 'admin'
-PASS = '123456'
+PASS = os.environ["CLICKBUILD_ODOO_ADMIN_PASSWORD"]
 
 common = xc.ServerProxy(URL + '/xmlrpc/2/common', allow_none=True)
 models = xc.ServerProxy(URL + '/xmlrpc/2/object', allow_none=True)
