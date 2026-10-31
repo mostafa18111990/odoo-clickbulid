@@ -1,10 +1,10 @@
 /** @odoo-module **/
 
-import { Component, onWillStart, proxy, usePlugin } from "@odoo/owl";
+import { Component, onWillStart, proxy, useProps } from "@odoo/owl";
 import { registry } from "@web/core/registry";
 import { useService } from "@web/core/utils/hooks";
 import { _t } from "@web/core/l10n/translation";
-import { ActionManagerPlugin } from "@web/webclient/actions/action_plugin";
+import { standardActionServiceProps } from "@web/webclient/actions/action_plugin";
 
 /**
  * Landing screen for the inspection app. It carries the operator's own
@@ -13,11 +13,11 @@ import { ActionManagerPlugin } from "@web/webclient/actions/action_plugin";
  */
 export class TrailerHome extends Component {
     static template = "trailer_inspection_saso.TrailerHome";
-    static props = ["*"];
+    props = useProps({ ...standardActionServiceProps });
 
     setup() {
         this.orm = useService("orm");
-        this.action = usePlugin(ActionManagerPlugin);
+        this.action = useService("action");
         this.state = proxy({ loaded: false, company: {}, kpi: {}, standard: "" });
 
         onWillStart(async () => {
