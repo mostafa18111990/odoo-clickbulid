@@ -1,6 +1,6 @@
-# Trailer Inspection - SASO (Odoo 19)
+# Trailer Inspection - SASO (Odoo 20)
 
-An installable Odoo 19 application for controlled trailer and semi-trailer inspections.
+An installable Odoo 20 application for controlled trailer and semi-trailer inspections.
 
 ## Scope
 
@@ -21,9 +21,8 @@ An installable Odoo 19 application for controlled trailer and semi-trailer inspe
 - Responsive standard Odoo views for inspectors using phones and tablets.
 - Complete Arabic localization (`i18n/ar.po`) for menus, fields, buttons, states,
   validation messages, quality workflows and import screens; English remains the source language.
-- Controlled GSO 1780 VIN generation using approved WMI/VDS/plant profiles, model-year
-  codes, database-locked production sequences, position-9 check-digit calculation,
-  low-volume manufacturer rules and duplicate prevention.
+- VIN is entered from the trailer plate (never generated), validated against GSO 1780
+  (17 characters, no I/O/Q, position-9 check digit) with duplicate-open-inspection prevention.
 
 ## Integration boundaries
 
