@@ -5,6 +5,7 @@
 # 3. Installs /usr/local/bin/saas-cert-sweeper.sh (host-side worker)
 # 4. Installs systemd timer (runs every 2 min)
 #
+# The sweeper also destroys tenants for <subdomain>.delete.req requests.
 # When Odoo writes /opt/odoo-saas/cert-requests/<subdomain>.req, the sweeper:
 #   - reads the subdomain
 #   - calls /opt/odoo-saas/provision_tenant_cert.sh <subdomain>
@@ -29,33 +30,12 @@ else
     echo "[sweeper] volume already mounted in compose"
 fi
 
-# 2. Install sweeper script
-cat > "$SWEEPER" << 'SWEEP'
-#!/bin/bash
-# Sweeps /opt/odoo-saas/cert-requests/*.req and provisions each.
-set -e
-REQ_DIR=/opt/odoo-saas/cert-requests
-LOG=/var/log/saas-cert-sweeper.log
-
-shopt -s nullglob
-for req in "$REQ_DIR"/*.req; do
-    sub=$(basename "$req" .req)
-    sub=$(echo "$sub" | tr -cd 'a-z0-9-')
-    if [ -z "$sub" ]; then
-        rm -f "$req"
-        echo "$(date -Is) skipped empty/invalid req" >> "$LOG"
-        continue
-    fi
-    echo "$(date -Is) provisioning $sub.clickbulid.com" >> "$LOG"
-    if bash /opt/odoo-saas/provision_tenant_cert.sh "$sub" >> "$LOG" 2>&1; then
-        mv "$req" "$REQ_DIR/$sub.done"
-        echo "$(date -Is) DONE $sub" >> "$LOG"
-    else
-        mv "$req" "$REQ_DIR/$sub.error"
-        echo "$(date -Is) ERROR $sub (see log above)" >> "$LOG"
-    fi
-done
-SWEEP
+# 2. Install sweeper + destroyer scripts from this repo (the sweeper hands
+#    *.delete.req to the destroyer; without it deletion requests were ignored)
+HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+[ -f "$SWEEPER" ] && cp "$SWEEPER" "$SWEEPER.bak.$(date +%Y%m%d%H%M%S)"
+install -m 0755 "$HERE/saas-cert-sweeper.sh" "$SWEEPER"
+install -m 0755 "$HERE/saas-tenant-destroyer.sh" /usr/local/bin/saas-tenant-destroyer.sh
 chmod +x "$SWEEPER"
 echo "[sweeper] installed $SWEEPER"
 
