@@ -64,17 +64,72 @@ for container in "${containers[@]}"; do
     service=$(docker inspect --format '{{index .Config.Labels "com.docker.compose.service"}}' "$container")
     working_dir=$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project.working_dir"}}' "$container")
     config_files=$(docker inspect --format '{{index .Config.Labels "com.docker.compose.project.config_files"}}' "$container")
+    oneoff=$(docker inspect --format '{{index .Config.Labels "com.docker.compose.oneoff"}}' "$container")
+    restart_policy=$(docker inspect --format '{{.HostConfig.RestartPolicy.Name}}' "$container")
+    network_mode=$(docker inspect --format '{{.HostConfig.NetworkMode}}' "$container")
+    networks=$(docker inspect --format '{{range $name, $_ := .NetworkSettings.Networks}}{{println $name}}{{end}}' "$container" \
+        | LC_ALL=C sort -u | paste -sd, -)
 
     printf 'container=%s status=%s health=%s image=%s\n' \
         "$container" "$status" "$health" "$image"
     printf 'compose container=%s project=%s service=%s working_dir=%s config_files=%s\n' \
         "$container" "${project:-none}" "${service:-none}" \
         "${working_dir:-none}" "${config_files:-none}"
+    printf 'runtime container=%s oneoff=%s restart_policy=%s network_mode=%s networks=%s\n' \
+        "$container" "${oneoff:-none}" "${restart_policy:-none}" \
+        "${network_mode:-none}" "${networks:-none}"
 
     # Names are useful for planning; values must never enter logs.
     env_names=$(docker inspect --format '{{range .Config.Env}}{{println .}}{{end}}' "$container" \
         | sed -n 's/=.*//p' | LC_ALL=C sort -u | paste -sd, -)
     printf 'env_names container=%s names=%s\n' "$container" "${env_names:-none}"
+
+    # Cron containers are recreated during rotation. Record their command, but
+    # redact any option or value that could contain a credential before logging.
+    case "$container" in
+        *_cron)
+            docker inspect "$container" | python3 -c '
+import json
+import re
+import shlex
+import sys
+
+item = json.load(sys.stdin)[0]
+sensitive = re.compile(r"(?:pass(?:word)?|secret|token|credential|api[_-]?key|private[_-]?key)", re.I)
+
+def clean(parts):
+    result = []
+    redact_next = False
+    for raw in parts or []:
+        value = str(raw)
+        if redact_next:
+            result.append("<redacted>")
+            redact_next = False
+            continue
+        if value.startswith("-"):
+            key, separator, _ = value.partition("=")
+            if sensitive.search(key):
+                result.append(key + "=<redacted>" if separator else key)
+                redact_next = not bool(separator)
+                continue
+        if re.search(r"://[^/@:]+:[^/@]+@", value):
+            result.append("<redacted-url>")
+            continue
+        if sensitive.search(value):
+            result.append("<redacted-argument>")
+            continue
+        result.append(value)
+    return shlex.join(result) if result else "none"
+
+config = item.get("Config") or {}
+print("command container=%s entrypoint=%s cmd=%s" % (
+    config.get("Hostname", "unknown"),
+    clean(config.get("Entrypoint")),
+    clean(config.get("Cmd")),
+))
+' | sed "s/^command container=[^ ]*/command container=$container/"
+            ;;
+    esac
 
     docker inspect --format '{{range .Mounts}}{{println .Destination "|" .Type "|" .Source}}{{end}}' "$container" \
         | while IFS='|' read -r destination type source; do
