@@ -1,0 +1,74 @@
+name: Staging — bootstrap website deploy boundary
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type INSTALL-WEBSITE-STAGING-WRAPPER to continue
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: staging-bootstrap-website-deploy
+  cancel-in-progress: false
+
+jobs:
+  bootstrap:
+    name: Install reviewed staging sudo wrapper
+    if: ${{ inputs.confirmation == 'INSTALL-WEBSITE-STAGING-WRAPPER' }}
+    runs-on: ubuntu-latest
+    environment: staging
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Require protected main source
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          test "${GITHUB_REF_NAME}" = main
+          bash -n scripts/install_website_staging_wrapper.sh
+
+      - name: Configure staging SSH
+        shell: bash
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.STAGING_SSH_KEY }}
+          SSH_KNOWN_HOSTS: ${{ secrets.STAGING_KNOWN_HOSTS }}
+        run: |
+          set -Eeuo pipefail
+          test -n "$SSH_PRIVATE_KEY"
+          test -n "$SSH_KNOWN_HOSTS"
+          install -d -m 700 ~/.ssh
+          printf '%s\n' "$SSH_PRIVATE_KEY" > ~/.ssh/staging_key
+          chmod 600 ~/.ssh/staging_key
+          printf '%s\n' "$SSH_KNOWN_HOSTS" > ~/.ssh/known_hosts
+          chmod 600 ~/.ssh/known_hosts
+
+      - name: Install the reviewed privilege boundary
+        shell: bash
+        env:
+          STAGING_HOST: ${{ secrets.STAGING_HOST }}
+          STAGING_PORT: ${{ secrets.STAGING_PORT }}
+          STAGING_USER: ${{ secrets.STAGING_USER }}
+        run: |
+          set -Eeuo pipefail
+          remote_script="/tmp/clickbuild-install-website-staging-${GITHUB_RUN_ID}.sh"
+          ssh_args=(
+            -i ~/.ssh/staging_key
+            -p "$STAGING_PORT"
+            -o BatchMode=yes
+            -o IdentitiesOnly=yes
+            -o StrictHostKeyChecking=yes
+          )
+          scp -i ~/.ssh/staging_key \
+            -P "$STAGING_PORT" \
+            -o BatchMode=yes \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            scripts/install_website_staging_wrapper.sh \
+            "$STAGING_USER@$STAGING_HOST:$remote_script"
+          ssh "${ssh_args[@]}" "$STAGING_USER@$STAGING_HOST" \
+            "set -Eeuo pipefail; trap 'rm -f $remote_script' EXIT; chmod 700 $remote_script; if [ \"\$(id -u)\" -eq 0 ]; then /bin/bash $remote_script; else sudo -n /bin/bash $remote_script; fi; sudo -n -l /usr/local/sbin/clickbuild-website-staging-wrapper >/dev/null"
