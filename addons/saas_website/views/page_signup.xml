@@ -23,6 +23,8 @@
 
                             <!-- Edition switch (visual) — pre-selects based on chosen plan -->
                             <t t-set="default_ed" t-value="selected_edition or ((selected_plan.edition if selected_plan else 'community') or 'community')"/>
+                            <t t-set="community_start_price" t-value="request.env['saas.plan'].tiered_quote('community', 1)['unit_price']"/>
+                            <t t-set="enterprise_start_price" t-value="request.env['saas.plan'].tiered_quote('enterprise', 1)['unit_price']"/>
                             <input type="hidden" name="edition" id="signupEdition" t-att-value="default_ed"/>
                             <input type="hidden" name="billing_cycle" id="signupBilling" value="yearly"/>
                             <div class="mb-3">
@@ -37,8 +39,8 @@
                                         <i class="fa fa-cube d-block mb-2" style="font-size:1.4rem; color:#475569;"/>
                                         <strong class="d-block">Community</strong>
                                         <small class="text-muted">
-                                            <t t-if="lang_is_ar">مفتوح المصدر · من 99 ريال</t>
-                                            <t t-else="">Open source · from 99 SAR</t>
+                                            <t t-if="lang_is_ar">مفتوح المصدر · من <t t-out="'%.0f' % community_start_price"/> ريال</t>
+                                            <t t-else="">Open source · from <t t-out="'%.0f' % community_start_price"/> SAR</t>
                                         </small>
                                     </label>
                                     <label t-attf-class="flex-fill p-3 border rounded-3 text-center signup-edition-card #{'active' if default_ed == 'enterprise' else ''}"
@@ -49,8 +51,8 @@
                                         <i class="fa fa-rocket d-block mb-2" style="font-size:1.4rem; color:#6d28d9;"/>
                                         <strong class="d-block">Enterprise</strong>
                                         <small class="text-muted">
-                                            <t t-if="lang_is_ar">Studio + Helpdesk · من 599 ريال</t>
-                                            <t t-else="">Studio + Helpdesk · from 599 SAR</t>
+                                            <t t-if="lang_is_ar">Studio + Helpdesk · من <t t-out="'%.0f' % enterprise_start_price"/> ريال</t>
+                                            <t t-else="">Studio + Helpdesk · from <t t-out="'%.0f' % enterprise_start_price"/> SAR</t>
                                         </small>
                                     </label>
                                 </div>
