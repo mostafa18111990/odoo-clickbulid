@@ -1,0 +1,60 @@
+name: Staging — deploy SaaS website
+
+on:
+  workflow_dispatch:
+    inputs:
+      confirmation:
+        description: Type DEPLOY-SAAS-WEBSITE-STAGING to continue
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: staging-deploy-saas-website
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    name: Protected website staging deployment
+    if: ${{ inputs.confirmation == 'DEPLOY-SAAS-WEBSITE-STAGING' }}
+    runs-on: [self-hosted, Linux, X64, clickbuild-production]
+    environment: staging
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate source and privilege boundary
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          case "${GITHUB_REF_NAME}" in
+            main|codex/odoo20-readiness) ;;
+            *) echo "Unsupported staging source: ${GITHUB_REF_NAME}" >&2; exit 1 ;;
+          esac
+          test "$(id -un)" = github-runner
+          bash -n scripts/deploy_saas_website_staging.sh
+          bash -n scripts/install_website_staging_wrapper.sh
+          sudo -n -l /usr/local/sbin/clickbuild-website-staging-wrapper >/dev/null
+
+      - name: Build reviewed website module archive
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          archive="/tmp/clickbuild-website-staging-${GITHUB_RUN_ID}.tar.gz"
+          rm -f "$archive"
+          tar -czf "$archive" addons/saas_website
+          sha256sum "$archive"
+
+      - name: Back up, deploy, verify, or roll back
+        shell: bash
+        run: |
+          set -Eeuo pipefail
+          sudo -n /usr/local/sbin/clickbuild-website-staging-wrapper \
+            "${GITHUB_SHA}" "${GITHUB_RUN_ID}"
+
+      - name: Remove temporary release archive
+        if: always()
+        shell: bash
+        run: rm -f "/tmp/clickbuild-website-staging-${GITHUB_RUN_ID}.tar.gz"
