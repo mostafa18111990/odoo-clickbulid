@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="group_ai_employee_manager" model="res.groups">
+        <field name="name">AI Employee Manager</field>
+        <field name="category_id" ref="base.module_category_sales_crm"/>
+        <field name="implied_ids" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+
+    <record id="rule_ai_employee_company" model="ir.rule">
+        <field name="name">AI employees: company isolation</field>
+        <field name="model_id" ref="model_saas_ai_employee"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_ai_channel_company" model="ir.rule">
+        <field name="name">AI social channels: company isolation</field>
+        <field name="model_id" ref="model_saas_ai_social_channel"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_ai_task_company" model="ir.rule">
+        <field name="name">AI tasks: company isolation</field>
+        <field name="model_id" ref="model_saas_ai_task"/>
+        <field name="domain_force">[('company_id', 'in', company_ids)]</field>
+    </record>
+    <record id="rule_ai_task_own" model="ir.rule">
+        <field name="name">AI tasks: users see their own tasks</field>
+        <field name="model_id" ref="model_saas_ai_task"/>
+        <field name="domain_force">[('create_uid', '=', user.id)]</field>
+        <field name="groups" eval="[(4, ref('base.group_user'))]"/>
+    </record>
+    <record id="rule_ai_task_manager_all" model="ir.rule">
+        <field name="name">AI tasks: managers see company tasks</field>
+        <field name="model_id" ref="model_saas_ai_task"/>
+        <field name="domain_force">[(1, '=', 1)]</field>
+        <field name="groups" eval="[(4, ref('saas_ai_employees.group_ai_employee_manager'))]"/>
+    </record>
+</odoo>

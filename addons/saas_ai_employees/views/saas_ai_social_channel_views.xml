@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_ai_social_channel_list" model="ir.ui.view">
+        <field name="name">saas.ai.social.channel.list</field>
+        <field name="model">saas.ai.social.channel</field>
+        <field name="arch" type="xml">
+            <list decoration-success="state == 'connected'" decoration-danger="state == 'error'">
+                <field name="name"/>
+                <field name="platform"/>
+                <field name="account_name"/>
+                <field name="account_id" optional="hide"/>
+                <field name="state" widget="badge"/>
+                <field name="last_sync_at"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_saas_ai_social_channel_form" model="ir.ui.view">
+        <field name="name">saas.ai.social.channel.form</field>
+        <field name="model">saas.ai.social.channel</field>
+        <field name="arch" type="xml">
+            <form string="Social Channel">
+                <header>
+                    <button name="action_reset_connection" type="object" string="Reset Connection"
+                            invisible="state == 'disconnected'"/>
+                    <field name="state" widget="statusbar"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="platform"/>
+                            <field name="account_name"/>
+                            <field name="account_id"/>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                        </group>
+                        <group>
+                            <field name="credential_env_var"/>
+                            <field name="webhook_secret_env_var"/>
+                            <field name="last_sync_at" readonly="1"/>
+                            <field name="active"/>
+                        </group>
+                    </group>
+                    <group string="Capabilities" col="4">
+                        <field name="can_publish"/>
+                        <field name="can_reply"/>
+                        <field name="can_receive_messages"/>
+                        <field name="can_read_analytics"/>
+                    </group>
+                    <group string="Last Error" invisible="not last_error">
+                        <field name="last_error" nolabel="1" readonly="1"/>
+                    </group>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_saas_ai_social_channel" model="ir.actions.act_window">
+        <field name="name">Social Channels</field>
+        <field name="res_model">saas.ai.social.channel</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_ai_task_search" model="ir.ui.view">
+        <field name="name">saas.ai.task.search</field>
+        <field name="model">saas.ai.task</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="channel_id"/>
+                <field name="lead_id"/>
+                <field name="task_type"/>
+                <filter name="pending" string="Queued" domain="[('state', '=', 'pending')]"/>
+                <filter name="approval" string="Needs Approval" domain="[('state', '=', 'awaiting_approval')]"/>
+                <filter name="failed" string="Failed" domain="[('state', '=', 'failed')]"/>
+                <group expand="0" string="Group By">
+                    <filter name="group_employee" string="Employee" context="{'group_by': 'employee_id'}"/>
+                    <filter name="group_channel" string="Channel" context="{'group_by': 'channel_id'}"/>
+                    <filter name="group_state" string="State" context="{'group_by': 'state'}"/>
+                </group>
+            </search>
+        </field>
+    </record>
+    <record id="view_saas_ai_task_list" model="ir.ui.view">
+        <field name="name">saas.ai.task.list</field>
+        <field name="model">saas.ai.task</field>
+        <field name="arch" type="xml">
+            <list decoration-info="state == 'running'"
+                  decoration-warning="state == 'awaiting_approval'"
+                  decoration-success="state == 'done'"
+                  decoration-danger="state == 'failed'">
+                <field name="priority" widget="priority"/>
+                <field name="name"/>
+                <field name="employee_id"/>
+                <field name="task_type"/>
+                <field name="channel_id" optional="show"/>
+                <field name="lead_id" optional="hide"/>
+                <field name="scheduled_at"/>
+                <field name="attempts" optional="hide"/>
+                <field name="state" widget="badge"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_saas_ai_task_form" model="ir.ui.view">
+        <field name="name">saas.ai.task.form</field>
+        <field name="model">saas.ai.task</field>
+        <field name="arch" type="xml">
+            <form string="AI Task">
+                <header>
+                    <button name="action_queue" type="object" string="Queue" class="btn-primary"
+                            invisible="state not in ('draft', 'failed')"/>
+                    <button name="action_approve" type="object" string="Approve" class="btn-primary"
+                            groups="saas_ai_employees.group_ai_employee_manager"
+                            invisible="state != 'awaiting_approval'"/>
+                    <button name="action_mark_done" type="object" string="Mark Executed"
+                            groups="saas_ai_employees.group_ai_employee_manager"
+                            invisible="state != 'approved'"/>
+                    <button name="action_cancel" type="object" string="Cancel"
+                            invisible="state in ('done', 'cancelled')"/>
+                    <field name="state" widget="statusbar"
+                           statusbar_visible="draft,pending,running,awaiting_approval,approved,done"/>
+                </header>
+                <sheet>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="employee_id" readonly="state != 'draft'"/>
+                            <field name="task_type" readonly="state != 'draft'"/>
+                            <field name="channel_id" readonly="state != 'draft'"/>
+                            <field name="lead_id"/>
+                        </group>
+                        <group>
+                            <field name="priority" widget="priority"/>
+                            <field name="scheduled_at" readonly="state != 'draft'"/>
+                            <field name="attempts"/>
+                            <field name="max_attempts" readonly="state != 'draft'"/>
+                            <field name="usage_id"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Request">
+                            <field name="input_text" readonly="state != 'draft'"/>
+                            <field name="context_json" widget="ace" options="{'mode': 'json'}"
+                                   readonly="state != 'draft'"/>
+                        </page>
+                        <page string="Claude Output">
+                            <field name="output_text" nolabel="1" readonly="1"/>
+                        </page>
+                        <page string="Execution">
+                            <group>
+                                <field name="started_at"/>
+                                <field name="completed_at"/>
+                                <field name="next_retry_at"/>
+                                <field name="approved_by"/>
+                                <field name="approved_at"/>
+                                <field name="external_ref"/>
+                                <field name="idempotency_key"/>
+                            </group>
+                            <field name="error_message" readonly="1" invisible="not error_message"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_saas_ai_task" model="ir.actions.act_window">
+        <field name="name">AI Tasks</field>
+        <field name="res_model">saas.ai.task</field>
+        <field name="view_mode">list,form</field>
+        <field name="search_view_id" ref="view_saas_ai_task_search"/>
+    </record>
+</odoo>

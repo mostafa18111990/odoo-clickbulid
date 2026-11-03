@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <menuitem id="menu_ai_employees" name="AI Employees"
+              parent="saas_ai.menu_saas_ai_root"
+              action="action_saas_ai_employee" sequence="1"/>
+    <menuitem id="menu_ai_tasks" name="Tasks"
+              parent="saas_ai.menu_saas_ai_root"
+              action="action_saas_ai_task" sequence="2"/>
+    <menuitem id="menu_ai_social_channels" name="Social Channels"
+              parent="saas_ai.menu_ai_config"
+              action="action_saas_ai_social_channel" sequence="5"
+              groups="saas_ai_employees.group_ai_employee_manager"/>
+</odoo>

@@ -1,0 +1,7 @@
+id,name,model_id/id,group_id/id,perm_read,perm_write,perm_create,perm_unlink
+access_ai_employee_manager,saas.ai.employee manager,model_saas_ai_employee,group_ai_employee_manager,1,1,1,1
+access_ai_employee_user,saas.ai.employee user,model_saas_ai_employee,base.group_user,1,0,0,0
+access_ai_channel_manager,saas.ai.social.channel manager,model_saas_ai_social_channel,group_ai_employee_manager,1,1,1,1
+access_ai_channel_user,saas.ai.social.channel user,model_saas_ai_social_channel,base.group_user,1,0,0,0
+access_ai_task_manager,saas.ai.task manager,model_saas_ai_task,group_ai_employee_manager,1,1,1,1
+access_ai_task_user,saas.ai.task user,model_saas_ai_task,base.group_user,1,1,1,0

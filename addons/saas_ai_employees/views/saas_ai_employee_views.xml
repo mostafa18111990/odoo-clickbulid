@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_saas_ai_employee_list" model="ir.ui.view">
+        <field name="name">saas.ai.employee.list</field>
+        <field name="model">saas.ai.employee</field>
+        <field name="arch" type="xml">
+            <list decoration-muted="not active">
+                <field name="sequence" widget="handle"/>
+                <field name="name"/>
+                <field name="role"/>
+                <field name="provider_id"/>
+                <field name="model" optional="hide"/>
+                <field name="language"/>
+                <field name="autonomy"/>
+                <field name="daily_task_limit"/>
+                <field name="active"/>
+            </list>
+        </field>
+    </record>
+    <record id="view_saas_ai_employee_form" model="ir.ui.view">
+        <field name="name">saas.ai.employee.form</field>
+        <field name="model">saas.ai.employee</field>
+        <field name="arch" type="xml">
+            <form string="AI Employee">
+                <sheet>
+                    <div class="oe_button_box" name="button_box">
+                        <button name="action_view_tasks" type="object" class="oe_stat_button" icon="fa-tasks">
+                            <field name="task_count" widget="statinfo" string="Tasks"/>
+                        </button>
+                    </div>
+                    <widget name="web_ribbon" title="Archived" bg_color="text-bg-danger" invisible="active"/>
+                    <div class="oe_title"><h1><field name="name"/></h1></div>
+                    <group>
+                        <group>
+                            <field name="role"/>
+                            <field name="provider_id"/>
+                            <field name="model" placeholder="Use provider default"/>
+                            <field name="language"/>
+                        </group>
+                        <group>
+                            <field name="company_id" groups="base.group_multi_company"/>
+                            <field name="autonomy"/>
+                            <field name="daily_task_limit"/>
+                            <field name="sequence"/>
+                            <field name="active" invisible="1"/>
+                        </group>
+                    </group>
+                    <notebook>
+                        <page string="Instructions">
+                            <field name="system_prompt" placeholder="Role, boundaries, escalation rules, and tone..."/>
+                        </page>
+                        <page string="Channels">
+                            <field name="channel_ids" widget="many2many_tags"/>
+                        </page>
+                    </notebook>
+                </sheet>
+                <chatter/>
+            </form>
+        </field>
+    </record>
+    <record id="action_saas_ai_employee" model="ir.actions.act_window">
+        <field name="name">AI Employees</field>
+        <field name="res_model">saas.ai.employee</field>
+        <field name="view_mode">list,form</field>
+    </record>
+</odoo>

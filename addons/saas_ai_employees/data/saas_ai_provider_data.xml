@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="saas_ai.provider_openai" model="saas.ai.provider">
+        <field name="is_default" eval="False"/>
+    </record>
+    <record id="saas_ai.provider_anthropic" model="saas.ai.provider">
+        <field name="default_model">claude-sonnet-5-5</field>
+        <field name="cost_per_1k_input_tokens">0.002</field>
+        <field name="cost_per_1k_output_tokens">0.01</field>
+        <field name="is_default" eval="True"/>
+        <field name="sequence">5</field>
+    </record>
+</odoo>
