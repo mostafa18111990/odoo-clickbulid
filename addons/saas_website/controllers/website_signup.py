@@ -146,12 +146,22 @@ class SaasWebsiteSignup(http.Controller):
     @http.route('/get-started/success', type='http', auth='public', website=True)
     def success(self, **kw):
         platform_domain = request.env['saas.config'].sudo()._get_config().platform_domain
-        # One-shot read of credentials placed by register() — clear them so a
-        # later refresh doesn't keep showing the password.
-        creds = request.session.pop('saas_signup_credentials', None) or {}
+        from odoo.addons.saas_website.services.signup_service import SUBDOMAIN_RE
+
+        subdomain = (kw.get('tenant') or '').strip().lower()
+        if not SUBDOMAIN_RE.fullmatch(subdomain):
+            return request.redirect('/get-started')
+
+        # Keep the workspace link usable on refresh, while revealing credentials
+        # only on the first visit for the matching workspace.
+        creds = request.session.get('saas_signup_credentials') or {}
+        if creds.get('subdomain') == subdomain:
+            request.session.pop('saas_signup_credentials')
+        else:
+            creds = {}
         return request.render('saas_website.page_signup_success', {
-            'subdomain': kw.get('tenant', ''),
+            'subdomain': subdomain,
             'platform_domain': platform_domain,
             'admin_email': creds.get('admin_email'),
             'admin_password': creds.get('admin_password'),
-            'tenant_url': creds.get('tenant_url')})
+            'tenant_url': creds.get('tenant_url') or f'https://{subdomain}.{platform_domain}'})
