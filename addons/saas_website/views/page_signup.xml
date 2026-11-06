@@ -304,19 +304,21 @@
                                 var txt = document.getElementById('saas_status_text');
                                 var tip = document.getElementById('saas_login_tip');
                                 var tries = 0;
-                                var maxTries = 60;
+                                var fastChecks = 60;
                                 var msg = lang_is_ar ? {
                                     ready: 'مساحة العمل جاهزة! يمكنك تسجيل الدخول الآن.',
-                                    cert_error: 'تعذّر إصدار الشهادة، نُعيد المحاولة...',
+                                    provision_error: 'تعذّر تجهيز مساحة العمل. يرجى التواصل مع الدعم.',
+                                    cert_error: 'تعذّر إصدار شهادة الأمان. يرجى التواصل مع الدعم.',
                                     after_cert: 'الشهادة تم إصدارها، جاري تفعيل HTTPS...',
                                     after_db: 'قاعدة البيانات جاهزة، جاري إصدار شهادة SSL...',
-                                    timeout: 'استغرق التجهيز وقتاً غير معتاد. حدّث الصفحة وحاول الدخول.'
+                                    slow: 'التجهيز مستمر. اترك الصفحة مفتوحة وسيتفعّل زر الدخول عند اكتمال التجهيز.'
                                 } : {
                                     ready: 'Your workspace is ready! You can log in now.',
-                                    cert_error: 'Certificate issuance failed — retrying...',
+                                    provision_error: 'Workspace setup failed. Please contact support.',
+                                    cert_error: 'Security certificate issuance failed. Please contact support.',
                                     after_cert: 'Certificate issued, activating HTTPS...',
                                     after_db: 'Database ready, issuing SSL certificate...',
-                                    timeout: 'Setup took longer than expected. Refresh the page and try logging in.'
+                                    slow: 'Setup is still in progress. Keep this page open and the login button will activate when your workspace is ready.'
                                 };
                                 var enableBtn = function(){
                                     btn.className = 'btn btn-primary btn-lg';
@@ -347,6 +349,10 @@
                                     }
                                     if (tip) tip.style.display = 'block';
                                 });
+                                function scheduleCheck() {
+                                    if (tries === fastChecks) txt.textContent = msg.slow;
+                                    setTimeout(poll, tries &lt; fastChecks ? 3000 : 15000);
+                                }
                                 function poll() {
                                     tries++;
                                     fetch('/get-started/status', {
@@ -362,23 +368,18 @@
                                             enableBtn();
                                             return;
                                         }
-                                        if (s.cert_error) {
+                                        if (s.provision_error || s.cert_error) {
                                             box.className = 'alert alert-warning mb-3';
-                                            txt.textContent = msg.cert_error;
+                                            txt.textContent = s.provision_error ? msg.provision_error : msg.cert_error;
+                                            return;
                                         } else if (s.provision_done &amp;&amp; s.cert_done &amp;&amp; !s.https_ok) {
                                             txt.textContent = msg.after_cert;
                                         } else if (s.provision_done) {
                                             txt.textContent = msg.after_db;
                                         }
-                                        if (tries &lt; maxTries) {
-                                            setTimeout(poll, 3000);
-                                        } else {
-                                            box.className = 'alert alert-warning mb-3';
-                                            box.innerHTML = msg.timeout;
-                                            enableBtn();
-                                        }
+                                        scheduleCheck();
                                     }).catch(function(){
-                                        if (tries &lt; maxTries) setTimeout(poll, 3000);
+                                        scheduleCheck();
                                     });
                                 }
                                 poll();
